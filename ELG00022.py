@@ -18,17 +18,15 @@ class ELG00022(ELG):
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, bsf: BSF_Runner):
-
         self.bsf = bsf
 
         self.tab_no = 'ELG00022'
         self.st_fil_type = 'ELG'
-        self._2x_segment = None
-        self.eff_date = None
-        self.end_date = None
+        self._2x_segment = 'TMSIS_ELGBL_ID'
 
-        # bsf.logger.debug('ELG00022 does not create a table')
-        print('ELG00022 does not create a table')
+        self.eff_date = 'ELGBL_ID_EFCTV_DT'
+        self.end_date = 'ELGBL_ID_END_DT'
+        ELG.__init__(self, bsf, 'ELG00022', 'TMSIS_ELGBL_ID', 'ELGBL_ID_EFCTV_DT', 'ELGBL_ID_END_DT')
 
     # ---------------------------------------------------------------------------------
     #
@@ -39,7 +37,7 @@ class ELG00022(ELG):
     def create_identifiers(self, id_type, code):
 
         #  confirm input variable names
-        created_vars = f"""ELGBL_ID as ELGBL_ID_&id_type ,
+        created_vars = f"""ELGBL_ID as ELGBL_ID_{id_type},
                             ELGBL_ID_ISSG_ENT_ID_TXT as ELGBL_ID_{id_type}_ENT_ID ,
                             RSN_FOR_CHG as ELGBL_ID_{id_type}_RSN_CHG"""
 
@@ -52,7 +50,7 @@ class ELG00022(ELG):
                 msis_ident_num,
                 count(msis_ident_num) as recCt
                 from {self.tab_no}
-                where ELGBL_ID_TYPE_CD = &code
+                where ELGBL_ID_TYPE_CD = {code}
                 and nullif(trim(elgbl_id),'') is not null
                 group by submtg_state_cd, msis_ident_num
                 """
@@ -71,12 +69,12 @@ class ELG00022(ELG):
                     1 as KEEP_FLAG
 
                 from {self.tab_no} t1
-                inner join {self.tab_no}_{id_type}_recCt  t2
+                inner join {self.tab_no}_{id_type}_recCt as t2
                 on t1.submtg_state_cd = t2.submtg_state_cd
                 and t1.msis_ident_num = t2.msis_ident_num
                 and t2.recCt=1
 
-                where ELGBL_ID_TYPE_CD = &code
+                where ELGBL_ID_TYPE_CD = {code}
                 and nullif(trim(elgbl_id),'') is not null
                 """
         self.bsf.append(type(self).__name__, z)
@@ -87,9 +85,9 @@ class ELG00022(ELG):
 
         #  De-dupe records where multiples for the same id_type qualifying in the period -- exclude records where ELG_IDENTIFIER is null
 
-        sort_key = "coalesce(trim(elgbl_id),'xx') || coalesce(trim(elgbl_id_issg_ent_id_txt),'xx') || coalesce(trim(rsn_for_chg),'xx'))"
+        sort_key = "coalesce(trim(elgbl_id),'xx') || coalesce(trim(elgbl_id_issg_ent_id_txt),'xx') || coalesce(trim(rsn_for_chg),'xx')"
 
-        where = f"ELGBL_ID_TYPE_CD = &code and nullif(trim(elgbl_id),'') is not null)"
+        where = f"ELGBL_ID_TYPE_CD = {code} and nullif(trim(elgbl_id),'') is not null"
 
         self.MultiIds(created_vars, sort_key, where, '_' + id_type)
 
@@ -120,7 +118,6 @@ class ELG00022(ELG):
 
         z = f"""
             create or replace temporary view {self.tab_no}_uniq_step2 as
-
 
             select * from {self.tab_no}_MSIS_XWALK_uniq
             union all

@@ -1,6 +1,4 @@
-import logging
-
-from datetime import datetime
+from taf.TAF_Runner import TAF_Runner
 
 
 # -------------------------------------------------------------------------------------
@@ -9,155 +7,17 @@ from datetime import datetime
 #
 #
 # -------------------------------------------------------------------------------------
-class BSF_Runner():
+class BSF_Runner(TAF_Runner):
 
     PERFORMANCE = 11
 
     # ---------------------------------------------------------------------------------
     #
-    #   reporting_period = SUBSTR(JOB_PARMS_TXT,1,10) AS RPTPD FORMAT=$10.
-    #   e.g. '2020-01-31'
     #
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, reporting_period: str):
-        from datetime import date, datetime, timedelta
-
-        self.now = datetime.now()
-        self.version = '1.0.1'
-        self.initialize_logger(self.now)
-
-        self.submtg_state_cd = '12'
-        self.tmsis_run_id = 3480
-        self.DA_RUN_ID = 5678
-
-        self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
-
-        begmon = self.reporting_period
-        begmon = date(begmon.year, begmon.month, 1)
-        self.begmon = begmon.strftime('%Y-%m-%d').upper()
-        self.st_dt = f'{self.begmon}'
-
-        self.BSF_FILE_DATE = int(self.reporting_period.strftime('%Y%m'))
-        self.TAF_FILE_DATE = self.BSF_FILE_DATE
-
-        self.RPT_PRD = f'{self.reporting_period.strftime("%Y-%m-%d")}'
-        # self.RPT_OUT = int(self.RPT_PRD)
-
-        if self.now.month == 12:  # December
-            last_day = date(self.now.year, self.now.month, 31)
-        else:
-            last_day = date(self.now.year, self.now.month + 1, 1) - timedelta(days=1)
-        self.FILE_DT_END = last_day.strftime('%Y-%m-%d').upper()
-
-        self.sql = []
-        self.plan = {}
-
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
-    def print(self):
-        print('Version:\t' + self.version)
-        print('-----------------------------------------------------')
-        print('')
-        print('-----------------------------------------------------')
-        print('begmon:\t' + str(self.begmon))
-        print('st_dt:\t' + self.st_dt)
-        print('BSF_FILE_DATE:\t' + str(self.BSF_FILE_DATE))
-        print('TAF_FILE_DATE:\t' + str(self.TAF_FILE_DATE))
-        print('RPT_PRD:\t' + str(self.RPT_PRD))
-        print('FILE_DT_END:\t' + str(self.FILE_DT_END))
-
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
-    @staticmethod
-    def compress(string):
-        return ' '.join(string.split())
-
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
-    def log(self, viewname: str, sql=''):
-        self.logger.info('\t' + viewname)
-        if sql != '':
-            self.logger.debug(BSF_Runner.compress(sql.replace('\n', '')))
-            # self.sql[viewname] = '\n'.join(sql.split('\n')[2:])
-
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
-    def initialize_logger(self, now: datetime):
-
-        file_date = now.strftime('%Y-%m-%d-%H-%M-%S')
-
-        logging.addLevelName(BSF_Runner.PERFORMANCE, 'PERFORMANCE')
-
-        def performance(self, message, *args, **kws):
-            self.log(BSF_Runner.PERFORMANCE, message, *args, **kws)
-
-        logging.Logger.performance = performance
-
-        p_dir = '/tmp/'
-        p_filename = 'custom_log_' + file_date + '.log'
-        p_logfile = p_dir + p_filename
-
-        self.logger = logging.getLogger('taf_log')
-        self.logger.setLevel(logging.INFO)
-
-        fh = logging.FileHandler(p_logfile, mode='a')
-        ch = logging.StreamHandler()
-        # ch.setLevel(logging.INFO)
-
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        fh.setFormatter(formatter)
-        ch.setFormatter(formatter)
-
-        if (self.logger.hasHandlers()):
-            self.logger.handlers.clear()
-
-        self.logger.addHandler(fh)
-        self.logger.addHandler(ch)
-
-        self.logfile = p_logfile
-        self.logfilename = p_filename
-
-        self.logger.debug('TAF log file: ' + p_logfile)
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    def append(self, segment: str, z: str):
-
-        if segment not in self.plan.keys():
-            self.plan[segment] = []
-
-        # self.log(f"{self.tab_no}", z)
-        self.plan[segment].append(z)
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    def view_plan(self):
-
-        for segment, chain in self.plan.items():
-            for sql in chain:
-                print(f"-- {segment}")
-                print(sql)
+        super().__init__(reporting_period)
 
     # ---------------------------------------------------------------------------------
     #
@@ -188,58 +48,27 @@ class BSF_Runner():
         from taf.BSF.ELG00022 import ELG00022
         from taf.BSF.TPL00002 import TPL00002
 
-        # ELG00002(self).create()
-        # ELG00003(self).create()
-        # ELG00004(self).create()
-        # ELG00005(self).create()
-        # ELG00006(self).create()
-        # ELG00007(self).create()
-        # ELG00008(self).create()
-        # ELG00009(self).create()
-        # ELG00010(self).create()
-        # ELG00011(self).create()
+        ELG00002(self).create()
+        ELG00003(self).create()
+        ELG00004(self).create()
+        ELG00005(self).create()
+        ELG00006(self).create()
+        ELG00007(self).create()
+        ELG00008(self).create()
+        ELG00009(self).create()
+        ELG00010(self).create()
+        ELG00011(self).create()
         ELG00012(self).create()
-        # ELG00013(self).create()
-        # ELG00014(self).create()
-        # ELG00015(self).create()
-        # ELG00016(self).create()
-        # ELG00017(self).create()
-        # ELG00018(self).create()
-        # ELG00020(self).create()
-        # ELG00021(self).create()
-        # ELG00022(self).create()
-        # ELG00005(self).create()
-        # TPL00002(self).create()
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    def run(self):
-
-        from taf.BSF.BSF_Metadata import BSF_Metadata
-        from pyspark.sql.types import StructType, StructField, StringType
-        import pandas as pd
-
-        from pyspark.sql import SparkSession
-        spark = SparkSession.getActiveSession()
-
-        df = pd.DataFrame(BSF_Metadata.prmry_lang_cd, columns=['LANG_CD'])
-        schema = StructType([StructField("LANG_CD", StringType(), True)])
-
-        sdf = spark.createDataFrame(data=df, schema=schema)
-        sdf.registerTempTable('prmry_lang_cd')
-
-        self.logger.info('Creating BSF Views...')
-
-        for segment, chain in self.plan.items():
-            self.logger.info('\t' + segment + '...')
-            for z in chain:
-                self.logger.info('\n'.join(z.split('\n')[0:2]))
-                spark.sql(z)
-
+        ELG00013(self).create()
+        ELG00014(self).create()
+        ELG00015(self).create()
+        ELG00016(self).create()
+        ELG00017(self).create()
+        ELG00018(self).create()
+        ELG00020(self).create()
+        ELG00021(self).create()
+        ELG00022(self).create()
+        TPL00002(self).create()
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

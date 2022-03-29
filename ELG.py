@@ -39,6 +39,18 @@ class ELG():
     #
     #
     # ---------------------------------------------------------------------------------
+    def get_combined_list(self):
+        tuples = []
+        for j in self.bsf.combined_list:
+            tuples.append('concat' + str(j))
+        return ','.join(tuples)
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
     def create_initial_table(self):
 
         z = f"""
@@ -49,21 +61,39 @@ class ELG():
                     , a.TMSIS_RPTG_PRD
                 from
                     tmsis.{self._2x_segment} as a
+
+                -- left join
+                --     data_anltcs_dm_prod.state_submsn_type s
+                --     on
+                --         a.submtg_state_cd = s.submtg_state_cd
+                --         and upper(s.fil_type) = 'ELG'
+
                 where
-                    (a.TMSIS_ACTV_IND = 1 and
-                    a.{self.eff_date} <= '{self.bsf.RPT_PRD}' and
-                    '{self.bsf.st_dt}' <= a.{self.end_date} or
-                    a.{self.end_date} is NULL)
-
-                    and
-
-                    a.submtg_state_cd = {self.bsf.submtg_state_cd} and
-                    a.tmsis_run_id = {self.bsf.tmsis_run_id}
-
+                    (
+                    a.TMSIS_ACTV_IND = 1
+                    and (
+                        {self.eff_date} <= to_date('{self.bsf.RPT_PRD}')
+                        and (
+                            {self.end_date} >= to_date('{self.bsf.st_dt}')
+                            or {self.end_date} is NULL
+                            )
+                        )
+                    )
+                    and a.TMSIS_RPTG_PRD >= to_date('{self.bsf.st_dt}')
+                    -- and (
+                    --     (
+                    --         upper(coalesce(s.submsn_type, 'X')) <> 'CSO'
+                    --         and a.TMSIS_RPTG_PRD >= to_date('{self.bsf.st_dt}')
+                    --     )
+                    --     or (upper(coalesce(s.submsn_type, 'X')) = 'CSO')
+                    -- )
+                    and concat(a.submtg_state_cd, a.tmsis_run_id) in (
+                        {self.get_combined_list()}
+                    )
                     and a.msis_ident_num is not null
 
-                limit 1000
             """
+        # limit 1000
         self.bsf.append(type(self).__name__, z)
 
     # ---------------------------------------------------------------------------------
@@ -126,7 +156,7 @@ class ELG():
                 select
                     *
                 from
-                    {self.tab_no}_multi_step2
+                    {self.tab_no}{suffix}_multi_step2
                 where
                     keep_flag = 1
             """

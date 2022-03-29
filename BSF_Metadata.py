@@ -19,11 +19,11 @@ class BSF_Metadata:
 
         new_line_comma = '\n\t\t\t,'
 
-        columns = BSF_Metadata.columns[segment_id]
+        columns = BSF_Metadata.columns.get(segment_id).copy()
 
         for i, item in enumerate(columns):
             if item in BSF_Metadata.cleanser.keys():
-                columns[i] = BSF_Metadata.cleanser[item](alias)
+                columns[i] = BSF_Metadata.cleanser.copy().get(item)(alias)
             elif item in BSF_Metadata.validator.keys():
                 columns[i] = BSF_Metadata.maskInvalidValues(item, alias)
             else:
@@ -42,13 +42,13 @@ class BSF_Metadata:
 
         new_line_comma = '\n\t\t\t,'
 
-        columns = BSF_Metadata.output_columns
+        columns = BSF_Metadata.output_columns.copy()
 
         for i, column in enumerate(columns):
             if column in BSF_Metadata.epochal:
                 columns[i] = BSF_Metadata.epoch(column)
             elif column in BSF_Metadata.absent:
-                columns[i] = f"null as {column}"
+                columns[i] = f"typeof(null) as {column}"
             else:
                 columns[i] = BSF_Metadata.normalize(column)
 
@@ -61,9 +61,27 @@ class BSF_Metadata:
     #
     # ---------------------------------------------------------------------------------
     @staticmethod
-    def tagAlias(segment: str, alias: str):
-        new_line_comma = '\n\t\t,'
-        return new_line_comma.join([alias + '.' + c for c in BSF_Metadata.columns[segment]])
+    def tagAlias(segment_id: str, alias: str):
+        # new_line_comma = '\n\t\t,'
+        # aliased_cols = [alias + '.' + c for c in BSF_Metadata.final.get(segment)]
+        # i = ','.join([new_line_comma.join(aliased_cols)])
+        # if len(i) > 0:
+        #     i += ','
+        # return i
+
+        new_line_comma = '\n\t\t\t,'
+
+        columns = BSF_Metadata.final.get(segment_id).copy()
+
+        for i, item in enumerate(columns):
+            if item in BSF_Metadata.cleanser.keys():
+                columns[i] = BSF_Metadata.cleanser.copy().get(item)(alias)
+            elif item in BSF_Metadata.validator.keys():
+                columns[i] = BSF_Metadata.maskInvalidValues(item, alias)
+            else:
+                columns[i] = f"{alias}.{columns[i]}"
+
+        return new_line_comma.join(columns)
 
     # ---------------------------------------------------------------------------------
     #
@@ -81,6 +99,7 @@ class BSF_Metadata:
 
                 {BSF_Metadata.tagAlias('ELG00002', 't2')},
 
+                DEATH_DATE as DEATH_DT,
                 t2.AGE,
                 t2.DECEASED_FLG as DECEASED_FLAG,
                 t2.AGE_GROUP_FLG as AGE_GROUP_FLAG,
@@ -95,6 +114,10 @@ class BSF_Metadata:
                 {BSF_Metadata.tagAlias('ELG00004', 't4')},
 
                 {BSF_Metadata.tagAlias('ELG00005', 't5')},
+
+                ELGBLTY_GRP_CODE as ELGBLTY_GRP_CD,
+                DUAL_ELGBL_CODE as DUAL_ELGBL_CD,
+                lpad(trim(ELGBLTY_CHG_RSN_CD), 2, '0') as ELGBLTY_CHG_RSN_CD,
 
                 t5.CARE_LVL_STUS_CODE,
                 t5.DUAL_ELIGIBLE_FLG as DUAL_ELIGIBLE_FLAG,
@@ -130,7 +153,13 @@ class BSF_Metadata:
                 t9.LCKIN_PRVDR_TYPE_CD3,
                 nullif(coalesce(t9.LOCK_IN_FLG,0),2) as LOCK_IN_FLAG,
 
-                {BSF_Metadata.tagAlias('ELG00010', 't7')},
+                {BSF_Metadata.tagAlias('ELG00010', 't10')},
+
+                t10.mfp_prtcptn_endd_rsn_code,
+                t10.mfp_qlfyd_instn_code,
+                t10.mfp_qlfyd_rsdnc_code,
+                t10.mfp_rinstlzd_rsn_code,
+                coalesce(t10.MFP_PARTICIPANT_FLG, 0) as MFP_PARTICIPANT_FLAG,
 
                 t11.COMMUNITY_FIRST_CHOICE_SPO_FLG as COMMUNITY_FIRST_CHOICE_SPO_FLAG,
                 t11._1915I_SPO_FLG as _1915I_SPO_FLAG,
@@ -247,13 +276,13 @@ class BSF_Metadata:
                     + COALESCE(t16.AIAN_FLG,0)
                     + COALESCE(GLOBAL_ASIAN,0)
                     + COALESCE(GLOBAL_ISLANDER,0)) > 1
-                    and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 19 -- Multi Racial
+                    and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 19
 
                     when coalesce(t16.MULTI_ASIAN,0) = 1
-                    and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 12 -- Multi Asian
+                    and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 12
 
                     when coalesce(t16.MULTI_ISLANDER,0) = 1
-                     and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 18 -- Multi Islander
+                     and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 18
 
                     when t16.WHITE_FLG=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 1
                     when t16.BLACK_AFRICAN_AMERICAN_FLG=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 2
@@ -299,6 +328,8 @@ class BSF_Metadata:
 
                 {BSF_Metadata.tagAlias('TPL00002', 't20')},
 
+                {BSF_Metadata.tagAlias('ELG00021', 't21')},
+
                 '{bsf.TAF_FILE_DATE}' as BSF_FIL_DT,
 
                 '{bsf.version}' as BSF_VRSN,
@@ -307,9 +338,305 @@ class BSF_Metadata:
 
             from
 
+                ELG00021_{bsf.BSF_FILE_DATE}_uniq t1
+
                 {BSF_Metadata.join_segments(bsf.TAF_FILE_DATE)}
         """
 
+        return z
+
+    # ---------------------------------------------------------------------------------
+    # TODO: we need to think of a better solution here
+    # this is needed because we select on a wildcard so rename is not consistently
+    # applied
+    #
+    # ---------------------------------------------------------------------------------
+    @staticmethod
+    def finalTableOutput(bsf: BSF_Runner):
+
+        z = f"""
+                create table {bsf.DA_SCHEMA}.taf_mon_bsf as
+                select
+                    {BSF_Metadata.finalFormatter()}
+                from (
+                    select
+                        t1.DA_RUN_ID,
+                        t1.BSF_FIL_DT,
+                        t1.BSF_VRSN,
+                        t1.MSIS_IDENT_NUM,
+                        t1.SSN_NUM,
+                        t1.SSN_IND,
+                        t1.SSN_VRFCTN_IND,
+                        t1.MDCR_BENE_ID,
+                        t1.MDCR_HICN_NUM,
+                        t1.TMSIS_RUN_ID,
+                        t1.SUBMTG_STATE_CD,
+                        t1.REGION as REG_FLAG,
+                        t1.MSIS_CASE_NUM,
+                        t1.SINGLE_ENR_FLAG as SNGL_ENRLMT_FLAG,
+                        t1.MDCD_ENRLMT_EFF_DT_1,
+                        t1.MDCD_ENRLMT_END_DT_1,
+                        t1.MDCD_ENRLMT_EFF_DT_2,
+                        t1.MDCD_ENRLMT_END_DT_2,
+                        t1.MDCD_ENRLMT_EFF_DT_3,
+                        t1.MDCD_ENRLMT_END_DT_3,
+                        t1.MDCD_ENRLMT_EFF_DT_4,
+                        t1.MDCD_ENRLMT_END_DT_4,
+                        t1.MDCD_ENRLMT_EFF_DT_5,
+                        t1.MDCD_ENRLMT_END_DT_5,
+                        t1.MDCD_ENRLMT_EFF_DT_6,
+                        t1.MDCD_ENRLMT_END_DT_6,
+                        t1.MDCD_ENRLMT_EFF_DT_7,
+                        t1.MDCD_ENRLMT_END_DT_7,
+                        t1.MDCD_ENRLMT_EFF_DT_8,
+                        t1.MDCD_ENRLMT_END_DT_8,
+                        t1.MDCD_ENRLMT_EFF_DT_9,
+                        t1.MDCD_ENRLMT_END_DT_9,
+                        t1.MDCD_ENRLMT_EFF_DT_10,
+                        t1.MDCD_ENRLMT_END_DT_10,
+                        t1.MDCD_ENRLMT_EFF_DT_11,
+                        t1.MDCD_ENRLMT_END_DT_11,
+                        t1.MDCD_ENRLMT_EFF_DT_12,
+                        t1.MDCD_ENRLMT_END_DT_12,
+                        t1.MDCD_ENRLMT_EFF_DT_13,
+                        t1.MDCD_ENRLMT_END_DT_13,
+                        t1.MDCD_ENRLMT_EFF_DT_14,
+                        t1.MDCD_ENRLMT_END_DT_14,
+                        t1.MDCD_ENRLMT_EFF_DT_15,
+                        t1.MDCD_ENRLMT_END_DT_15,
+                        t1.MDCD_ENRLMT_EFF_DT_16,
+                        t1.MDCD_ENRLMT_END_DT_16,
+                        t1.CHIP_ENRLMT_EFF_DT_1,
+                        t1.CHIP_ENRLMT_END_DT_1,
+                        t1.CHIP_ENRLMT_EFF_DT_2,
+                        t1.CHIP_ENRLMT_END_DT_2,
+                        t1.CHIP_ENRLMT_EFF_DT_3,
+                        t1.CHIP_ENRLMT_END_DT_3,
+                        t1.CHIP_ENRLMT_EFF_DT_4,
+                        t1.CHIP_ENRLMT_END_DT_4,
+                        t1.CHIP_ENRLMT_EFF_DT_5,
+                        t1.CHIP_ENRLMT_END_DT_5,
+                        t1.CHIP_ENRLMT_EFF_DT_6,
+                        t1.CHIP_ENRLMT_END_DT_6,
+                        t1.CHIP_ENRLMT_EFF_DT_7,
+                        t1.CHIP_ENRLMT_END_DT_7,
+                        t1.CHIP_ENRLMT_EFF_DT_8,
+                        t1.CHIP_ENRLMT_END_DT_8,
+                        t1.CHIP_ENRLMT_EFF_DT_9,
+                        t1.CHIP_ENRLMT_END_DT_9,
+                        t1.CHIP_ENRLMT_EFF_DT_10,
+                        t1.CHIP_ENRLMT_END_DT_10,
+                        t1.CHIP_ENRLMT_EFF_DT_11,
+                        t1.CHIP_ENRLMT_END_DT_11,
+                        t1.CHIP_ENRLMT_EFF_DT_12,
+                        t1.CHIP_ENRLMT_END_DT_12,
+                        t1.CHIP_ENRLMT_EFF_DT_13,
+                        t1.CHIP_ENRLMT_END_DT_13,
+                        t1.CHIP_ENRLMT_EFF_DT_14,
+                        t1.CHIP_ENRLMT_END_DT_14,
+                        t1.CHIP_ENRLMT_EFF_DT_15,
+                        t1.CHIP_ENRLMT_END_DT_15,
+                        t1.CHIP_ENRLMT_EFF_DT_16,
+                        t1.CHIP_ENRLMT_END_DT_16,
+                        t1.ELGBL_1ST_NAME,
+                        t1.ELGBL_LAST_NAME,
+                        t1.ELGBL_MDL_INITL_NAME,
+                        t1.BIRTH_DT,
+                        t1.DEATH_DT,
+                        t1.AGE as AGE_NUM,
+                        t1.AGE_GROUP_FLAG as AGE_GRP_FLAG,
+                        t1.DECEASED_FLAG as DCSD_FLAG,
+                        t1.GNDR_CD,
+                        t1.MRTL_STUS_CD,
+                        t1.INCM_CD,
+                        t1.VET_IND,
+                        t1.CTZNSHP_IND,
+                        t1.CTZNSHP_VRFCTN_IND,
+                        t1.IMGRTN_STUS_CD,
+                        t1.IMGRTN_VRFCTN_IND,
+                        t1.IMGRTN_STUS_5_YR_BAR_END_DT,
+                        t1.PRMRY_LANG_CODE as OTHR_LANG_HOME_CD,
+                        t1.PRMRY_LANG_FLAG,
+                        t1.PRMRY_LANG_ENGLSH_PRFCNCY_CD,
+                        t1.HSEHLD_SIZE_CD,
+                        t1.CRTFD_AMRCN_INDN_ALSKN_NTV_IND,
+                        t1.ETHNCTY_CD,
+                        t1.ELGBL_LINE_1_ADR_HOME,
+                        t1.ELGBL_LINE_2_ADR_HOME,
+                        t1.ELGBL_LINE_3_ADR_HOME,
+                        t1.ELGBL_CITY_NAME_HOME,
+                        t1.ELGBL_ZIP_CD_HOME,
+                        t1.ELGBL_CNTY_CD_HOME,
+                        t1.ELGBL_STATE_CD_HOME,
+                        t1.ELGBL_PHNE_NUM_HOME,
+                        t1.ELGBL_LINE_1_ADR_MAIL,
+                        t1.ELGBL_LINE_2_ADR_MAIL,
+                        t1.ELGBL_LINE_3_ADR_MAIL,
+                        t1.ELGBL_CITY_NAME_MAIL,
+                        t1.ELGBL_ZIP_CD_MAIL,
+                        t1.ELGBL_CNTY_CD_MAIL,
+                        t1.ELGBL_STATE_CD_MAIL,
+                        t1.CARE_LVL_STUS_CD,
+                        t1.DEAF_DISAB_FLAG as DEAF_DSBL_FLAG,
+                        t1.BLIND_DISAB_FLAG as BLND_DSBL_FLAG,
+                        t1.DIFF_CONC_DISAB_FLAG as DFCLTY_CONC_DSBL_FLAG,
+                        t1.DIFF_WALKING_DISAB_FLAG as DFCLTY_WLKG_DSBL_FLAG,
+                        t1.DIFF_DRESSING_BATHING_DISAB_FLAG as DFCLTY_DRSNG_BATHG_DSBL_FLAG,
+                        t1.DIFF_ERRANDS_ALONE_DISAB_FLAG as DFCLTY_ERRANDS_ALN_DSBL_FLAG,
+                        t1.OTHER_DISAB_FLAG as OTHR_DSBL_FLAG,
+                        t1.HCBS_AGED_NON_HHCC_FLAG,
+                        t1.HCBS_PHYS_DISAB_NON_HHCC_FLAG as HCBS_PHYS_DSBL_NON_HHCC_FLAG,
+                        t1.HCBS_INTEL_DISAB_NON_HHCC_FLAG as HCBS_INTEL_DSBL_NON_HHCC_FLAG,
+                        t1.HCBS_AUTISM_SP_DIS_NON_HHCC_FLAG as HCBS_AUTSM_NON_HHCC_FLAG,
+                        t1.HCBS_DD_NON_HHCC_FLAG,
+                        t1.HCBS_MI_SED_NON_HHCC_FLAG,
+                        t1.HCBS_BRAIN_INJ_NON_HHCC_FLAG as HCBS_BRN_INJ_NON_HHCC_FLAG,
+                        t1.HCBS_HIV_AIDS_NON_HHCC_FLAG,
+                        t1.HCBS_TECH_DEP_MF_NON_HHCC_FLAG,
+                        t1.HCBS_DISAB_OTHER_NON_HHCC_FLAG as HCBS_DSBL_OTHR_NON_HHCC_FLAG,
+                        t1.ENROLLMENT_TYPE_FLAG as ENRL_TYPE_FLAG,
+                        t1.DAYS_ELIG_IN_MO_CNT,
+                        t1.ELIGIBLE_ENTIRE_MONTH_IND as ELGBL_ENTIR_MO_IND,
+                        t1.ELIGIBLE_LAST_DAY_OF_MONTH_IND as ELGBL_LAST_DAY_OF_MO_IND,
+                        t1.CHIP_CD,
+                        t1.ELGBLTY_GRP_CD,
+                        t1.PRMRY_ELGBLTY_GRP_IND,
+                        t1.ELIGIBILITY_GROUP_CATEGORY_FLAG as ELGBLTY_GRP_CTGRY_FLAG,
+                        t1.MAS_CD,
+                        t1.ELGBLTY_MDCD_BASIS_CD,
+                        t1.MASBOE as MASBOE_CD,
+                        t1.STATE_SPEC_ELGBLTY_FCTR_TXT,
+                        t1.DUAL_ELGBL_CD,
+                        t1.DUAL_ELIGIBLE_FLAG as DUAL_ELGBL_FLAG,
+                        t1.RSTRCTD_BNFTS_CD,
+                        t1.SSDI_IND,
+                        t1.SSI_IND,
+                        t1.SSI_STATE_SPLMT_STUS_CD,
+                        t1.SSI_STUS_CD,
+                        t1.BIRTH_CNCPTN_IND,
+                        t1.TANF_CASH_CD,
+                        t1.HH_PROGRAM_PARTICIPANT_FLAG as HH_PGM_PRTCPNT_FLAG,
+                        t1.HH_PRVDR_NUM,
+                        t1.HH_ENT_NAME,
+                        t1.MH_HH_CHRONIC_COND_FLAG as MH_HH_CHRNC_COND_FLAG,
+                        t1.SA_HH_CHRONIC_COND_FLAG as SA_HH_CHRNC_COND_FLAG,
+                        t1.ASTHMA_HH_CHRONIC_COND_FLAG as asTHMA_HH_CHRNC_COND_FLAG,
+                        t1.DIABETES_HH_CHRONIC_COND_FLAG as DBTS_HH_CHRNC_COND_FLAG,
+                        t1.HEART_DIS_HH_CHRONIC_COND_FLAG as HRT_DIS_HH_CHRNC_COND_FLAG,
+                        t1.OVERWEIGHT_HH_CHRONIC_COND_FLAG as OVRWT_HH_CHRNC_COND_FLAG,
+                        t1.HIV_AIDS_HH_CHRONIC_COND_FLAG as HIV_AIDS_HH_CHRNC_COND_FLAG,
+                        t1.OTHER_HH_CHRONIC_COND_FLAG as OTHR_HH_CHRNC_COND_FLAG,
+                        t1.LCKIN_PRVDR_NUM1,
+                        t1.LCKIN_PRVDR_TYPE_CD1,
+                        t1.LCKIN_PRVDR_NUM2,
+                        t1.LCKIN_PRVDR_TYPE_CD2,
+                        t1.LCKIN_PRVDR_NUM3,
+                        t1.LCKIN_PRVDR_TYPE_CD3,
+                        t1.LOCK_IN_FLAG,
+                        t1.LTSS_PRVDR_NUM1,
+                        t1.LTSS_LVL_CARE_CD1,
+                        t1.LTSS_PRVDR_NUM2,
+                        t1.LTSS_LVL_CARE_CD2,
+                        t1.LTSS_PRVDR_NUM3,
+                        t1.LTSS_LVL_CARE_CD3,
+                        t1.MC_PLAN_ID1,
+                        t1.MC_PLAN_TYPE_CD1,
+                        t1.MC_PLAN_ID2,
+                        t1.MC_PLAN_TYPE_CD2,
+                        t1.MC_PLAN_ID3,
+                        t1.MC_PLAN_TYPE_CD3,
+                        t1.MC_PLAN_ID4,
+                        t1.MC_PLAN_TYPE_CD4,
+                        t1.MC_PLAN_ID5,
+                        t1.MC_PLAN_TYPE_CD5,
+                        t1.MC_PLAN_ID6,
+                        t1.MC_PLAN_TYPE_CD6,
+                        t1.MC_PLAN_ID7,
+                        t1.MC_PLAN_TYPE_CD7,
+                        t1.MC_PLAN_ID8,
+                        t1.MC_PLAN_TYPE_CD8,
+                        t1.MC_PLAN_ID9,
+                        t1.MC_PLAN_TYPE_CD9,
+                        t1.MC_PLAN_ID10,
+                        t1.MC_PLAN_TYPE_CD10,
+                        t1.MC_PLAN_ID11,
+                        t1.MC_PLAN_TYPE_CD11,
+                        t1.MC_PLAN_ID12,
+                        t1.MC_PLAN_TYPE_CD12,
+                        t1.MC_PLAN_ID13,
+                        t1.MC_PLAN_TYPE_CD13,
+                        t1.MC_PLAN_ID14,
+                        t1.MC_PLAN_TYPE_CD14,
+                        t1.MC_PLAN_ID15,
+                        t1.MC_PLAN_TYPE_CD15,
+                        t1.MC_PLAN_ID16,
+                        t1.MC_PLAN_TYPE_CD16,
+                        t1.MFP_LVS_WTH_FMLY_CD,
+                        t1.MFP_QLFYD_INSTN_CD as MFP_QLFYD_INSTN_CD,
+                        t1.MFP_QLFYD_RSDNC_CD as MFP_QLFYD_RSDNC_CD,
+                        t1.MFP_PRTCPTN_ENDD_RSN_CD,
+                        t1.MFP_RINSTLZD_RSN_CD,
+                        t1.MFP_PARTICIPANT_FLAG as MFP_PRTCPNT_FLAG,
+                        t1.COMMUNITY_FIRST_CHOICE_SPO_FLAG as CMNTY_1ST_CHS_SPO_FLAG,
+                        t1._1915I_SPO_FLAG,
+                        t1._1915J_SPO_FLAG,
+                        t1._1932A_SPO_FLAG,
+                        t1._1915A_SPO_FLAG,
+                        t1._1937_ABP_SPO_FLAG,
+                        t1._1115A_PARTICIPANT_FLAG as _1115A_PRTCPNT_FLAG,
+                        t1.WVR_ID1,
+                        t1.WVR_TYPE_CD1,
+                        t1.WVR_ID2,
+                        t1.WVR_TYPE_CD2,
+                        t1.WVR_ID3,
+                        t1.WVR_TYPE_CD3,
+                        t1.WVR_ID4,
+                        t1.WVR_TYPE_CD4,
+                        t1.WVR_ID5,
+                        t1.WVR_TYPE_CD5,
+                        t1.WVR_ID6,
+                        t1.WVR_TYPE_CD6,
+                        t1.WVR_ID7,
+                        t1.WVR_TYPE_CD7,
+                        t1.WVR_ID8,
+                        t1.WVR_TYPE_CD8,
+                        t1.WVR_ID9,
+                        t1.WVR_TYPE_CD9,
+                        t1.WVR_ID10,
+                        t1.WVR_TYPE_CD10,
+                        t1.TPL_INSRNC_CVRG_IND,
+                        t1.TPL_OTHR_CVRG_IND,
+                        t1.SECT_1115A_DEMO_IND,
+                        t1.NATIVE_HI_FLAG as NTV_HI_FLAG,
+                        t1.GUAM_CHAMORRO_FLAG,
+                        t1.SAMOAN_FLAG,
+                        t1.OTHER_PAC_ISLANDER_FLAG as OTHR_PAC_ISLNDR_FLAG,
+                        t1.UNK_PAC_ISLANDER_FLAG as UNK_PAC_ISLNDR_FLAG,
+                        t1.ASIAN_INDIAN_FLAG as ASN_INDN_FLAG,
+                        t1.CHINESE_FLAG,
+                        t1.FILIPINO_FLAG,
+                        t1.JAPANESE_FLAG,
+                        t1.KOREAN_FLAG,
+                        t1.VIETNAMESE_FLAG,
+                        t1.OTHER_ASIAN_FLAG as OTHR_ASN_FLAG,
+                        t1.UNKNOWN_ASIAN_FLAG as UNK_ASN_FLAG,
+                        t1.WHITE_FLAG as WHT_FLAG,
+                        t1.BLACK_AFRICAN_AMERICAN_FLAG as BLACK_AFRCN_AMRCN_FLAG,
+                        t1.AIAN_FLAG,
+                        t1.RACE_ETHNICITY_FLAG as RACE_ETHNCTY_FLAG,
+                        t1.RACE_ETHNCTY_EXP_FLAG,
+                        t1.HISPANIC_ETHNICITY_FLAG as HSPNC_ETHNCTY_FLAG,
+                        t1.ELGBL_ID_ADDTNL,
+                        t1.ELGBL_ID_ADDTNL_ENT_ID,
+                        t1.ELGBL_ID_ADDTNL_RSN_CHG,
+                        t1.ELGBL_ID_MSIS_XWALK,
+                        t1.ELGBL_ID_MSIS_XWALK_ENT_ID,
+                        t1.ELGBL_ID_MSIS_XWALK_RSN_CHG,
+                        t1.ELGBLTY_CHG_RSN_CD
+                    from
+                        bsf_step1 as t1
+                )
+            """
         return z
 
     # ---------------------------------------------------------------------------------
@@ -319,7 +646,6 @@ class BSF_Metadata:
     #
     # ---------------------------------------------------------------------------------
     indices = {
-        't1': 'ELG00021',
         't2': 'ELG00002',
         't3': 'ELG00003',
         't4': 'ELG00004',
@@ -338,7 +664,65 @@ class BSF_Metadata:
         't17': 'ELG00017',
         't18': 'ELG00018',
         't19': 'ELG00020',
-        't20': 'TPL00002'
+        't20': 'TPL00002',
+        't21': 'ELG00022'
+    }
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    st_abbrev = {
+        '13': 'GA',
+        '50': 'VT',
+        '32': 'NV',
+        '17': 'IL',
+        '49': 'UT',
+        '30': 'MT',
+        '42': 'PA',
+        '24': 'MD',
+        '55': 'WI',
+        '23': 'ME',
+        '27': 'MN',
+        '38': 'ND',
+        '19': 'IA',
+        '47': 'TN',
+        '28': 'MS',
+        '78': 'VI',
+        '08': 'CO',
+        '51': 'VA',
+        '15': 'HI',
+        '33': 'NH',
+        '18': 'IN',
+        '31': 'NE',
+        '35': 'NM',
+        '25': 'MA',
+        '36': 'NY',
+        '45': 'SC',
+        '53': 'WA',
+        '26': 'MI',
+        '46': 'SD',
+        '12': 'FL',
+        '21': 'KY',
+        '41': 'OR',
+        '09': 'CT',
+        '39': 'OH',
+        '04': 'AZ',
+        '05': 'AR',
+        '72': 'PR',
+        '22': 'LA',
+        '44': 'RI',
+        '16': 'ID',
+        '40': 'OK',
+        '54': 'WV',
+        '34': 'NJ',
+        '01': 'AL',
+        '11': 'DC',
+        '20': 'KS',
+        '29': 'MO',
+        '10': 'DE',
     }
 
     # ---------------------------------------------------------------------------------
@@ -351,9 +735,9 @@ class BSF_Metadata:
         joins = []
         new_line = '\n\t\t\t'
         for t, tbl in BSF_Metadata.indices.items():
-            joins.append(f"""left join {tbl}_{BSF_FILE_DATE}_uniq as {t}
-                    on t1.submtg_state_cd = {t}.submtg_state_cd
-                    on t1.msis_ident_num  = {t}.msis_ident_num
+            joins.append(f"""left join {tbl}_{BSF_FILE_DATE}_uniq {t}
+                     on t1.SUBMTG_STATE_CD = {t}.SUBMTG_STATE_CD
+                    and t1.MSIS_IDENT_NUM  = {t}.MSIS_IDENT_NUM
                 """.format())
         return new_line.join(joins)
 
@@ -410,6 +794,42 @@ class BSF_Metadata:
     #
     #
     # ---------------------------------------------------------------------------------
+    def cleanSSN(alias):
+        return f"lpad(cast({alias}.SSN_NUM as char(9)), 9, '0') as SSN_NUM"
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def cleanDisabilityTypeCd(alias):
+        return f"lpad(trim({alias}.DSBLTY_TYPE_CD), 2, '0') as DSBLTY_TYPE_CD"
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def cleanNDC_UOM_CHRNC_NON_HH_CD(alias):
+        return f"lpad(trim({alias}.NDC_UOM_CHRNC_NON_HH_CD), 3, '0') as NDC_UOM_CHRNC_NON_HH_CD"
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def cleanPrimaryLangCd(alias):
+        return f"upper({alias}.PRMRY_LANG_CD) as PRMRY_LANG_CD"
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
     def cleanImmigrationStatusCd(alias):
         return f"""case
             when {alias}.IMGRTN_STUS_CD = '8' then '0'
@@ -435,21 +855,21 @@ class BSF_Metadata:
     # ---------------------------------------------------------------------------------
     @staticmethod
     def encodePrimaryLanguage():
-        return f"""case
-             when trim(PRMRY_LANG_CODE) in ('CHI')                         then  'C'
-             when trim(PRMRY_LANG_CODE) in ('GER','GMH','GOH','GSW','NDS') then  'D'
-             when trim(PRMRY_LANG_CODE) in ('ENG','ENM','ANG')             then  'E'
-             when trim(PRMRY_LANG_CODE) in ('FRE','FRM','FRO')             then  'F'
-             when trim(PRMRY_LANG_CODE) in ('GRC','GRE')                   then  'G'
-             when trim(PRMRY_LANG_CODE) in ('ITA','SCN')                   then  'I'
-             when trim(PRMRY_LANG_CODE) in ('JPN')                         then  'J'
-             when trim(PRMRY_LANG_CODE) in ('NOB','NNO','NOR')             then  'N'
-             when trim(PRMRY_LANG_CODE) in ('POL')                         then  'P'
-             when trim(PRMRY_LANG_CODE) in ('RUS')                         then  'R'
-             when trim(PRMRY_LANG_CODE) in ('SPA')                         then  'S'
-             when trim(PRMRY_LANG_CODE) in ('SWE')                         then  'V'
-             when trim(PRMRY_LANG_CODE) in ('SRP','HRV')                   then  'W'
-             when trim(PRMRY_LANG_CODE) in ('UND','','.')
+        return """case
+             when trim(PRMRY_LANG_CODE) in('CHI')                         then  'C'
+             when trim(PRMRY_LANG_CODE) in('GER','GMH','GOH','GSW','NDS') then  'D'
+             when trim(PRMRY_LANG_CODE) in('ENG','ENM','ANG')             then  'E'
+             when trim(PRMRY_LANG_CODE) in('FRE','FRM','FRO')             then  'F'
+             when trim(PRMRY_LANG_CODE) in('GRC','GRE')                   then  'G'
+             when trim(PRMRY_LANG_CODE) in('ITA','SCN')                   then  'I'
+             when trim(PRMRY_LANG_CODE) in('JPN')                         then  'J'
+             when trim(PRMRY_LANG_CODE) in('NOB','NNO','NOR')             then  'N'
+             when trim(PRMRY_LANG_CODE) in('POL')                         then  'P'
+             when trim(PRMRY_LANG_CODE) in('RUS')                         then  'R'
+             when trim(PRMRY_LANG_CODE) in('SPA')                         then  'S'
+             when trim(PRMRY_LANG_CODE) in('SWE')                         then  'V'
+             when trim(PRMRY_LANG_CODE) in('SRP','HRV')                   then  'W'
+             when trim(PRMRY_LANG_CODE) in('UND','','.')
                   or PRMRY_LANG_CODE is null                               then  null
              else 'O' end as PRMRY_LANG_FLG
         """
@@ -462,17 +882,17 @@ class BSF_Metadata:
     # ---------------------------------------------------------------------------------
     @staticmethod
     def encodeStateAsRegion():
-        return f"""case
-            when ST_ABBREV in ('CT','MA','ME','NH','RI','VT') 			 then '01'
-            when ST_ABBREV in ('NJ','NY','PR','VI')						 then '02'
-            when ST_ABBREV in ('DE','DC','MD','PA','VA','WV') 			 then '03'
-            when ST_ABBREV in ('AL','FL','GA','KY','MS','NC','SC','TN')  then '04'
-            when ST_ABBREV in ('IL','IN','MI','MN','OH','WI')            then '05'
-            when ST_ABBREV in ('AR','LA','NM','OK','TX')				 then '06'
-            when ST_ABBREV in ('IA','KS','MO','NE')						 then '07'
-            when ST_ABBREV in ('CO','MT','ND','SD','UT','WY')			 then '08'
-            when ST_ABBREV in ('AZ','CA','HI','NV','AS','GU','MP')		 then '09'
-            when ST_ABBREV in ('AK','ID','OR','WA')						 then '10'
+        return """case
+            when ST_ABBREV in('CT','MA','ME','NH','RI','VT')           then '01'
+            when ST_ABBREV in('NJ','NY','PR','VI')                     then '02'
+            when ST_ABBREV in('DE','DC','MD','PA','VA','WV')           then '03'
+            when ST_ABBREV in('AL','FL','GA','KY','MS','NC','SC','TN') then '04'
+            when ST_ABBREV in('IL','IN','MI','MN','OH','WI')           then '05'
+            when ST_ABBREV in('AR','LA','NM','OK','TX')                then '06'
+            when ST_ABBREV in('IA','KS','MO','NE')                     then '07'
+            when ST_ABBREV in('CO','MT','ND','SD','UT','WY')           then '08'
+            when ST_ABBREV in('AZ','CA','HI','NV','AS','GU','MP')      then '09'
+            when ST_ABBREV in('AK','ID','OR','WA')                     then '10'
             else '11' end as REGION
         """
 
@@ -486,7 +906,7 @@ class BSF_Metadata:
         delim = '\',\''
         return f"""case
             when upper(trim({alias}.{column}))
-                in ('{delim.join(BSF_Metadata.validator[column])}')
+                in('{delim.join(BSF_Metadata.validator.get(column))}')
                     then upper(trim({alias}.{column}))
                         else null end as {column}
         """
@@ -499,7 +919,7 @@ class BSF_Metadata:
     # ---------------------------------------------------------------------------------
     def rename(column: str):
         if column in BSF_Metadata.renames.keys():
-            return f"{BSF_Metadata.renames[column]}"
+            return f"{BSF_Metadata.renames.get(column)}"
         else:
             return column
 
@@ -511,9 +931,9 @@ class BSF_Metadata:
     # ---------------------------------------------------------------------------------
     def normalize(column: str):
         if column in BSF_Metadata.conform:
-            return f"upper(nullif(trim({column}))) as {BSF_Metadata.rename(column)}"
+            return f"upper(nullif(trim({column}),'')) as {BSF_Metadata.rename(column)}"
         elif list(filter(column.startswith, BSF_Metadata.enumcols)) != []:
-            return f"upper(nullif(trim({column})))"
+            return f"upper(nullif(trim({column}),'')) as {column}"
         else:
             return BSF_Metadata.rename(column)
 
@@ -537,7 +957,12 @@ class BSF_Metadata:
     #
     # ---------------------------------------------------------------------------------
     cleanser = {
-        'SUBMTG_STATE_CD': cleanSubmittingStateCd
+        'SUBMTG_STATE_CD': cleanSubmittingStateCd,
+        'SSN_NUM': cleanSSN,
+        'PRMRY_LANG_CD': cleanPrimaryLangCd,
+        'DSBLTY_TYPE_CD': cleanDisabilityTypeCd,
+        'NDC_UOM_CHRNC_NON_HH_CD': cleanNDC_UOM_CHRNC_NON_HH_CD,
+        'IMGRTN_STUS_CD': cleanImmigrationStatusCd
     }
 
     # ---------------------------------------------------------------------------------
@@ -751,14 +1176,44 @@ class BSF_Metadata:
         'ELG00001': [],
 
         'ELG00002': [
-            'DEATH_DT'
+            'BIRTH_DT',
+            'GNDR_CD',
+            'ELGBL_1ST_NAME',
+            'ELGBL_LAST_NAME',
+            'ELGBL_MDL_INITL_NAME',
+            'PRMRY_DMGRPHC_ELE_EFCTV_DT',
+            'PRMRY_DMGRPHC_ELE_END_DT'
         ],
 
         'ELG00002A': [],
-        'ELG00003': [],
+
+        'ELG00003': [
+            'SSN_NUM',
+            'MRTL_STUS_CD',
+            'SSN_VRFCTN_IND',
+            'INCM_CD',
+            'VET_IND',
+            'CTZNSHP_IND',
+            'CTZNSHP_VRFCTN_IND',
+            'IMGRTN_STUS_CD',
+            'IMGRTN_STUS_5_YR_BAR_END_DT',
+            'IMGRTN_VRFCTN_IND',
+            'PRMRY_LANG_CD',
+            'PRMRY_LANG_ENGLSH_PRFCNCY_CD',
+            'HSEHLD_SIZE_CD',
+            'PRGNT_IND',
+            'MDCR_HICN_NUM',
+            'MDCR_BENE_ID',
+            'CHIP_CD',
+            'VAR_DMGRPHC_ELE_EFCTV_DT',
+            'VAR_DMGRPHC_ELE_END_DT'
+        ],
+
         'ELG00003A': [],
 
         'ELG00004': [
+            'ELGBL_ADR_EFCTV_DT',
+            'ELGBL_ADR_END_DT',
             'ELGBL_LINE_1_ADR_HOME',
             'ELGBL_LINE_2_ADR_HOME',
             'ELGBL_LINE_3_ADR_HOME',
@@ -778,26 +1233,93 @@ class BSF_Metadata:
         ],
 
         'ELG00005': [
-            'ELGBLTY_GRP_CD',
-            'DUAL_ELGBL_CD'
+            'MSIS_CASE_NUM',
+            'ELGBLTY_MDCD_BASIS_CD',
+            'CARE_LVL_STUS_CD',
+            'SSDI_IND',
+            'SSI_IND',
+            'SSI_STATE_SPLMT_STUS_CD',
+            'SSI_STUS_CD',
+            'STATE_SPEC_ELGBLTY_FCTR_TXT',
+            'BIRTH_CNCPTN_IND',
+            'MAS_CD',
+            'RSTRCTD_BNFTS_CD',
+            'TANF_CASH_CD',
+            'ELGBLTY_DTRMNT_EFCTV_DT',
+            'ELGBLTY_DTRMNT_END_DT',
+            'PRMRY_ELGBLTY_GRP_IND'
         ],
 
-        'ELG00006': [],
-        'ELG00007': [],
+        'ELG00006': [
+            'HH_ENT_NAME',
+            'HH_SNTRN_NAME',
+            'HH_SNTRN_PRTCPTN_EFCTV_DT',
+            'HH_SNTRN_PRTCPTN_END_DT'
+        ],
+
+        'ELG00007': [
+            'HH_PRVDR_NUM',
+            'HH_SNTRN_PRVDR_EFCTV_DT',
+            'HH_SNTRN_PRVDR_END_DT',
+        ],
+
         'ELG00008': [],
         'ELG00009': [],
-        'ELG00010': [],
+
+        'ELG00010': [
+            'MFP_ENRLMT_EFCTV_DT',
+            'MFP_ENRLMT_END_DT',
+            'MFP_LVS_WTH_FMLY_CD',
+            'MFP_QLFYD_INSTN_CD',
+            'MFP_QLFYD_RSDNC_CD',
+            'MFP_PRTCPTN_ENDD_RSN_CD',
+            'MFP_RINSTLZD_RSN_CD'
+        ],
+
         'ELG00011': [],
+
         'ELG00012': [],
+
         'ELG00013': [],
+
         'ELG00014': [],
-        'ELG00015': [],
-        'ELG00016': [],
+
+        'ELG00015': [
+            'ETHNCTY_DCLRTN_EFCTV_DT',
+            'ETHNCTY_DCLRTN_END_DT',
+            'ETHNCTY_CD'
+        ],
+
+        'ELG00016': [
+            'CRTFD_AMRCN_INDN_ALSKN_NTV_IND'
+        ],
+
         'ELG00017': [],
-        'ELG00018': [],
+
+        'ELG00018': [
+            'SECT_1115A_DEMO_IND',
+            'SECT_1115A_DEMO_EFCTV_DT',
+            'SECT_1115A_DEMO_END_DT'
+        ],
+
         'ELG00020': [],
-        'ELG00021': [],
-        'TPL00002': [],
+
+        'ELG00021': [
+            'ELGBL_ID_ADDTNL',
+            'ELGBL_ID_ADDTNL_ENT_ID',
+            'ELGBL_ID_ADDTNL_RSN_CHG',
+            'ELGBL_ID_MSIS_XWALK',
+            'ELGBL_ID_MSIS_XWALK_ENT_ID',
+            'ELGBL_ID_MSIS_XWALK_RSN_CHG'
+        ],
+
+        'TPL00002': [
+            'ELGBL_PRSN_MN_EFCTV_DT',
+            'ELGBL_PRSN_MN_END_DT',
+            'TPL_INSRNC_CVRG_IND',
+            'TPL_OTHR_CVRG_IND'
+        ],
+
         'ELG00022': []
     }
 
@@ -925,6 +1447,7 @@ class BSF_Metadata:
             'REC_NUM',
             'ELGBLTY_GRP_CD',
             'DUAL_ELGBL_CD',
+            'ELGBLTY_CHG_RSN_CD',
             'MSIS_CASE_NUM',
             'ELGBLTY_MDCD_BASIS_CD',
             'CARE_LVL_STUS_CD',
@@ -1048,8 +1571,7 @@ class BSF_Metadata:
             'REC_NUM',
             'ETHNCTY_DCLRTN_EFCTV_DT',
             'ETHNCTY_DCLRTN_END_DT',
-            'ETHNCTY_CD',
-            'CRTFD_AMRCN_INDN_ALSKN_NTV_IND'
+            'ETHNCTY_CD'
         ],
 
         'ELG00016': [
@@ -1060,7 +1582,8 @@ class BSF_Metadata:
             'RACE_CD',
             'RACE_DCLRTN_EFCTV_DT',
             'RACE_DCLRTN_END_DT',
-            'RACE_OTHR_TXT'
+            'RACE_OTHR_TXT',
+            'CRTFD_AMRCN_INDN_ALSKN_NTV_IND'
         ],
 
         'ELG00017': [
@@ -1103,6 +1626,19 @@ class BSF_Metadata:
             'ENRLMT_TYPE_CD'
         ],
 
+        'ELG00022': [
+            'TMSIS_RUN_ID',
+            'TMSIS_ACTV_IND',
+            'SUBMTG_STATE_CD',
+            'REC_NUM',
+            'ELGBL_ID_EFCTV_DT',
+            'ELGBL_ID_END_DT',
+            'ELGBL_ID_TYPE_CD',
+            'ELGBL_ID',
+            'ELGBL_ID_ISSG_ENT_ID_TXT',
+            'RSN_FOR_CHG'
+        ],
+
         'TPL00002': [
             'TMSIS_RUN_ID',
             'TMSIS_ACTV_IND',
@@ -1113,10 +1649,6 @@ class BSF_Metadata:
             'TPL_INSRNC_CVRG_IND',
             'TPL_OTHR_CVRG_IND'
         ],
-
-        'ELG00022': [
-
-        ]
 
     }
 
@@ -1139,7 +1671,7 @@ class BSF_Metadata:
         'VET_IND':
             ['0', '1'],
         'CTZNSHP_IND':
-            ['0', '1'],
+            ['0', '1', '2'],
         'CTZNSHP_VRFCTN_IND':
             ['0', '1'],
         'IMGRTN_STUS_CD':
@@ -1164,6 +1696,9 @@ class BSF_Metadata:
              '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37',
              '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '59', '60', '61',
              '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76'],
+        'ELGBLTY_CHG_RSN_CD':
+            ['01', '02', '03', '04', '05', '06', '07', '08', '09', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+             '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'],
         'DUAL_ELGBL_CD':
             ['00', '01', '02', '03', '04', '05', '06', '08', '09', '10', '0', '1', '2', '3', '4', '5', '6', '8', '9'],
         'ELGBLTY_MDCD_BASIS_CD':
@@ -1212,7 +1747,7 @@ class BSF_Metadata:
             ['1', '2', '3'],
         'ENRLD_MC_PLAN_TYPE_CD':
             ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '01', '02', '03', '04', '05',
-             '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '60', '70', '80'],
+             '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '60', '70', '80'],
         'ETHNCTY_CD':
             ['0', '1', '2', '3', '4', '5'],
         'SECT_1115A_DEMO_IND':
@@ -1280,7 +1815,7 @@ class BSF_Metadata:
         'MDCR_HICN_NUM',
         'TMSIS_RUN_ID',
         'SUBMTG_STATE_CD',
-        'REG_FLAG',
+        'REGION',
         'MSIS_CASE_NUM',
         'SNGL_ENRLMT_FLAG',
         'MDCD_ENRLMT_EFF_DT_1',
@@ -1348,6 +1883,12 @@ class BSF_Metadata:
         'CHIP_ENRLMT_EFF_DT_16',
         'CHIP_ENRLMT_END_DT_16',
         'ELGBL_1ST_NAME',
+        'ELGBL_ID_ADDTNL',
+        'ELGBL_ID_ADDTNL_ENT_ID',
+        'ELGBL_ID_ADDTNL_RSN_CHG',
+        'ELGBL_ID_MSIS_XWALK',
+        'ELGBL_ID_MSIS_XWALK_ENT_ID',
+        'ELGBL_ID_MSIS_XWALK_RSN_CHG',
         'ELGBL_LAST_NAME',
         'ELGBL_MDL_INITL_NAME',
         'BIRTH_DT',
@@ -1410,6 +1951,7 @@ class BSF_Metadata:
         'ELGBL_ENTIR_MO_IND',
         'ELGBL_LAST_DAY_OF_MO_IND',
         'CHIP_CD',
+        'ELGBLTY_CHG_RSN_CD',
         'ELGBLTY_GRP_CD',
         'PRMRY_ELGBLTY_GRP_IND',
         'ELGBLTY_GRP_CTGRY_FLAG',

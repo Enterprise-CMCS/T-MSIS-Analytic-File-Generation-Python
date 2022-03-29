@@ -82,7 +82,6 @@ class ELG00005(ELG):
 
         #  Create temp table to determine which beneficiaries have multiple records
         z = f"""
-
             create or replace temporary view {self.tab_no}_recCt as
 
             select

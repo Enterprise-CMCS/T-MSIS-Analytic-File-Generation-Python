@@ -18,6 +18,7 @@ class ELG00002(ELG):
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, bsf: BSF_Runner):
+        ELG.__init__(self, bsf, 'ELG00002A', 'TMSIS_PRMRY_DMGRPHC_ELGBLTY', 'PRMRY_DMGRPHC_ELE_EFCTV_DT', 'PRMRY_DMGRPHC_ELE_END_DT')
         ELG.__init__(self, bsf, 'ELG00002', 'TMSIS_PRMRY_DMGRPHC_ELGBLTY', 'PRMRY_DMGRPHC_ELE_EFCTV_DT', 'PRMRY_DMGRPHC_ELE_END_DT')
 
     # ---------------------------------------------------------------------------------
@@ -75,11 +76,15 @@ class ELG00002(ELG):
                 select
                     submtg_state_cd,
                     msis_ident_num,
-
-                    DEATH_DT as DEATH_DATE,
-
-                    (case when DEATH_DT is not null and (DEATH_DT <= '2021-01-31') then 1 else 0 end) as DECEASED_FLG,
-
+                    case
+                        when to_date(DEATH_DT, 'yyyyMM') > to_date('{self.bsf.BSF_FILE_DATE}') then null
+                        else DEATH_DT
+                    end as DEATH_DATE,
+                    case
+                        when DEATH_DT is not null
+                        and DEATH_DT <= to_date('{self.bsf.RPT_PRD}') then 1
+                        else 0
+                    end as DECEASED_FLG,
                     row_number() over (
                         partition by
                             submtg_state_cd,
@@ -94,60 +99,66 @@ class ELG00002(ELG):
                             DEATH_DT desc
                     ) as best_record
 
-                from {self.tab_no}
+                from {self.tab_no}A
             """
         self.bsf.append(type(self).__name__, z)
-
-        # ELG00002A
 
         # select * from ELG00002_death
         # create temp table {self.tab_no}_{self.bsf.BSF_FILE_DATE}_uniq
         z = f"""
                 create or replace temporary view {self.tab_no}_{self.bsf.BSF_FILE_DATE}_uniq as
                 select
-                    *,
+
                     case when BIRTH_DT is null or AGE < -1 then null
-                        when AGE between -1  and 0 then 1
-                        when AGE between  1  and 5 then 2
-                        when AGE between  6 and 14 then 3
-                        when AGE between 15 and 18 then 4
-                        when AGE between 19 and 20 then 5
-                        when AGE between 21 and 44 then 6
-                        when AGE between 45 and 64 then 7
-                        when AGE between 65 and 74 then 8
-                        when AGE between 75 and 84 then 9
-                        when AGE between 85 and 125 then 10
-                        else null end as AGE_GROUP_FLG
+                            when AGE between -1  and 0 then 1
+                            when AGE between  1  and 5 then 2
+                            when AGE between  6 and 14 then 3
+                            when AGE between 15 and 18 then 4
+                            when AGE between 19 and 20 then 5
+                            when AGE between 21 and 44 then 6
+                            when AGE between 45 and 64 then 7
+                            when AGE between 65 and 74 then 8
+                            when AGE between 75 and 84 then 9
+                            when AGE between 85 and 125 then 10
+                            else null end as AGE_GROUP_FLG,
+                    *
+                from (
+
+                    select
+
+                        case
+                            when AGE_CALC > 125 then 125
+                            when AGE_CALC < -1 then null
+                            else AGE_CALC
+                        end as AGE,
+
+                        *
                     from (
+
                         select
-                            *,
-                            case when AGE_CALC > 125 then 125
-                                when AGE_CALC < -1 then null
-                                else AGE_CALC end as AGE
+
+                            comb.*,
+                            coalesce(d.DECEASED_FLG,0) as DECEASED_FLG,
+                            d.DEATH_DATE,
+
+                            case when BIRTH_DT is null then null
+                                when coalesce(d.DECEASED_FLG,0) = 1
+                                then floor((datediff(d.DEATH_DATE, comb.BIRTH_DT) + 1) / 365.25)
+                                else floor((datediff(to_date('{self.bsf.st_dt}'), comb.BIRTH_DT) + 1) / 365.25)
+                            end as AGE_CALC
+
                         from (
-                            select
-                                comb.*,
-                                coalesce(d.DECEASED_FLG,0) as DECEASED_FLG,
-                                d.DEATH_DATE,
+                            select * from {self.tab_no}_uniq
+                                union all
+                            select * from {self.tab_no}_multi
+                        ) comb
 
-                                case when BIRTH_DT is null then null
-                                    when coalesce(d.DECEASED_FLG,0) = 1
-                                    then floor(datediff(d.DEATH_DATE, comb.BIRTH_DT)/365.25)
-                                    else floor(datediff('2021-01-31', comb.BIRTH_DT)/365.25) end as AGE_CALC
-
-                            from
-                                (select * from {self.tab_no}_uniq
-                                    union all
-                                select * from {self.tab_no}_multi) comb
-
-                                -- Compute deceased flag and death_dt and join back to unique table data
-                                left join {self.tab_no}_death d
-
+                        left join {self.tab_no}_death d
                             on comb.SUBMTG_STATE_CD = d.SUBMTG_STATE_CD
                             and comb.msis_ident_num = d.msis_ident_num
                             and d.best_record = 1
-                        )
                     )
+                )
                 """
         self.bsf.append(type(self).__name__, z)
 

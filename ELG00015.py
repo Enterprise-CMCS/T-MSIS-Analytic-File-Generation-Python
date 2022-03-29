@@ -30,7 +30,7 @@ class ELG00015(ELG):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        created_vars = f"""
+        created_vars = """
             case when ETHNCTY_CD = '0' then 1 else null end as NONHISPANIC_ETHNICITY_FLG,
             case when ETHNCTY_CD in('1','2','3','4','5') then 1
                 when ETHNCTY_CD = '0' then 0

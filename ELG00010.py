@@ -30,7 +30,7 @@ class ELG00010(ELG):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        created_vars = f"""
+        created_vars = """
             case when length(trim(mfp_prtcptn_endd_rsn_cd))=1 and mfp_prtcptn_endd_rsn_cd <> '.'
                 then lpad(mfp_prtcptn_endd_rsn_cd,2,'0')
                 else mfp_prtcptn_endd_rsn_cd end as mfp_prtcptn_endd_rsn_code,
