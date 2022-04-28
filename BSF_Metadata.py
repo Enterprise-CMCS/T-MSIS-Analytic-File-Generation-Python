@@ -32,10 +32,17 @@ class BSF_Metadata:
         return new_line_comma.join(columns)
 
     # ---------------------------------------------------------------------------------
+    # FIXME: GNDR_CODE as GNDR_CD
+    #        PRMRY_LANG_CODE as OTHR_LANG_HOME_CD
+    #        CARE_LVL_STUS_CODE as CARE_LVL_STUS_CD
+    #        MASBOE as MASBOE_CD
+    #        LOCK_IN_FLAG as LCKIN_FLAG
+    #        MFP_QLFYD_INSTN_CODE as MFP_QLFYD_INSTN_CD
+    #        MFP_QLFYD_RSDNC_CODE as MFP_QLFYD_RSDNC_CD
+    #        MFP_PRTCPTN_ENDD_RSN_CODE as MFP_PRTCPTN_ENDD_RSN_CD
+    #        MFP_RINSTLZD_RSN_CODE as MFP_RINSTLZD_RSN_CD
     #
-    #
-    #
-    #
+    #        https://databricks-val-data.macbisdw.cmscloud.local/#notebook/405772/command/405776
     # ---------------------------------------------------------------------------------
     @staticmethod
     def finalFormatter():
@@ -355,7 +362,7 @@ class BSF_Metadata:
     def finalTableOutput(bsf: BSF_Runner):
 
         z = f"""
-                create table {bsf.DA_SCHEMA}.taf_mon_bsf as
+                create or replace temporary view bsf as
                 select
                     {BSF_Metadata.finalFormatter()}
                 from (
@@ -532,7 +539,7 @@ class BSF_Metadata:
                         t1.LCKIN_PRVDR_TYPE_CD2,
                         t1.LCKIN_PRVDR_NUM3,
                         t1.LCKIN_PRVDR_TYPE_CD3,
-                        t1.LOCK_IN_FLAG,
+                        t1.LOCK_IN_FLAG as LCKIN_FLAG,
                         t1.LTSS_PRVDR_NUM1,
                         t1.LTSS_LVL_CARE_CD1,
                         t1.LTSS_PRVDR_NUM2,
@@ -1019,7 +1026,7 @@ class BSF_Metadata:
         'ASTHMA_HH_CHRONIC_COND_FLAG': 'ASTHMA_HH_CHRNC_COND_FLAG',
         'BLACK_AFRICAN_AMERICAN_FLAG': 'black_afrcn_amrcn_flag',
         'BLIND_DISAB_FLAG': 'BLND_DSBL_FLAG',
-        'CARE_LVL_STUS_CD': 'CARE_LVL_STUS_CODE',
+        'CARE_LVL_STUS_CODE': 'CARE_LVL_STUS_CD',
         'COMMUNITY_FIRST_CHOICE_SPO_FLAG': 'CMNTY_1ST_CHS_SPO_FLAG',
         'DEAF_DISAB_FLAG': 'DEAF_DSBL_FLAG',
         'DECEASED_FLAG': 'DCSD_FLAG',
@@ -1034,7 +1041,7 @@ class BSF_Metadata:
         'ELIGIBLE_ENTIRE_MONTH_IND': 'ELGBL_ENTIR_MO_IND',
         'ELIGIBLE_LAST_DAY_OF_MONTH_IND': 'ELGBL_LAST_DAY_OF_MO_IND',
         'ENROLLMENT_TYPE_FLAG': 'ENRL_TYPE_FLAG',
-        'GNDR_CD': 'GNDR_CODE',
+        'GNDR_CODE': 'GNDR_CD',
         'HCBS_AUTISM_SP_DIS_NON_HHCC_FLAG': 'HCBS_AUTSM_NON_HHCC_FLAG',
         'HCBS_BRAIN_INJ_NON_HHCC_FLAG': 'HCBS_BRN_INJ_NON_HHCC_FLAG',
         'HCBS_DISAB_OTHER_NON_HHCC_FLAG': 'HCBS_DSBL_OTHR_NON_HHCC_FLAG',
@@ -1044,19 +1051,19 @@ class BSF_Metadata:
         'HH_PROGRAM_PARTICIPANT_FLAG': 'HH_PGM_PRTCPNT_FLAG',
         'HISPANIC_ETHNICITY_FLAG': 'HSPNC_ETHNCTY_FLAG',
         'HIV_AIDS_HH_CHRONIC_COND_FLAG': 'HIV_AIDS_HH_CHRNC_COND_FLAG',
-        'MASBOE_CD': 'MASBOE',
+        'MASBOE': 'MASBOE_CD',
         'MFP_PARTICIPANT_FLAG': 'MFP_PRTCPNT_FLAG',
-        'MFP_PRTCPTN_ENDD_RSN_CD': 'MFP_PRTCPTN_ENDD_RSN_CODE',
-        'MFP_QLFYD_INSTN_CD': 'MFP_QLFYD_INSTN_CODE',
-        'MFP_QLFYD_RSDNC_CD': 'MFP_QLFYD_RSDNC_CODE',
-        'MFP_RINSTLZD_RSN_CD': 'MFP_RINSTLZD_RSN_CODE',
+        'MFP_PRTCPTN_ENDD_RSN_CODE': 'MFP_PRTCPTN_ENDD_RSN_CD',
+        'MFP_QLFYD_INSTN_CODE': 'MFP_QLFYD_INSTN_CD',
+        'MFP_QLFYD_RSDNC_CODE': 'MFP_QLFYD_RSDNC_CD',
+        'MFP_RINSTLZD_RSN_CODE': 'MFP_RINSTLZD_RSN_CD',
         'MH_HH_CHRONIC_COND_FLAG': 'MH_HH_CHRNC_COND_FLAG',
         'NATIVE_HI_FLAG': 'NTV_HI_FLAG',
         'OTHER_ASIAN_FLAG': 'othr_asn_flag',
         'OTHER_DISAB_FLAG': 'OTHR_DSBL_FLAG',
         'OTHER_HH_CHRONIC_COND_FLAG': 'OTHR_HH_CHRNC_COND_FLAG',
         'OTHER_PAC_ISLANDER_FLAG': 'othr_pac_islndr_flag',
-        'OTHR_LANG_HOME_CD': 'PRMRY_LANG_CODE',
+        'PRMRY_LANG_CODE': 'OTHR_LANG_HOME_CD',
         'OVERWEIGHT_HH_CHRONIC_COND_FLAG': 'OVRWT_HH_CHRNC_COND_FLAG',
         'RACE_ETHNICITY_FLAG': 'RACE_ETHNCTY_FLAG',
         'REGION': 'REG_FLAG',
@@ -1064,7 +1071,8 @@ class BSF_Metadata:
         'SINGLE_ENR_FLAG': 'SNGL_ENRLMT_FLAG',
         'UNK_PAC_ISLANDER_FLAG': 'unk_pac_islndr_flag',
         'UNKNOWN_ASIAN_FLAG': 'unk_asn_flag',
-        'WHITE_FLAG': 'wht_flag'
+        'WHITE_FLAG': 'wht_flag',
+        'LOCK_IN_FLAG': 'LCKIN_FLAG'
     }
 
     # ---------------------------------------------------------------------------------
