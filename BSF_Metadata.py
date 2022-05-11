@@ -362,9 +362,9 @@ class BSF_Metadata:
     def finalTableOutput(bsf: BSF_Runner):
 
         z = f"""
-                create or replace temporary view bsf as
+                create table {bsf.DA_SCHEMA}.taf_mon_bsf as
                 select
-                    {BSF_Metadata.finalFormatter()}
+                    { BSF_Metadata.finalFormatter() }
                 from (
                     select
                         t1.DA_RUN_ID,

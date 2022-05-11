@@ -166,7 +166,6 @@ class ELG():
         # select * from {self.tab_no}_multi_step2
         # select * from {self.tab_no}_multi
 
-
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
 

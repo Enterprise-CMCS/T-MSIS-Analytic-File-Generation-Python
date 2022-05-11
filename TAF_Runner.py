@@ -29,9 +29,8 @@ class TAF_Runner():
 
         self.initialize_logger(self.now)
 
-        self.submtg_state_cd = '56'
-        self.tmsis_run_id = 4423
-        self.DA_RUN_ID = 6194
+        # FIXME: this should be monotonic or something more crafty
+        self.DA_RUN_ID = datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')
         self.DA_SCHEMA = 'taf_python'
 
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
@@ -51,9 +50,13 @@ class TAF_Runner():
             last_day = date(self.now.year, self.now.month, 31)
         else:
             last_day = date(self.now.year, self.now.month + 1, 1) - timedelta(days=1)
+
         self.FILE_DT_END = last_day.strftime('%Y-%m-%d').upper()
 
-        self.combined_list = list(zip([state_code], [run_id]))
+        if len(state_code) and len(run_id):
+            self.combined_list = list(tuple(zip(eval(state_code), eval(run_id))))
+        else:
+            self.combined_list = []
 
         self.sql = {}
         self.plan = {}
@@ -83,11 +86,6 @@ class TAF_Runner():
     #
     # -----------------------------------------------------------------------------
     def get_link_key(self):
-
-        # cast (('{self.version }' || '-' || {self.TAF_FILE_DATE} || '-' || NEW_SUBMTG_STATE_CD || '-' ||
-        #   trim(COALESCE(NULLIF(ORGNL_CLM_NUM,'~'),'0')) || '-' || trim(COALESCE(NULLIF(ADJSTMT_CLM_NUM,'~'),'0')) || '-' ||
-        #     CAST(DATE_PART_YEAR(ADJDCTN_DT) AS CHAR(4)) || CAST(DATE_PART(MONTH,ADJDCTN_DT) AS CHAR(2)) ||
-        #      CAST(DATE_PART(DAY,ADJDCTN_DT) AS CHAR(2)) || '-' || COALESCE(ADJSTMT_IND_CLEAN,'X')) as varchar(126))
 
         return f"""
             cast ((concat('{self.version }',  '-',  {self.TAF_FILE_DATE},  '-',  NEW_SUBMTG_STATE_CD,  '-',
@@ -226,26 +224,21 @@ class TAF_Runner():
     #
     #
     # ---------------------------------------------------------------------------------
-    def ssn_ind(self):
+    @staticmethod
+    def ssn_ind():
 
-        z = """
-                CREATE
-                    OR replace TEMPORARY VIEW ssn_ind AS
-
-                SELECT DISTINCT submtg_state_cd
-                    ,max(ssn_ind) AS ssn_ind
-                    ,max(tmsis_run_id) AS tmsis_run_id
-                FROM tmsis.tmsis_fhdr_rec_elgblty
-                WHERE tmsis_actv_ind = 1
-                    AND tmsis_rptg_prd IS NOT NULL
-                    AND tot_rec_cnt > 0
-                    AND ssn_ind IN (
-                        '1'
-                        ,'0'
-                        )
-                GROUP BY submtg_state_cd;
-            """
-        self.append('SSN_IND', z)
+        return """
+                create or replace temporary view ssn_ind as
+                select distinct submtg_state_cd
+                    ,max(ssn_ind) as ssn_ind
+                    ,max(tmsis_run_id) as tmsis_run_id
+                from tmsis.tmsis_fhdr_rec_elgblty
+                where tmsis_actv_ind = 1
+                    and tmsis_rptg_prd is not null
+                    and tot_rec_cnt > 0
+                    and ssn_ind IN ('1','0')
+                group by submtg_state_cd
+        """
 
     # ---------------------------------------------------------------------------------
     #
@@ -327,8 +320,14 @@ class TAF_Runner():
         df = pd.DataFrame(BSF_Metadata.prmry_lang_cd, columns=['LANG_CD'])
         schema = StructType([StructField("LANG_CD", StringType(), True)])
 
+        self.logger.info('Creating Primary Language Code Table...')
+
         sdf = spark.createDataFrame(data=df, schema=schema)
         sdf.registerTempTable('prmry_lang_cd')
+
+        self.logger.info('Creating SSN Indicator View...')
+
+        spark.sql(self.ssn_ind())
 
         self.logger.info('Creating TAF Views...')
 
@@ -529,4 +528,4 @@ class TAF_Runner():
 #   CC0 or use of the Work.
 
 # For more information, please see
-# <http://creativecommons.org/publicdomain/zero/1.0/>elg00005
+# <http://creativecommons.org/publicdomain/zero/1.0/>

@@ -77,7 +77,7 @@ class ELG00002(ELG):
                     submtg_state_cd,
                     msis_ident_num,
                     case
-                        when to_date(DEATH_DT, 'yyyyMM') > to_date('{self.bsf.BSF_FILE_DATE}') then null
+                        when int(date_format(DEATH_DT, 'yyyyMM')) > {self.bsf.BSF_FILE_DATE} then null
                         else DEATH_DT
                     end as DEATH_DATE,
                     case
@@ -144,7 +144,7 @@ class ELG00002(ELG):
                             case when BIRTH_DT is null then null
                                 when coalesce(d.DECEASED_FLG,0) = 1
                                 then floor((datediff(d.DEATH_DATE, comb.BIRTH_DT) + 1) / 365.25)
-                                else floor((datediff(to_date('{self.bsf.st_dt}'), comb.BIRTH_DT) + 1) / 365.25)
+                                else floor((datediff(to_date('{self.bsf.RPT_PRD}'), comb.BIRTH_DT) + 1) / 365.25)
                             end as AGE_CALC
 
                         from (

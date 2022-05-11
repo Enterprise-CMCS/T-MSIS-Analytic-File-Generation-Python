@@ -599,6 +599,28 @@ class TAF_Closure():
     def fix_old_dates(date_var):
         return f"case when ({date_var} < to_date('1600-01-01')) then to_date('1599-12-31') else {date_var} end as {date_var}"
 
+    # --------------------------------------------------------------------
+    #
+    #
+    #
+    # --------------------------------------------------------------------
+    def set_end_dt(enddt):
+        return f"""
+                    case
+	                  when {enddt} is null then to_date('9999-12-31')
+	                  when {enddt} < to_date('1600-01-01') then to_date('1599-12-31')
+	                  else to_date( {enddt} )
+	                end
+        """
+
+    # --------------------------------------------------------------------
+    #
+    #
+    #
+    # --------------------------------------------------------------------
+    def upper_case(textst):
+        return f"nullif(trim(upper({textst})),'')"
+
     # ---------------------------------------------------------------------------------
     #
     #
@@ -619,6 +641,18 @@ class TAF_Closure():
     def zpad(col):
         return "lpad(trim(col), 4, '0')"
 
+    # --------------------------------------------------------------------
+    #
+    #
+    #
+    # --------------------------------------------------------------------
+    def zero_pad(var_cd, var_len):
+        return f"""case
+                     when length(trim({var_cd}))<{var_len} and length(trim({var_cd}))>0 and {var_cd} is not null
+                     then lpad(trim(upper({var_cd})),{var_len},'0')
+                     else nullif(trim(upper({var_cd})),'')
+                   end as {var_cd}
+        """
     # ---------------------------------------------------------------------------------
     #
     #
@@ -635,9 +669,62 @@ class TAF_Closure():
     #
     # --------------------------------------------------------------------
     passthrough = {
-
+        '%upper_case': upper_case,
+        '%fix_old_dates': fix_old_dates,
+        '%zero_pad': zero_pad,
+        '%set_end_dt': set_end_dt
     }
 
+    # --------------------------------------------------------------------
+    #
+    #   Lexical Analysis for a Closure
+    #
+    # --------------------------------------------------------------------
+    @staticmethod
+    def parse(var):
+        oplen = len(var)
+        i = 0
+        pos = [0]
+        tokens = []
+        while i >= 0:
+            i = var.find('%', i, oplen)
+            if i >= 0:
+                pos.extend([i])
+                i += 1
+        pos.extend([oplen])
+        i = 0
+        for p in pos[:-1]:
+            s = var[p:pos[i + 1]]
+            tokens.extend([s])
+            i += 1
+        conditions = []
+        for t in tokens:
+            t1 = t[0:t.find('(')]
+            t2 = t[t.find('('):len(t)]
+            macro = [t1, t2]
+            if len(macro[0]) > 1:
+                if macro[0].strip() in TAF_Closure.passthrough.keys():
+                    predicate = macro[1]
+                    k_pos = predicate.find(')')
+                    params = predicate[1:k_pos]
+                    trail = predicate[k_pos + 1:len(predicate)]
+                    args = params.split(',')
+                    if (len(args) == 1):
+                        conditions.append(TAF_Closure.passthrough[macro[0].strip()](args[0]))
+                    elif (len(args) == 2):
+                        conditions.append(TAF_Closure.passthrough[macro[0].strip()](args[0], args[1]))
+                    elif (len(args) == 3):
+                        conditions.append(TAF_Closure.passthrough[macro[0].strip()](args[0], args[1], args[2]))
+                    conditions.append(trail)
+                    m = 2
+                    while m < len(macro):
+                        conditions.append(str(macro[m]).format(**TAF_Closure.passthrough))
+                        m += 1
+                else:
+                    conditions.append(str(t).format(**TAF_Closure.passthrough))
+            else:
+                conditions.append(str(t).format(**TAF_Closure.passthrough))
+        return '\n'.join(conditions)
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
@@ -755,4 +842,4 @@ class TAF_Closure():
 #   CC0 or use of the Work.
 
 # For more information, please see
-# <http://creativecommons.org/publicdomain/zero/1.0/>elg00005
+# <http://creativecommons.org/publicdomain/zero/1.0/>

@@ -1,4 +1,5 @@
-from taf.BSF import BSF_Runner
+from taf.BSF.BSF_Metadata import BSF_Metadata
+from taf.BSF.BSF_Runner import BSF_Runner
 
 from taf.BSF.ELG import ELG
 
@@ -143,7 +144,6 @@ class ELG00022(ELG):
                 and t1.submtg_state_cd=t2.submtg_state_cd
                 """
         self.bsf.append(type(self).__name__, z)
-
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
