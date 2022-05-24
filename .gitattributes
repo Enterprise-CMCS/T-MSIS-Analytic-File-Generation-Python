@@ -1,0 +1,13 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Declare files that will always have LF line endings on checkout.
+*.sh text eol=lf
+
+*.pickle binary
+*.pkl binary
+*.sas text
+*.sas7bcat binary
+*.sas7bdat binary
+*.xls binary
+*.xlsx binary
