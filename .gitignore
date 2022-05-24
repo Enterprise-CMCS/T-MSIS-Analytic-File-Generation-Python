@@ -130,6 +130,7 @@ dmypy.json
 .pyre/
 
 # User specified files
+data/
 doc/
 original_code/
 sas/
