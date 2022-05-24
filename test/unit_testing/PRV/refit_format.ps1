@@ -1,0 +1,113 @@
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV01/Prov01_Header_Copy.sql           ../../sql/python/PRV/PRV01/Prov01_Header_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV01/Prov01_Header.sql                ../../sql/python/PRV/PRV01/Prov01_Header.sql
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_Latest1.sql          ../../sql/python/PRV/PRV02/Prov02_Main_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/PRV02_Latest.sql                 ../../sql/python/PRV/PRV02/PRV02_Latest.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_Copy.sql             ../../sql/python/PRV/PRV02/Prov02_Main_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/PRV02_Active.sql                 ../../sql/python/PRV/PRV02/PRV02_Active.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_Latest2.sql          ../../sql/python/PRV/PRV02/Prov02_Main_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/PRV02_Date.sql                   ../../sql/python/PRV/PRV02/PRV02_Date.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/TblCopyGrouped.sql               ../../sql/python/PRV/PRV02/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main.sql                  ../../sql/python/PRV/PRV02/Prov02_Main.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/PRV02_Final.sql                  ../../sql/python/PRV/PRV02/PRV02_Final.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_STV.sql              ../../sql/python/PRV/PRV02/Prov02_Main_STV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_ST.sql               ../../sql/python/PRV/PRV02/Prov02_Main_ST.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_RG.sql               ../../sql/python/PRV/PRV02/Prov02_Main_RG.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_PC.sql               ../../sql/python/PRV/PRV02/Prov02_Main_PC.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_TF.sql               ../../sql/python/PRV/PRV02/Prov02_Main_TF.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_OV.sql               ../../sql/python/PRV/PRV02/Prov02_Main_OV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_O.sql                ../../sql/python/PRV/PRV02/Prov02_Main_O.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_PS.sql               ../../sql/python/PRV/PRV02/Prov02_Main_PS.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_NP.sql               ../../sql/python/PRV/PRV02/Prov02_Main_NP.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV02/Prov02_Main_GC.sql               ../../sql/python/PRV/PRV02/Prov02_Main_GC.sql
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations_Latest1.sql     ../../sql/python/PRV/PRV03/Prov03_Locations_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations_Copy.sql        ../../sql/python/PRV/PRV03/Prov03_Locations_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations_Latest2.sql     ../../sql/python/PRV/PRV03/Prov03_Locations_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/TblCopyGrouped.sql               ../../sql/python/PRV/PRV03/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations.sql             ../../sql/python/PRV/PRV03/Prov03_Locations.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations_STV.sql         ../../sql/python/PRV/PRV03/Prov03_Locations_STV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations_link.sql        ../../sql/python/PRV/PRV03/Prov03_Locations_link.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations_AST1.sql        ../../sql/python/PRV/PRV03/Prov03_Locations_AST1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations_AST.sql         ../../sql/python/PRV/PRV03/Prov03_Locations_AST.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Locations_BS.sql          ../../sql/python/PRV/PRV03/Prov03_Locations_BS.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Location_TYPE.sql         ../../sql/python/PRV/PRV03/Prov03_Location_TYPE.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Location_mapt.sql         ../../sql/python/PRV/PRV03/Prov03_Location_mapt.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Location_BSM.sql          ../../sql/python/PRV/PRV03/Prov03_Location_BSM.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV03/Prov03_Location_CNST.sql         ../../sql/python/PRV/PRV03/Prov03_Location_CNST.sql
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV04/Prov04_Licensing_Latest1.sql     ../../sql/python/PRV/PRV04/Prov04_Licensing_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV04/Prov04_Licensing_Copy.sql        ../../sql/python/PRV/PRV04/Prov04_Licensing_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV04/Prov04_Licensing_Latest2.sql     ../../sql/python/PRV/PRV04/Prov04_Licensing_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV04/TblCopyGrouped.sql               ../../sql/python/PRV/PRV04/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV04/Prov04_Licensing.sql             ../../sql/python/PRV/PRV04/Prov04_Licensing.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV04/Prov04_Licensing_STV.sql         ../../sql/python/PRV/PRV04/Prov04_Licensing_STV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV04/Prov04_Licensing_TYP.sql         ../../sql/python/PRV/PRV04/Prov04_Licensing_TYP.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV04/Prov04_Licensing_CNST.sql        ../../sql/python/PRV/PRV04/Prov04_Licensing_CNST.sql
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV05/Prov05_Identifiers_Latest1.sql   ../../sql/python/PRV/PRV05/Prov05_Identifiers_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV05/Prov05_Identifiers_Copy.sql      ../../sql/python/PRV/PRV05/Prov05_Identifiers_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV05/Prov05_Identifiers_Latest2.sql   ../../sql/python/PRV/PRV05/Prov05_Identifiers_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV05/TblCopyGrouped.sql               ../../sql/python/PRV/PRV05/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV05/Prov05_Identifiers.sql           ../../sql/python/PRV/PRV05/Prov05_Identifiers.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV05/Prov05_Identifiers_STV.sql       ../../sql/python/PRV/PRV05/Prov05_Identifiers_STV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV05/Prov05_Identifiers_TYP.sql       ../../sql/python/PRV/PRV05/Prov05_Identifiers_TYP.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV05/Prov05_Identifiers_CNST.sql      ../../sql/python/PRV/PRV05/Prov05_Identifiers_CNST.sql
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomy_Latest1.sql      ../../sql/python/PRV/PRV06/Prov06_Taxonomy_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomy_Copy.sql         ../../sql/python/PRV/PRV06/Prov06_Taxonomy_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomy_Latest2.sql      ../../sql/python/PRV/PRV06/Prov06_Taxonomy_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/TblCopyGrouped.sql               ../../sql/python/PRV/PRV06/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies.sql            ../../sql/python/PRV/PRV06/Prov06_Taxonomies.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies_STV.sql        ../../sql/python/PRV/PRV06/Prov06_Taxonomies_STV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies_TYP.sql        ../../sql/python/PRV/PRV06/Prov06_Taxonomies_TYP.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies_CCD.sql        ../../sql/python/PRV/PRV06/Prov06_Taxonomies_CCD.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies_ALL.sql        ../../sql/python/PRV/PRV06/Prov06_Taxonomies_ALL.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies_seg.sql        ../../sql/python/PRV/PRV06/Prov06_Taxonomies_seg.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies_IND.sql        ../../sql/python/PRV/PRV06/Prov06_Taxonomies_IND.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies_SME.sql        ../../sql/python/PRV/PRV06/Prov06_Taxonomies_SME.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV06/Prov06_Taxonomies_MHT.sql        ../../sql/python/PRV/PRV06/Prov06_Taxonomies_MHT.sql
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_Latest1.sql      ../../sql/python/PRV/PRV07/Prov07_Medicaid_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_Copy.sql         ../../sql/python/PRV/PRV07/Prov07_Medicaid_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_Latest2.sql      ../../sql/python/PRV/PRV07/Prov07_Medicaid_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/TblCopyGrouped.sql               ../../sql/python/PRV/PRV07/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid.sql              ../../sql/python/PRV/PRV07/Prov07_Medicaid.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_ST.sql           ../../sql/python/PRV/PRV07/Prov07_Medicaid_ST.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_STS.sql          ../../sql/python/PRV/PRV07/Prov07_Medicaid_STS.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_STC.sql          ../../sql/python/PRV/PRV07/Prov07_Medicaid_STC.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_ENR.sql          ../../sql/python/PRV/PRV07/Prov07_Medicaid_ENR.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_MTD.sql          ../../sql/python/PRV/PRV07/Prov07_Medicaid_MTD.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_CNST.sql         ../../sql/python/PRV/PRV07/Prov07_Medicaid_CNST.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_ENRPOP.sql       ../../sql/python/PRV/PRV07/Prov07_Medicaid_ENRPOP.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov07_Medicaid_Mapped.sql       ../../sql/python/PRV/PRV07/Prov07_Medicaid_Mapped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV07/Prov02_Base.sql                  ../../sql/python/PRV/PRV07/Prov02_Base.sql
+          
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV08/Prov08_AffGrps_Latest1.sql       ../../sql/python/PRV/PRV08/Prov08_AffGrps_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV08/Prov08_AffGrps_Copy.sql          ../../sql/python/PRV/PRV08/Prov08_AffGrps_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV08/Prov08_AffGrps_Latest2.sql       ../../sql/python/PRV/PRV08/Prov08_AffGrps_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV08/TblCopyGrouped.sql               ../../sql/python/PRV/PRV08/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV08/Prov08_Groups.sql                ../../sql/python/PRV/PRV08/Prov08_Groups.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV08/Prov08_Groups_STV.sql            ../../sql/python/PRV/PRV08/Prov08_Groups_STV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV08/Prov08_Groups_CNST.sql           ../../sql/python/PRV/PRV08/Prov08_Groups_CNST.sql
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/Prov09_AffPgms_Latest1.sql       ../../sql/python/PRV/PRV09/Prov09_AffPgms_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/Prov09_AffPgms_Copy.sql          ../../sql/python/PRV/PRV09/Prov09_AffPgms_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/Prov09_AffPgms_Latest2.sql       ../../sql/python/PRV/PRV09/Prov09_AffPgms_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/TblCopyGrouped.sql               ../../sql/python/PRV/PRV09/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/Prov09_AffPgms.sql               ../../sql/python/PRV/PRV09/Prov09_AffPgms.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/Prov09_AffPgms_STV.sql           ../../sql/python/PRV/PRV09/Prov09_AffPgms_STV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/Prov09_AffPgms_TYP1.sql          ../../sql/python/PRV/PRV09/Prov09_AffPgms_TYP1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/TblCopyGrouped.sql               ../../sql/python/PRV/PRV09/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/Prov09_AffPgms_TYP.sql           ../../sql/python/PRV/PRV09/Prov09_AffPgms_TYP.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV09/Prov09_AffPgms_CNST.sql          ../../sql/python/PRV/PRV09/Prov09_AffPgms_CNST.sql
+
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV10/Prov10_BedType_Latest1.sql       ../../sql/python/PRV/PRV10/Prov10_BedType_Latest1.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV10/Prov10_BedType_Copy.sql          ../../sql/python/PRV/PRV10/Prov10_BedType_Copy.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV10/Prov10_BedType_Latest2.sql       ../../sql/python/PRV/PRV10/Prov10_BedType_Latest2.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV10/TblCopyGrouped.sql               ../../sql/python/PRV/PRV10/TblCopyGrouped.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV10/Prov10_BedType.sql               ../../sql/python/PRV/PRV10/Prov10_BedType.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV10/Prov10_BedType_STV.sql           ../../sql/python/PRV/PRV10/Prov10_BedType_STV.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV10/Prov10_BedType_TYP.sql           ../../sql/python/PRV/PRV10/Prov10_BedType_TYP.sql
+npx sql-formatter --indent 4 --output ../../sql/python/PRV/PRV10/Prov10_BedType_CNST.sql          ../../sql/python/PRV/PRV10/Prov10_BedType_CNST.sql
