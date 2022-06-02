@@ -697,12 +697,12 @@ class TAF_Closure():
     #             slots>1, we will add slot # before _MO suffix
     #
     # ---------------------------------------------------------------------------------
-    def monthly_array(incol, outcol='', nslots=1):
+    def monthly_array(incol, outcol='', nslots='1'):
 
         if outcol == '':
             outcol = incol
 
-        if (nslots == 1):
+        if (nslots == '1'):
                 return f"""
                   m01.{incol} as {outcol}_01
                 , m02.{incol} as {outcol}_02
@@ -717,25 +717,25 @@ class TAF_Closure():
                 , m11.{incol} as {outcol}_11
                 , m12.{incol} as {outcol}_12"""
         else:
-            for s in range(1, nslots):
-                if nslots == 1:
+            for s in range(1, int(nslots)):
+                if nslots == '1':
                     snum = ''
                 else:
                     snum = s
 
                 return f"""
-                  m01.{incol} {snum} as {outcol} {snum}_01
-                , m02.{incol} {snum} as {outcol} {snum}_02
-                , m03.{incol} {snum} as {outcol} {snum}_03
-                , m04.{incol} {snum} as {outcol} {snum}_04
-                , m05.{incol} {snum} as {outcol} {snum}_05
-                , m06.{incol} {snum} as {outcol} {snum}_06
-                , m07.{incol} {snum} as {outcol} {snum}_07
-                , m08.{incol} {snum} as {outcol} {snum}_08
-                , m09.{incol} {snum} as {outcol} {snum}_09
-                , m10.{incol} {snum} as {outcol} {snum}_10
-                , m11.{incol} {snum} as {outcol} {snum}_11
-                , m12.{incol} {snum} as {outcol} {snum}_12"""
+                  m01.{incol}{snum} as {outcol}{snum}_01
+                , m02.{incol}{snum} as {outcol}{snum}_02
+                , m03.{incol}{snum} as {outcol}{snum}_03
+                , m04.{incol}{snum} as {outcol}{snum}_04
+                , m05.{incol}{snum} as {outcol}{snum}_05
+                , m06.{incol}{snum} as {outcol}{snum}_06
+                , m07.{incol}{snum} as {outcol}{snum}_07
+                , m08.{incol}{snum} as {outcol}{snum}_08
+                , m09.{incol}{snum} as {outcol}{snum}_09
+                , m10.{incol}{snum} as {outcol}{snum}_10
+                , m11.{incol}{snum} as {outcol}{snum}_11
+                , m12.{incol}{snum} as {outcol}{snum}_12"""
 
     # ---------------------------------------------------------------------------------
     #
@@ -840,15 +840,29 @@ class TAF_Closure():
     #    	condition=monthly condition to be evaulated, where default is = 1
     #
     # ---------------------------------------------------------------------------------
-    def any_month(incols: str, outcol, condition='=1'):
+    def any_month(incols: str, outcol, condition="=1"):
 
         cases = []
-        for m in range(1, 13):
-            mm = '{:02d}'.format(m)
-            for col in incols.split():
-                cases.append(f"case when m{mm}.{col} {condition} then 1 else 0 end as {outcol}_{mm}")
 
-        return ','.join(cases)
+        for m in range(1, 13):
+            colCount = 1
+            mm = "{:02d}".format(m)
+
+            z = "CASE WHEN" + " "
+
+            for col in incols.split():
+                if colCount > 1:
+                    z += " " + "OR" + " "
+
+                z += f"""m{mm}.{col}""" + " " + f"""{condition}"""
+
+                colCount += 1
+
+            z += " " + f"""THEN 1 ELSE 0 END AS {outcol}_{mm}"""
+
+            cases.append(z)
+
+        return ",".join(cases)
 
     # --------------------------------------------------------------------
     #
