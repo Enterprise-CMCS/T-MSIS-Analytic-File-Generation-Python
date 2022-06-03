@@ -98,7 +98,11 @@ class BASE(APL):
             "LCTN_SPLMTL",
             "SAREA_SPLMTL",
             "ENRLMT_SPLMTL",
+<<<<<<< HEAD
             "OPRTG_AUTHRTY_SPLMTL",
+=======
+            "OPRTG_AUTHRTY_SPLMTL"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
     # ---------------------------------------------------------------------------------
@@ -153,26 +157,42 @@ class BASE(APL):
             "%last_best(REG_FLAG)",
             "%last_best(CBSA_CD)",
             "%last_best(MC_PRFT_STUS_CD)",
+<<<<<<< HEAD
             "%last_best(BUSNS_PCT)",
+=======
+            "%last_best(BUSNS_PCT)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         subcols2 = [
             "%monthly_array(ACRDTN_ORG_01,ACRDTN_ORG_01,1)",
             "%monthly_array(ACRDTN_ORG_02,ACRDTN_ORG_02,1)",
+<<<<<<< HEAD
             "%monthly_array(ACRDTN_ORG_03,ACRDTN_ORG_03,1)",
+=======
+            "%monthly_array(ACRDTN_ORG_03,ACRDTN_ORG_03,1)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         subcols3 = [
             "%monthly_array(ACRDTN_ORG_ACHVMT_DT_01,ACRDTN_ORG_ACHVMT_DT_01,1)",
             "%monthly_array(ACRDTN_ORG_ACHVMT_DT_02,ACRDTN_ORG_ACHVMT_DT_02,1)",
+<<<<<<< HEAD
             "%monthly_array(ACRDTN_ORG_ACHVMT_DT_03,ACRDTN_ORG_ACHVMT_DT_03,1)",
+=======
+            "%monthly_array(ACRDTN_ORG_ACHVMT_DT_03,ACRDTN_ORG_ACHVMT_DT_03,1)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         subcols4 = [
             "%monthly_array(ACRDTN_ORG_END_DT_01,ACRDTN_ORG_END_DT_01,1)",
             "%monthly_array(ACRDTN_ORG_END_DT_02,ACRDTN_ORG_END_DT_02,1)",
             "%monthly_array(ACRDTN_ORG_END_DT_03,ACRDTN_ORG_END_DT_03,1)",
+<<<<<<< HEAD
             "%any_month(MC_PLAN_ID MC_NAME,PLAN_ID_FLAG,IS NOT NULL)",
+=======
+            "%any_month(MC_PLAN_ID MC_NAME,PLAN_ID_FLAG,IS NOT NULL)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         outercols = [
@@ -189,11 +209,19 @@ class BASE(APL):
             fileseg="MCP",
             tblname="base_pl",
             inyear=self.year,
+<<<<<<< HEAD
             subcols=", ".join(subcols_),
             subcols2=", ".join(subcols2_),
             subcols3=", ".join(subcols3_),
             subcols4=", ".join(subcols4_),
             outercols=", ".join(outercols_),
+=======
+            subcols=', '.join(subcols_),
+            subcols2=', '.join(subcols2_),
+            subcols3=', '.join(subcols3_),
+            subcols4=', '.join(subcols4_),
+            outercols=', '.join(outercols_)
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         )
 
         # create Accreditation0 so that separate records with a unique row for each set

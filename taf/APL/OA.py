@@ -39,7 +39,11 @@ class OA(APL):
             "%monthly_array(WVR_ID_01,WVR_ID_01,1)",
             "%monthly_array(WVR_ID_02,WVR_ID_02,1)",
             "%monthly_array(WVR_ID_03,WVR_ID_03,1)",
+<<<<<<< HEAD
             "%monthly_array(WVR_ID_04,WVR_ID_04,1)",
+=======
+            "%monthly_array(WVR_ID_04,WVR_ID_04,1)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         subcols2 = [
@@ -47,7 +51,11 @@ class OA(APL):
             "%monthly_array(WVR_ID_06,WVR_ID_06,1)",
             "%monthly_array(WVR_ID_07,WVR_ID_07,1)",
             "%monthly_array(WVR_ID_08,WVR_ID_08,1)",
+<<<<<<< HEAD
             "%monthly_array(WVR_ID_09,WVR_ID_09,1)",
+=======
+            "%monthly_array(WVR_ID_09,WVR_ID_09,1)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         subcols3 = [
@@ -56,7 +64,11 @@ class OA(APL):
             "%monthly_array(WVR_ID_12,WVR_ID_12,1)",
             "%monthly_array(WVR_ID_13,WVR_ID_13,1)",
             "%monthly_array(WVR_ID_14,WVR_ID_14,1)",
+<<<<<<< HEAD
             "%monthly_array(WVR_ID_15,WVR_ID_15,1)",
+=======
+            "%monthly_array(WVR_ID_15,WVR_ID_15,1)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         subcols4 = [
@@ -66,7 +78,11 @@ class OA(APL):
             "%monthly_array(OPRTG_AUTHRTY_04,OPRTG_AUTHRTY_04,1)",
             "%monthly_array(OPRTG_AUTHRTY_05,OPRTG_AUTHRTY_05,1)",
             "%monthly_array(OPRTG_AUTHRTY_06,OPRTG_AUTHRTY_06,1)",
+<<<<<<< HEAD
             "%monthly_array(OPRTG_AUTHRTY_07,OPRTG_AUTHRTY_07,1)",
+=======
+            "%monthly_array(OPRTG_AUTHRTY_07,OPRTG_AUTHRTY_07,1)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         subcols5 = [
@@ -77,7 +93,11 @@ class OA(APL):
             "%monthly_array(OPRTG_AUTHRTY_12,OPRTG_AUTHRTY_12,1)",
             "%monthly_array(OPRTG_AUTHRTY_13,OPRTG_AUTHRTY_13,1)",
             "%monthly_array(OPRTG_AUTHRTY_14,OPRTG_AUTHRTY_14,1)",
+<<<<<<< HEAD
             "%monthly_array(OPRTG_AUTHRTY_15,OPRTG_AUTHRTY_15,1)",
+=======
+            "%monthly_array(OPRTG_AUTHRTY_15,OPRTG_AUTHRTY_15,1)"
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         ]
 
         subcols_ = map(TAF_Closure.parse, subcols)
@@ -90,11 +110,19 @@ class OA(APL):
             fileseg="MCP",
             tblname="oa_pl",
             inyear=self.year,
+<<<<<<< HEAD
             subcols=", ".join(subcols_),
             subcols2=", ".join(subcols2_),
             subcols3=", ".join(subcols3_),
             subcols4=", ".join(subcols4_),
             subcols5=", ".join(subcols5_),
+=======
+            subcols=', '.join(subcols_),
+            subcols2=', '.join(subcols2_),
+            subcols3=', '.join(subcols3_),
+            subcols4=', '.join(subcols4_),
+            subcols5=', '.join(subcols5_)
+>>>>>>> b71fe41e4b75153159e1914ca7299a2140af15e9
         )
 
         # OpAuth0
