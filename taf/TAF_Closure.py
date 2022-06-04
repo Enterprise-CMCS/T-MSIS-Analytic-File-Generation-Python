@@ -1,4 +1,3 @@
-
 class TAF_Closure():
 
     # ---------------------------------------------------------------------------------
@@ -866,16 +865,144 @@ class TAF_Closure():
 
     # --------------------------------------------------------------------
     #
+    # get the max of the incol (which will be a 0/1 indicator)
+    #
+    # --------------------------------------------------------------------
+    def getmax(incol: str, outcol):
+
+        if not outcol:
+            _outcol = incol
+        else:
+            _outcol = outcol
+
+        return f""",max({incol}) as {_outcol}"""
+
+    # --------------------------------------------------------------------
+    #
+    # get the sum of the incol
+    #
+    # --------------------------------------------------------------------
+    def sumrecs(incol: str, outcol):
+
+        if not outcol:
+            _outcol = incol
+        else:
+            _outcol = outcol
+
+        return f"""sum({incol}) as {_outcol}"""
+
+    # --------------------------------------------------------------------
+    #
+    # count the number of recs where the given column equals the given
+    # condition
+    #
+    # --------------------------------------------------------------------
+    def count_rec(condcol1="", cond1="=1", condcol2="", cond2="=1", condcol3="", cond3="=1", condcol4="", cond4="=1", outcol=""):
+
+        z = f"""SUM(CASE WHEN {condcol1} {cond1}
+        """
+
+        if condcol2:
+            z += "AND"
+            z += f"""{condcol2} {cond2}"""
+
+        if condcol3:
+            z += "AND"
+            z += f"""{condcol3} {cond3}"""
+
+        if condcol4:
+            z += "AND"
+            z += f"""{condcol4} {cond4}"""
+
+        z += f"""
+             THEN 1 ELSE 0 END) AS {outcol}
+        """
+
+        return z
+
+    # --------------------------------------------------------------------
+    #
+    # create an indicator for ANY rec where the given column equals the
+    # given condition
+    #
+    # --------------------------------------------------------------------
+    def any_rec(condcol1="", cond1="=1", condcol2="", cond2="=1", condcol3="", cond3="=1", condcol4="", cond4="=1", outcol=""):
+
+        z = f"""MAX(CASE WHEN {condcol1} {cond1}
+        """
+
+        if condcol2:
+            z += "AND"
+            z += f"""{condcol2} {cond2}"""
+
+        if condcol3:
+            z += "AND"
+            z += f"""{condcol3} {cond3}"""
+
+        if condcol4:
+            z += "AND"
+            z += f"""{condcol4} {cond4}"""
+
+        z += f"""
+             THEN 1 ELSE 0 END) AS {outcol}
+        """
+
+        return z
+
+    # --------------------------------------------------------------------
+    #
+    # sum tot_mdcd_pd_amt on the headers OR mdcd_pd_amt on the lines
+    # where the given column equals the given condition
+    #
+    # --------------------------------------------------------------------
+    def sum_paid(condcol1="", cond1="=1", condcol2="", cond2="=1", condcol3="", cond3="=1", condcol4="", cond4="=1", paidcol="tot_mdcd_pd_amt", outcol=""):
+
+        if not outcol:
+            _outcol = condcol1
+        else:
+            _outcol = outcol
+
+        z = f"""
+            SUM(CASE WHEN {condcol1} {cond1}
+        """
+
+        if condcol2:
+            z += f"""
+                 AND {condcol2} {cond2}
+            """
+
+        if condcol3:
+            z += f"""
+                 AND {condcol3} {cond3}
+            """
+
+        if condcol4:
+            z += f"""
+                 AND {condcol4} {cond4}
+            """
+
+        z += f"""THEN {paidcol} ELSE NULL END) as {outcol}
+        """
+
+        return z
+
+    # --------------------------------------------------------------------
+    #
     #
     #
     # --------------------------------------------------------------------
     passthrough = {
         '%any_month': any_month,
+        '%any_rec': any_rec,
+        '%count_rec': count_rec,
         '%ever_year': ever_year,
         '%fix_old_dates': fix_old_dates,
+        '%getmax': getmax,
         '%last_best': last_best,
         '%monthly_array': monthly_array,
         '%set_end_dt': set_end_dt,
+        '%sum_paid': sum_paid,
+        '%sumrecs': sumrecs,
         '%upper_case': upper_case,
         '%zero_pad': zero_pad
     }
