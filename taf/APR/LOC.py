@@ -57,9 +57,8 @@ class LOC(APR):
         # Insert into permanent table
 
         z = f"""
-                CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_LCTN AS
-                select
-
+                INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_LCTN
+                SELECT
                     {self.table_id_cols(loctype=1)}
                     ,PRVDR_LCTN_ID
                     ,PRVDR_ADR_BLG_IND
@@ -86,8 +85,7 @@ class LOC(APR):
                     ,PRVDR_LCTN_FLAG_10
                     ,PRVDR_LCTN_FLAG_11
                     ,PRVDR_LCTN_FLAG_12
-
-                from lctn_pr_{self.year}"""
+                FROM lctn_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
 

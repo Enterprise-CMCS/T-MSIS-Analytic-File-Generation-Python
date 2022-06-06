@@ -47,10 +47,8 @@ class PGM(APR):
         # Insert into permanent table
 
         z = f"""
-            CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_PGM AS
-
-            select
-
+            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_PGM
+            SELECT
                  { self.table_id_cols() }
                 ,AFLTD_PGM_TYPE_CD
                 ,AFLTD_PGM_ID
@@ -66,8 +64,7 @@ class PGM(APR):
                 ,PRVDR_PGM_FLAG_10
                 ,PRVDR_PGM_FLAG_11
                 ,PRVDR_PGM_FLAG_12
-
-            from pgm_pr_{self.year}"""
+            FROM pgm_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
 

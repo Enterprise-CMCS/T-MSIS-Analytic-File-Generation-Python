@@ -48,9 +48,8 @@ class TAX(APR):
         # Insert into permanent table
 
         z = f"""
-            CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_TXNMY AS
-            select
-
+            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_TXNMY
+            SELECT
                 {self.table_id_cols()}
                 ,PRVDR_CLSFCTN_TYPE_CD
                 ,PRVDR_CLSFCTN_CD
@@ -66,8 +65,7 @@ class TAX(APR):
                 ,PRVDR_TXNMY_FLAG_10
                 ,PRVDR_TXNMY_FLAG_11
                 ,PRVDR_TXNMY_FLAG_12
-
-            from txnmy_pr_{self.year}"""
+            FROM txnmy_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
 

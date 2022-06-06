@@ -50,9 +50,8 @@ class LIC(APR):
         # Insert into permanent table
 
         z = f"""
-            CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_LCNS AS
-            select
-
+            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_LCNS
+            SELECT
                 {self.table_id_cols(loctype=2)}
                 ,PRVDR_LCTN_ID
                 ,LCNS_TYPE_CD
@@ -70,8 +69,7 @@ class LIC(APR):
                 ,PRVDR_LCNS_FLAG_10
                 ,PRVDR_LCNS_FLAG_11
                 ,PRVDR_LCNS_FLAG_12
-
-            from lcns_pr_{self.year}"""
+            FROM lcns_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
 

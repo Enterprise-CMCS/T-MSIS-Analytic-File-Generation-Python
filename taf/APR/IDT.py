@@ -100,9 +100,8 @@ class IDT(APR):
         # Insert into permanent table
 
         z = f"""
-            CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_ID AS
-            select
-
+            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_ID
+            SELECT
                 {self.table_id_cols(loctype=2)}
                 ,PRVDR_LCTN_ID
                 ,PRVDR_ID_TYPE_CD
@@ -120,7 +119,7 @@ class IDT(APR):
                 ,PRVDR_ID_FLAG_10
                 ,PRVDR_ID_FLAG_11
                 ,PRVDR_ID_FLAG_12
-                from id_pr_{self.year}"""
+            FROM id_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
 

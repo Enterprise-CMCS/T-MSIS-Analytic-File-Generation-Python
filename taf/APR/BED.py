@@ -47,9 +47,8 @@ class BED(APR):
         # Insert into permanent table
 
         z = f"""
-            CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_BED AS
-            select
-
+            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BED
+            SELECT
                 {self.table_id_cols(loctype=2)}
                 ,PRVDR_LCTN_ID
                 ,BED_TYPE_CD
@@ -66,8 +65,7 @@ class BED(APR):
                 ,PRVDR_BED_FLAG_10
                 ,PRVDR_BED_FLAG_11
                 ,PRVDR_BED_FLAG_12
-
-        from bed_pr_{self.year}"""
+            FROM bed_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
 

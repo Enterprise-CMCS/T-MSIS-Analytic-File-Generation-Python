@@ -45,9 +45,8 @@ class GRP(APR):
         # Insert into permanent table
 
         z = f"""
-            CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_GRP AS
-            select
-
+            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_GRP
+            SELECT
                 {self.table_id_cols()}
                 ,SUBMTG_STATE_AFLTD_PRVDR_ID
                 ,PRVDR_GRP_FLAG_01
@@ -62,7 +61,7 @@ class GRP(APR):
                 ,PRVDR_GRP_FLAG_10
                 ,PRVDR_GRP_FLAG_11
                 ,PRVDR_GRP_FLAG_12
-            from grp_pr_{self.year}"""
+            FROM grp_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
 

@@ -243,11 +243,11 @@ class BASE(APR):
             'BED_SPLMTL']
 
         z = f"""
-            CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_BASE AS
-            select
+            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BASE
+            SELECT
                  { self.table_id_cols() }
                 ,{ ','.join(basecols) }
-            from base_{self.year}_final"""
+            FROM base_{self.year}_final"""
 
         self.apr.append(type(self).__name__, z)
 

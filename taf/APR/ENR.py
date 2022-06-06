@@ -53,9 +53,8 @@ class ENR(APR):
         # Insert into permanent table
 
         z = f"""
-            CREATE TABLE {self.apr.DA_SCHEMA}.TAF_ANN_PR_ENRLMT AS
-            select
-
+            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_ENRLMT
+            SELECT
                 {self.table_id_cols()}
                 ,PRVDR_MDCD_EFCTV_DT
                 ,PRVDR_MDCD_END_DT
@@ -76,8 +75,7 @@ class ENR(APR):
                 ,PRVDR_ENRLMT_FLAG_10
                 ,PRVDR_ENRLMT_FLAG_11
                 ,PRVDR_ENRLMT_FLAG_12
-
-            from enrlmt_pr_{self.year}"""
+            FROM enrlmt_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
 # -----------------------------------------------------------------------------
