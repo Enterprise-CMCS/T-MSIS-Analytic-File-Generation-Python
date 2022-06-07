@@ -868,7 +868,7 @@ class TAF_Closure():
     # get the max of the incol (which will be a 0/1 indicator)
     #
     # --------------------------------------------------------------------
-    def getmax(incol: str, outcol):
+    def getmax(incol: str, outcol) -> str:
 
         if not outcol:
             _outcol = incol
@@ -882,7 +882,7 @@ class TAF_Closure():
     # get the sum of the incol
     #
     # --------------------------------------------------------------------
-    def sumrecs(incol: str, outcol):
+    def sumrecs(incol: str, outcol) -> str:
 
         if not outcol:
             _outcol = incol
