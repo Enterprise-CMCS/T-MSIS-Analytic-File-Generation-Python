@@ -221,6 +221,14 @@ class DE(TAF):
 
         return f"case {' '.join(cases)} else null end as {outcol}"
 
+    def address_flag(self):
+        z = """,case when ELGBL_LINE_1_ADR_MAIL_MN != '00' and ELGBL_LINE_1_ADR_HOME_MN = '00' then 1
+                    when ELGBL_LINE_1_ADR_HOME_MN != '00' then 0
+                else null
+                end as ELGBL_ADR_MAIL_FLAG
+            """
+        return z
+
     def address_same_year(self, incol):
         cnt = 0
         z = f""",case when yearpull = {self.YEAR} then c.{incol}"""

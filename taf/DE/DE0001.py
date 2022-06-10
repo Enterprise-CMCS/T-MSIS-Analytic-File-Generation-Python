@@ -6,11 +6,13 @@ from taf.TAF_Closure import TAF_Closure
 class DE0001(DE):
 
     def __init__(self, de: DE_Runner):
+        # TODO: Review this
         DE.__init__(self, DE, 'DE00001', 'TMSIS_PRMRY_DMGRPHC_ELGBLTY', 'PRMRY_DMGRPHC_ELE_EFCTV_DT', 'PRMRY_DMGRPHC_ELE_END_DT')
 
     # runner function
     def create(self):
         self.create_temp(self)
+        self.create_base(self, "")
 
     # define base columns here
     def basecols(self):
