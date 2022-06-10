@@ -5,7 +5,7 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0003(DE):
-    tblname:str = "cntct_dtls"
+    tblname: str = "cntct_dtls"
 
     def create(self):
         super().create(self)
