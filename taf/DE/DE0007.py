@@ -1,48 +1,89 @@
-from taf.TAF_Runner import TAF_Runner
+from taf.DE.DE import DE
+from taf.DE.DE_Runner import DE_Runner
+from taf.TAF_Closure import TAF_Closure
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
-class DE_Runner(TAF_Runner):
+class DE0007(DE):
+    table_name: str = "mfp"
+    tbl_suffix: str = "mfp"
 
-    PERFORMANCE = 11
+    def __init__(self, de: DE_Runner):
+        # TODO: Review this
+        DE.__init__(self, DE, 'DE00007')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    def __init__(self, reporting_period: str, state_code: str, run_id: str):
-        super().__init__(reporting_period, state_code, run_id)
+    def create(self):
+        super().create()
+        self.create_temp()
+        self.create_mfp_suppl_table()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    def init(self):
-        from taf.DE.DE0001 import DE0001
-        from taf.DE.DE0002 import DE0002
-        from taf.DE.DE0003 import DE0003
-        from taf.DE.DE0005 import DE0005
-        from taf.DE.DE0006 import DE0006
-        from taf.DE.DE0007 import DE0007
-        from taf.DE.DE0008 import DE0008
-        from taf.DE.DE0009 import DE0009
+    def create_temp(self):
+        # Create an indicator for ANY of the MFP monthly flags = 1 which we will
+        # use to create MFP_SPLMTL
 
-        DE0001(self).create()
-        DE0002(self).create()
-        DE0003(self).create()
-        DE0005(self).create()
-        DE0006(self).create()
-        DE0007(self).create()
-        DE0008(self).create()
-        DE0009(self).create()
+        s = f"""{TAF_Closure.last_best('MFP_PRTCPTN_ENDD_RSN_CD')}
+                {TAF_Closure.last_best('MFP_LVS_WTH_FMLY_CD')}
+                {TAF_Closure.last_best('MFP_QLFYD_INSTN_CD')}
+                {TAF_Closure.last_best('MFP_RINSTLZD_RSN_CD')}
+                {TAF_Closure.last_best('MFP_QLFYD_RSDNC_CD')}
+                {TAF_Closure.monthly_array('MFP_PRTCPNT_FLAG')}
+                {TAF_Closure.last_best('MFP_PRTCPNT_FLAG', outcol='MFP_PRTCPNT_FLAG_LTST')}
+                {TAF_Closure.ever_year('MFP_PRTCPNT_FLAG')}
+            """
+
+        # Create MFP_SPLMTL (which will go onto the base segment AND determines
+        # the records that go into the permanent MFP table)
+        os = """,case when MFP_PRTCPNT_FLAG_EVR=1 or
+                        nullif(MFP_PRTCPTN_ENDD_RSN_CD,'00') is not null or
+                        nullif(MFP_QLFYD_INSTN_CD,'00') is not null or
+                        nullif(MFP_QLFYD_RSDNC_CD,'00') is not null or
+                        nullif(MFP_RINSTLZD_RSN_CD,'00') is not null or
+                        nullif(MFP_LVS_WTH_FMLY_CD,'2') is not null
+
+                then 1 else 0
+                end as MFP_SPLMTL
+            """
+        DE.create_temp_table(tblname=self.table_name, subcols=s, outercols=os)
+        return
+
+    def create_mfp_suppl_table(self):
+        z = f"""create or replace temporary view MFP_SPLMTL_{self.YEAR} as
+        select submtg_state_cd
+                ,msis_ident_num
+                ,MFP_SPLMTL
+
+        from mfp_{self.YEAR}"""
+
+        self.de.append(type(self).__name__, z)
+
+        z = f"""insert into {self.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+                select
+
+                    {DE.table_id_cols}
+                    ,MFP_PRTCPTN_ENDD_RSN_CD
+                    ,MFP_LVS_WTH_FMLY_CD
+                    ,MFP_QLFYD_INSTN_CD
+                    ,MFP_RINSTLZD_RSN_CD
+                    ,MFP_QLFYD_RSDNC_CD
+                    ,MFP_PRTCPNT_FLAG_01
+                    ,MFP_PRTCPNT_FLAG_02
+                    ,MFP_PRTCPNT_FLAG_03
+                    ,MFP_PRTCPNT_FLAG_04
+                    ,MFP_PRTCPNT_FLAG_05
+                    ,MFP_PRTCPNT_FLAG_06
+                    ,MFP_PRTCPNT_FLAG_07
+                    ,MFP_PRTCPNT_FLAG_08
+                    ,MFP_PRTCPNT_FLAG_09
+                    ,MFP_PRTCPNT_FLAG_10
+                    ,MFP_PRTCPNT_FLAG_11
+                    ,MFP_PRTCPNT_FLAG_12
+                    ,MFP_PRTCPNT_FLAG_LTST
+
+                from mfp_{self.YEAR}
+                where MFP_SPLMTL=1"""
+
+        self.de.append(type(self).__name__, z)
+        return
+
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
 

@@ -1,152 +1,184 @@
-
-
 from taf.DE.DE import DE
 from taf.DE.DE_Runner import DE_Runner
 from taf.TAF_Closure import TAF_Closure
 
 
-class DE0003(DE):
-    tblname: str = "cntct_dtls"
+class DE0008(DE):
+    table_name: str = "HHSPO"
+    tbl_suffix: str = "hh_spo"
 
     def __init__(self, de: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00003')
+        DE.__init__(self, DE, 'DE00007')
 
     def create(self):
-        super().create(self)
+        super().create()
         self.create_temp()
-        self.address_phone(self.YEAR)
-        self.create_CNTCT_DTLS()
-
-    def address_phone(self, runyear):
-        DE.create_temp_table(self,
-                             subcols=f"""{TAF_Closure.monthly_array('ELGBL_LINE_1_ADR_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_2_ADR_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_3_ADR_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_CITY_NAME_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_ZIP_CD_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_CNTY_CD_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_STATE_CD_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_1_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_2_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_3_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_CITY_NAME_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_ZIP_CD_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_CNTY_CD_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_STATE_CD_MAIL')}
-                                         {TAF_Closure.last_best('ELGBL_PHNE_NUM_HOME')}
-                                         {DE.nonmiss_month('ELGBL_LINE_1_ADR_HOME')}
-                                         {DE.nonmiss_month('ELGBL_LINE_1_ADR_MAIL')}
-                                     """,
-                             outercols=f"""{DE.address_flag()}
-                                           {DE.assign_nonmiss_month('ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_1_ADR_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_LINE_2_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_2_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_2_ADR_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_LINE_3_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_3_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_3_ADR_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_CITY_NAME', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CITY_NAME_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_CITY_NAME_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_ZIP_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_ZIP_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_ZIP_CD_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_CNTY_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CNTY_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_CNTY_CD_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_STATE_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_STATE_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_STATE_CD_MAIL')}
-                                        """)
+        self.create_mfp_suppl_table()
 
     def create_temp(self):
-        DE.create_temp_table(self,
-                             tblname='name',
-                             subcols=f"""{TAF_Closure.last_best('ELGBL_1ST_NAME')}
-                                         {TAF_Closure.last_best('ELGBL_LAST_NAME')}
-                                         {TAF_Closure.last_best('ELGBL_MDL_INITL')}
-                            """)
+        # Create a series of flags to be evaluated to create HH_SPO_SPLMTL
 
-    def create_CNTCT_DTLS(self):
-        if self.GETPRIOR == 1:
-            cnt = 0
-            if self.GETPRIOR == 1:
-                for pyear in range(1, self.PYEARS + 1):
-                    self.address_phone(pyear)
-
-            # Join current and prior year(s) and first, identify year pulled for latest non-null value of ELGBL_LINE_1_ADR.
-            # Use that year to then take value for all cols
-
-            z = f"""create or replace temporary view address_phone_{self.YEAR}_out as
-                    select c.submtg_state_cd,
-                        c.msis_ident_num
-
-            {TAF_Closure.last_best('ELGBL_LINE_1_ADR', prior=1)}
-            ,case when c.ELGBL_LINE_1_ADR is not null then {self.YEAR}"""
-            for pyear in range(1, self.PYEARS + 1):
-                cnt += 1
-                z += f"""when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear}"""
-            z += f"""else null
-                    end as yearpull
-
-                {DE.address_same_year('ELGBL_ADR_MAIL_FLAG')}
-                {DE.address_same_year('ELGBL_LINE_2_ADR')}
-                {DE.address_same_year('ELGBL_LINE_3_ADR')}
-                {DE.address_same_year('ELGBL_CITY_NAME')}
-                {DE.address_same_year('ELGBL_ZIP_CD')}
-                {DE.address_same_year('ELGBL_CNTY_CD')}
-                {DE.address_same_year('ELGBL_STATE_CD')}
-
-                {TAF_Closure.last_best('ELGBL_PHNE_NUM_HOME', prior=1)}
-
-                from address_phone_{self.YEAR} c"""
-            cnt = 0
-            for pyear in range(1, self.PYEARS + 1):
-                f"""left join
-                    address_phone_{self.YEAR} p{cnt}
-
-                on c.submtg_state_cd = p{cnt}.submtg_state_cd and
-                    c.msis_ident_num = p{cnt}.msis_ident_num
-                """
-        self.de.append(type(self).__name__, z)
-
-        if self.GETPRIOR == 0:
-            z = f"""alter table address_phone_{self.YEAR} rename to address_phone_{self.YEAR}_out"""
-        self.de.append(type(self).__name__, z)
-
-        z = f"""create or replace temporary view name_address_phone_{self.YEAR} as
-                select a.submtg_state_cd,
-                    a.msis_ident_num,
-                    a.ELGBL_1ST_NAME,
-                    a.ELGBL_LAST_NAME,
-                    a.ELGBL_MDL_INITL_NAME,
-                    b.ELGBL_ADR_MAIL_FLAG,
-                    b.ELGBL_LINE_1_ADR,
-                    b.ELGBL_LINE_2_ADR,
-                    b.ELGBL_LINE_3_ADR,
-                    b.ELGBL_CITY_NAME,
-                    b.ELGBL_ZIP_CD,
-                    b.ELGBL_CNTY_CD,
-                    b.ELGBL_STATE_CD,
-                    b.ELGBL_PHNE_NUM_HOME
-
-                    from name_{self.YEAR} a
-                        inner join
-                        address_phone_{self.YEAR}_out b
-
-                    on a.submtg_state_cd = b.submtg_state_cd and
-                    a.msis_ident_num = b.msis_ident_num
-                """
-        self.de.append(type(self).__name__, z)
-
-        z = f"""insert into {DE.DA_SCHEMA}.TAF_ANN_DE_{self.tblname}
-                select
-                    {DE.table_id_cols}
-                    ,ELGBL_1ST_NAME
-                    ,ELGBL_LAST_NAME
-                    ,ELGBL_MDL_INITL_NAME
-                    ,ELGBL_ADR_MAIL_FLAG
-                    ,ELGBL_LINE_1_ADR
-                    ,ELGBL_LINE_2_ADR
-                    ,ELGBL_LINE_3_ADR
-                    ,ELGBL_CITY_NAME
-                    ,ELGBL_ZIP_CD
-                    ,ELGBL_CNTY_CD
-                    ,ELGBL_STATE_CD
-                    ,ELGBL_PHNE_NUM_HOME
-
-                from name_address_phone_{self.YEAR}
+        s = f"""{TAF_Closure.monthly_array('HH_PGM_PRTCPNT_FLAG')}
+                {TAF_Closure.last_best('HH_PRVDR_NUM')}
+                {TAF_Closure.last_best('HH_ENT_NAME)')}
+                {TAF_Closure.last_best('MH_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.last_best('SA_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.last_best('ASTHMA_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.last_best('DBTS_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.last_best('HRT_DIS_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.last_best('OVRWT_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.last_best('HIV_AIDS_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.last_best('OTHR_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.monthly_array('CMNTY_1ST_CHS_SPO_FLAG')}
+                {TAF_Closure.monthly_array('_1915I_SPO_FLAG')}
+                {TAF_Closure.monthly_array('_1915J_SPO_FLAG')}
+                {TAF_Closure.monthly_array('_1932A_SPO_FLAG')}
+                {TAF_Closure.monthly_array('_1915A_SPO_FLAG')}
+                {TAF_Closure.monthly_array('_1937_ABP_SPO_FLAG')}
+                {TAF_Closure.ever_year('HH_PGM_PRTCPNT_FLAG')}
+                {TAF_Closure.ever_year('CMNTY_1ST_CHS_SPO_FLAG)')}
+                {TAF_Closure.ever_year('_1915I_SPO_FLAG)')}
+                {TAF_Closure.ever_year('_1915J_SPO_FLAG)')}
+                {TAF_Closure.ever_year('_1932A_SPO_FLAG')}
+                {TAF_Closure.ever_year('_1915A_SPO_FLAG')}
+                {TAF_Closure.ever_year('_1937_ABP_SPO_FLAG')}
             """
+
+        # Create MFP_SPLMTL (which will go onto the base segment AND determines
+        # the records that go into the permanent MFP table)
+        os = DE.any_col('MH_HH_CHRNC_COND_FLAG SA_HH_CHRNC_COND_FLAG ASTHMA_HH_CHRNC_COND_FLAG \
+                                DBTS_HH_CHRNC_COND_FLAG HRT_DIS_HH_CHRNC_COND_FLAG \
+                                OVRWT_HH_CHRNC_COND_FLAG HIV_AIDS_HH_CHRNC_COND_FLAG \
+                                OTHR_HH_CHRNC_COND_FLAG', 'HH_CHRNC_COND_ANY')
+
+        DE.create_temp_table(tblname=self.table_name, subcols=s, outercols=os)
+
+        z = f"""create or replace temporary view hh_spo_{self.YEAR}2 as
+
+                select *
+                    {DE.any_col('HH_PGM_PRTCPNT_FLAG_EVR CMNTY_1ST_CHS_SPO_FLAG_EVR _1915I_SPO_FLAG_EVR _1915J_SPO_FLAG_EVR _1932A_SPO_FLAG_EVR _1915A_SPO_FLAG_EVR _1937_ABP_SPO_FLAG_EVR  HH_CHRNC_COND_ANY', 'HH_SPO_SPLMTL')}
+
+                from hh_spo_{self.YEAR}"""
+
         self.de.append(type(self).__name__, z)
+
+        return
+
+    def create_mfp_suppl_table(self):
+        z = f"""create or replace temporary view HH_SPO_SPLMTL_{self.YEAR} as
+        select submtg_state_cd
+                ,msis_ident_num
+                ,HH_SPO_SPLMTL
+
+        from hh_spo_{self.YEAR}2"""
+
+        self.de.append(type(self).__name__, z)
+
+        z = f"""insert into {self.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+                select
+
+                    {DE.table_id_cols}
+                    ,HH_PGM_PRTCPNT_FLAG_01
+                    ,HH_PGM_PRTCPNT_FLAG_02
+                    ,HH_PGM_PRTCPNT_FLAG_03
+                    ,HH_PGM_PRTCPNT_FLAG_04
+                    ,HH_PGM_PRTCPNT_FLAG_05
+                    ,HH_PGM_PRTCPNT_FLAG_06
+                    ,HH_PGM_PRTCPNT_FLAG_07
+                    ,HH_PGM_PRTCPNT_FLAG_08
+                    ,HH_PGM_PRTCPNT_FLAG_09
+                    ,HH_PGM_PRTCPNT_FLAG_10
+                    ,HH_PGM_PRTCPNT_FLAG_11
+                    ,HH_PGM_PRTCPNT_FLAG_12
+                    ,HH_PRVDR_NUM
+                    ,HH_ENT_NAME
+                    ,MH_HH_CHRNC_COND_FLAG
+                    ,SA_HH_CHRNC_COND_FLAG
+                    ,ASTHMA_HH_CHRNC_COND_FLAG
+                    ,DBTS_HH_CHRNC_COND_FLAG
+                    ,HRT_DIS_HH_CHRNC_COND_FLAG
+                    ,OVRWT_HH_CHRNC_COND_FLAG
+                    ,HIV_AIDS_HH_CHRNC_COND_FLAG
+                    ,OTHR_HH_CHRNC_COND_FLAG
+                    ,CMNTY_1ST_CHS_SPO_FLAG_01
+                    ,CMNTY_1ST_CHS_SPO_FLAG_02
+                    ,CMNTY_1ST_CHS_SPO_FLAG_03
+                    ,CMNTY_1ST_CHS_SPO_FLAG_04
+                    ,CMNTY_1ST_CHS_SPO_FLAG_05
+                    ,CMNTY_1ST_CHS_SPO_FLAG_06
+                    ,CMNTY_1ST_CHS_SPO_FLAG_07
+                    ,CMNTY_1ST_CHS_SPO_FLAG_08
+                    ,CMNTY_1ST_CHS_SPO_FLAG_09
+                    ,CMNTY_1ST_CHS_SPO_FLAG_10
+                    ,CMNTY_1ST_CHS_SPO_FLAG_11
+                    ,CMNTY_1ST_CHS_SPO_FLAG_12
+                    ,_1915I_SPO_FLAG_01
+                    ,_1915I_SPO_FLAG_02
+                    ,_1915I_SPO_FLAG_03
+                    ,_1915I_SPO_FLAG_04
+                    ,_1915I_SPO_FLAG_05
+                    ,_1915I_SPO_FLAG_06
+                    ,_1915I_SPO_FLAG_07
+                    ,_1915I_SPO_FLAG_08
+                    ,_1915I_SPO_FLAG_09
+                    ,_1915I_SPO_FLAG_10
+                    ,_1915I_SPO_FLAG_11
+                    ,_1915I_SPO_FLAG_12
+                    ,_1915J_SPO_FLAG_01
+                    ,_1915J_SPO_FLAG_02
+                    ,_1915J_SPO_FLAG_03
+                    ,_1915J_SPO_FLAG_04
+                    ,_1915J_SPO_FLAG_05
+                    ,_1915J_SPO_FLAG_06
+                    ,_1915J_SPO_FLAG_07
+                    ,_1915J_SPO_FLAG_08
+                    ,_1915J_SPO_FLAG_09
+                    ,_1915J_SPO_FLAG_10
+                    ,_1915J_SPO_FLAG_11
+                    ,_1915J_SPO_FLAG_12
+                    ,_1932A_SPO_FLAG_01
+                    ,_1932A_SPO_FLAG_02
+                    ,_1932A_SPO_FLAG_03
+                    ,_1932A_SPO_FLAG_04
+                    ,_1932A_SPO_FLAG_05
+                    ,_1932A_SPO_FLAG_06
+                    ,_1932A_SPO_FLAG_07
+                    ,_1932A_SPO_FLAG_08
+                    ,_1932A_SPO_FLAG_09
+                    ,_1932A_SPO_FLAG_10
+                    ,_1932A_SPO_FLAG_11
+                    ,_1932A_SPO_FLAG_12
+                    ,_1915A_SPO_FLAG_01
+                    ,_1915A_SPO_FLAG_02
+                    ,_1915A_SPO_FLAG_03
+                    ,_1915A_SPO_FLAG_04
+                    ,_1915A_SPO_FLAG_05
+                    ,_1915A_SPO_FLAG_06
+                    ,_1915A_SPO_FLAG_07
+                    ,_1915A_SPO_FLAG_08
+                    ,_1915A_SPO_FLAG_09
+                    ,_1915A_SPO_FLAG_10
+                    ,_1915A_SPO_FLAG_11
+                    ,_1915A_SPO_FLAG_12
+                    ,_1937_ABP_SPO_FLAG_01
+                    ,_1937_ABP_SPO_FLAG_02
+                    ,_1937_ABP_SPO_FLAG_03
+                    ,_1937_ABP_SPO_FLAG_04
+                    ,_1937_ABP_SPO_FLAG_05
+                    ,_1937_ABP_SPO_FLAG_06
+                    ,_1937_ABP_SPO_FLAG_07
+                    ,_1937_ABP_SPO_FLAG_08
+                    ,_1937_ABP_SPO_FLAG_09
+                    ,_1937_ABP_SPO_FLAG_10
+                    ,_1937_ABP_SPO_FLAG_11
+                    ,_1937_ABP_SPO_FLAG_12
+
+                    from hh_spo_{self.YEAR}2
+                    where HH_SPO_SPLMTL=1"""
+
+        self.de.append(type(self).__name__, z)
+        return
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
