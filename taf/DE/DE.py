@@ -28,12 +28,10 @@ class DE(TAF):
     #  - NWAIVSLOTS: # of waiver slots for waiver IDs/types (currently 10, set below)
     #  - MONTHSB: List of months backwards from December to January (to loop through when needed)
 
-    def __init__(self, de: DE_Runner, dtype, dval, year):
+    def __init__(self, de: DE_Runner):
 
         self.de = de
 
-        self.dtype = dtype
-        self.dval = dval
         self.YEAR = self.de.reporting_period.year
         self.st_fil_type: str = 'DE'
 

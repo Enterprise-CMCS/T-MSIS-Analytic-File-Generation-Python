@@ -7,7 +7,7 @@ class DE0001(DE):
 
     def __init__(self, de: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00001', 'TMSIS_PRMRY_DMGRPHC_ELGBLTY', 'PRMRY_DMGRPHC_ELE_EFCTV_DT', 'PRMRY_DMGRPHC_ELE_END_DT')
+        DE.__init__(self, DE, 'DE00001')
 
     # runner function
     def create(self):
@@ -337,7 +337,7 @@ class DE0001(DE):
                 {TAF_Closure.last_best('MDCR_BENE_ID')}
                 {TAF_Closure.last_best('MDCR_HICN_NUM')}
                 """,
-            outercols=f"""{DE.assign_nonmiss_month('ELGBL_LINE_1_ADR',    'ELGBL_LINE_1_ADR_HOME_MN',                        'ELGBL_LINE_1_ADR_HOME', monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_LINE_1_ADR_MAIL')}
+            outercols=f"""{DE.assign_nonmiss_month('ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_LINE_1_ADR_MAIL')}
                     {DE.assign_nonmiss_month('ELGBL_ZIP_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_ZIP_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_ZIP_CD_MAIL')}
                     {DE.assign_nonmiss_month('ELGBL_CNTY_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CNTY_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_CNTY_CD_MAIL')}
                     {DE.assign_nonmiss_month('ELGBL_STATE_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_STATE_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_STATE_CD_MAIL')}

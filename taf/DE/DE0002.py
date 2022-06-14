@@ -6,7 +6,7 @@ class DE0002(DE):
     tblname: str = "eligibilitiy_dates"
 
     def __init__(self, de: DE_Runner):
-        DE.__init__(self, de, "DE00002", "TMSIS_PRMRY_DMGRPHC_ELGBLTY", "PRMRY_DMGRPHC_ELE_EFCTV_DT", "PRMRY_DMGRPHC_ELE_END_DT")
+        DE.__init__(self, de)
 
     def create(self):
         super().create(self)
@@ -34,7 +34,7 @@ class DE0002(DE):
                 if {s} < 16 or {m} < 12:
                     z += ","
 
-    def eligibility_dates(self):
+    def eligibility_dates(self, dtype, dval):
         z = f"""create or replace temporary view {self.dtype}_dates_long as
                 select submtg_state_cd
                         ,msis_ident_num
