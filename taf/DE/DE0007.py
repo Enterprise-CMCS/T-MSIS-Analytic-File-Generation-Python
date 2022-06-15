@@ -7,9 +7,9 @@ class DE0007(DE):
     table_name: str = "mfp"
     tbl_suffix: str = "mfp"
 
-    def __init__(self, de: DE_Runner):
+    def __init__(self, runner: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00007')
+        DE.__init__(self, runner)
 
     def create(self):
         super().create()
@@ -46,19 +46,19 @@ class DE0007(DE):
         return
 
     def create_mfp_suppl_table(self):
-        z = f"""create or replace temporary view MFP_SPLMTL_{self.YEAR} as
+        z = f"""create or replace temporary view MFP_SPLMTL_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num
                 ,MFP_SPLMTL
 
-        from mfp_{self.YEAR}"""
+        from mfp_{self.de.YEAR}"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols}
+                    {DE.table_id_cols_sfx}
                     ,MFP_PRTCPTN_ENDD_RSN_CD
                     ,MFP_LVS_WTH_FMLY_CD
                     ,MFP_QLFYD_INSTN_CD
@@ -78,7 +78,7 @@ class DE0007(DE):
                     ,MFP_PRTCPNT_FLAG_12
                     ,MFP_PRTCPNT_FLAG_LTST
 
-                from mfp_{self.YEAR}
+                from mfp_{self.de.YEAR}
                 where MFP_SPLMTL=1"""
 
         self.de.append(type(self).__name__, z)

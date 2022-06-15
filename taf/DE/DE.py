@@ -4,54 +4,9 @@ from taf.TAF import TAF
 
 class DE(TAF):
 
-    #  - REPORTING_PERIOD: Date value from which we will take the last 4 characters to determine year
-    #                      (read from job control table)
-    #  - YEAR: Year of annual file (created from REPORTING_PERIOD)
-    #  - RUNDATE: Date of run
-    #  - VERSION: Version, in format of P1, P2, F1, F2, etc.. through P9/F9 (read from job control table)
-    #  - DA_RUN_ID: sequential run ID, increments by 1 for each run of the monthly/annual TAF (read from
-    #               job control table)
-    #  - ROWCOUNT: # of records in the final tables, which will be assigned after the creation of
-    #              each table and then inserted into the metadata table
-    #  - TMSIS_SCHEMA: TMSIS schema (e.g. dev, val, prod) in which the program is being run, assigned
-    #                  in the tmsis_config_macro above
-    #  - DA_SCHEMA: Data Analytic schema (e.g. dev, val, prod) in which the program is being run, assigned
-    #               in the da_config_macro above
-    #  - ST_FILTER: List of states to run (if no states are listed, then take all) (read from job control
-    #               table)
-    #  - PYEARS: Prior years (all years from 2014 to current year minus 1)
-    #  - GETPRIOR: Indicator for whether there are ANY records in the prior yeara to do prior year lookback.
-    #              If yes, set = 1 and look to prior yeara to get demographic information if current year
-    #              is missing for each enrollee/demographic column. This will be determined with the macro
-    #              count_prior_year
-    #  - NMCSLOTS: # of monthly slots for MC IDs/types (currently 16, set below)
-    #  - NWAIVSLOTS: # of waiver slots for waiver IDs/types (currently 10, set below)
-    #  - MONTHSB: List of months backwards from December to January (to loop through when needed)
-
-    def __init__(self, de: DE_Runner):
-
-        self.de = de
-
-        self.YEAR = self.de.reporting_period.year
-        self.st_fil_type: str = 'DE'
-
-        self.NMCSLOTS: int = 16
-        self.NWAIVSLOTS: int = 10
-        self.MONTHSB = ["12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01"]
-        self.REPORTING_PERIOD = ""
-        self.RUNDATE = ""
-        self.VERSION: int = 0
-        self.DA_RUN_ID: int = 0
-        self.ROWCOUNT: int = 0
-        self.TMSIS_SCHEMA = ""
-        self.DA_SCHEMA = ""
-        self.ST_FILTER = ""
-        self.GETPRIOR: int = 0
-        self.PYEARS: int = 0
-        self.NMCSLOTS = ""
-        self.NWAIVSLOTS = ""
-
-        self.create_initial_table()
+    def __init__(self, runner: DE_Runner):
+        self.de = runner
+        self.main_id = runner.main_id
 
     # ---------------------------------------------------------------------------------
     #
@@ -70,7 +25,6 @@ class DE(TAF):
     # ---------------------------------------------------------------------------------
     def create_temp_table(
             self,
-            fileseg,
             tblname,
             inyear,
             subcols,
@@ -124,35 +78,37 @@ class DE(TAF):
         if not _subcols8 == "":
             _subcols8 = "," + " " + _subcols8
 
-        z = f"""
-            create or replace temporary view {tblname}_{self.year} as
-            select * {_outercols}
-                from (
-                    select fseg.submtg_state_cd
-                        ,fseg.{self.main_id}
-                        ,fseg.splmtl_submsn_type
-                        {_subcols}
-                        {_subcols2}
-                        {_subcols3}
-                        {_subcols4}
-                        {_subcols5}
-                        {_subcols6}
-                        {_subcols7}
-                        {_subcols8}
+        if inyear == "":
+            inyear = self.de.YEAR
 
-                    from ( {self.join_monthly(fileseg, self.fil_typ, inyear, self.main_id) } )
+        z = f"""
+            create temp table {tblname}_{inyear}
+                select * {outercols}
+
+                    from (
+                        select enrl.submtg_state_cd,
+                            enrl.msis_ident_num
+                            {subcols}
+                            {subcols2}
+                            {subcols3}
+                            {subcols4}
+                            {subcols5}
+                            {subcols6}
+                            {subcols7}
+                            {subcols8}
+
+                        from ( {self.joinmonthly()} )
+
 
                     ) sub
 
             order by submtg_state_cd,
-                    {self.main_id},
-                    splmtl_submsn_type
+                    msis_ident_num
 
         """
         self.de.append(type(self).__name__, z)
 
-    def mc_type_rank(self, smonth: str, emonth: str):
-
+    def mc_type_rank(self, smonth: int, emonth: int):
         priorities = ["01", "04", "05", "06", "15", "07", "14", "17", "08", "09", "10",
                       "11", "12", "13", "18", "16", "02", "03", "60", "70", "80", "99"]
 
@@ -166,9 +122,10 @@ class DE(TAF):
             z += ",case "
             for p in priorities:
                 z += "when (\n"
-                for s in range(1, self.NMCSLOTS - 1):
+
+                for s in range(1, self.de.NMCSLOTS - 1):
                     z += f"""m{mm}.MC_PLAN_TYPE_CD{s} = '{p}'"""
-                    if s < self.NMCSLOTS - 2:
+                    if s < self.de.NMCSLOTS - 2:
                         z += " or\n"
             z += f""" ) then ('{p}')"""
             z += f"""else null
@@ -191,13 +148,15 @@ class DE(TAF):
 
         return z
 
-    def nonmiss_month(self, incol, outcol="", var_type="D"):
+    def nonmiss_month(incol, outcol="", var_type="D"):
 
         if outcol == "":
             outcol = incol + "_MN"
 
         cases = []
-        for m in self.monthsb:
+        for m in range(1, 13, -1):
+            if m < 10:
+                m = str(m).zfill(2)
 
             z = f"""m{m}.{incol} is not null"""
             if var_type != "D":
@@ -207,14 +166,18 @@ class DE(TAF):
 
         return f"""case when {' or '.join(cases)} then 1 else '00' end as {outcol}"""
 
-    def assign_nonmiss_month(self, outcol, monthval1, incol1, monthval2='', incol2=''):
+    def assign_nonmiss_month(outcol, monthval1, incol1, monthval2='', incol2=''):
 
         cases = []
-        for m in self.monthsb:
+        for m in range(1, 13, -1):
+            if m < 10:
+                m = str(m).zfill(2)
             cases.append(f"when {monthval1}='{m}' then {incol1}_{m}")
 
             if monthval2 != '':
-                for m in self.monthsb:
+                for m in range(1, 13, -1):
+                    if m < 10:
+                        m = str(m).zfill(2)
                     cases.append(f"when {monthval2}='{m}' then {incol2}_{m}")
 
         return f"case {' '.join(cases)} else null end as {outcol}"
@@ -229,8 +192,8 @@ class DE(TAF):
 
     def address_same_year(self, incol):
         cnt = 0
-        z = f""",case when yearpull = {self.YEAR} then c.{incol}"""
-        for pyear in range(1, self.PYEARS + 1):
+        z = f""",case when yearpull = {self.de.YEAR} then c.{incol}"""
+        for pyear in range(1, self.de.PYEARS + 1):
             cnt += 1
             z += f"""when yearpull = {pyear} then p{cnt}.{incol}"""
 
@@ -243,9 +206,9 @@ class DE(TAF):
             select distinct b.submtg_state_cd
                             ,msis_ident_num
 
-            from max_run_id_{cltype}_{self.YEAR} a
+            from max_run_id_{cltype}_{self.de.YEAR} a
                 inner join
-                {self.DA_SCHEMA}.taf_{cltype}h b
+                {self.de.DA_SCHEMA}.taf_{cltype}h b
 
             on a.submtg_state_cd = b.submtg_state_cd and
                 a.{cltype}_fil_dt = b.{cltype}_fil_dt and
@@ -256,19 +219,19 @@ class DE(TAF):
             """
         return z
 
-    def table_id_cols(self):
-        z = f"""{self.DA_SCHEMA} as DA_RUN_ID
-            ,cast (('{self.DA_RUN_ID}') || '-' || '{self.YEAR}' || '-' || '{self.VERSION}') || '-' ||
-            SUBMTG_STATE_CD || '-' || MSIS_IDENT_NUM) as varchar(40)) as UP_LINK_KEY
-            ,'{self.YEAR}' as UP_FIL_DT
-            ,('{self.VERSION}') as ANN_UP_VRSN
+    def table_id_cols_sfx(self, suffix=""):
+        z = f"""{self.de.DA_RUN_ID} as DA_RUN_ID
+            ,cast (('{self.de.DA_RUN_ID}') || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}') || '-' ||
+            SUBMTG_STATE_CD{suffix} || '-' || MSIS_IDENT_NUM{suffix}) as varchar(40)) as UP_LINK_KEY
+            ,'{self.de.YEAR}' as UP_FIL_DT
+            ,('{self.de.VERSION}') as ANN_UP_VRSN
             ,SUBMTG_STATE_CD
             ,MSIS_IDENT_NUM
             """
         return z
 
     def monthly_array_eldts(self, incol, outcol, nslots=16, truncfirst=1):
-
+        lday = "31"
         if outcol is None:
             outcol = incol
 
@@ -286,17 +249,17 @@ class DE(TAF):
                 if mm in ("01", "03", "05", "07", "08", "10", "12"):
                     lday = "31"
                 if mm in ("09", "04", "06", "11"):
-                    lday = 30
-                if mm == "02" and self.YEAR % 4 == 0 and (self.YEAR % 100 != 0 or self.YEAR % 400 == 0):
-                    lday = 29
+                    lday = "30"
+                if mm == "02" and self.de.YEAR % 4 == 0 and (self.de.YEAR % 100 != 0 or self.de.YEAR % 400 == 0):
+                    lday = "29"
                 elif mm == "02":
-                    lday = 28
+                    lday = "28"
 
                 # Truncate effective dates to the 1st of the month if prior to the first. Otherwise pull in the raw date.
                 if truncfirst == 1:
                     z = f""",case when m{mm}.{incol}.{snum} is not null and
-                            date_cmp(m{mm}.{incol}.{snum},to_date('01 {mm} {self.YEAR}'),'dd mm yyyy')) = -1
-                        then to_date('01 {mm} {self.YEAR}'),'dd mm yyyy')
+                            date_cmp(m{mm}.{incol}.{snum},to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')) = -1
+                        then to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')
                         else m{mm}.{incol}.{snum}
                         end as {outcol}{snum}_{mm}
                         """
@@ -305,19 +268,19 @@ class DE(TAF):
                 # raw date
                 if truncfirst == 0:
                     z = f""",case when m{mm}.{incol}.{snum} is not null and
-                            date_cmp(m{mm}.{incol}.{snum},to_date('{lday} {mm} {self.YEAR}'),'dd mm yyyy')) = 1
-                        then to_date('{lday} {mm} {self.YEAR}'),'dd mm yyyy')
+                            date_cmp(m{mm}.{incol}.{snum},to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy')) = 1
+                        then to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy')
                         else m{mm}.{incol}.{snum}
                         end as {outcol}{snum}_{mm}
                         """
         return z
 
     def mc_waiv_slots(self, incol, values, outcol, smonth=1, emonth=12):
-
         if incol == 'MC_PLAN_TYPE_CD':
-            nslots = self.NMCSLOTS
+            nslots = self.de.NMCSLOTS
+
         if incol == 'WVR_TYPE_CD':
-            nslots = self.NWAIVSLOTS
+            nslots = self.de.NWAIVSLOTS
 
         for m in range(smonth, emonth + 1):
             if m < 10:
@@ -333,33 +296,27 @@ class DE(TAF):
                 end as {outcol}_{m}"""
 
     def run_mc_slots(self, smonth, emonth):
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('01'), 'CMPRHNSV_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('02'), 'TRDTNL_PCCM_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('03'), 'ENHNCD_PCCM_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('04'), 'HIO_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('05'), 'PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('06'), 'PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('07'), 'LTC_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('08'), 'MH_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('09'), 'MH_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('10'), 'SUD_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('11'), 'SUD_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('12'), 'MH_SUD_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('13'), 'MH_SUD_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('14'), 'DNTL_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('15'), 'TRANSPRTN_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('16'), 'DEASE_MGMT_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('17'), 'PACE_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('18'), 'PHRMCY_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('60'), 'ACNTBL_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('70'), 'HM_HOME_MC_PLAN', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('MC_PLAN_TYPE_CD', ('80'), 'IC_DUALS_MC_PLAN', smonth=smonth, emonth=emonth)
-
-    def mc_nonnull_zero(self, smonth, emonth):
-        pass
-
-    def waiv_nonnull(self, outcol):
-        pass
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('01')", outcol='CMPRHNSV_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('02')", outcol='TRDTNL_PCCM_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('03')", outcol='ENHNCD_PCCM_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('04')", outcol='HIO_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('05')", outcol='PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('06')", outcol='PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('07')", outcol='LTC_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('08')", outcol='MH_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('09')", outcol='MH_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('10')", outcol='SUD_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('11')", outcol='SUD_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('12')", outcol='MH_SUD_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('13')", outcol='MH_SUD_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('14')", outcol='DNTL_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('15')", outcol='TRANSPRTN_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('16')", outcol='DEASE_MGMT_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('17')", outcol='PACE_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('18')", outcol='PHRMCY_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('60')", outcol='ACNTBL_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('70')", outcol='HM_HOME_MC_PLAN', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="('80')", outcol='IC_DUALS_MC_PLAN', smonth=smonth, emonth=emonth)
 
     def sum_months(incol, raw=0, outcol=""):
 
@@ -385,16 +342,43 @@ class DE(TAF):
 
     def run_waiv_slots(self, smonth, emonth):
 
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('22')", '_1115_PHRMCY_PLUS_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('23')", '_1115_DSTR_REL_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('24')", '_1115_FP_ONLY_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('06','07','08','09','10','11','12','13','14','15','16','17','18','19','33')", '_1915C_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('22')", outcol='_1115_PHRMCY_PLUS_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('23')", outcol='_1115_DSTR_REL_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('24')", outcol='_1115_FP_ONLY_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('06','07','08','09','10','11','12','13','14','15','16','17','18','19','33')", outcol='_1915C_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('20')", outcol='_1915BC_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('02','03','04','05','32')", outcol='_1915B_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('01')", outcol='_1115_OTHR_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('21')", outcol='_1115_HIFA_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('25','26','27','28','29','30','31')", outcol='_OTHR_WVR', smonth=smonth, emonth=emonth)
 
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('20')", '_1915BC_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('02','03','04','05','32')", '_1915B_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('01')", '_1115_OTHR_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('21')", '_1115_HIFA_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots('WVR_TYPE_CD', "('25','26','27','28','29','30','31')", '_OTHR_WVR', smonth=smonth, emonth=emonth)
+    # Non-null/00 plan type
+    # OR non-0, 8, 9 only or non-null ID
+    # TODO:
+    def mc_nonnull_zero(self, outcol, smonth, emonth):
+
+        z = f""",case when %do m=&smonth. %to &emonth.;
+                        %if %sysfunc(length(&m.)) = 1 %then %let m=%sysfunc(putn(&m.,z2));
+                            %do s=1 %to &nmcslots.;
+
+                            (nullif(nullif(trim(m&m..MC_PLAN_TYPE_CD&s.),''),'00') is not null or
+                            (nullif(trim(m&m..MC_PLAN_ID&s.),'') is not null and
+
+                            trim(m&m..MC_PLAN_ID&s.) not in ('0','00','000','0000','00000','000000','0000000',
+                                                            '00000000','000000000','0000000000','00000000000','000000000000',
+                                                            '8','88','888','8888','88888','888888','8888888',
+                                                            '88888888','888888888','8888888888','88888888888','888888888888',
+                                                            '9','99','999','9999','99999','999999','9999999',
+                                                            '99999999','999999999','9999999999','99999999999','999999999999')) )
+
+                            %if &m.< {emonth} or &s.< {self.de.NMCSLOTS} %then %do; or %end;
+
+                        %end;
+                    %end;
+            then 1
+            else 0
+            end as {outcol}_{smonth}_{emonth}"""
+        return z
 
     def any_col(incols: str, outcol, condition='=1'):
         cols = incols.split(" ")
@@ -409,6 +393,59 @@ class DE(TAF):
                 end as {outcol}
             """
         return z
+
+    # Create the backbone of unique state/msis_id to then left join each month back to
+    # and loop through each month to left join back to the backbone
+
+    def joinmonthly(self):
+        z = f"""(select a.submtg_state_cd,
+                b.msis_ident_num,
+                count(a.submtg_state_cd) as nmonths
+
+        from max_run_id_bsf_{self.de.YEAR} a
+                inner join
+                {self.de.DA_SCHEMA}.taf_mon_bsf b
+
+            on a.submtg_state_cd = b.submtg_state_cd and
+                a.bsf_fil_dt = b.bsf_fil_dt and
+                a.da_run_id = b.da_run_id
+
+            group by a.submtg_state_cd,
+                    b.msis_ident_num) as enrl"""
+
+        for mm in range(1, 13):
+            if mm < 10:
+                mm = str(mm).zfill(2)
+            z += f"""left join
+
+                (select b.* from
+
+                max_run_id_bsf_{self.de.YEAR} a
+                inner join
+                {self.de.DA_SCHEMA}.taf_mon_bsf b
+
+                on a.submtg_state_cd = b.submtg_state_cd and
+                    a.bsf_fil_dt = b.bsf_fil_dt and
+                    a.da_run_id = b.da_run_id
+
+                where substring(a.bsf_fil_dt,5,2)='{mm}') as m{mm}.
+
+                on enrl.submtg_state_cd=m&m..submtg_state_cd and
+                    enrl.msis_ident_num=m&m..msis_ident_num"""
+        return z
+
+    # def create_segment(tblname, 'FIL_4TH_NODE');
+
+    #     %create_&tblname.;
+
+    #     sysecho 'in get cnt';
+    #     %get_ann_count(&tblname.);
+
+    #     sysecho 'create metainfo';
+    #     %CREATE_META_INFO(&DA_SCHEMA., TAF_ANN_DE_&tblname., &DA_RUN_ID., &ROWCOUNT., &FIL_4TH_NODE.);
+
+    #     sysecho 'create EFT file metadata';
+    #     %create_efts_metadata;
 
     # -----------------------------------------------------------------------------
     # CC0 1.0 Universal

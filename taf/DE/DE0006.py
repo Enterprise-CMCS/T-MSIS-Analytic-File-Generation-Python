@@ -7,9 +7,9 @@ class DE0006(DE):
     tblname: str = "waiver"
     tbl_suffix: str = "wvr"
 
-    def __init__(self, de: DE_Runner):
+    def __init__(self, runner: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00006')
+        DE.__init__(self, runner)
 
     def create(self):
         super().create()
@@ -40,12 +40,12 @@ class DE0006(DE):
         return
 
     def create_wvr_suppl_table(self):
-        z = f"""create or replace temporary view WAIVER_SPLMTL_{self.YEAR} as
+        z = f"""create or replace temporary view WAIVER_SPLMTL_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num
                 ,WAIVER_SPLMTL
 
-        from waiver_{self.YEAR}"""
+        from waiver_{self.de.YEAR}"""
 
         self.de.append(type(self).__name__, z)
 
@@ -113,7 +113,7 @@ class DE0006(DE):
                 z += f""",b.slot
                         ,b.month
 
-                        from waiver_{self.YEAR} a
+                        from waiver_{self.de.YEAR} a
                             join
                             numbers b
                             on true) sub ) sub2
@@ -218,7 +218,7 @@ class DE0006(DE):
                 b._1915C_WVR_TYPE,
                 b._1115_WVR_TYPE
 
-            from waiver_{self.YEAR} a
+            from waiver_{self.de.YEAR} a
                 full join
                 waiver_latest b
 
@@ -229,10 +229,10 @@ class DE0006(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols}
+                    {DE.table_id_cols_sfx}
                     ,_1915C_WVR_TYPE
                     ,_1115_WVR_TYPE
                     ,_1115_PHRMCY_PLUS_WVR_MOS

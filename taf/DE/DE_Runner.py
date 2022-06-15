@@ -19,6 +19,50 @@ class DE_Runner(TAF_Runner):
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         super().__init__(reporting_period, state_code, run_id)
 
+        #  - REPORTING_PERIOD: Date value from which we will take the last 4 characters to determine year
+    #                      (read from job control table)
+    #  - YEAR: Year of annual file (created from REPORTING_PERIOD)
+    #  - RUNDATE: Date of run
+    #  - VERSION: Version, in format of P1, P2, F1, F2, etc.. through P9/F9 (read from job control table)
+    #  - DA_RUN_ID: sequential run ID, increments by 1 for each run of the monthly/annual TAF (read from
+    #               job control table)
+    #  - ROWCOUNT: # of records in the final tables, which will be assigned after the creation of
+    #              each table and then inserted into the metadata table
+    #  - TMSIS_SCHEMA: TMSIS schema (e.g. dev, val, prod) in which the program is being run, assigned
+    #                  in the tmsis_config_macro above
+    #  - DA_SCHEMA: Data Analytic schema (e.g. dev, val, prod) in which the program is being run, assigned
+    #               in the da_config_macro above
+    #  - ST_FILTER: List of states to run (if no states are listed, then take all) (read from job control
+    #               table)
+    #  - PYEARS: Prior years (all years from 2014 to current year minus 1)
+    #  - GETPRIOR: Indicator for whether there are ANY records in the prior yeara to do prior year lookback.
+    #              If yes, set = 1 and look to prior yeara to get demographic information if current year
+    #              is missing for each enrollee/demographic column. This will be determined with the macro
+    #              count_prior_year
+    #  - NMCSLOTS: # of monthly slots for MC IDs/types (currently 16, set below)
+    #  - NWAIVSLOTS: # of waiver slots for waiver IDs/types (currently 10, set below)
+    #  - MONTHSB: List of months backwards from December to January (to loop through when needed)
+
+        self.YEAR = self.reporting_period.year
+        self.st_fil_type: str = 'DE'
+        self.fil_typ = "DE"
+        self.fileseg = "de"
+        self.LFIL_TYP = self.fil_typ.lower()
+        self.main_id = "MC_PLAN_ID"
+
+        self.NMCSLOTS: int = 16
+        self.NWAIVSLOTS: int = 10
+        self.MONTHSB = ["12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01"]
+        self.RUNDATE = ""
+        self.VERSION: int = 0
+        self.DA_RUN_ID: int = 0
+        self.ROWCOUNT: int = 0
+        self.TMSIS_SCHEMA = ""
+        self.DA_SCHEMA = ""
+        self.ST_FILTER = ""
+        self.GETPRIOR: int = 0  # TODO: how does this get set?
+        self.PYEARS: int = 0
+
     # ---------------------------------------------------------------------------------
     #
     #

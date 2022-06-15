@@ -8,18 +8,20 @@ from taf.TAF_Closure import TAF_Closure
 class DE0003(DE):
     tblname: str = "cntct_dtls"
 
-    def __init__(self, de: DE_Runner):
+    def __init__(self, runner: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00003')
+        DE.__init__(DE, runner)
 
     def create(self):
-        super().create(self)
+        super().create()
         self.create_temp()
-        self.address_phone(self.YEAR)
+        self.address_phone(runyear=self.de.YEAR)
         self.create_CNTCT_DTLS()
 
     def address_phone(self, runyear):
         DE.create_temp_table(self,
+                             tblname=self.tblname,
+                             inyear=runyear,
                              subcols=f"""{TAF_Closure.monthly_array('ELGBL_LINE_1_ADR_HOME')}
                                          {TAF_Closure.monthly_array('ELGBL_LINE_2_ADR_HOME')}
                                          {TAF_Closure.monthly_array('ELGBL_LINE_3_ADR_HOME')}
@@ -38,7 +40,7 @@ class DE0003(DE):
                                          {DE.nonmiss_month('ELGBL_LINE_1_ADR_HOME')}
                                          {DE.nonmiss_month('ELGBL_LINE_1_ADR_MAIL')}
                                      """,
-                             outercols=f"""{DE.address_flag()}
+                             outercols=f"""{DE.address_flag(self)}
                                            {DE.assign_nonmiss_month('ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_1_ADR_MAIL')}
                                            {DE.assign_nonmiss_month('ELGBL_LINE_2_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_2_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_2_ADR_MAIL')}
                                            {DE.assign_nonmiss_month('ELGBL_LINE_3_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_3_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_3_ADR_MAIL')}
@@ -51,28 +53,29 @@ class DE0003(DE):
     def create_temp(self):
         DE.create_temp_table(self,
                              tblname='name',
+                             inyear=self.de.YEAR,
                              subcols=f"""{TAF_Closure.last_best('ELGBL_1ST_NAME')}
                                          {TAF_Closure.last_best('ELGBL_LAST_NAME')}
                                          {TAF_Closure.last_best('ELGBL_MDL_INITL')}
                             """)
 
     def create_CNTCT_DTLS(self):
-        if self.GETPRIOR == 1:
+        if self.de.GETPRIOR == 1:
             cnt = 0
-            if self.GETPRIOR == 1:
-                for pyear in range(1, self.PYEARS + 1):
+            if self.de.GETPRIOR == 1:
+                for pyear in range(1, self.de.PYEARS + 1):
                     self.address_phone(pyear)
 
             # Join current and prior year(s) and first, identify year pulled for latest non-null value of ELGBL_LINE_1_ADR.
             # Use that year to then take value for all cols
 
-            z = f"""create or replace temporary view address_phone_{self.YEAR}_out as
+            z = f"""create or replace temporary view address_phone_{self.de.YEAR}_out as
                     select c.submtg_state_cd,
                         c.msis_ident_num
 
             {TAF_Closure.last_best('ELGBL_LINE_1_ADR', prior=1)}
-            ,case when c.ELGBL_LINE_1_ADR is not null then {self.YEAR}"""
-            for pyear in range(1, self.PYEARS + 1):
+            ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""
+            for pyear in range(1, self.de.PYEARS + 1):
                 cnt += 1
                 z += f"""when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear}"""
             z += f"""else null
@@ -88,22 +91,22 @@ class DE0003(DE):
 
                 {TAF_Closure.last_best('ELGBL_PHNE_NUM_HOME', prior=1)}
 
-                from address_phone_{self.YEAR} c"""
+                from address_phone_{self.de.YEAR} c"""
             cnt = 0
-            for pyear in range(1, self.PYEARS + 1):
+            for pyear in range(1, self.de.PYEARS + 1):
                 f"""left join
-                    address_phone_{self.YEAR} p{cnt}
+                    address_phone_{self.de.YEAR} p{cnt}
 
                 on c.submtg_state_cd = p{cnt}.submtg_state_cd and
                     c.msis_ident_num = p{cnt}.msis_ident_num
                 """
-        self.de.append(type(self).__name__, z)
+            self.de.append(type(self).__name__, z)
 
-        if self.GETPRIOR == 0:
-            z = f"""alter table address_phone_{self.YEAR} rename to address_phone_{self.YEAR}_out"""
-        self.de.append(type(self).__name__, z)
+        if self.de.GETPRIOR == 0:
+            z = f"""alter table address_phone_{self.de.YEAR} rename to address_phone_{self.de.YEAR}_out"""
+            self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view name_address_phone_{self.YEAR} as
+        z = f"""create or replace temporary view name_address_phone_{self.de.YEAR} as
                 select a.submtg_state_cd,
                     a.msis_ident_num,
                     a.ELGBL_1ST_NAME,
@@ -119,18 +122,18 @@ class DE0003(DE):
                     b.ELGBL_STATE_CD,
                     b.ELGBL_PHNE_NUM_HOME
 
-                    from name_{self.YEAR} a
+                    from name_{self.de.YEAR} a
                         inner join
-                        address_phone_{self.YEAR}_out b
+                        address_phone_{self.de.YEAR}_out b
 
                     on a.submtg_state_cd = b.submtg_state_cd and
                     a.msis_ident_num = b.msis_ident_num
                 """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {DE.DA_SCHEMA}.TAF_ANN_DE_{self.tblname}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tblname}
                 select
-                    {DE.table_id_cols}
+                    {DE.table_id_cols_sfx(self)}
                     ,ELGBL_1ST_NAME
                     ,ELGBL_LAST_NAME
                     ,ELGBL_MDL_INITL_NAME
@@ -144,7 +147,7 @@ class DE0003(DE):
                     ,ELGBL_STATE_CD
                     ,ELGBL_PHNE_NUM_HOME
 
-                from name_address_phone_{self.YEAR}
+                from name_address_phone_{self.de.YEAR}
             """
         self.de.append(type(self).__name__, z)
 

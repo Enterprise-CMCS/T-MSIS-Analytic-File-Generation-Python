@@ -5,14 +5,16 @@ from taf.TAF_Closure import TAF_Closure
 
 class DE0001(DE):
 
-    def __init__(self, de: DE_Runner):
+    def __init__(self, runner: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00001')
+        DE.__init__(self, runner)
+        self.de = runner
 
     # runner function
     def create(self):
-        self.create_temp(self)
-        self.create_base(self, "")
+        self.create_temp()
+        self.demographics(self.de.YEAR)
+        self.create_base("base_demo")
 
     # define base columns here
     def basecols(self):
@@ -218,10 +220,9 @@ class DE0001(DE):
 
     # Create the base segment, pulling in only non-demographic columns for which we DO NOT look to the prior year.
     # Set all pregnancy flags to null
-    def create_temp(
-        self,
-        tblname="base_nondemo",
-        s=f"""
+    def create_temp(self):
+        tblname = "base_nondemo"
+        s = f"""
             {TAF_Closure.last_best('CTZNSHP_VRFCTN_IND')}
             {TAF_Closure.last_best('IMGRTN_STUS_CD')}
             {TAF_Closure.last_best('IMGRTN_VRFCTN_IND')}
@@ -261,7 +262,7 @@ class DE0001(DE):
             {TAF_Closure.monthly_array('DUAL_ELGBL_CD')}
             {TAF_Closure.last_best('DUAL_ELGBL_CD,outcol=DUAL_ELGBL_CD_LTST')}
 
-            {DE.mc_type_rank('(smonth=1,emonth=2')}
+            {DE.mc_type_rank(self, smonth=1, emonth=2)}
 
             {TAF_Closure.monthly_array('RSTRCTD_BNFTS_CD')}
             {TAF_Closure.last_best('RSTRCTD_BNFTS_CD,outcol=RSTRCTD_BNFTS_CD_LTST')}
@@ -274,15 +275,16 @@ class DE0001(DE):
             {TAF_Closure.last_best('TPL_INSRNC_CVRG_IND')}
             {TAF_Closure.last_best('TPL_OTHR_CVRG_IND')}
             {DE.misg_enrlm_type()}
-            """,
+            """
 
-        s2=f"""{DE.mc_type_rank('(smonth=3, emonth=4')}""",
-        s3=f"""{DE.mc_type_rank('(smonth=5, emonth=6')}""",
-        s4=f"""{DE.mc_type_rank('(smonth=7, emonth=8')}""",
-        s5=f"""{DE.mc_type_rank('(smonth=9, emonth=10')}""",
-        s6=f"""{DE.mc_type_rank('(smonth=11, emonth=12')}"""
-    ):
-        self.create_temp_table(self, tblname, self.YEAR, subcols=s,
+        s2 = f"""{DE.mc_type_rank(self, smonth=3, emonth=4)}"""
+        s3 = f"""{DE.mc_type_rank(self, smonth=5, emonth=6)}"""
+        s4 = f"""{DE.mc_type_rank(self, smonth=7, emonth=8)}"""
+        s5 = f"""{DE.mc_type_rank(self, smonth=9, emonth=10)}"""
+        s6 = f"""{DE.mc_type_rank(self, smonth=11, emonth=12)}"""
+
+        # TODO: What is fileseg??
+        self.create_temp_table(tblname, self.de.YEAR, subcols=s,
                                subcols2=s2, subcols3=s3, subcols4=s4,
                                subcols5=s5, subcols6=s6)
 
@@ -299,7 +301,7 @@ class DE0001(DE):
         DE.create_temp_table(
             self,
             tblname="basedemo",
-            inyear=self.runyear,
+            inyear=self.de.YEAR,
             subcols=f"""
                 {TAF_Closure.last_best('SSN_NUM')}
                 {TAF_Closure.last_best('BIRTH_DT')}
@@ -347,15 +349,15 @@ class DE0001(DE):
 
     def create_base(self, tblname):
         cnt = 0
-        if self.GETPRIOR == 1:
-            for pyear in range(1, self.PYEARS + 1):
+        if self.de.GETPRIOR == 1:
+            for pyear in range(1, self.de.PYEARS + 1):
                 self.demographics(pyear)
 
                 # Now join the above tables together to use prior years if current year is missing, keeping demographics only.
                 # For address information, identify year pulled for latest non-null value of ELGBL_LINE_1_ADR.
                 # Use that year to then take value for all cols
 
-                z = f"""create or replace temporary view base_demo_{self.YEAR}_out as
+                z = f"""create or replace temporary view base_demo_{self.de.YEAR}_out as
                 select
                      c.msis_ident_num
                     ,c.submtg_state_cd
@@ -382,9 +384,9 @@ class DE0001(DE):
                     {TAF_Closure.last_best('RACE_ETHNCTY_FLAG',prior=1)}
                     {TAF_Closure.last_best('RACE_ETHNCTY_EXP_FLAG',prior=1)}
 
-                    ,case when c.ELGBL_LINE_1_ADR is not null then {self.YEAR}"""
+                    ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""
 
-                for pyear in range(1, self.PYEARS + 1):
+                for pyear in range(1, self.de.PYEARS + 1):
                     cnt += 1
                     z += f"""when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear}"""
 
@@ -399,9 +401,9 @@ class DE0001(DE):
                     {TAF_Closure.last_best('MDCR_BENE_ID',prior=1)}
                     {TAF_Closure.last_best('MDCR_HICN_NUM',prior=1)}
 
-                    from base_demo_{self.YEAR} c"""
+                    from base_demo_{self.de.YEAR} c"""
 
-                for pyear in range(1, self.PYEARS + 1):
+                for pyear in range(1, self.de.PYEARS + 1):
                     cnt += 1
                     z += f"""
                         left join
@@ -413,11 +415,11 @@ class DE0001(DE):
             # Now if we do NOT have prior year data, simply rename base_demo_YR to base_demo_out
             self.de.append(type(self).__name__, z)
 
-        if self.GETPRIOR == 0:
-            z = f"""alter table base_demo_{self.YEAR} rename to base_demo_{self.YEAR}_out"""
+        if self.de.GETPRIOR == 0:
+            z = f"""alter table base_demo_{self.de.YEAR} rename to base_demo_{self.de.YEAR}_out"""
             self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view base_{self.YEAR} as
+        z = f"""create or replace temporary view base_{self.de.YEAR} as
                 select a.*,
                     b.SSN_NUM as SSN_NUM_TEMP,
                     b.BIRTH_DT,
@@ -449,9 +451,9 @@ class DE0001(DE):
                     b.MDCR_BENE_ID,
                     b.MDCR_HICN_NUM
 
-                from base_nondemo_{self.YEAR} a
+                from base_nondemo_{self.de.YEAR} a
                         inner join
-                        base_demo_{self.YEAR}_out b
+                        base_demo_{self.de.YEAR}_out b
 
                 on a.submtg_state_cd = b.submtg_state_cd and
                     a.msis_ident_num = b.msis_ident_num
@@ -459,7 +461,7 @@ class DE0001(DE):
         self.de.append(type(self).__name__, z)
 
         # TODO: Do we need to drop temp table? I don't think so
-        z = f"""create or replace temporary view base_{self.YEAR}_final0
+        z = f"""create or replace temporary view base_{self.de.YEAR}_final0
             select a.*"""
 
         for m in range(1, 13):
@@ -486,39 +488,39 @@ class DE0001(DE):
                 ,g.LTSS_SPLMTL
                 ,g.OTHER_NEEDS_SPLMTL
 
-            from base_{self.YEAR} a
+            from base_{self.de.YEAR} a
                 left join
-                enrolled_days_{self.YEAR} b
+                enrolled_days_{self.de.YEAR} b
 
                 on a.submtg_state_cd = b.submtg_state_cd and
                 a.msis_ident_num = b.msis_ident_num
 
                 inner join
-                MNGD_CARE_SPLMTL_{self.YEAR} c
+                MNGD_CARE_SPLMTL_{self.de.YEAR} c
 
                 on a.submtg_state_cd = c.submtg_state_cd and
                 a.msis_ident_num = c.msis_ident_num
 
                 inner join
-                WAIVER_SPLMTL_{self.YEAR} d
+                WAIVER_SPLMTL_{self.de.YEAR} d
 
                 on a.submtg_state_cd = d.submtg_state_cd and
                 a.msis_ident_num = d.msis_ident_num
 
                 inner join
-                MFP_SPLMTL_{self.YEAR} e
+                MFP_SPLMTL_{self.de.YEAR} e
 
                 on a.submtg_state_cd = e.submtg_state_cd and
                 a.msis_ident_num = e.msis_ident_num
 
                 inner join
-                HH_SPO_SPLMTL_{self.YEAR} f
+                HH_SPO_SPLMTL_{self.de.YEAR} f
 
                 on a.submtg_state_cd = f.submtg_state_cd and
                 a.msis_ident_num = f.msis_ident_num
 
                 inner join
-                DIS_NEED_SPLMTLS_{self.YEAR} g
+                DIS_NEED_SPLMTLS_{self.de.YEAR} g
 
                 on a.submtg_state_cd = g.submtg_state_cd and
                 a.msis_ident_num = g.msis_ident_num
@@ -542,7 +544,7 @@ class DE0001(DE):
             """
         self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view base_{self.YEAR}_final as
+        z = f"""create or replace temporary view base_{self.de.YEAR}_final as
 
                 select a.*
                     ,coalesce(a.submtg_state_cd,b.submtg_state_cd) as submtg_state_cd_comb
@@ -556,7 +558,7 @@ class DE0001(DE):
                             end as MISG_ELGBLTY_DATA_IND
 
 
-                from base_{self.YEAR}_final0 a
+                from base_{self.de.YEAR}_final0 a
                     full join
                     claims_ids b
 
@@ -565,13 +567,13 @@ class DE0001(DE):
             """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.DA_SCHEMA}.TAF_ANN_DE_{tblname}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{tblname}
             (DA_RUN_ID, DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, SUBMTG_STATE_CD, MSIS_IDENT_NUM {self.basecols()})
             select
-                {DE.table_id_cols(suffix='_comb')}
+                {DE.table_id_cols_sfx(self, suffix='_comb')}
                 {self.basecols}
 
-            from base_{self.YEAR}_final
+            from base_{self.de.YEAR}_final
             """
 
         self.de.append(type(self).__name__, z)
