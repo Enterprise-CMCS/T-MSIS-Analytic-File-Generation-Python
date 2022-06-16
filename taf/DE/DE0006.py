@@ -17,23 +17,23 @@ class DE0006(DE):
         self.create_wvr_suppl_table()
 
     def create_temp(self):
-        s = f"""{DE.run_waiv_slots(1, 3)}
-                {TAF_Closure.monthly_array('WVR_ID', nslots=self.NWAIVSLOTS)}
-                {TAF_Closure.monthly_array('WVR_TYPE_CD', nslots=self.NWAIVSLOTS)}
-                {TAF_Closure.monthly_array('SECT_1115A_DEMO_IND')}""",
-        s2 = f"""{DE.run_waiv_slots(4, 6)}""",
-        s3 = f"""{DE.run_waiv_slots(7, 9)}""",
-        s4 = f"""{DE.run_waiv_slots(10, 12)}""",
-        s5 = f"""{DE.waiv_nonnull('WAIVER_SPLMTL')}"""
-        os = f"""{DE.sum_months('_1115_PHRMCY_PLUS_WVR')}
-                 {DE.sum_months('_1115_DSTR_REL_WVR')}
-                 {DE.sum_months('_1115_FP_ONLY_WVR')}
-                 {DE.sum_months('_1915C_WVR')}
-                 {DE.sum_months('_1915BC_WVR')}
-                 {DE.sum_months('_1915B_WVR')}
-                 {DE.sum_months('_1115_OTHR_WVR')}
-                 {DE.sum_months('_1115_HIFA_WVR')}
-                 {DE.sum_months('_OTHR_WVR')}
+        s = f"""{DE.run_waiv_slots(self, 1, 3)}
+                {TAF_Closure.monthly_array(self, 'WVR_ID', nslots=self.NWAIVSLOTS)}
+                {TAF_Closure.monthly_array(self, 'WVR_TYPE_CD', nslots=self.NWAIVSLOTS)}
+                {TAF_Closure.monthly_array(self, 'SECT_1115A_DEMO_IND')}""",
+        s2 = f"""{DE.run_waiv_slots(self, 4, 6)}""",
+        s3 = f"""{DE.run_waiv_slots(self, 7, 9)}""",
+        s4 = f"""{DE.run_waiv_slots(self, 10, 12)}""",
+        s5 = f"""{DE.waiv_nonnull(self, 'WAIVER_SPLMTL')}"""
+        os = f"""{DE.sum_months(self, '_1115_PHRMCY_PLUS_WVR')}
+                 {DE.sum_months(self, '_1115_DSTR_REL_WVR')}
+                 {DE.sum_months(self, '_1115_FP_ONLY_WVR')}
+                 {DE.sum_months(self, '_1915C_WVR')}
+                 {DE.sum_months(self, '_1915BC_WVR')}
+                 {DE.sum_months(self, '_1915B_WVR')}
+                 {DE.sum_months(self, '_1115_OTHR_WVR')}
+                 {DE.sum_months(self, '_1115_HIFA_WVR')}
+                 {DE.sum_months(self, '_OTHR_WVR')}
             """
         DE.create_temp_table(tblname=self.tblname, subcols=s, subcols2=s2, subcols3=s3,
                              subcols4=s4, subcols5=s5, outercols=os)

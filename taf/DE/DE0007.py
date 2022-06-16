@@ -20,13 +20,13 @@ class DE0007(DE):
         # Create an indicator for ANY of the MFP monthly flags = 1 which we will
         # use to create MFP_SPLMTL
 
-        s = f"""{TAF_Closure.last_best('MFP_PRTCPTN_ENDD_RSN_CD')}
-                {TAF_Closure.last_best('MFP_LVS_WTH_FMLY_CD')}
-                {TAF_Closure.last_best('MFP_QLFYD_INSTN_CD')}
-                {TAF_Closure.last_best('MFP_RINSTLZD_RSN_CD')}
-                {TAF_Closure.last_best('MFP_QLFYD_RSDNC_CD')}
+        s = f"""{DE.last_best(self, 'MFP_PRTCPTN_ENDD_RSN_CD')}
+                {DE.last_best(self, 'MFP_LVS_WTH_FMLY_CD')}
+                {DE.last_best(self, 'MFP_QLFYD_INSTN_CD')}
+                {DE.last_best(self, 'MFP_RINSTLZD_RSN_CD')}
+                {DE.last_best(self, 'MFP_QLFYD_RSDNC_CD')}
                 {TAF_Closure.monthly_array('MFP_PRTCPNT_FLAG')}
-                {TAF_Closure.last_best('MFP_PRTCPNT_FLAG', outcol='MFP_PRTCPNT_FLAG_LTST')}
+                {DE.last_best(self, 'MFP_PRTCPNT_FLAG', outcol='MFP_PRTCPNT_FLAG_LTST')}
                 {TAF_Closure.ever_year('MFP_PRTCPNT_FLAG')}
             """
 

@@ -223,9 +223,9 @@ class DE0001(DE):
     def create_temp(self):
         tblname = "base_nondemo"
         s = f"""
-            {TAF_Closure.last_best('CTZNSHP_VRFCTN_IND')}
-            {TAF_Closure.last_best('IMGRTN_STUS_CD')}
-            {TAF_Closure.last_best('IMGRTN_VRFCTN_IND')}
+            {DE.last_best(self, 'CTZNSHP_VRFCTN_IND')}
+            {DE.last_best(self, 'IMGRTN_STUS_CD')}
+            {DE.last_best(self, 'IMGRTN_VRFCTN_IND')}
 
             ,null :: smallint as PRGNCY_FLAG_01
             ,null :: smallint as PRGNCY_FLAG_02
@@ -241,39 +241,39 @@ class DE0001(DE):
             ,null :: smallint as PRGNCY_FLAG_12
             ,null :: smallint as PRGNCY_FLAG_EVR
 
-            {TAF_Closure.monthly_array('ELGBLTY_GRP_CD')}
-            {TAF_Closure.last_best('ELGBLTY_GRP_CD,outcol=ELGBLTY_GRP_CD_LTST')}
-            {TAF_Closure.monthly_array('MASBOE_CD')}
-            {TAF_Closure.last_best('MASBOE_CD,outcol=MASBOE_CD_LTST')}
-            {TAF_Closure.last_best('CARE_LVL_STUS_CD')}
-            {TAF_Closure.ever_year('(DEAF_DSBL_FLAG')}
-            {TAF_Closure.ever_year('(BLND_DSBL_FLAG')}
-            {TAF_Closure.ever_year('(DFCLTY_CONC_DSBL_FLAG,outcol=DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
-            {TAF_Closure.ever_year('(DFCLTY_WLKG_DSBL_FLAG')}
-            {TAF_Closure.ever_year('(DFCLTY_DRSNG_BATHG_DSBL_FLAG,outcol=DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
-            {TAF_Closure.ever_year('(DFCLTY_ERRANDS_ALN_DSBL_FLAG,outcol=DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
-            {TAF_Closure.ever_year('(OTHR_DSBL_FLAG')}
+            {TAF_Closure.monthly_array(self, 'ELGBLTY_GRP_CD')}
+            {DE.last_best(self, 'ELGBLTY_GRP_CD', outcol='ELGBLTY_GRP_CD_LTST')}
+            {TAF_Closure.monthly_array(self, 'MASBOE_CD')}
+            {DE.last_best(self, 'MASBOE_CD', outcol='MASBOE_CD_LTST')}
+            {DE.last_best(self, 'CARE_LVL_STUS_CD')}
+            {TAF_Closure.ever_year('DEAF_DSBL_FLAG')}
+            {TAF_Closure.ever_year('BLND_DSBL_FLAG')}
+            {TAF_Closure.ever_year('DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
+            {TAF_Closure.ever_year('DFCLTY_WLKG_DSBL_FLAG')}
+            {TAF_Closure.ever_year('DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
+            {TAF_Closure.ever_year('DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
+            {TAF_Closure.ever_year('OTHR_DSBL_FLAG')}
 
-            {TAF_Closure.monthly_array('CHIP_CD')}
-            {TAF_Closure.last_best('CHIP_CD,outcol=CHIP_CD_LTST')}
+            {TAF_Closure.monthly_array(self, 'CHIP_CD')}
+            {DE.last_best(self, 'CHIP_CD', outcol='CHIP_CD_LTST')}
 
-            {TAF_Closure.monthly_array('STATE_SPEC_ELGBLTY_FCTR_TXT,outcol=STATE_SPEC_ELGBLTY_GRP')}
-            {TAF_Closure.last_best('STATE_SPEC_ELGBLTY_FCTR_TXT,outcol=STATE_SPEC_ELGBLTY_GRP_LTST')}
-            {TAF_Closure.monthly_array('DUAL_ELGBL_CD')}
-            {TAF_Closure.last_best('DUAL_ELGBL_CD,outcol=DUAL_ELGBL_CD_LTST')}
+            {TAF_Closure.monthly_array(self, 'STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP')}
+            {DE.last_best(self, 'STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP_LTST')}
+            {TAF_Closure.monthly_array(self, 'DUAL_ELGBL_CD')}
+            {DE.last_best(self, 'DUAL_ELGBL_CD',outcol='DUAL_ELGBL_CD_LTST')}
 
             {DE.mc_type_rank(self, smonth=1, emonth=2)}
 
-            {TAF_Closure.monthly_array('RSTRCTD_BNFTS_CD')}
-            {TAF_Closure.last_best('RSTRCTD_BNFTS_CD,outcol=RSTRCTD_BNFTS_CD_LTST')}
-            {TAF_Closure.last_best('SSDI_IND')}
-            {TAF_Closure.last_best('SSI_IND')}
-            {TAF_Closure.last_best('SSI_STATE_SPLMT_STUS_CD')}
-            {TAF_Closure.last_best('SSI_STUS_CD')}
-            {TAF_Closure.last_best('BIRTH_CNCPTN_IND')}
-            {TAF_Closure.last_best('TANF_CASH_CD')}
-            {TAF_Closure.last_best('TPL_INSRNC_CVRG_IND')}
-            {TAF_Closure.last_best('TPL_OTHR_CVRG_IND')}
+            {TAF_Closure.monthly_array(self, 'RSTRCTD_BNFTS_CD')}
+            {DE.last_best(self, 'RSTRCTD_BNFTS_CD',outcol='RSTRCTD_BNFTS_CD_LTST')}
+            {DE.last_best(self, 'SSDI_IND')}
+            {DE.last_best(self, 'SSI_IND')}
+            {DE.last_best(self, 'SSI_STATE_SPLMT_STUS_CD')}
+            {DE.last_best(self, 'SSI_STUS_CD')}
+            {DE.last_best(self, 'BIRTH_CNCPTN_IND')}
+            {DE.last_best(self, 'TANF_CASH_CD')}
+            {DE.last_best(self, 'TPL_INSRNC_CVRG_IND')}
+            {DE.last_best(self, 'TPL_OTHR_CVRG_IND')}
             {DE.misg_enrlm_type()}
             """
 
@@ -303,46 +303,46 @@ class DE0001(DE):
             tblname="basedemo",
             inyear=self.de.YEAR,
             subcols=f"""
-                {TAF_Closure.last_best('SSN_NUM')}
-                {TAF_Closure.last_best('BIRTH_DT')}
-                {TAF_Closure.last_best('DEATH_DT')}
-                {TAF_Closure.last_best('DCSD_FLAG')}
-                {TAF_Closure.last_best('AGE_NUM')}
-                {TAF_Closure.last_best('AGE_GRP_FLAG')}
-                {TAF_Closure.last_best('GNDR_CD')}
-                {TAF_Closure.last_best('MRTL_STUS_CD')}
-                {TAF_Closure.last_best('INCM_CD')}
-                {TAF_Closure.last_best('VET_IND')}
-                {TAF_Closure.last_best('CTZNSHP_IND')}
-                {TAF_Closure.last_best('IMGRTN_STUS_5_YR_BAR_END_DT')}
-                {TAF_Closure.last_best('OTHR_LANG_HOME_CD')}
-                {TAF_Closure.last_best('PRMRY_LANG_FLAG')}
-                {TAF_Closure.last_best('PRMRY_LANG_ENGLSH_PRFCNCY_CD')}
-                {TAF_Closure.last_best('HSEHLD_SIZE_CD')}
-                {TAF_Closure.last_best('CRTFD_AMRCN_INDN_ALSKN_NTV_IND')}
-                {TAF_Closure.last_best('ETHNCTY_CD')}
-                {TAF_Closure.last_best('RACE_ETHNCTY_FLAG')}
-                {TAF_Closure.last_best('RACE_ETHNCTY_EXP_FLAG')}
+                {DE.last_best(self, 'SSN_NUM')}
+                {DE.last_best(self, 'BIRTH_DT')}
+                {DE.last_best(self, 'DEATH_DT')}
+                {DE.last_best(self, 'DCSD_FLAG')}
+                {DE.last_best(self, 'AGE_NUM')}
+                {DE.last_best(self, 'AGE_GRP_FLAG')}
+                {DE.last_best(self, 'GNDR_CD')}
+                {DE.last_best(self, 'MRTL_STUS_CD')}
+                {DE.last_best(self, 'INCM_CD')}
+                {DE.last_best(self, 'VET_IND')}
+                {DE.last_best(self, 'CTZNSHP_IND')}
+                {DE.last_best(self, 'IMGRTN_STUS_5_YR_BAR_END_DT')}
+                {DE.last_best(self, 'OTHR_LANG_HOME_CD')}
+                {DE.last_best(self, 'PRMRY_LANG_FLAG')}
+                {DE.last_best(self, 'PRMRY_LANG_ENGLSH_PRFCNCY_CD')}
+                {DE.last_best(self, 'HSEHLD_SIZE_CD')}
+                {DE.last_best(self, 'CRTFD_AMRCN_INDN_ALSKN_NTV_IND')}
+                {DE.last_best(self, 'ETHNCTY_CD')}
+                {DE.last_best(self, 'RACE_ETHNCTY_FLAG')}
+                {DE.last_best(self, 'RACE_ETHNCTY_EXP_FLAG')}
 
-                {TAF_Closure.monthly_array('ELGBL_LINE_1_ADR_HOME')}
-                {TAF_Closure.monthly_array('ELGBL_LINE_1_ADR_MAIL')}
-                {TAF_Closure.monthly_array('ELGBL_ZIP_CD_HOME')}
-                {TAF_Closure.monthly_array('ELGBL_CNTY_CD_HOME')}
-                {TAF_Closure.monthly_array('ELGBL_STATE_CD_HOME')}
-                {TAF_Closure.monthly_array('ELGBL_ZIP_CD_MAIL')}
-                {TAF_Closure.monthly_array('ELGBL_CNTY_CD_MAIL')}
-                {TAF_Closure.monthly_array('ELGBL_STATE_CD_MAIL')}
-                {DE.nonmiss_month('ELGBL_LINE_1_ADR_HOME')}
-                {DE.nonmiss_month('ELGBL_LINE_1_ADR_MAIL')}
+                {TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
+                {TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
+                {TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_HOME')}
+                {TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_HOME')}
+                {TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_HOME')}
+                {TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_MAIL')}
+                {TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_MAIL')}
+                {TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_MAIL')}
+                {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_HOME')}
+                {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_MAIL')}
 
-                {TAF_Closure.last_best('MSIS_CASE_NUM')}
-                {TAF_Closure.last_best('MDCR_BENE_ID')}
-                {TAF_Closure.last_best('MDCR_HICN_NUM')}
+                {DE.last_best(self, 'MSIS_CASE_NUM')}
+                {DE.last_best(self, 'MDCR_BENE_ID')}
+                {DE.last_best(self, 'MDCR_HICN_NUM')}
                 """,
-            outercols=f"""{DE.assign_nonmiss_month('ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_LINE_1_ADR_MAIL')}
-                    {DE.assign_nonmiss_month('ELGBL_ZIP_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_ZIP_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_ZIP_CD_MAIL')}
-                    {DE.assign_nonmiss_month('ELGBL_CNTY_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CNTY_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_CNTY_CD_MAIL')}
-                    {DE.assign_nonmiss_month('ELGBL_STATE_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_STATE_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_STATE_CD_MAIL')}
+            outercols=f"""{DE.assign_nonmiss_month(self, 'ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_LINE_1_ADR_MAIL')}
+                    {DE.assign_nonmiss_month(self, 'ELGBL_ZIP_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_ZIP_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_ZIP_CD_MAIL')}
+                    {DE.assign_nonmiss_month(self, 'ELGBL_CNTY_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CNTY_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_CNTY_CD_MAIL')}
+                    {DE.assign_nonmiss_month(self, 'ELGBL_STATE_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_STATE_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_STATE_CD_MAIL')}
                     """
         )
     pass
@@ -362,27 +362,27 @@ class DE0001(DE):
                      c.msis_ident_num
                     ,c.submtg_state_cd
 
-                    {TAF_Closure.last_best('SSN_NUM',prior=1)}
-                    {TAF_Closure.last_best('BIRTH_DT',prior=1)}
-                    {TAF_Closure.last_best('DEATH_DT',prior=1)}
-                    {TAF_Closure.last_best('DCSD_FLAG',prior=1)}
-                    {TAF_Closure.last_best('AGE_NUM',prior=1)}
-                    {TAF_Closure.last_best('AGE_GRP_FLAG',prior=1)}
-                    {TAF_Closure.last_best('GNDR_CD',prior=1)}
-                    {TAF_Closure.last_best('MRTL_STUS_CD',prior=1)}
-                    {TAF_Closure.last_best('INCM_CD',prior=1)}
-                    {TAF_Closure.last_best('VET_IND',prior=1)}
-                    {TAF_Closure.last_best('CTZNSHP_IND',prior=1)}
-                    {TAF_Closure.last_best('IMGRTN_STUS_5_YR_BAR_END_DT',prior=1)}
-                    {TAF_Closure.last_best('OTHR_LANG_HOME_CD',prior=1)}
-                    {TAF_Closure.last_best('PRMRY_LANG_FLAG',prior=1)}
-                    {TAF_Closure.last_best('PRMRY_LANG_ENGLSH_PRFCNCY_CD',prior=1)}
-                    {TAF_Closure.last_best('HSEHLD_SIZE_CD',prior=1)}
+                    {DE.last_best(self, 'SSN_NUM',prior=1)}
+                    {DE.last_best(self, 'BIRTH_DT',prior=1)}
+                    {DE.last_best(self, 'DEATH_DT',prior=1)}
+                    {DE.last_best(self, 'DCSD_FLAG',prior=1)}
+                    {DE.last_best(self, 'AGE_NUM',prior=1)}
+                    {DE.last_best(self, 'AGE_GRP_FLAG',prior=1)}
+                    {DE.last_best(self, 'GNDR_CD',prior=1)}
+                    {DE.last_best(self, 'MRTL_STUS_CD',prior=1)}
+                    {DE.last_best(self, 'INCM_CD',prior=1)}
+                    {DE.last_best(self, 'VET_IND',prior=1)}
+                    {DE.last_best(self, 'CTZNSHP_IND',prior=1)}
+                    {DE.last_best(self, 'IMGRTN_STUS_5_YR_BAR_END_DT',prior=1)}
+                    {DE.last_best(self, 'OTHR_LANG_HOME_CD',prior=1)}
+                    {DE.last_best(self, 'PRMRY_LANG_FLAG',prior=1)}
+                    {DE.last_best(self, 'PRMRY_LANG_ENGLSH_PRFCNCY_CD',prior=1)}
+                    {DE.last_best(self, 'HSEHLD_SIZE_CD',prior=1)}
 
-                    {TAF_Closure.last_best('CRTFD_AMRCN_INDN_ALSKN_NTV_IND',prior=1)}
-                    {TAF_Closure.last_best('ETHNCTY_CD',prior=1)}
-                    {TAF_Closure.last_best('RACE_ETHNCTY_FLAG',prior=1)}
-                    {TAF_Closure.last_best('RACE_ETHNCTY_EXP_FLAG',prior=1)}
+                    {DE.last_best(self, 'CRTFD_AMRCN_INDN_ALSKN_NTV_IND',prior=1)}
+                    {DE.last_best(self, 'ETHNCTY_CD',prior=1)}
+                    {DE.last_best(self, 'RACE_ETHNCTY_FLAG',prior=1)}
+                    {DE.last_best(self, 'RACE_ETHNCTY_EXP_FLAG',prior=1)}
 
                     ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""
 
@@ -390,16 +390,16 @@ class DE0001(DE):
                     cnt += 1
                     z += f"""when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear}"""
 
-                z += f"""else null\n
-                      end as yearpull\n
+                z += f"""else null
+                      end as yearpull
 
                     {DE.address_same_year('ELGBL_ZIP_CD')}
                     {DE.address_same_year('ELGBL_CNTY_CD')}
                     {DE.address_same_year('ELGBL_STATE_CD')}
 
-                    {TAF_Closure.last_best('MSIS_CASE_NUM',prior=1)}
-                    {TAF_Closure.last_best('MDCR_BENE_ID',prior=1)}
-                    {TAF_Closure.last_best('MDCR_HICN_NUM',prior=1)}
+                    {DE.last_best(self, 'MSIS_CASE_NUM',prior=1)}
+                    {DE.last_best(self, 'MDCR_BENE_ID',prior=1)}
+                    {DE.last_best(self, 'MDCR_HICN_NUM',prior=1)}
 
                     from base_demo_{self.de.YEAR} c"""
 

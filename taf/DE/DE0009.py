@@ -21,39 +21,39 @@ class DE0009(DE):
         # Must use month of latest non-missing LCKIN_PRVDR_NUM1 to pull all three NUMs
         # and TYPES (so must array to then pull in outer query)
 
-        s = f"""{TAF_Closure.last_best('HCBS_AGED_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_PHYS_DSBL_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_INTEL_DSBL_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_AUTSM_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_DD_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_MI_SED_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_BRN_INJ_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_HIV_AIDS_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_TECH_DEP_MF_NON_HHCC_FLAG', outcol='HCBS_TCH_DP_MF_NON_HHCC_FLAG')}
-                {TAF_Closure.last_best('HCBS_DSBL_OTHR_NON_HHCC_FLAG')}
+        s = f"""{DE.last_best(self, 'HCBS_AGED_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_PHYS_DSBL_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_INTEL_DSBL_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_AUTSM_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_DD_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_MI_SED_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_BRN_INJ_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_HIV_AIDS_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_TECH_DEP_MF_NON_HHCC_FLAG', outcol='HCBS_TCH_DP_MF_NON_HHCC_FLAG')}
+                {DE.last_best(self, 'HCBS_DSBL_OTHR_NON_HHCC_FLAG')}
                 {TAF_Closure.monthly_array('CARE_LVL_STUS_CD')}
                 {TAF_Closure.monthly_array('DFCLTY_CONC_DSBL_FLAG,outcol=DFCLTY_CNCNTRTNG_DSBL_FLAG')}
                 {TAF_Closure.monthly_array('DFCLTY_WLKG_DSBL_FLAG')}
                 {TAF_Closure.monthly_array('DFCLTY_DRSNG_BATHG_DSBL_FLAG,outcol=DFCLTY_DRSNG_BTH_DSBL_FLAG')}
                 {TAF_Closure.monthly_array('DFCLTY_ERRANDS_ALN_DSBL_FLAG,outcol=DFCLTY_ERNDS_ALN_DSBL_FLAG')}
                 {TAF_Closure.ever_year('LCKIN_FLAG', outcol='LCKIN_FLAG')}
-                {TAF_Closure.last_best('LCKIN_PRVDR_NUM1')}
+                {DE.last_best(self, 'LCKIN_PRVDR_NUM1')}
                 {DE.nonmiss_month('LCKIN_PRVDR_NUM1')}
                 {TAF_Closure.monthly_array('LCKIN_PRVDR_TYPE_CD1')}
                 {TAF_Closure.monthly_array('LCKIN_PRVDR_NUM2')}
                 {TAF_Closure.monthly_array('LCKIN_PRVDR_TYPE_CD2')}
                 {TAF_Closure.monthly_array('LCKIN_PRVDR_NUM3')}
                 {TAF_Closure.monthly_array('LCKIN_PRVDR_TYPE_CD3')}
-                {TAF_Closure.last_best('LTSS_PRVDR_NUM1')}
+                {DE.last_best(self, 'LTSS_PRVDR_NUM1')}
                 {DE.nonmiss_month('LTSS_PRVDR_NUM1')}
                 {TAF_Closure.monthly_array('LTSS_LVL_CARE_CD1')}
-                {TAF_Closure.last_best('LTSS_LVL_CARE_CD1', outcol='LTSS_LVL_CARE_CD1_LTST')}
+                {DE.last_best(self, 'LTSS_LVL_CARE_CD1', outcol='LTSS_LVL_CARE_CD1_LTST')}
                 {TAF_Closure.monthly_array('LTSS_PRVDR_NUM2')}
                 {TAF_Closure.monthly_array('LTSS_LVL_CARE_CD2')}
-                {TAF_Closure.last_best('LTSS_LVL_CARE_CD2', outcol='LTSS_LVL_CARE_CD2_LTST')}
+                {DE.last_best(self, 'LTSS_LVL_CARE_CD2', outcol='LTSS_LVL_CARE_CD2_LTST')}
                 {TAF_Closure.monthly_array('LTSS_PRVDR_NUM3')}
                 {TAF_Closure.monthly_array('LTSS_LVL_CARE_CD3')}
-                {TAF_Closure.last_best('LTSS_LVL_CARE_CD3', outcol='LTSS_LVL_CARE_CD3_LTST')}
+                {DE.last_best(self, 'LTSS_LVL_CARE_CD3', outcol='LTSS_LVL_CARE_CD3_LTST')}
                 {TAF_Closure.monthly_array('SSDI_IND')}
                 {TAF_Closure.monthly_array('SSI_IND')}'
                 {TAF_Closure.monthly_array('SSI_STATE_SPLMT_STUS_CD')}
