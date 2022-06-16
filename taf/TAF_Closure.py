@@ -869,7 +869,7 @@ class TAF_Closure():
     # get the max of the incol (which will be a 0/1 indicator)
     #
     # --------------------------------------------------------------------
-    def getmax(incol: str, outcol):
+    def getmax(incol: str, outcol="") -> str:
 
         if not outcol:
             _outcol = incol
@@ -883,7 +883,7 @@ class TAF_Closure():
     # get the sum of the incol
     #
     # --------------------------------------------------------------------
-    def sumrecs(incol: str, outcol):
+    def sumrecs(incol: str, outcol="") -> str:
 
         if not outcol:
             _outcol = incol
@@ -904,15 +904,15 @@ class TAF_Closure():
         """
 
         if condcol2:
-            z += "AND"
+            z += " " + "AND" + " "
             z += f"""{condcol2} {cond2}"""
 
         if condcol3:
-            z += "AND"
+            z += " " + "AND" + " "
             z += f"""{condcol3} {cond3}"""
 
         if condcol4:
-            z += "AND"
+            z += " " + "AND" + " "
             z += f"""{condcol4} {cond4}"""
 
         z += f"""
@@ -933,15 +933,15 @@ class TAF_Closure():
         """
 
         if condcol2:
-            z += "AND"
+            z += " " + " AND " + " "
             z += f"""{condcol2} {cond2}"""
 
         if condcol3:
-            z += "AND"
+            z += " " + " AND " + " "
             z += f"""{condcol3} {cond3}"""
 
         if condcol4:
-            z += "AND"
+            z += " " + " AND " + " "
             z += f"""{condcol4} {cond4}"""
 
         z += f"""
