@@ -132,7 +132,7 @@ class APR(TAF):
 
                     UNION ALL
 
-                    SELECT PRV_fil_dt
+                    SELECT {file}_fil_dt
                         ,da_run_id
                     FROM max_run_id_{file}_{inyear}_nat
                     )
@@ -144,26 +144,27 @@ class APR(TAF):
         #    were identified as being later than a national run):
 
         z = f"""
-                CREATE OR REPLACE TEMPORARY VIEW max_run_id_{file}_{inyear} AS
-                SELECT a.{file}_fil_dt
+            create or replace temporary view max_run_id_{file}_{inyear} as
+            select a.{file}_fil_dt
+                ,b.submtg_state_cd
+                ,max(b.da_run_id) as da_run_id
+
+            from job_cntl_parms_both_{file}_{inyear} a
+                inner join
+                (select da_run_id, incldd_state_cd as submtg_state_cd
+                from {self.apr.DA_SCHEMA}.efts_fil_meta where incldd_state_cd != 'Missing' ) b
+
+            on a.da_run_id = b.da_run_id
+        """
+
+        if (str(self.apr.ST_FILTER).find("ALL") != -1):
+            z += f"""
+                 WHERE {self.apr.ST_FILTER}
+            """
+
+        z += f"""
+            group by a.{file}_fil_dt
                     ,b.submtg_state_cd
-                    ,max(b.da_run_id) AS da_run_id
-                    ,b.fil_cret_dt
-                FROM job_cntl_parms_both_{file}_{inyear} a
-                INNER JOIN (
-                    SELECT da_run_id
-                        ,incldd_state_cd AS submtg_state_cd
-                        ,fil_cret_dt
-                    FROM {self.apr.DA_SCHEMA}.efts_fil_meta
-                    WHERE incldd_state_cd != 'Missing'
-                        AND otpt_name = 'TAF_{file}'
-                        -- %if %sysfunc(find({self.apr.ST_FILTER},'ALL')) = 0 %then %do;
-                        --    where {self.apr.ST_FILTER}
-                        -- %end;
-                    ) b ON a.da_run_id = b.da_run_id
-                GROUP BY a.PRV_fil_dt
-                    ,b.submtg_state_cd
-                    ,b.fil_cret_dt
         """
         self.apr.append(type(self).__name__, z)
 
