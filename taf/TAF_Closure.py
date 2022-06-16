@@ -696,25 +696,25 @@ class TAF_Closure():
     #             slots>1, we will add slot # before _MO suffix
     #
     # ---------------------------------------------------------------------------------
-    def monthly_array(incol, outcol='', nslots='1'):
-
+    def monthly_array(self, incol, outcol='', nslots='1'):
+        z = ''
         if outcol == '':
             outcol = incol
 
         if (nslots == '1'):
-                return f"""
-                  m01.{incol} as {outcol}_01
-                , m02.{incol} as {outcol}_02
-                , m03.{incol} as {outcol}_03
-                , m04.{incol} as {outcol}_04
-                , m05.{incol} as {outcol}_05
-                , m06.{incol} as {outcol}_06
-                , m07.{incol} as {outcol}_07
-                , m08.{incol} as {outcol}_08
-                , m09.{incol} as {outcol}_09
-                , m10.{incol} as {outcol}_10
-                , m11.{incol} as {outcol}_11
-                , m12.{incol} as {outcol}_12"""
+            return f"""
+              m01.{incol} as {outcol}_01
+            , m02.{incol} as {outcol}_02
+            , m03.{incol} as {outcol}_03
+            , m04.{incol} as {outcol}_04
+            , m05.{incol} as {outcol}_05
+            , m06.{incol} as {outcol}_06
+            , m07.{incol} as {outcol}_07
+            , m08.{incol} as {outcol}_08
+            , m09.{incol} as {outcol}_09
+            , m10.{incol} as {outcol}_10
+            , m11.{incol} as {outcol}_11
+            , m12.{incol} as {outcol}_12"""
         else:
             for s in range(1, int(nslots)):
                 if nslots == '1':
@@ -722,7 +722,7 @@ class TAF_Closure():
                 else:
                     snum = s
 
-                return f"""
+                z += f"""
                   m01.{incol}{snum} as {outcol}{snum}_01
                 , m02.{incol}{snum} as {outcol}{snum}_02
                 , m03.{incol}{snum} as {outcol}{snum}_03
@@ -735,6 +735,7 @@ class TAF_Closure():
                 , m10.{incol}{snum} as {outcol}{snum}_10
                 , m11.{incol}{snum} as {outcol}{snum}_11
                 , m12.{incol}{snum} as {outcol}{snum}_12"""
+            return z
 
     # ---------------------------------------------------------------------------------
     #
