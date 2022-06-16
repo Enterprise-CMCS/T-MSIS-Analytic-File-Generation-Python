@@ -342,15 +342,15 @@ class DE(TAF):
 
     def run_waiv_slots(self, smonth, emonth):
 
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('22')", outcol='_1115_PHRMCY_PLUS_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('23')", outcol='_1115_DSTR_REL_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('24')", outcol='_1115_FP_ONLY_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('06','07','08','09','10','11','12','13','14','15','16','17','18','19','33')", outcol='_1915C_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('20')", outcol='_1915BC_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('02','03','04','05','32')", outcol='_1915B_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('01')", outcol='_1115_OTHR_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('21')", outcol='_1115_HIFA_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(incol='WVR_TYPE_CD', values="('25','26','27','28','29','30','31')", outcol='_OTHR_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('22')", outcol='_1115_PHRMCY_PLUS_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('23')", outcol='_1115_DSTR_REL_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('24')", outcol='_1115_FP_ONLY_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('06','07','08','09','10','11','12','13','14','15','16','17','18','19','33')", outcol='_1915C_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('20')", outcol='_1915BC_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('02','03','04','05','32')", outcol='_1915B_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('01')", outcol='_1115_OTHR_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('21')", outcol='_1115_HIFA_WVR', smonth=smonth, emonth=emonth)
+        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('25','26','27','28','29','30','31')", outcol='_OTHR_WVR', smonth=smonth, emonth=emonth)
 
     # Non-null/00 plan type
     # OR non-0, 8, 9 only or non-null ID
@@ -381,10 +381,12 @@ class DE(TAF):
         return z
 
     def any_col(incols: str, outcol, condition='=1'):
+
         cols = incols.split(" ")
-        cnt = len(cols)
+        listcols = [newcols for newcols in cols if newcols != '']
+        cnt = len(listcols)
         z = """,case when """
-        for c in cnt:
+        for c in range(1, cnt + 1):
             if c > 1:
                 z += "or"
             z += f"""c {condition}"""
@@ -460,15 +462,15 @@ class DE(TAF):
 
     def waiv_nonnull(self, outcol):
         z = f""",case when """
-        for mm in range(1, 13):
-            if mm < 10:
-                mm = str(mm).zfill(2)
+        for m in range(1, 13):
+            if m < 10:
+                mm = str(m).zfill(2)
             for s in range(1, self.de.NWAIVSLOTS + 1):
                 z += f"""
                     m{mm}.WVR_ID{s} is not null or
                     m{mm}.WVR_TYPE_CD{s} is not null"""
 
-                if mm < 12 or s < self.de.NWAIVSLOTS:
+                if m < 12 or s < self.de.NWAIVSLOTS:
                     z += " or "
 
         z += f"""then 1
@@ -476,6 +478,81 @@ class DE(TAF):
         end as {outcol}
         """
         return z
+
+    def ever_year(self, incol, condition='=1', raw=1, outcol='', usenulls=0, nullcond=''):
+
+        if outcol == '':
+            outcol = incol
+
+        if usenulls == 0:
+
+            if raw == 1:
+
+                z = f"""case when
+                    m01.{incol} {condition} or
+                    m02.{incol} {condition} or
+                    m03.{incol} {condition} or
+                    m04.{incol} {condition} or
+                    m05.{incol} {condition} or
+                    m06.{incol} {condition} or
+                    m07.{incol} {condition} or
+                    m08.{incol} {condition} or
+                    m09.{incol} {condition} or
+                    m10.{incol} {condition} or
+                    m11.{incol} {condition} or
+                    m12.{incol} {condition}"""
+
+            if raw == 0:
+
+                z = f"""case when
+                    {incol}_01 {condition} or
+                    {incol}_02 {condition} or
+                    {incol}_03 {condition} or
+                    {incol}_04 {condition} or
+                    {incol}_05 {condition} or
+                    {incol}_06 {condition} or
+                    {incol}_07 {condition} or
+                    {incol}_08 {condition} or
+                    {incol}_09 {condition} or
+                    {incol}_10 {condition} or
+                    {incol}_11 {condition} or
+                    {incol}_12"""
+
+        if usenulls == 1:
+
+            if raw == 1:
+
+                z = f"""case when
+                    nullif(m01. {incol}, {nullcond}) {condition} or
+                    nullif(m02. {incol}, {nullcond}) {condition} or
+                    nullif(m03. {incol}, {nullcond}) {condition} or
+                    nullif(m04. {incol}, {nullcond}) {condition} or
+                    nullif(m05. {incol}, {nullcond}) {condition} or
+                    nullif(m06. {incol}, {nullcond}) {condition} or
+                    nullif(m07. {incol}, {nullcond}) {condition} or
+                    nullif(m08. {incol}, {nullcond}) {condition} or
+                    nullif(m09. {incol}, {nullcond}) {condition} or
+                    nullif(m10. {incol}, {nullcond}) {condition} or
+                    nullif(m11. {incol}, {nullcond}) {condition} or
+                    nullif(m12. {incol}, {nullcond}) {condition}"""
+
+            if raw == 0:
+
+                z = f"""case when
+                    nullif( {incol}_01, {nullcond}) {condition} or
+                    nullif( {incol}_02, {nullcond}) {condition} or
+                    nullif( {incol}_03, {nullcond}) {condition} or
+                    nullif( {incol}_04, {nullcond}) {condition} or
+                    nullif( {incol}_05, {nullcond}) {condition} or
+                    nullif( {incol}_06, {nullcond}) {condition} or
+                    nullif( {incol}_07, {nullcond}) {condition} or
+                    nullif( {incol}_08, {nullcond}) {condition} or
+                    nullif( {incol}_09, {nullcond}) {condition} or
+                    nullif( {incol}_10, {nullcond}) {condition} or
+                    nullif( {incol}_11, {nullcond}) {condition} or
+                    nullif( {incol}_12, {nullcond}) {condition}"""
+
+        return f"{z} then 1 else 0 end as {outcol}"
 
     # -----------------------------------------------------------------------------
     # CC0 1.0 Universal

@@ -18,12 +18,12 @@ class DE0006(DE):
 
     def create_temp(self):
         s = f"""{DE.run_waiv_slots(self, 1, 3)}
-                {TAF_Closure.monthly_array(self, 'WVR_ID', nslots=self.NWAIVSLOTS)}
-                {TAF_Closure.monthly_array(self, 'WVR_TYPE_CD', nslots=self.NWAIVSLOTS)}
-                {TAF_Closure.monthly_array(self, 'SECT_1115A_DEMO_IND')}""",
-        s2 = f"""{DE.run_waiv_slots(self, 4, 6)}""",
-        s3 = f"""{DE.run_waiv_slots(self, 7, 9)}""",
-        s4 = f"""{DE.run_waiv_slots(self, 10, 12)}""",
+                {TAF_Closure.monthly_array(self, 'WVR_ID', nslots=self.de.NWAIVSLOTS)}
+                {TAF_Closure.monthly_array(self, 'WVR_TYPE_CD', nslots=self.de.NWAIVSLOTS)}
+                {TAF_Closure.monthly_array(self, 'SECT_1115A_DEMO_IND')}"""
+        s2 = f"""{DE.run_waiv_slots(self, 4, 6)}"""
+        s3 = f"""{DE.run_waiv_slots(self, 7, 9)}"""
+        s4 = f"""{DE.run_waiv_slots(self, 10, 12)}"""
         s5 = f"""{DE.waiv_nonnull(self, 'WAIVER_SPLMTL')}"""
         os = f"""{DE.sum_months(self, '_1115_PHRMCY_PLUS_WVR')}
                  {DE.sum_months(self, '_1115_DSTR_REL_WVR')}
@@ -35,7 +35,7 @@ class DE0006(DE):
                  {DE.sum_months(self, '_1115_HIFA_WVR')}
                  {DE.sum_months(self, '_OTHR_WVR')}
             """
-        DE.create_temp_table(tblname=self.tblname, subcols=s, subcols2=s2, subcols3=s3,
+        DE.create_temp_table(self, tblname=self.tblname, inyear="", subcols=s, subcols2=s2, subcols3=s3,
                              subcols4=s4, subcols5=s5, outercols=os)
         return
 
@@ -53,14 +53,14 @@ class DE0006(DE):
                 insert into numbers
                 values
             """
-        for waiv in range(1, self.NWAIVSLOTS + 1):
+        for waiv in range(1, self.de.NWAIVSLOTS + 1):
             for m in range(1, 13):
                 mm = str(m)
                 if len(mm) == 1:
                     mm.zfill(2)
 
                 z += f"""({waiv},'{mm}')"""
-                if waiv < self.NWAIVSLOTS or mm < 12:
+                if waiv < self.de.NWAIVSLOTS or m < 12:
                     z += ","
 
         self.de.append(type(self).__name__, z)
@@ -75,7 +75,7 @@ class DE0006(DE):
                 from (
                     select *
                         ,case"""
-        for waiv in range(1, self.NWAIVSLOTS + 1):
+        for waiv in range(1, self.de.NWAIVSLOTS + 1):
             for m in range(1, 13):
                 mm = str(m)
                 if len(mm) == 1:
@@ -83,7 +83,7 @@ class DE0006(DE):
                 f"""when slot={waiv} and month='{mm}' then WVR_TYPE_CD{waiv}_{mm}"""
         z += """end as WVR_TYPE_CD"""
 
-        for waiv in range(1, self.NWAIVSLOTS + 1):
+        for waiv in range(1, self.de.NWAIVSLOTS + 1):
             for m in range(1, 13):
                 mm = str(m)
                 if len(mm) == 1:
@@ -96,7 +96,7 @@ class DE0006(DE):
                     ,a.msis_ident_num
              """
 
-        for waiv in range(1, self.NWAIVSLOTS + 1):
+        for waiv in range(1, self.de.NWAIVSLOTS + 1):
             for m in range(1, 13):
                 mm = str(m)
                 if len(mm) == 1:
