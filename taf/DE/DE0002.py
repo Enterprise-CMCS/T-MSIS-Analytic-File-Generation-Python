@@ -5,22 +5,23 @@ from taf.DE.DE_Runner import DE_Runner
 class DE0002(DE):
     tblname: str = "eligibilitiy_dates"
 
-    def __init__(self, de: DE_Runner):
-        DE.__init__(self, de)
+    def __init__(self, runner: DE_Runner):
+        DE.__init__(self, runner)
+        self.de = runner
 
     def create(self):
-        super().create(self)
-        self.create_temp(self, self.tblname)
+        super().create()
+        self.create_temp(self.tblname)
         self.eligibility_dates('MDCD', 1)
         self.eligibility_dates('CHIP', 2)
 
-    def create_temp(self, tblname):
-        s = DE.monthly_array_eldts('MDCD_ENRLMT_EFF_DT_', nslots=16, truncfirst=1)
-        s2 = DE.monthly_array_eldts('MDCD_ENRLMT_END_DT_', nslots=16, truncfirst=0)
-        s3 = DE.monthly_array_eldts('CHIP_ENRLMT_EFF_DT_', nslots=16, truncfirst=1)
-        s4 = DE.monthly_array_eldts('CHIP_ENRLMT_END_DT_', nslots=16, truncfirst=0)
+    def create_temp(self, tname):
+        s = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_EFF_DT_', outcol=None, nslots=16, truncfirst=1)
+        s2 = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_END_DT_', outcol=None, nslots=16, truncfirst=0)
+        s3 = DE.monthly_array_eldts(self, incol='CHIP_ENRLMT_EFF_DT_', outcol=None, nslots=16, truncfirst=1)
+        s4 = DE.monthly_array_eldts(self, incol='CHIP_ENRLMT_END_DT_', outcol=None, nslots=16, truncfirst=0)
 
-        self.create_temp_table(self, tblname=tblname, subcols=s,
+        self.create_temp_table(tblname=tname, inyear=self.de.YEAR, subcols=s,
                                subcols2=s2, subcols3=s3, subcols4=s4)
         z = """create or replace temporary view numbers as
                 insert into numbers
@@ -31,15 +32,15 @@ class DE0002(DE):
                 if len(mm) == 1:
                     mm.zfill(2)
                 z += f"""({s}, '{mm}')"""
-                if {s} < 16 or {m} < 12:
+                if s < 16 or m < 12:
                     z += ","
 
     def eligibility_dates(self, dtype, dval):
-        z = f"""create or replace temporary view {self.dtype}_dates_long as
+        z = f"""create or replace temporary view {dtype}_dates_long as
                 select submtg_state_cd
                         ,msis_ident_num
-                        ,{self.dtype}_ENRLMT_EFF_DT
-                        ,{self.dtype}_ENRLMT_END_DT
+                        ,{dtype}_ENRLMT_EFF_DT
+                        ,{dtype}_ENRLMT_END_DT
                     from (
                     select *
                     """
@@ -52,40 +53,40 @@ class DE0002(DE):
                     SELECT
                         ,CASE
                         WHEN {mm} = 1 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_01
+                        END AS {dtype}_ENRLMT_EFF_DT_01
                         ,CASE
                         WHEN {mm} = 2 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_02
+                        END AS {dtype}_ENRLMT_EFF_DT_02
                         ,CASE
                         WHEN {mm} = 3 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_03
+                        END AS {dtype}_ENRLMT_EFF_DT_03
                         ,CASE
                         WHEN {mm} = 4 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_04
+                        END AS {dtype}_ENRLMT_EFF_DT_04
                         ,CASE
                         WHEN {mm} = 5 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_05
+                        END AS {dtype}_ENRLMT_EFF_DT_05
                         ,CASE
                         WHEN {mm} = 6 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_06
+                        END AS {dtype}_ENRLMT_EFF_DT_06
                         ,CASE
                         WHEN {mm} = 7 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_07
+                        END AS {dtype}_ENRLMT_EFF_DT_07
                         ,CASE
                         WHEN {mm} = 8 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_08
+                        END AS {dtype}_ENRLMT_EFF_DT_08
                         ,CASE
                         WHEN {mm} = 9 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_09
+                        END AS {dtype}_ENRLMT_EFF_DT_09
                         ,CASE
                         WHEN {mm} = 10 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_10
+                        END AS {dtype}_ENRLMT_EFF_DT_10
                         ,CASE
                         WHEN {mm} = 11 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_11
+                        END AS {dtype}_ENRLMT_EFF_DT_11
                         ,CASE
                         WHEN {mm} = 12 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {self.dtype}_ENRLMT_EFF_DT_12
+                        END AS {dtype}_ENRLMT_EFF_DT_12
                 from
                 (select a.submtg_state_cd
                        ,a.msis_ident_num
@@ -96,44 +97,44 @@ class DE0002(DE):
                         aa = "{:02d}".format(a)
 
                         z += f"""
-                            ,a.{self.dtype}_ENRLMT_EFF_DT_{aa}_{mm}
-                            ,a.{self.dtype}_ENRLMT_END_DT_{aa}_{mm}
+                            ,a.{dtype}_ENRLMT_EFF_DT_{aa}_{mm}
+                            ,a.{dtype}_ENRLMT_END_DT_{aa}_{mm}
                 ,b.slot
                 ,b.month
 
-        from eligibility_dates_{self.dtype} a
+        from eligibility_dates_{dtype} a
                 join
                 numbers b
                 on true) sub ) sub2
 
-        where {self.dtype}_ENRLMT_EFF_DT is not null
+        where {dtype}_ENRLMT_EFF_DT is not null
 
         order by submtg_state_cd,
                     msis_ident_num,
-                    {self.dtype}_ENRLMT_EFF_DT,
-                    {self.dtype}_ENRLMT_END_DT"""
+                    {dtype}_ENRLMT_EFF_DT,
+                    {dtype}_ENRLMT_END_DT"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view {self.dtype}_ids as
+        z = f"""create or replace temporary view {dtype}_ids as
             select *
 
             /* Create a unique date ID to filter on later */
 
                 ,trim(submtg_state_cd ||'-'||msis_ident_num || '-' ||cast(row_number() over
                     (partition by submtg_state_cd, msis_ident_num
-                    order by submtg_state_cd, msis_ident_num, {self.dtype}_ENRLMT_EFF_DT, {self.dtype}_ENRLMT_END_DT)
+                    order by submtg_state_cd, msis_ident_num, {dtype}_ENRLMT_EFF_DT, {dtype}_ENRLMT_END_DT)
                     as char(3))) as dateId
 
-            from {self.dtype}_dates_long"""
+            from {dtype}_dates_long"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view {self.dtype}_overlaps as
+        z = f"""create or replace temporary view {dtype}_overlaps as
                 select t1.*
-                from {self.dtype}_ids t1
+                from {dtype}_ids t1
                     inner join
-                    {self.dtype}_ids t2
+                    {dtype}_ids t2
 
                 /* Join records for beneficiary to each other, but omit matches where it's the same record */
 
@@ -144,20 +145,20 @@ class DE0002(DE):
                 /* Get every dateID where their effective date is greater than or equal to another record's effective date
                     AND their end date is less than or equal to that other record's end date. */
 
-                where date_cmp(t1.{self.dtype}_ENRLMT_EFF_DT,t2.{self.dtype}_ENRLMT_EFF_DT) in (0,1) and
-                    date_cmp(t1.{self.dtype}_ENRLMT_END_DT,t2.{self.dtype}_ENRLMT_END_DT) in (-1,0)"""
+                where date_cmp(t1.{dtype}_ENRLMT_EFF_DT,t2.{dtype}_ENRLMT_EFF_DT) in (0,1) and
+                    date_cmp(t1.{dtype}_ENRLMT_END_DT,t2.{dtype}_ENRLMT_END_DT) in (-1,0)"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view {self.dtype}_nonoverlaps as
+        z = f"""create or replace temporary view {dtype}_nonoverlaps as
                 select t1.*
 
                 /* Join initial date to overlapping dateIDs and remove */
 
-                from {self.dtype}_ids t1
+                from {dtype}_ids t1
 
                     left join
-                    {self.dtype}_overlaps t2
+                    {dtype}_overlaps t2
 
                 on t1.dateid = t2.dateid
 
@@ -165,63 +166,64 @@ class DE0002(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view {self.dtype}_dates_out as
+        z = f"""create or replace temporary view {dtype}_dates_out as
             select submtg_state_cd
                 ,msis_ident_num
-                ,{self.dval} as ENRL_TYPE_FLAG
-                ,min({self.dtype}_ENRLMT_EFF_DT) as {self.dtype}_ENRLMT_EFF_DT
-                ,max({self.dtype}_ENRLMT_END_DT) as {self.dtype}_ENRLMT_END_DT
+                ,{dval} as ENRL_TYPE_FLAG
+                ,min({dtype}_ENRLMT_EFF_DT) as {dtype}_ENRLMT_EFF_DT
+                ,max({dtype}_ENRLMT_END_DT) as {dtype}_ENRLMT_END_DT
 
             from
             (
             select submtg_state_cd,
             msis_ident_num,
-            {self.dtype}_ENRLMT_EFF_DT,
-            {self.dtype}_ENRLMT_END_DT
+            {dtype}_ENRLMT_EFF_DT,
+            {dtype}_ENRLMT_END_DT
             ,sum(C) over (partition by submtg_state_cd, msis_ident_num
-                            order by {self.dtype}_ENRLMT_EFF_DT, {self.dtype}_ENRLMT_END_DT
+                            order by {dtype}_ENRLMT_EFF_DT, {dtype}_ENRLMT_END_DT
                             rows UNBOUNDED PRECEDING) as G
             from
             (
             select submtg_state_cd
                 ,msis_ident_num
-                ,{self.dtype}_ENRLMT_EFF_DT
-                ,{self.dtype}_ENRLMT_END_DT
+                ,{dtype}_ENRLMT_EFF_DT
+                ,{dtype}_ENRLMT_END_DT
                 ,m_eff_dt
                 ,m_end_dt
-                ,decode(sign({self.dtype}_ENRLMT_EFF_DT-nvl(m_end_dt+1,{self.dtype}_ENRLMT_EFF_DT)),1,1,0) as C
+                ,decode(sign({dtype}_ENRLMT_EFF_DT-nvl(m_end_dt+1,{dtype}_ENRLMT_EFF_DT)),1,1,0) as C
             from
 
             (select submtg_state_cd
                 ,msis_ident_num
-                ,{self.dtype}_ENRLMT_EFF_DT
-                ,{self.dtype}_ENRLMT_END_DT
-                ,lag({self.dtype}_ENRLMT_EFF_DT) over (partition by submtg_state_cd, msis_ident_num
-                                                    order by {self.dtype}_ENRLMT_EFF_DT, {self.dtype}_ENRLMT_END_DT)
+                ,{dtype}_ENRLMT_EFF_DT
+                ,{dtype}_ENRLMT_END_DT
+                ,lag({dtype}_ENRLMT_EFF_DT) over (partition by submtg_state_cd, msis_ident_num
+                                                    order by {dtype}_ENRLMT_EFF_DT, {dtype}_ENRLMT_END_DT)
                                                     as m_eff_dt
-                ,lag({self.dtype}_ENRLMT_END_DT) over (partition by submtg_state_cd, msis_ident_num
-                                                    order by {self.dtype}_ENRLMT_EFF_DT, {self.dtype}_ENRLMT_END_DT)
+                ,lag({dtype}_ENRLMT_END_DT) over (partition by submtg_state_cd, msis_ident_num
+                                                    order by {dtype}_ENRLMT_EFF_DT, {dtype}_ENRLMT_END_DT)
                                                     as m_end_dt
-            from {self.dtype}_nonoverlaps
-                order by {self.dtype}_ENRLMT_EFF_DT, {self.dtype}_ENRLMT_END_DT) s1 ) s2 ) s3
+            from {dtype}_nonoverlaps
+                order by {dtype}_ENRLMT_EFF_DT, {dtype}_ENRLMT_END_DT) s1 ) s2 ) s3
 
                 group by submtg_state_cd, msis_ident_num, g"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view {self.dtype}_enrolled_days
+        z = f"""create or replace temporary view {dtype}_enrolled_days
             distkey(msis_ident_num)
             sortkey(submtg_state_cd,msis_ident_num) as
 
             select submtg_state_cd,
                     msis_ident_num,
-                    {self.dtype}_ENRLMT_EFF_DT,
-                    {self.dtype}_ENRLMT_END_DT
+                    {dtype}_ENRLMT_EFF_DT,
+                    {dtype}_ENRLMT_END_DT
 
             /* Loop through months and compare effective date to first day of month, and end date to last day of month.
                 If at all within month, count the number of days */
             """
         for m in range(1, 12):
+            lday = "31"
             mm = str(m)
             if len(mm) == 1:
                 mm.zfill(2)
@@ -229,31 +231,31 @@ class DE0002(DE):
             if mm in ("01", "03", "05", "07", "08", "10", "12"):
                 lday = "31"
             if mm in ("09", "04", "06", "11"):
-                lday = 30
-            if mm == "02" and self.year % 4 == 0 and (self.year % 100 != 0 or self.year % 400 == 0):
-                lday = 29
+                lday = "30"
+            if mm == "02" and self.de.YEAR % 4 == 0 and (self.de.YEAR % 100 != 0 or self.de.YEAR % 400 == 0):
+                lday = "29"
             elif mm == "02":
-                lday = 28
+                lday = "28"
 
-            z += f"""case when DATEDIFF({self.dtype}_ENRLMT_EFF_DT,to_date('{lday} {mm} {self.year}'),'dd mm yyyy')) in (-1,0) and
-                            DATEDIFF({self.dtype}_ENRLMT_END_DT,to_date('01 {mm} {self.year}'),'dd mm yyyy')) in (0,1) then
+            z += f"""case when DATEDIFF({dtype}_ENRLMT_EFF_DT,to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy')) in (-1,0) and
+                            DATEDIFF({dtype}_ENRLMT_END_DT,to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')) in (0,1) then
 
-                        datediff(day,greatest({self.dtype}_ENRLMT_EFF_DT,to_date('01 {mm} {self.year}'),'dd mm yyyy')),
-                                least({self.dtype}_ENRLMT_END_DT,to_date('{lday} {mm} {self.year}'),'dd mm yyyy'))) + 1
+                        datediff(day,greatest({dtype}_ENRLMT_EFF_DT,to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')),
+                                least({dtype}_ENRLMT_END_DT,to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy'))) + 1
 
                         else 0
-                        end as {self.dtype}_ENRLMT_DAYS_{mm}
-                    from {self.dtype}_dates_out"""
+                        end as {dtype}_ENRLMT_DAYS_{mm}
+                    from {dtype}_dates_out"""
 
         self.de.append(type(self).__name__, z)
 
-        z += f"""create or replace temporary view {self.dtype}_days_out
+        z += f"""create or replace temporary view {dtype}_days_out
 
                 select *,
-                    {self.dtype}_ENRLMT_DAYS_01 + {self.dtype}_ENRLMT_DAYS_02 + {self.dtype}_ENRLMT_DAYS_03 + {self.dtype}_ENRLMT_DAYS_04 +
-                    {self.dtype}_ENRLMT_DAYS_05 + {self.dtype}_ENRLMT_DAYS_06 + {self.dtype}_ENRLMT_DAYS_07 + {self.dtype}_ENRLMT_DAYS_08 +
-                    {self.dtype}_ENRLMT_DAYS_09 + {self.dtype}_ENRLMT_DAYS_10 + {self.dtype}_ENRLMT_DAYS_11 + {self.dtype}_ENRLMT_DAYS_12
-                    as {self.dtype}_ENRLMT_DAYS_YR
+                    {dtype}_ENRLMT_DAYS_01 + {dtype}_ENRLMT_DAYS_02 + {dtype}_ENRLMT_DAYS_03 + {dtype}_ENRLMT_DAYS_04 +
+                    {dtype}_ENRLMT_DAYS_05 + {dtype}_ENRLMT_DAYS_06 + {dtype}_ENRLMT_DAYS_07 + {dtype}_ENRLMT_DAYS_08 +
+                    {dtype}_ENRLMT_DAYS_09 + {dtype}_ENRLMT_DAYS_10 + {dtype}_ENRLMT_DAYS_11 + {dtype}_ENRLMT_DAYS_12
+                    as {dtype}_ENRLMT_DAYS_YR
 
                 from
                 (select submtg_state_cd,
@@ -261,9 +263,9 @@ class DE0002(DE):
                 """
         for m in range(1, 12):
             mm = str(m)
-            z += f""",sum({self.dtype}_ENRLMT_DAYS_{mm}) as {self.dtype}_ENRLMT_DAYS_{mm}"""
+            z += f""",sum({dtype}_ENRLMT_DAYS_{mm}) as {dtype}_ENRLMT_DAYS_{mm}"""
 
-        z += f"""from {self.dtype}_enrolled_days
+        z += f"""from {dtype}_enrolled_days
              group by submtg_state_cd,
                       msis_ident_num )"""
 
@@ -272,7 +274,7 @@ class DE0002(DE):
         # TODO: refactor to pass in tblname to create_temp_table
         z += f"""insert into &DA_SCHEMA..TAF_ANN_DE_{self.tblname}
                 select
-                    {DE.table_id_cols(self)}
+                    {DE.table_id_cols_sfx(self)}
                     ,ENRL_TYPE_FLAG
                     ,ENRLMT_EFCTV_CY_DT
                     ,ENRLMT_END_CY_DT

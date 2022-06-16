@@ -7,9 +7,9 @@ class DE0008(DE):
     table_name: str = "HHSPO"
     tbl_suffix: str = "hh_spo"
 
-    def __init__(self, de: DE_Runner):
+    def __init__(self, runner: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00007')
+        DE.__init__(self, runner)
 
     def create(self):
         super().create()
@@ -54,31 +54,31 @@ class DE0008(DE):
 
         DE.create_temp_table(tblname=self.table_name, subcols=s, outercols=os)
 
-        z = f"""create or replace temporary view hh_spo_{self.YEAR}2 as
+        z = f"""create or replace temporary view hh_spo_{self.de.YEAR}2 as
 
                 select *
                     {DE.any_col('HH_PGM_PRTCPNT_FLAG_EVR CMNTY_1ST_CHS_SPO_FLAG_EVR _1915I_SPO_FLAG_EVR _1915J_SPO_FLAG_EVR _1932A_SPO_FLAG_EVR _1915A_SPO_FLAG_EVR _1937_ABP_SPO_FLAG_EVR  HH_CHRNC_COND_ANY', 'HH_SPO_SPLMTL')}
 
-                from hh_spo_{self.YEAR}"""
+                from hh_spo_{self.de.YEAR}"""
 
         self.de.append(type(self).__name__, z)
 
         return
 
     def create_mfp_suppl_table(self):
-        z = f"""create or replace temporary view HH_SPO_SPLMTL_{self.YEAR} as
+        z = f"""create or replace temporary view HH_SPO_SPLMTL_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num
                 ,HH_SPO_SPLMTL
 
-        from hh_spo_{self.YEAR}2"""
+        from hh_spo_{self.de.YEAR}2"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols}
+                    {DE.table_id_cols_sfx}
                     ,HH_PGM_PRTCPNT_FLAG_01
                     ,HH_PGM_PRTCPNT_FLAG_02
                     ,HH_PGM_PRTCPNT_FLAG_03
@@ -174,7 +174,7 @@ class DE0008(DE):
                     ,_1937_ABP_SPO_FLAG_11
                     ,_1937_ABP_SPO_FLAG_12
 
-                    from hh_spo_{self.YEAR}2
+                    from hh_spo_{self.de.YEAR}2
                     where HH_SPO_SPLMTL=1"""
 
         self.de.append(type(self).__name__, z)

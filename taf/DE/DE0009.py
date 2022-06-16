@@ -7,9 +7,9 @@ class DE0009(DE):
     table_name: str = "disability_need"
     tbl_suffix: str = "dsblty"
 
-    def __init__(self, de: DE_Runner):
+    def __init__(self, runner: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00009')
+        DE.__init__(self, runner)
 
     def create(self):
         super().create()
@@ -106,7 +106,7 @@ class DE0009(DE):
             """
         DE.create_temp_table(tblname=self.table_name, subcols=s, outercols=os)
 
-        z = f"""create or replace temporary view disability_need_{self.YEAR}2 as
+        z = f"""create or replace temporary view disability_need_{self.de.YEAR}2 as
 
                 select *
                     ,case when CARE_LVL_STUS_CD_EVR=1 or
@@ -119,14 +119,14 @@ class DE0009(DE):
                     then 1 else 0
                     end as LTSS_SPLMTL
 
-                from disability_need_{self.YEAR}"""
+                from disability_need_{self.de.YEAR}"""
 
         self.de.append(type(self).__name__, z)
 
         return
 
     def create_dsblty_suppl_table(self):
-        z = f"""create or replace temporary view DIS_NEED_SPLMTLS_{self.YEAR} as
+        z = f"""create or replace temporary view DIS_NEED_SPLMTLS_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num
                 ,HCBS_COND_SPLMTL
@@ -134,14 +134,14 @@ class DE0009(DE):
                 ,LTSS_SPLMTL
                 ,OTHER_NEEDS_SPLMTL
 
-        from disability_need_{self.YEAR}2"""
+        from disability_need_{self.de.YEAR}2"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols}
+                    {DE.table_id_cols_sfx}
                     ,HCBS_AGED_NON_HHCC_FLAG
                     ,HCBS_PHYS_DSBL_NON_HHCC_FLAG
                     ,HCBS_INTEL_DSBL_NON_HHCC_FLAG
@@ -358,7 +358,7 @@ class DE0009(DE):
                     ,TPL_OTHR_CVRG_IND_11
                     ,TPL_OTHR_CVRG_IND_12
 
-                    from disability_need_{self.YEAR}2
+                    from disability_need_{self.de.YEAR}2
                     where HCBS_COND_SPLMTL=1 or
                         LCKIN_SPLMTL=1 or
                         LTSS_SPLMTL=1 or

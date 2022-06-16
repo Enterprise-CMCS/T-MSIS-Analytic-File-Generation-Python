@@ -7,9 +7,9 @@ class DE0005(DE):
     tblname: str = "managed_care"
     tbl_suffix: str = "mc"
 
-    def __init__(self, de: DE_Runner):
+    def __init__(self, runner: DE_Runner):
         # TODO: Review this
-        DE.__init__(self, DE, 'DE00005')
+        DE.__init__(self, runner)
 
     def create(self):
         super().create()
@@ -17,12 +17,12 @@ class DE0005(DE):
         self.create_mc_suppl_table()
 
     def create_temp(self):
-        s = f"""{DE.run_mc_slots(1, 3)}
-                {TAF_Closure.monthly_array('MC_PLAN_ID', nslots=self.NMCSLOTS)}
-                {TAF_Closure.monthly_array('MC_PLAN_TYPE_CD', nslots=self.NMCSLOTS)}""",
-        s2 = f"""{DE.run_mc_slots(4, 6)}""",
-        s3 = f"""{DE.run_mc_slots(7, 9)}""",
-        s4 = f"""{DE.run_mc_slots(10, 12)}""",
+        s = f"""{DE.run_mc_slots(self, 1, 3)}
+                {TAF_Closure.monthly_array('MC_PLAN_ID', nslots=self.de.NMCSLOTS)}
+                {TAF_Closure.monthly_array('MC_PLAN_TYPE_CD', nslots=self.de.NMCSLOTS)}""",
+        s2 = f"""{DE.run_mc_slots(self, 4, 6)}""",
+        s3 = f"""{DE.run_mc_slots(self, 7, 9)}""",
+        s4 = f"""{DE.run_mc_slots(self, 10, 12)}""",
         s5 = f"""{DE.mc_nonnull_zero('MNGD_CARE_SPLMTL', 1, 3)}"""
         s6 = f"""{DE.mc_nonnull_zero('MNGD_CARE_SPLMTL', 4, 6)}"""
         s7 = f"""{DE.mc_nonnull_zero('MNGD_CARE_SPLMTL', 7, 9)}"""
@@ -54,7 +54,7 @@ class DE0005(DE):
         return
 
     def create_mc_suppl_table(self):
-        z = f"""create or replace temporary view MNGD_CARE_SPLMTL_{self.YEAR} as
+        z = f"""create or replace temporary view MNGD_CARE_SPLMTL_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num
                 ,case when MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
@@ -62,14 +62,14 @@ class DE0005(DE):
                         then 1 else 0 end
                         as MNGD_CARE_SPLMTL
 
-        from managed_care_{self.YEAR}"""
+        from managed_care_{self.de.YEAR}"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols}
+                    {DE.table_id_cols_sfx}
                     ,CMPRHNSV_MC_PLAN_MOS
                     ,TRDTNL_PCCM_MC_PLAN_MOS
                     ,ENHNCD_PCCM_MC_PLAN_MOS
@@ -476,7 +476,7 @@ class DE0005(DE):
                     ,MC_PLAN_TYPE_CD16_11
                     ,MC_PLAN_TYPE_CD16_12
 
-                from managed_care_{self.YEAR}
+                from managed_care_{self.de.YEAR}
                 where MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
                     MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1"""
 
