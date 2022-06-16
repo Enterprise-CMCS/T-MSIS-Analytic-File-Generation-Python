@@ -16,10 +16,10 @@ class DE0002(DE):
         self.eligibility_dates('CHIP', 2)
 
     def create_temp(self, tname):
-        s = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_EFF_DT_', outcol=None, nslots=16, truncfirst=1)
-        s2 = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_END_DT_', outcol=None, nslots=16, truncfirst=0)
-        s3 = DE.monthly_array_eldts(self, incol='CHIP_ENRLMT_EFF_DT_', outcol=None, nslots=16, truncfirst=1)
-        s4 = DE.monthly_array_eldts(self, incol='CHIP_ENRLMT_END_DT_', outcol=None, nslots=16, truncfirst=0)
+        s = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_EFF_DT_', outcol="", nslots=16, truncfirst=1)
+        s2 = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_END_DT_', outcol="", nslots=16, truncfirst=0)
+        s3 = DE.monthly_array_eldts(self, incol='CHIP_ENRLMT_EFF_DT_', outcol="", nslots=16, truncfirst=1)
+        s4 = DE.monthly_array_eldts(self, incol='CHIP_ENRLMT_END_DT_', outcol="", nslots=16, truncfirst=0)
 
         self.create_temp_table(tblname=tname, inyear=self.de.YEAR, subcols=s,
                                subcols2=s2, subcols3=s3, subcols4=s4)

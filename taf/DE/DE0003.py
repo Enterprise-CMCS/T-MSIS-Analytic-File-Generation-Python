@@ -22,41 +22,41 @@ class DE0003(DE):
         DE.create_temp_table(self,
                              tblname=self.tblname,
                              inyear=runyear,
-                             subcols=f"""{TAF_Closure.monthly_array('ELGBL_LINE_1_ADR_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_2_ADR_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_3_ADR_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_CITY_NAME_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_ZIP_CD_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_CNTY_CD_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_STATE_CD_HOME')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_1_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_2_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_LINE_3_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_CITY_NAME_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_ZIP_CD_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_CNTY_CD_MAIL')}
-                                         {TAF_Closure.monthly_array('ELGBL_STATE_CD_MAIL')}
-                                         {TAF_Closure.last_best('ELGBL_PHNE_NUM_HOME')}
-                                         {DE.nonmiss_month('ELGBL_LINE_1_ADR_HOME')}
-                                         {DE.nonmiss_month('ELGBL_LINE_1_ADR_MAIL')}
+                             subcols=f"""{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_2_ADR_HOME')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_3_ADR_HOME')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_CITY_NAME_HOME')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_HOME')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_HOME')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_HOME')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_2_ADR_MAIL')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_3_ADR_MAIL')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_CITY_NAME_MAIL')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_MAIL')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_MAIL')}
+                                         {TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_MAIL')}
+                                         {DE.last_best(self, 'ELGBL_PHNE_NUM_HOME')}
+                                         {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_HOME')}
+                                         {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_MAIL')}
                                      """,
                              outercols=f"""{DE.address_flag(self)}
-                                           {DE.assign_nonmiss_month('ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_1_ADR_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_LINE_2_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_2_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_2_ADR_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_LINE_3_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_3_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_3_ADR_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_CITY_NAME', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CITY_NAME_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_CITY_NAME_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_ZIP_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_ZIP_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_ZIP_CD_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_CNTY_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CNTY_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_CNTY_CD_MAIL')}
-                                           {DE.assign_nonmiss_month('ELGBL_STATE_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_STATE_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_STATE_CD_MAIL')}
+                                           {DE.assign_nonmiss_month(self, 'ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_1_ADR_MAIL')}
+                                           {DE.assign_nonmiss_month(self, 'ELGBL_LINE_2_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_2_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_2_ADR_MAIL')}
+                                           {DE.assign_nonmiss_month(self, 'ELGBL_LINE_3_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_3_ADR_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_LINE_3_ADR_MAIL')}
+                                           {DE.assign_nonmiss_month(self, 'ELGBL_CITY_NAME', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CITY_NAME_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_CITY_NAME_MAIL')}
+                                           {DE.assign_nonmiss_month(self, 'ELGBL_ZIP_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_ZIP_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_ZIP_CD_MAIL')}
+                                           {DE.assign_nonmiss_month(self, 'ELGBL_CNTY_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_CNTY_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_CNTY_CD_MAIL')}
+                                           {DE.assign_nonmiss_month(self, 'ELGBL_STATE_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_STATE_CD_HOME', 'monthval2=ELGBL_LINE_1_ADR_MAIL_MN', 'incol2=ELGBL_STATE_CD_MAIL')}
                                         """)
 
     def create_temp(self):
         DE.create_temp_table(self,
                              tblname='name',
                              inyear=self.de.YEAR,
-                             subcols=f"""{TAF_Closure.last_best('ELGBL_1ST_NAME')}
-                                         {TAF_Closure.last_best('ELGBL_LAST_NAME')}
-                                         {TAF_Closure.last_best('ELGBL_MDL_INITL')}
+                             subcols=f"""{DE.last_best(self, 'ELGBL_1ST_NAME')}
+                                         {DE.last_best(self, 'ELGBL_LAST_NAME')}
+                                         {DE.last_best(self, 'ELGBL_MDL_INITL')}
                             """)
 
     def create_CNTCT_DTLS(self):
@@ -73,7 +73,7 @@ class DE0003(DE):
                     select c.submtg_state_cd,
                         c.msis_ident_num
 
-            {TAF_Closure.last_best('ELGBL_LINE_1_ADR', prior=1)}
+            {DE.last_best(self, 'ELGBL_LINE_1_ADR', prior=1)}
             ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""
             for pyear in range(1, self.de.PYEARS + 1):
                 cnt += 1
@@ -89,7 +89,7 @@ class DE0003(DE):
                 {DE.address_same_year('ELGBL_CNTY_CD')}
                 {DE.address_same_year('ELGBL_STATE_CD')}
 
-                {TAF_Closure.last_best('ELGBL_PHNE_NUM_HOME', prior=1)}
+                {DE.last_best(self, 'ELGBL_PHNE_NUM_HOME', prior=1)}
 
                 from address_phone_{self.de.YEAR} c"""
             cnt = 0

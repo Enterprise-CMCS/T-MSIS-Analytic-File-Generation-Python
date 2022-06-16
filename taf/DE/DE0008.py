@@ -19,30 +19,30 @@ class DE0008(DE):
     def create_temp(self):
         # Create a series of flags to be evaluated to create HH_SPO_SPLMTL
 
-        s = f"""{TAF_Closure.monthly_array('HH_PGM_PRTCPNT_FLAG')}
-                {TAF_Closure.last_best('HH_PRVDR_NUM')}
-                {TAF_Closure.last_best('HH_ENT_NAME)')}
-                {TAF_Closure.last_best('MH_HH_CHRNC_COND_FLAG')}
-                {TAF_Closure.last_best('SA_HH_CHRNC_COND_FLAG')}
-                {TAF_Closure.last_best('ASTHMA_HH_CHRNC_COND_FLAG')}
-                {TAF_Closure.last_best('DBTS_HH_CHRNC_COND_FLAG')}
-                {TAF_Closure.last_best('HRT_DIS_HH_CHRNC_COND_FLAG')}
-                {TAF_Closure.last_best('OVRWT_HH_CHRNC_COND_FLAG')}
-                {TAF_Closure.last_best('HIV_AIDS_HH_CHRNC_COND_FLAG')}
-                {TAF_Closure.last_best('OTHR_HH_CHRNC_COND_FLAG')}
-                {TAF_Closure.monthly_array('CMNTY_1ST_CHS_SPO_FLAG')}
-                {TAF_Closure.monthly_array('_1915I_SPO_FLAG')}
-                {TAF_Closure.monthly_array('_1915J_SPO_FLAG')}
-                {TAF_Closure.monthly_array('_1932A_SPO_FLAG')}
-                {TAF_Closure.monthly_array('_1915A_SPO_FLAG')}
-                {TAF_Closure.monthly_array('_1937_ABP_SPO_FLAG')}
-                {TAF_Closure.ever_year('HH_PGM_PRTCPNT_FLAG')}
-                {TAF_Closure.ever_year('CMNTY_1ST_CHS_SPO_FLAG)')}
-                {TAF_Closure.ever_year('_1915I_SPO_FLAG)')}
-                {TAF_Closure.ever_year('_1915J_SPO_FLAG)')}
-                {TAF_Closure.ever_year('_1932A_SPO_FLAG')}
-                {TAF_Closure.ever_year('_1915A_SPO_FLAG')}
-                {TAF_Closure.ever_year('_1937_ABP_SPO_FLAG')}
+        s = f"""{TAF_Closure.monthly_array(self, 'HH_PGM_PRTCPNT_FLAG')}
+                {DE.last_best(self, 'HH_PRVDR_NUM')}
+                {DE.last_best(self, 'HH_ENT_NAME)')}
+                {DE.last_best(self, 'MH_HH_CHRNC_COND_FLAG')}
+                {DE.last_best(self, 'SA_HH_CHRNC_COND_FLAG')}
+                {DE.last_best(self, 'ASTHMA_HH_CHRNC_COND_FLAG')}
+                {DE.last_best(self, 'DBTS_HH_CHRNC_COND_FLAG')}
+                {DE.last_best(self, 'HRT_DIS_HH_CHRNC_COND_FLAG')}
+                {DE.last_best(self, 'OVRWT_HH_CHRNC_COND_FLAG')}
+                {DE.last_best(self, 'HIV_AIDS_HH_CHRNC_COND_FLAG')}
+                {DE.last_best(self, 'OTHR_HH_CHRNC_COND_FLAG')}
+                {TAF_Closure.monthly_array(self, 'CMNTY_1ST_CHS_SPO_FLAG')}
+                {TAF_Closure.monthly_array(self, '_1915I_SPO_FLAG')}
+                {TAF_Closure.monthly_array(self, '_1915J_SPO_FLAG')}
+                {TAF_Closure.monthly_array(self, '_1932A_SPO_FLAG')}
+                {TAF_Closure.monthly_array(self, '_1915A_SPO_FLAG')}
+                {TAF_Closure.monthly_array(self, '_1937_ABP_SPO_FLAG')}
+                {DE.ever_year(self, 'HH_PGM_PRTCPNT_FLAG')}
+                {DE.ever_year(self, 'CMNTY_1ST_CHS_SPO_FLAG)')}
+                {DE.ever_year(self, '_1915I_SPO_FLAG)')}
+                {DE.ever_year(self, '_1915J_SPO_FLAG)')}
+                {DE.ever_year(self, '_1932A_SPO_FLAG')}
+                {DE.ever_year(self, '_1915A_SPO_FLAG')}
+                {DE.ever_year(self, '_1937_ABP_SPO_FLAG')}
             """
 
         # Create MFP_SPLMTL (which will go onto the base segment AND determines
@@ -52,7 +52,7 @@ class DE0008(DE):
                                 OVRWT_HH_CHRNC_COND_FLAG HIV_AIDS_HH_CHRNC_COND_FLAG \
                                 OTHR_HH_CHRNC_COND_FLAG', 'HH_CHRNC_COND_ANY')
 
-        DE.create_temp_table(tblname=self.table_name, subcols=s, outercols=os)
+        DE.create_temp_table(self, tblname=self.table_name, inyear="", subcols=s, outercols=os)
 
         z = f"""create or replace temporary view hh_spo_{self.de.YEAR}2 as
 
