@@ -241,11 +241,11 @@ class DE0001(DE):
             ,null :: smallint as PRGNCY_FLAG_12
             ,null :: smallint as PRGNCY_FLAG_EVR
 
-            {TAF_Closure.monthly_array(self, 'ELGBLTY_GRP_CD')}
+            {TAF_Closure.monthly_array(self, incol='ELGBLTY_GRP_CD')}
             {DE.last_best(self, 'ELGBLTY_GRP_CD', outcol='ELGBLTY_GRP_CD_LTST')}
-            {TAF_Closure.monthly_array(self, 'MASBOE_CD')}
-            {DE.last_best(self, 'MASBOE_CD', outcol='MASBOE_CD_LTST')}
-            {DE.last_best(self, 'CARE_LVL_STUS_CD')}
+            {TAF_Closure.monthly_array(self, incol='MASBOE_CD')}
+            {DE.last_best(self, incol='MASBOE_CD', outcol='MASBOE_CD_LTST')}
+            {DE.last_best(self, incol='CARE_LVL_STUS_CD')}
             {TAF_Closure.ever_year('DEAF_DSBL_FLAG')}
             {TAF_Closure.ever_year('BLND_DSBL_FLAG')}
             {TAF_Closure.ever_year('DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
@@ -254,26 +254,26 @@ class DE0001(DE):
             {TAF_Closure.ever_year('DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
             {TAF_Closure.ever_year('OTHR_DSBL_FLAG')}
 
-            {TAF_Closure.monthly_array(self, 'CHIP_CD')}
-            {DE.last_best(self, 'CHIP_CD', outcol='CHIP_CD_LTST')}
+            {TAF_Closure.monthly_array(self, incol='CHIP_CD')}
+            {DE.last_best(self, incol='CHIP_CD', outcol='CHIP_CD_LTST')}
 
-            {TAF_Closure.monthly_array(self, 'STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP')}
-            {DE.last_best(self, 'STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP_LTST')}
-            {TAF_Closure.monthly_array(self, 'DUAL_ELGBL_CD')}
-            {DE.last_best(self, 'DUAL_ELGBL_CD',outcol='DUAL_ELGBL_CD_LTST')}
+            {TAF_Closure.monthly_array(self, incol='STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP')}
+            {DE.last_best(self, incol='STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP_LTST')}
+            {TAF_Closure.monthly_array(self, incol='DUAL_ELGBL_CD')}
+            {DE.last_best(self, incol='DUAL_ELGBL_CD',outcol='DUAL_ELGBL_CD_LTST')}
 
             {DE.mc_type_rank(self, smonth=1, emonth=2)}
 
-            {TAF_Closure.monthly_array(self, 'RSTRCTD_BNFTS_CD')}
-            {DE.last_best(self, 'RSTRCTD_BNFTS_CD',outcol='RSTRCTD_BNFTS_CD_LTST')}
-            {DE.last_best(self, 'SSDI_IND')}
-            {DE.last_best(self, 'SSI_IND')}
-            {DE.last_best(self, 'SSI_STATE_SPLMT_STUS_CD')}
-            {DE.last_best(self, 'SSI_STUS_CD')}
-            {DE.last_best(self, 'BIRTH_CNCPTN_IND')}
-            {DE.last_best(self, 'TANF_CASH_CD')}
-            {DE.last_best(self, 'TPL_INSRNC_CVRG_IND')}
-            {DE.last_best(self, 'TPL_OTHR_CVRG_IND')}
+            {TAF_Closure.monthly_array(self, incol='RSTRCTD_BNFTS_CD')}
+            {DE.last_best(self, incol='RSTRCTD_BNFTS_CD',outcol='RSTRCTD_BNFTS_CD_LTST')}
+            {DE.last_best(self, incol='SSDI_IND')}
+            {DE.last_best(self, incol='SSI_IND')}
+            {DE.last_best(self, incol='SSI_STATE_SPLMT_STUS_CD')}
+            {DE.last_best(self, incol='SSI_STUS_CD')}
+            {DE.last_best(self, incol='BIRTH_CNCPTN_IND')}
+            {DE.last_best(self, incol='TANF_CASH_CD')}
+            {DE.last_best(self, incol='TPL_INSRNC_CVRG_IND')}
+            {DE.last_best(self, incol='TPL_OTHR_CVRG_IND')}
             {DE.misg_enrlm_type()}
             """
 
@@ -303,26 +303,26 @@ class DE0001(DE):
             tblname="basedemo",
             inyear=self.de.YEAR,
             subcols=f"""
-                {DE.last_best(self, 'SSN_NUM')}
-                {DE.last_best(self, 'BIRTH_DT')}
-                {DE.last_best(self, 'DEATH_DT')}
-                {DE.last_best(self, 'DCSD_FLAG')}
-                {DE.last_best(self, 'AGE_NUM')}
-                {DE.last_best(self, 'AGE_GRP_FLAG')}
-                {DE.last_best(self, 'GNDR_CD')}
-                {DE.last_best(self, 'MRTL_STUS_CD')}
-                {DE.last_best(self, 'INCM_CD')}
-                {DE.last_best(self, 'VET_IND')}
-                {DE.last_best(self, 'CTZNSHP_IND')}
-                {DE.last_best(self, 'IMGRTN_STUS_5_YR_BAR_END_DT')}
-                {DE.last_best(self, 'OTHR_LANG_HOME_CD')}
-                {DE.last_best(self, 'PRMRY_LANG_FLAG')}
-                {DE.last_best(self, 'PRMRY_LANG_ENGLSH_PRFCNCY_CD')}
-                {DE.last_best(self, 'HSEHLD_SIZE_CD')}
-                {DE.last_best(self, 'CRTFD_AMRCN_INDN_ALSKN_NTV_IND')}
-                {DE.last_best(self, 'ETHNCTY_CD')}
-                {DE.last_best(self, 'RACE_ETHNCTY_FLAG')}
-                {DE.last_best(self, 'RACE_ETHNCTY_EXP_FLAG')}
+                {DE.last_best(self, incol='SSN_NUM')}
+                {DE.last_best(self, incol='BIRTH_DT')}
+                {DE.last_best(self, incol='DEATH_DT')}
+                {DE.last_best(self, incol='DCSD_FLAG')}
+                {DE.last_best(self, incol='AGE_NUM')}
+                {DE.last_best(self, incol='AGE_GRP_FLAG')}
+                {DE.last_best(self, incol='GNDR_CD')}
+                {DE.last_best(self, incol='MRTL_STUS_CD')}
+                {DE.last_best(self, incol='INCM_CD')}
+                {DE.last_best(self, incol='VET_IND')}
+                {DE.last_best(self, incol='CTZNSHP_IND')}
+                {DE.last_best(self, incol='IMGRTN_STUS_5_YR_BAR_END_DT')}
+                {DE.last_best(self, incol='OTHR_LANG_HOME_CD')}
+                {DE.last_best(self, incol='PRMRY_LANG_FLAG')}
+                {DE.last_best(self, incol='PRMRY_LANG_ENGLSH_PRFCNCY_CD')}
+                {DE.last_best(self, incol='HSEHLD_SIZE_CD')}
+                {DE.last_best(self, incol='CRTFD_AMRCN_INDN_ALSKN_NTV_IND')}
+                {DE.last_best(self, incol='ETHNCTY_CD')}
+                {DE.last_best(self, incol='RACE_ETHNCTY_FLAG')}
+                {DE.last_best(self, incol='RACE_ETHNCTY_EXP_FLAG')}
 
                 {TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
                 {TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
@@ -335,9 +335,9 @@ class DE0001(DE):
                 {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_HOME')}
                 {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_MAIL')}
 
-                {DE.last_best(self, 'MSIS_CASE_NUM')}
-                {DE.last_best(self, 'MDCR_BENE_ID')}
-                {DE.last_best(self, 'MDCR_HICN_NUM')}
+                {DE.last_best(self,incol='MSIS_CASE_NUM')}
+                {DE.last_best(self,incol='MDCR_BENE_ID')}
+                {DE.last_best(self,incol='MDCR_HICN_NUM')}
                 """,
             outercols=f"""{DE.assign_nonmiss_month(self, 'ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_LINE_1_ADR_MAIL')}
                     {DE.assign_nonmiss_month(self, 'ELGBL_ZIP_CD', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_ZIP_CD_HOME',monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_ZIP_CD_MAIL')}
@@ -416,7 +416,7 @@ class DE0001(DE):
             self.de.append(type(self).__name__, z)
 
         if self.de.GETPRIOR == 0:
-            z = f"""alter table base_demo_{self.de.YEAR} rename to base_demo_{self.de.YEAR}_out"""
+            z = f"""alter view base_demo_{self.de.YEAR} rename to base_demo_{self.de.YEAR}_out"""
             self.de.append(type(self).__name__, z)
 
         z = f"""create or replace temporary view base_{self.de.YEAR} as
@@ -460,7 +460,6 @@ class DE0001(DE):
             """
         self.de.append(type(self).__name__, z)
 
-        # TODO: Do we need to drop temp table? I don't think so
         z = f"""create or replace temporary view base_{self.de.YEAR}_final0
             select a.*"""
 
@@ -527,20 +526,22 @@ class DE0001(DE):
             """
         self.de.append(type(self).__name__, z)
 
-        z = f"""create temp table claims_ids as
+        # Create a table of all unique state/MSIS IDs from claims, to join back to Base and create dummy records for
+        # all benes with a claim and not in Base
+        z = f"""create or replace temporary view claims_ids as
                 select distinct submtg_state_cd
                                 ,msis_ident_num
 
-                from ({DE.unique_claims_ids}(IP)
+                from ({DE.unique_claims_ids(self, cltype='IP')}
 
                     union
-                    {DE.unique_claims_ids}(LT)
+                    {DE.unique_claims_ids(self, cltype='LT')}
 
                     union
-                    {DE.unique_claims_ids}(OT)
+                    {DE.unique_claims_ids(self, cltype='OT')}
 
                     union
-                    {DE.unique_claims_ids}(RX))
+                    {DE.unique_claims_ids(self, cltype='RX')}
             """
         self.de.append(type(self).__name__, z)
 
@@ -571,7 +572,7 @@ class DE0001(DE):
             (DA_RUN_ID, DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, SUBMTG_STATE_CD, MSIS_IDENT_NUM {self.basecols()})
             select
                 {DE.table_id_cols_sfx(self, suffix='_comb')}
-                {self.basecols}
+                {self.basecols()}
 
             from base_{self.de.YEAR}_final
             """

@@ -116,11 +116,9 @@ class DE0002(DE):
 
         self.de.append(type(self).__name__, z)
 
+        # Create a unique date ID to filter on later
         z = f"""create or replace temporary view {dtype}_ids as
             select *
-
-            /* Create a unique date ID to filter on later */
-
                 ,trim(submtg_state_cd ||'-'||msis_ident_num || '-' ||cast(row_number() over
                     (partition by submtg_state_cd, msis_ident_num
                     order by submtg_state_cd, msis_ident_num, {dtype}_ENRLMT_EFF_DT, {dtype}_ENRLMT_END_DT)
@@ -130,32 +128,28 @@ class DE0002(DE):
 
         self.de.append(type(self).__name__, z)
 
+        # Join records for beneficiary to each other, but omit matches where it's the same record */
+        # Get every dateID where their effective date is greater than or equal to another record's effective date
+        # AND their end date is less than or equal to that other record's end date.
         z = f"""create or replace temporary view {dtype}_overlaps as
                 select t1.*
                 from {dtype}_ids t1
                     inner join
                     {dtype}_ids t2
 
-                /* Join records for beneficiary to each other, but omit matches where it's the same record */
-
                     on t1.submtg_state_cd = t2.submtg_state_cd and
                         t1.msis_ident_num = t2.msis_ident_num and
                         t1.dateId <> t2.dateId
-
-                /* Get every dateID where their effective date is greater than or equal to another record's effective date
-                    AND their end date is less than or equal to that other record's end date. */
 
                 where date_cmp(t1.{dtype}_ENRLMT_EFF_DT,t2.{dtype}_ENRLMT_EFF_DT) in (0,1) and
                     date_cmp(t1.{dtype}_ENRLMT_END_DT,t2.{dtype}_ENRLMT_END_DT) in (-1,0)"""
 
         self.de.append(type(self).__name__, z)
 
+        # Join initial date to overlapping dateIDs and remove
         z = f"""create or replace temporary view {dtype}_nonoverlaps as
                 select t1.*
-
-                /* Join initial date to overlapping dateIDs and remove */
-
-                from {dtype}_ids t1
+                    from {dtype}_ids t1
 
                     left join
                     {dtype}_overlaps t2
@@ -210,17 +204,15 @@ class DE0002(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view {dtype}_enrolled_days
-            distkey(msis_ident_num)
-            sortkey(submtg_state_cd,msis_ident_num) as
+        # Loop through months and compare effective date to first day of month, and end date to last day of month.
+        # If at all within month, count the number of days
+        z = f"""create or replace temporary view {dtype}_enrolled_days as
 
             select submtg_state_cd,
                     msis_ident_num,
                     {dtype}_ENRLMT_EFF_DT,
                     {dtype}_ENRLMT_END_DT
 
-            /* Loop through months and compare effective date to first day of month, and end date to last day of month.
-                If at all within month, count the number of days */
             """
         for m in range(1, 12):
             lday = "31"
@@ -249,8 +241,7 @@ class DE0002(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z += f"""create or replace temporary view {dtype}_days_out
-
+        z += f"""create or replace temporary view {dtype}_days_out as
                 select *,
                     {dtype}_ENRLMT_DAYS_01 + {dtype}_ENRLMT_DAYS_02 + {dtype}_ENRLMT_DAYS_03 + {dtype}_ENRLMT_DAYS_04 +
                     {dtype}_ENRLMT_DAYS_05 + {dtype}_ENRLMT_DAYS_06 + {dtype}_ENRLMT_DAYS_07 + {dtype}_ENRLMT_DAYS_08 +
