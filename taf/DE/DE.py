@@ -118,14 +118,14 @@ class DE(TAF):
 
             z += ",case "
             for p in priorities:
-                z += "when ("
+                z += " when ("
 
                 for s in range(1, self.de.NMCSLOTS - 1):
                     z += f"""m{mm}.MC_PLAN_TYPE_CD{s} = '{p}'"""
                     if s < self.de.NMCSLOTS - 2:
                         z += " or "
                 z += f""" ) then ('{p}')"""
-            z += f"""else null
+            z += f""" else null
             end as MC_PLAN_TYPE_CD_{mm}
             """
         return z
@@ -169,13 +169,13 @@ class DE(TAF):
         for m in range(12, 0, -1):
             if m < 10:
                 m = str(m).zfill(2)
-            cases.append(f"when {monthval1}='{m}' then {incol1}_{m}")
+            cases.append(f" when {monthval1}='{m}' then {incol1}_{m}")
 
             if monthval2 != '':
                 for m in range(12, 0, -1):
                     if m < 10:
                         m = str(m).zfill(2)
-                    cases.append(f"when {monthval2}='{m}' then {incol2}_{m}")
+                    cases.append(f" when {monthval2}='{m}' then {incol2}_{m}")
 
         return f",case {' '.join(cases)} else null end as {outcol}"
 
@@ -192,9 +192,9 @@ class DE(TAF):
         z = f""",case when yearpull = {self.de.YEAR} then c.{incol}"""
         for pyear in range(1, self.de.PYEARS + 1):
             cnt += 1
-            z += f"""when yearpull = {pyear} then p{cnt}.{incol}"""
+            z += f""" when yearpull = {pyear} then p{cnt}.{incol}"""
 
-        z += f"""else null
+        z += f""" else null
                 end as {incol}"""
         return z
 
