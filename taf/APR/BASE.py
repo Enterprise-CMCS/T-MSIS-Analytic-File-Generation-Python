@@ -171,7 +171,7 @@ class BASE(APR):
             'BIRTH_DT',
             'DEATH_DT',
             'AGE_NUM',
-            'TCHNG_IND',
+            'cast(TCHNG_IND as string) as TCHNG_IND',
             'OWNRSHP_CD',
             'OWNRSHP_CAT',
             'PRVDR_PRFT_STUS_CD',
