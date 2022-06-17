@@ -174,13 +174,15 @@ class PRV06(PRV):
                         else
                         cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50))
                         end as PRV_LINK_KEY,
-                        {self.prv.TAF_FILE_DATE} as PRV_FIL_DT,
+                        '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                         '{self.prv.version}' as PRV_VRSN,
                         tms_run_id as TMSIS_RUN_ID,
                         SUBMTG_STATE_CD,
                         submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
                         PRVDR_CLSFCTN_TYPE_CD,
-                        PRVDR_CLSFCTN_CD
+                        PRVDR_CLSFCTN_CD,
+                        to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
+                        current_timestamp() as REC_UPDT_TS
                         from Prov06_Taxonomies_All
                         where PRVDR_CLSFCTN_TYPE_CD is not null and PRVDR_CLSFCTN_CD is not null
                 order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID

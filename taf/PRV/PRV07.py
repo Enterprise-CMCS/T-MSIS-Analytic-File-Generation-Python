@@ -228,7 +228,7 @@ class PRV07(PRV):
                     else
                     cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50))
                     end as PRV_LINK_KEY,
-                    {self.prv.TAF_FILE_DATE} as PRV_FIL_DT,
+                    '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
                     SUBMTG_STATE_CD,
@@ -239,7 +239,9 @@ class PRV07(PRV):
                     STATE_PLAN_ENRLMT_CD,
                     PRVDR_MDCD_ENRLMT_MTHD_CD,
                     APLCTN_DT,
-                    PRVDR_MDCD_ENRLMT_STUS_CTGRY
+                    PRVDR_MDCD_ENRLMT_STUS_CTGRY,
+                    to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
+                    current_timestamp() as REC_UPDT_TS
                     from Prov07_Medicaid_CNST
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
             """
@@ -343,7 +345,9 @@ class PRV07(PRV):
                         T.TRNSPRTN_SRVCS_PRVDR_IND,
                         T.sud_srvc_prvdr_ind,
                         T.mh_srvc_prvdr_ind,
-                        T.emer_srvcs_prvdr_ind
+                        T.emer_srvcs_prvdr_ind,
+                        to_timestamp(cast(M.da_run_id as string), 'yyyyMMddHHmmss') as REC_ADD_TS,
+                        current_timestamp() as REC_UPDT_TS
                 from Prov02_Main_CNST M
                 left join Prov07_Medicaid_Mapped E
                     on {self.write_equalkeys(self.srtlist, 'M', 'E')}

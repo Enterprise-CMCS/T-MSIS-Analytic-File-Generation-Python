@@ -65,6 +65,8 @@ class BED(APR):
                 ,PRVDR_BED_FLAG_10
                 ,PRVDR_BED_FLAG_11
                 ,PRVDR_BED_FLAG_12
+                ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
             FROM bed_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 

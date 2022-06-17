@@ -290,7 +290,7 @@ class PRV02(PRV):
                 create or replace temporary view Prov02_Main_CNST as
                 select { ','.join(self.srtlist) },
                     tms_run_id as TMSIS_RUN_ID,
-                    {self.prv.TAF_FILE_DATE} as PRV_FIL_DT,
+                    cast({self.prv.TAF_FILE_DATE} as string) as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     {self.prv.DA_RUN_ID} as DA_RUN_ID,
                     SUBMTG_STATE_CD,

@@ -143,7 +143,7 @@ class PRV05(PRV):
                     else
                     cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74))
                     end as PRV_LOC_LINK_KEY,
-                    {self.prv.TAF_FILE_DATE} as PRV_FIL_DT,
+                    '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
                     SUBMTG_STATE_CD,
@@ -151,7 +151,9 @@ class PRV05(PRV):
                     prov_location_id as PRVDR_LCTN_ID,
                     PRVDR_ID_TYPE_CD,
                     prov_identifier as PRVDR_ID,
-                    prov_identifier_issuing_entity_id as PRVDR_ID_ISSG_ENT_ID_TXT
+                    prov_identifier_issuing_entity_id as PRVDR_ID_ISSG_ENT_ID_TXT,
+                    to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
+                    current_timestamp() as REC_UPDT_TS
                     from Prov05_Identifiers_TYP
                     where PRVDR_ID_TYPE_CD is not null
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID, PRVDR_LCTN_ID

@@ -246,7 +246,7 @@ class PRV03(PRV):
                     cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || T.SUBMTG_STATE_CD || '-' || coalesce(T.submitting_state_prov_id, '*')) as varchar(50))
                     end as PRV_LINK_KEY,
                     T.PRV_LOC_LINK_KEY,
-                    {self.prv.TAF_FILE_DATE} as PRV_FIL_DT,
+                    '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     T.tms_run_id as TMSIS_RUN_ID,
                     T.SUBMTG_STATE_CD,
@@ -267,7 +267,9 @@ class PRV03(PRV):
                     when L.PRVDR_ADR_SRVC_IND=1 and T.SUBMTG_STATE_CD=T.ADR_STATE_CD and T.SUBMTG_STATE_CD is not null and T.ADR_STATE_CD is not null then 0
                     when L.PRVDR_ADR_SRVC_IND=1 and T.SUBMTG_STATE_CD<>T.ADR_STATE_CD and T.SUBMTG_STATE_CD is not null and T.ADR_STATE_CD is not null then 1
                     else null
-                    end as PRVDR_SRVC_ST_DFRNT_SUBMTG_ST
+                    end as PRVDR_SRVC_ST_DFRNT_SUBMTG_ST,
+                    to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
+                    current_timestamp() as REC_UPDT_TS
             from Prov03_Location_BSM T
                 left join Prov03_Location_mapt L
                     on T.{keyl}=L.{keyl}

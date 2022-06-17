@@ -33,7 +33,7 @@ class GRP(APR):
     #
     # ---------------------------------------------------------------------------------
     def create(self):
-        
+
         collist_s = ['SUBMTG_STATE_AFLTD_PRVDR_ID']
 
         self.annual_segment(fileseg='GRP', dtfile='PRV', collist=collist_s, mnths='PRVDR_GRP_FLAG', outtbl="grp_pr_" + str(self.year))
@@ -61,6 +61,8 @@ class GRP(APR):
                 ,PRVDR_GRP_FLAG_10
                 ,PRVDR_GRP_FLAG_11
                 ,PRVDR_GRP_FLAG_12
+                ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
             FROM grp_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
