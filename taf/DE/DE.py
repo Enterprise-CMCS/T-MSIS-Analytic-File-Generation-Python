@@ -79,7 +79,7 @@ class DE(TAF):
             inyear = self.de.YEAR
 
         z = f"""
-            create temp table {tblname}_{inyear}
+            create or replace temporary view {tblname}_{inyear} as
                 select * {outercols}
 
                     from (
@@ -118,14 +118,14 @@ class DE(TAF):
 
             z += ",case "
             for p in priorities:
-                z += "when ("
+                z += " when ("
 
                 for s in range(1, self.de.NMCSLOTS - 1):
                     z += f"""m{mm}.MC_PLAN_TYPE_CD{s} = '{p}'"""
                     if s < self.de.NMCSLOTS - 2:
-                        z += " or"
-            z += f""" ) then ('{p}')"""
-            z += f"""else null
+                        z += " or "
+                z += f""" ) then ('{p}')"""
+            z += f""" else null
             end as MC_PLAN_TYPE_CD_{mm}
             """
         return z
@@ -141,7 +141,7 @@ class DE(TAF):
                 when m{mm}.msis_ident_num is not null
                 then 0
                 else null
-                end as MISG_ENRLMT_TYPE_IND_{mm}."""
+                end as MISG_ENRLMT_TYPE_IND_{mm}"""
 
         return z
 
@@ -169,13 +169,13 @@ class DE(TAF):
         for m in range(12, 0, -1):
             if m < 10:
                 m = str(m).zfill(2)
-            cases.append(f"when {monthval1}='{m}' then {incol1}_{m}")
+            cases.append(f" when {monthval1}='{m}' then {incol1}_{m}")
 
             if monthval2 != '':
                 for m in range(12, 0, -1):
                     if m < 10:
                         m = str(m).zfill(2)
-                    cases.append(f"when {monthval2}='{m}' then {incol2}_{m}")
+                    cases.append(f" when {monthval2}='{m}' then {incol2}_{m}")
 
         return f",case {' '.join(cases)} else null end as {outcol}"
 
@@ -192,9 +192,9 @@ class DE(TAF):
         z = f""",case when yearpull = {self.de.YEAR} then c.{incol}"""
         for pyear in range(1, self.de.PYEARS + 1):
             cnt += 1
-            z += f"""when yearpull = {pyear} then p{cnt}.{incol}"""
+            z += f""" when yearpull = {pyear} then p{cnt}.{incol}"""
 
-        z += f"""else null
+        z += f""" else null
                 end as {incol}"""
         return z
 
@@ -229,6 +229,7 @@ class DE(TAF):
 
     def monthly_array_eldts(self, incol, outcol, nslots=16, truncfirst=1):
         lday = "31"
+        z = ""
         if outcol == "":
             outcol = incol
 
@@ -254,20 +255,20 @@ class DE(TAF):
 
                 # Truncate effective dates to the 1st of the month if prior to the first. Otherwise pull in the raw date.
                 if truncfirst == 1:
-                    z = f""",case when m{mm}.{incol}.{snum} is not null and
-                            date_cmp(m{mm}.{incol}.{snum},to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')) = -1
+                    z += f""",case when m{mm}.{incol}{snum} is not null and
+                            date_cmp(m{mm}.{incol}{snum},to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy') = -1
                         then to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')
-                        else m{mm}.{incol}.{snum}
+                        else m{mm}.{incol}{snum}
                         end as {outcol}{snum}_{mm}
                         """
 
                 # Truncate end dates to the last day of the month if after the last day of the month. Otherwise pull in the
                 # raw date
                 if truncfirst == 0:
-                    z = f""",case when m{mm}.{incol}.{snum} is not null and
-                            date_cmp(m{mm}.{incol}.{snum},to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy')) = 1
+                    z += f""",case when m{mm}.{incol}{snum} is not null and
+                            date_cmp(m{mm}.{incol}{snum},to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy') = 1
                         then to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy')
-                        else m{mm}.{incol}.{snum}
+                        else m{mm}.{incol}{snum}
                         end as {outcol}{snum}_{mm}
                         """
         return z
@@ -388,7 +389,7 @@ class DE(TAF):
         z = """,case when """
         for c in range(1, cnt + 1):
             if c > 1:
-                z += "or"
+                z += " or "
             z += f"""c {condition}"""
 
         z += f"""then 1 else 0

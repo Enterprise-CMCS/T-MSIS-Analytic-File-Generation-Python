@@ -703,7 +703,7 @@ class TAF_Closure():
 
         if (nslots == '1'):
             return f"""
-              m01.{incol} as {outcol}_01
+            , m01.{incol} as {outcol}_01
             , m02.{incol} as {outcol}_02
             , m03.{incol} as {outcol}_03
             , m04.{incol} as {outcol}_04
@@ -723,7 +723,7 @@ class TAF_Closure():
                     snum = s
 
                 z += f"""
-                  m01.{incol}{snum} as {outcol}{snum}_01
+                , m01.{incol}{snum} as {outcol}{snum}_01
                 , m02.{incol}{snum} as {outcol}{snum}_02
                 , m03.{incol}{snum} as {outcol}{snum}_03
                 , m04.{incol}{snum} as {outcol}{snum}_04
@@ -762,7 +762,7 @@ class TAF_Closure():
 
             if raw == 1:
 
-                z = f"""case when
+                z = f""", case when
                     m01.{incol} {condition} or
                     m02.{incol} {condition} or
                     m03.{incol} {condition} or
@@ -778,7 +778,7 @@ class TAF_Closure():
 
             if raw == 0:
 
-                z = f"""case when
+                z = f""", case when
                     {incol}_01 {condition} or
                     {incol}_02 {condition} or
                     {incol}_03 {condition} or
@@ -827,7 +827,6 @@ class TAF_Closure():
                     nullif( {incol}_12, {nullcond}) {condition}"""
 
         return f"{z} then 1 else 0 end as {outcol}"
-
 
 
     # ---------------------------------------------------------------------------------

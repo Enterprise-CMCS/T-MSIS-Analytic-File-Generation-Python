@@ -49,7 +49,6 @@ class DE0005(DE):
                   {DE.sum_months(self, 'HM_HOME_MC_PLAN')}
                   {DE.sum_months(self, 'IC_DUALS_MC_PLAN')}
             """
-        print(s)
         DE.create_temp_table(self, tblname=self.tblname, inyear=self.de.YEAR, subcols=s, subcols2=s2, subcols3=s3,
                              subcols4=s4, subcols5=s5, subcols6=s6, subcols7=s7, outercols=os)
         return

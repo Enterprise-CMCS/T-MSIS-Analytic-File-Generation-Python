@@ -57,8 +57,8 @@ class DE_Runner(TAF_Runner):
         self.VERSION: int = 0
         self.DA_RUN_ID: int = 0
         self.ROWCOUNT: int = 0
-        self.TMSIS_SCHEMA = ""
-        self.DA_SCHEMA = ""
+        self.TMSIS_SCHEMA = "TMSIS"
+        self.DA_SCHEMA = "TAF"
         self.ST_FILTER = ""
         self.GETPRIOR: int = 0  # TODO: how does this get set?
         self.PYEARS: int = 0

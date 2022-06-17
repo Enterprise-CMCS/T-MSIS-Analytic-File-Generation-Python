@@ -103,7 +103,7 @@ class DE0003(DE):
             self.de.append(type(self).__name__, z)
 
         if self.de.GETPRIOR == 0:
-            z = f"""alter table address_phone_{self.de.YEAR} rename to address_phone_{self.de.YEAR}_out"""
+            z = f"""alter view address_phone_{self.de.YEAR} rename to address_phone_{self.de.YEAR}_out"""
             self.de.append(type(self).__name__, z)
 
         z = f"""create or replace temporary view name_address_phone_{self.de.YEAR} as
