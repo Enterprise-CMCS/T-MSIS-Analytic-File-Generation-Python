@@ -36,48 +36,48 @@ class OA(APL):
     def create(self):
 
         subcols = [
-            "%monthly_array(WVR_ID_01,WVR_ID_01,1)",
-            "%monthly_array(WVR_ID_02,WVR_ID_02,1)",
-            "%monthly_array(WVR_ID_03,WVR_ID_03,1)",
-            "%monthly_array(WVR_ID_04,WVR_ID_04,1)"
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_01', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_02', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_03', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_04', nslots=1) }"""
         ]
 
         subcols2 = [
-            "%monthly_array(WVR_ID_05,WVR_ID_05,1)",
-            "%monthly_array(WVR_ID_06,WVR_ID_06,1)",
-            "%monthly_array(WVR_ID_07,WVR_ID_07,1)",
-            "%monthly_array(WVR_ID_08,WVR_ID_08,1)",
-            "%monthly_array(WVR_ID_09,WVR_ID_09,1)"
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_05', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_06', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_07', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_08', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_09', nslots=1) }"""
         ]
 
         subcols3 = [
-            "%monthly_array(WVR_ID_10,WVR_ID_10,1)",
-            "%monthly_array(WVR_ID_11,WVR_ID_11,1)",
-            "%monthly_array(WVR_ID_12,WVR_ID_12,1)",
-            "%monthly_array(WVR_ID_13,WVR_ID_13,1)",
-            "%monthly_array(WVR_ID_14,WVR_ID_14,1)",
-            "%monthly_array(WVR_ID_15,WVR_ID_15,1)"
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_10', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_11', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_12', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_13', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_14', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_15', nslots=1) }"""
         ]
 
         subcols4 = [
-            "%monthly_array(OPRTG_AUTHRTY_01,OPRTG_AUTHRTY_01,1)",
-            "%monthly_array(OPRTG_AUTHRTY_02,OPRTG_AUTHRTY_02,1)",
-            "%monthly_array(OPRTG_AUTHRTY_03,OPRTG_AUTHRTY_03,1)",
-            "%monthly_array(OPRTG_AUTHRTY_04,OPRTG_AUTHRTY_04,1)",
-            "%monthly_array(OPRTG_AUTHRTY_05,OPRTG_AUTHRTY_05,1)",
-            "%monthly_array(OPRTG_AUTHRTY_06,OPRTG_AUTHRTY_06,1)",
-            "%monthly_array(OPRTG_AUTHRTY_07,OPRTG_AUTHRTY_07,1)"
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_01', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_02', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_03', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_04', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_05', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_06', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_07', nslots=1) }"""
         ]
 
         subcols5 = [
-            "%monthly_array(OPRTG_AUTHRTY_08,OPRTG_AUTHRTY_08,1)",
-            "%monthly_array(OPRTG_AUTHRTY_09,OPRTG_AUTHRTY_09,1)",
-            "%monthly_array(OPRTG_AUTHRTY_10,OPRTG_AUTHRTY_10,1)",
-            "%monthly_array(OPRTG_AUTHRTY_11,OPRTG_AUTHRTY_11,1)",
-            "%monthly_array(OPRTG_AUTHRTY_12,OPRTG_AUTHRTY_12,1)",
-            "%monthly_array(OPRTG_AUTHRTY_13,OPRTG_AUTHRTY_13,1)",
-            "%monthly_array(OPRTG_AUTHRTY_14,OPRTG_AUTHRTY_14,1)",
-            "%monthly_array(OPRTG_AUTHRTY_15,OPRTG_AUTHRTY_15,1)"
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_08', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_09', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_10', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_11', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_12', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_13', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_14', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_15', nslots=1) }"""
         ]
 
         subcols_ = map(TAF_Closure.parse, subcols)

@@ -117,8 +117,8 @@ class BASE(APL):
             "%last_best(MC_PLAN_TYPE_CAT)",
             "%last_best(MC_CNTRCT_END_DT)",
             f"""{ APL.nonmiss_month(self,'MC_CNTRCT_END_DT') }""",
-            "%monthly_array(MC_CNTRCT_EFCTV_DT,MC_CNTRCT_EFCTV_DT,1)",
-            "%monthly_array(MC_CNTRCT_END_DT,MC_CNTRCT_END_DT,1)",
+            f"""{ TAF_Closure.monthly_array(self, incol='MC_CNTRCT_EFCTV_DT', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='MC_CNTRCT_END_DT', nslots=1) }""",
             "%last_best(MC_PGM_CD)",
             "%last_best(REIMBRSMT_ARNGMT_CD)",
             "%last_best(REIMBRSMT_ARNGMT_CAT)",
@@ -157,21 +157,21 @@ class BASE(APL):
         ]
 
         subcols2 = [
-            "%monthly_array(ACRDTN_ORG_01,ACRDTN_ORG_01,1)",
-            "%monthly_array(ACRDTN_ORG_02,ACRDTN_ORG_02,1)",
-            "%monthly_array(ACRDTN_ORG_03,ACRDTN_ORG_03,1)"
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_01', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_02', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_03', nslots=1) }"""
         ]
 
         subcols3 = [
-            "%monthly_array(ACRDTN_ORG_ACHVMT_DT_01,ACRDTN_ORG_ACHVMT_DT_01,1)",
-            "%monthly_array(ACRDTN_ORG_ACHVMT_DT_02,ACRDTN_ORG_ACHVMT_DT_02,1)",
-            "%monthly_array(ACRDTN_ORG_ACHVMT_DT_03,ACRDTN_ORG_ACHVMT_DT_03,1)"
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_01', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_02', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_03', nslots=1) }"""
         ]
 
         subcols4 = [
-            "%monthly_array(ACRDTN_ORG_END_DT_01,ACRDTN_ORG_END_DT_01,1)",
-            "%monthly_array(ACRDTN_ORG_END_DT_02,ACRDTN_ORG_END_DT_02,1)",
-            "%monthly_array(ACRDTN_ORG_END_DT_03,ACRDTN_ORG_END_DT_03,1)",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_01', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_02', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_03', nslots=1) }""",
             "%any_month(MC_PLAN_ID MC_NAME,PLAN_ID_FLAG,IS NOT NULL)"
         ]
 
