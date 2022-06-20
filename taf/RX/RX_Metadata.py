@@ -67,11 +67,11 @@ class RX_Metadata:
         return f"""
             case
                 when {alias}.{colname} is not null then {alias}.{colname}
-                else null
+                else typeof(null)
             end as SRVC_ENDG_DT_DRVD_H,
             case
                 when {alias}.{colname} is not null then '1'
-                else null
+                else typeof(null)
             end as SRVC_ENDG_DT_CD_H,
             coalesce({alias}.{colname}, '01JAN1960') as {colname}
         """
@@ -109,6 +109,7 @@ class RX_Metadata:
         'DGNS_7_CD': TAF_Closure.compress_dots,
         'DGNS_8_CD': TAF_Closure.compress_dots,
         'DGNS_9_CD': TAF_Closure.compress_dots,
+        'LINE_ADJSTMT_IND': TAF_Closure.cleanADJSTMT_IND,
         'NCVRD_CHRGS_AMT': TAF_Closure.cast_as_dollar,
         'PLAN_ID_NUM': plan_id_num
     }

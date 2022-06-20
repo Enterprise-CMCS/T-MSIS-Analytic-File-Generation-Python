@@ -48,10 +48,10 @@ class RXH():
                 , { TAF_Closure.var_set_type2('SECT_1115A_DEMO_IND', 0, cond1='0', cond2='1') }
 
                 , case when upper(clm_type_cd) in ('1', '2', '3', '4', '5', 'A', 'B', 'C', 'D', 'E', 'U', 'V', 'W', 'X', 'Y', 'Z') then upper(clm_type_cd)
-                    else NULL
+                    else typeof(NULL)
                     end as clm_type_cd
 
-                , case when lpad(pgm_type_cd, 2, '0') in ('06', '09') then NULL
+                , case when lpad(pgm_type_cd, 2, '0') in ('06', '09') then typeof(NULL)
                     else { TAF_Closure.var_set_type5('pgm_type_cd', lpad=2, lowerbound=0, upperbound=17, multiple_condition=True) }
 
                 , { TAF_Closure.var_set_type1('MC_PLAN_ID') }
@@ -104,7 +104,7 @@ class RXH():
                     *,
                     case when ADJSTMT_IND is NOT NULL and
                     trim(ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
-                    then trim(ADJSTMT_IND) else NULL end as ADJSTMT_IND_CLEAN
+                    then trim(ADJSTMT_IND) else typeof(NULL) end as ADJSTMT_IND_CLEAN
                 from
                     RX_HEADER
                 ) H

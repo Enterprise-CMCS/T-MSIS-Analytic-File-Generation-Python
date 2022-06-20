@@ -51,12 +51,12 @@ class RXL():
                 , { TAF_Closure.var_set_type2('BRND_GNRC_IND', 0, cond1='0', cond2='1', cond3='2', cond4='3', cond5='4') }
                 , { TAF_Closure.var_set_type6('dspns_fee_amt', cond1='88888.88')  }
                 ,case when trim(DRUG_UTLZTN_CD) is not NULL then upper(DRUG_UTLZTN_CD)
-                    else NULL
+                    else typeof(NULL)
                     end as DRUG_UTLZTN_CD
 
                 , { TAF_Closure.var_set_type6('dtl_mtrc_dcml_qty', cond1='999999.999') }
 
-                ,case when lpad(CMPND_DSG_FORM_CD, 2, '0') in ('08','09') then NULL
+                ,case when lpad(CMPND_DSG_FORM_CD, 2, '0') in ('08','09') then typeof(NULL)
                     else { TAF_Closure.var_set_type5('CMPND_DSG_FORM_CD', lpad=2, lowerbound=1, upperbound=18, multiple_condition=True) }
 
                 , { TAF_Closure.var_set_type2('REBT_ELGBL_IND', 0, cond1='0', cond2='1', cond3='2') }
@@ -67,9 +67,9 @@ class RXL():
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD',2, cond1='01',cond2='02',cond3='03',cond4='04') }
 
                 ,case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
-                    else null end as XIX_SRVC_CTGRY_CD
+                    else typeof(null) end as XIX_SRVC_CTGRY_CD
                 ,case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD
-                    else null end as XXI_SRVC_CTGRY_CD
+                    else typeof(NULL) end as XXI_SRVC_CTGRY_CD
 
                 , { TAF_Closure.var_set_type1('CLL_STUS_CD') }
                 , { TAF_Closure.var_set_type6('bill_amt', cond1='9999999999.99', cond2='999999.99', cond3='999999', cond4='888888888.88') }
@@ -92,7 +92,7 @@ class RXL():
                     *,
                     case when LINE_ADJSTMT_IND is NOT NULL and
                     trim(LINE_ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
-                    then trim(LINE_ADJSTMT_IND) else NULL end as LINE_ADJSTMT_IND_CLEAN
+                    then trim(LINE_ADJSTMT_IND) else typeof(NULL) end as LINE_ADJSTMT_IND_CLEAN
                 from
                     RX_LINE
                 ) H
