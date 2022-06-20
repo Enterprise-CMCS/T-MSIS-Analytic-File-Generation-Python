@@ -31,37 +31,37 @@ class DE0009(DE):
                 {DE.last_best(self, 'HCBS_HIV_AIDS_NON_HHCC_FLAG')}
                 {DE.last_best(self, 'HCBS_TECH_DEP_MF_NON_HHCC_FLAG', outcol='HCBS_TCH_DP_MF_NON_HHCC_FLAG')}
                 {DE.last_best(self, 'HCBS_DSBL_OTHR_NON_HHCC_FLAG')}
-                {TAF_Closure.monthly_array(self, 'CARE_LVL_STUS_CD')}
-                {TAF_Closure.monthly_array(self, 'DFCLTY_CONC_DSBL_FLAG,outcol=DFCLTY_CNCNTRTNG_DSBL_FLAG')}
-                {TAF_Closure.monthly_array(self, 'DFCLTY_WLKG_DSBL_FLAG')}
-                {TAF_Closure.monthly_array(self, 'DFCLTY_DRSNG_BATHG_DSBL_FLAG,outcol=DFCLTY_DRSNG_BTH_DSBL_FLAG')}
-                {TAF_Closure.monthly_array(self, 'DFCLTY_ERRANDS_ALN_DSBL_FLAG,outcol=DFCLTY_ERNDS_ALN_DSBL_FLAG')}
-                {TAF_Closure.ever_year('LCKIN_FLAG', outcol='LCKIN_FLAG')}
+                ,{TAF_Closure.monthly_array(self, 'CARE_LVL_STUS_CD')}
+                ,{TAF_Closure.monthly_array(self, 'DFCLTY_CONC_DSBL_FLAG,outcol=DFCLTY_CNCNTRTNG_DSBL_FLAG')}
+                ,{TAF_Closure.monthly_array(self, 'DFCLTY_WLKG_DSBL_FLAG')}
+                ,{TAF_Closure.monthly_array(self, 'DFCLTY_DRSNG_BATHG_DSBL_FLAG,outcol=DFCLTY_DRSNG_BTH_DSBL_FLAG')}
+                ,{TAF_Closure.monthly_array(self, 'DFCLTY_ERRANDS_ALN_DSBL_FLAG,outcol=DFCLTY_ERNDS_ALN_DSBL_FLAG')}
+                ,{TAF_Closure.ever_year('LCKIN_FLAG', outcol='LCKIN_FLAG')}
                 {DE.last_best(self, 'LCKIN_PRVDR_NUM1')}
                 {DE.nonmiss_month(self, 'LCKIN_PRVDR_NUM1')}
-                {TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD1')}
-                {TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_NUM2')}
-                {TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD2')}
-                {TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_NUM3')}
-                {TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD3')}
+                ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD1')}
+                ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_NUM2')}
+                ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD2')}
+                ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_NUM3')}
+                ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD3')}
                 {DE.last_best(self, 'LTSS_PRVDR_NUM1')}
                 {DE.nonmiss_month(self, 'LTSS_PRVDR_NUM1')}
-                {TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD1')}
+                ,{TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD1')}
                 {DE.last_best(self, 'LTSS_LVL_CARE_CD1', outcol='LTSS_LVL_CARE_CD1_LTST')}
-                {TAF_Closure.monthly_array(self, 'LTSS_PRVDR_NUM2')}
-                {TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD2')}
+                ,{TAF_Closure.monthly_array(self, 'LTSS_PRVDR_NUM2')}
+                ,{TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD2')}
                 {DE.last_best(self, 'LTSS_LVL_CARE_CD2', outcol='LTSS_LVL_CARE_CD2_LTST')}
-                {TAF_Closure.monthly_array(self, 'LTSS_PRVDR_NUM3')}
-                {TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD3')}
+                ,{TAF_Closure.monthly_array(self, 'LTSS_PRVDR_NUM3')}
+                ,{TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD3')}
                 {DE.last_best(self, 'LTSS_LVL_CARE_CD3', outcol='LTSS_LVL_CARE_CD3_LTST')}
-                {TAF_Closure.monthly_array(self, 'SSDI_IND')}
-                {TAF_Closure.monthly_array(self, 'SSI_IND')}'
-                {TAF_Closure.monthly_array(self, 'SSI_STATE_SPLMT_STUS_CD')}
-                {TAF_Closure.monthly_array(self, 'SSI_STUS_CD')}
-                {TAF_Closure.monthly_array(self, 'BIRTH_CNCPTN_IND')}
-                {TAF_Closure.monthly_array(self, 'TANF_CASH_CD')}
-                {TAF_Closure.monthly_array(self, 'TPL_INSRNC_CVRG_IND')}
-                {TAF_Closure.monthly_array(self, 'TPL_OTHR_CVRG_IND')}
+                ,{TAF_Closure.monthly_array(self, 'SSDI_IND')}
+                ,{TAF_Closure.monthly_array(self, 'SSI_IND')}'
+                ,{TAF_Closure.monthly_array(self, 'SSI_STATE_SPLMT_STUS_CD')}
+                ,{TAF_Closure.monthly_array(self, 'SSI_STUS_CD')}
+                ,{TAF_Closure.monthly_array(self, 'BIRTH_CNCPTN_IND')}
+                ,{TAF_Closure.monthly_array(self, 'TANF_CASH_CD')}
+                ,{TAF_Closure.monthly_array(self, 'TPL_INSRNC_CVRG_IND')}
+                ,{TAF_Closure.monthly_array(self, 'TPL_OTHR_CVRG_IND')}
                 {DE.ever_year(self, 'CARE_LVL_STUS_CD', condition='is not null')}
                 {DE.ever_year(self, 'LTSS_LVL_CARE_CD1', condition='is not null')}
                 {DE.ever_year(self, 'LTSS_LVL_CARE_CD2', condition='is not null')}

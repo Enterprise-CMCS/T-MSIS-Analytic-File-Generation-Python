@@ -25,9 +25,9 @@ class DE0007(DE):
                 {DE.last_best(self, 'MFP_QLFYD_INSTN_CD')}
                 {DE.last_best(self, 'MFP_RINSTLZD_RSN_CD')}
                 {DE.last_best(self, 'MFP_QLFYD_RSDNC_CD')}
-                {TAF_Closure.monthly_array(self, 'MFP_PRTCPNT_FLAG')}
+                ,{TAF_Closure.monthly_array(self, 'MFP_PRTCPNT_FLAG')}
                 {DE.last_best(self, 'MFP_PRTCPNT_FLAG', outcol='MFP_PRTCPNT_FLAG_LTST')}
-                {TAF_Closure.ever_year(self, 'MFP_PRTCPNT_FLAG')}
+                ,{TAF_Closure.ever_year(self, 'MFP_PRTCPNT_FLAG')}
             """
 
         # Create MFP_SPLMTL (which will go onto the base segment AND determines

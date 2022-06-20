@@ -22,20 +22,20 @@ class DE0003(DE):
         DE.create_temp_table(self,
                              tblname=self.tblname,
                              inyear=runyear,
-                             subcols=f"""{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_2_ADR_HOME')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_3_ADR_HOME')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_CITY_NAME_HOME')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_HOME')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_HOME')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_HOME')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_2_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_LINE_3_ADR_MAIL')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_CITY_NAME_MAIL')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_MAIL')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_MAIL')}
-                                         {TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_MAIL')}
+                             subcols=f""",{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_2_ADR_HOME')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_3_ADR_HOME')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_CITY_NAME_HOME')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_HOME')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_HOME')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_HOME')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_2_ADR_MAIL')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_3_ADR_MAIL')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_CITY_NAME_MAIL')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_MAIL')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_MAIL')}
+                                         ,{TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_MAIL')}
                                          {DE.last_best(self, 'ELGBL_PHNE_NUM_HOME')}
                                          {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_HOME')}
                                          {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_MAIL')}

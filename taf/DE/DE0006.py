@@ -18,9 +18,9 @@ class DE0006(DE):
 
     def create_temp(self):
         s = f"""{DE.run_waiv_slots(self, 1, 3)}
-                {TAF_Closure.monthly_array(self, 'WVR_ID', nslots=self.de.NWAIVSLOTS)}
-                {TAF_Closure.monthly_array(self, 'WVR_TYPE_CD', nslots=self.de.NWAIVSLOTS)}
-                {TAF_Closure.monthly_array(self, 'SECT_1115A_DEMO_IND')}"""
+                ,{TAF_Closure.monthly_array(self, 'WVR_ID', nslots=self.de.NWAIVSLOTS)}
+                ,{TAF_Closure.monthly_array(self, 'WVR_TYPE_CD', nslots=self.de.NWAIVSLOTS)}
+                ,{TAF_Closure.monthly_array(self, 'SECT_1115A_DEMO_IND')}"""
         s2 = f"""{DE.run_waiv_slots(self, 4, 6)}"""
         s3 = f"""{DE.run_waiv_slots(self, 7, 9)}"""
         s4 = f"""{DE.run_waiv_slots(self, 10, 12)}"""

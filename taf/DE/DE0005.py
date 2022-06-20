@@ -18,8 +18,8 @@ class DE0005(DE):
 
     def create_temp(self):
         s = f"""{DE.run_mc_slots(self, 1, 3)}
-                {TAF_Closure.monthly_array(self, incol='MC_PLAN_ID', nslots=self.de.NMCSLOTS)}
-                {TAF_Closure.monthly_array(self, incol='MC_PLAN_TYPE_CD', nslots=self.de.NMCSLOTS)}"""
+                ,{TAF_Closure.monthly_array(self, incol='MC_PLAN_ID', nslots=self.de.NMCSLOTS)}
+                ,{TAF_Closure.monthly_array(self, incol='MC_PLAN_TYPE_CD', nslots=self.de.NMCSLOTS)}"""
         s2 = f"""{DE.run_mc_slots(self, 4, 6)}"""
         s3 = f"""{DE.run_mc_slots(self, 7, 9)}"""
         s4 = f"""{DE.run_mc_slots(self, 10, 12)}"""
