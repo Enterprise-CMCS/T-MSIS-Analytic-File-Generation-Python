@@ -601,7 +601,7 @@ class IP_Metadata:
 
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_IPL
         z = """
-                create table taf_python.taf_iph as
+                insert into taf_python.taf_iph
                 select
                     DA_RUN_ID
                    ,IP_LINK_KEY
@@ -792,8 +792,7 @@ class IP_Metadata:
                    ,REC_UPDT_TS
                    ,SRVC_ENDG_DT_DRVD
                    ,SRVC_ENDG_DT_CD
-                from
-                    (SELECT * FROM IPH)
+                from IPH
         """
 
         return z
@@ -808,7 +807,7 @@ class IP_Metadata:
 
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_IPL
         z = """
-                create table taf_python.taf_ipl as
+                insert into taf_python.taf_ipl
                 select
                       DA_RUN_ID
                     , IP_LINK_KEY
@@ -852,8 +851,7 @@ class IP_Metadata:
                     , OTHR_INSRNC_AMT
                     , MDCD_FFS_EQUIV_AMT
                     , LINE_NUM
-                from
-                    (SELECT * FROM IPL)
+                from ipl
         """
 
         return z

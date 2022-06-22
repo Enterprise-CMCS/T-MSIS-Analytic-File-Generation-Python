@@ -93,8 +93,7 @@ class TOP(UP):
     # ---------------------------------------------------------------------------------
     def build(self, runner: UP_Runner):
         z = f"""
-            CREATE TABLE {runner.DA_SCHEMA}.taf_ann_up_top AS
-
+            INSERT INTO {runner.DA_SCHEMA}.taf_ann_up_top
             SELECT { self.table_id_cols() }
                 ,PGM_TYPE_CD
                 ,FILE_TYPE

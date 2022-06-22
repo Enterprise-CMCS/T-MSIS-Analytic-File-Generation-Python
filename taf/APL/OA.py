@@ -190,7 +190,7 @@ class OA(APL):
     def build(self):
         # insert into permanent table
         z = f"""
-            CREATE TABLE {self.apl.DA_SCHEMA}.TAF_ANN_PL_OA AS
+            INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_OA
             SELECT
                  {self.table_id_cols()}
                 ,WVR_ID

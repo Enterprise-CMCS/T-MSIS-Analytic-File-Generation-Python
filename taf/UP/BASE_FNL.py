@@ -154,7 +154,7 @@ class BASE_FNL(UP):
 
     def build(self, runner: UP_Runner):
         z = f"""
-            CREATE TABLE {runner.DA_SCHEMA}.TAF_ANN_UP_BASE AS
+            INSERT INTO {runner.DA_SCHEMA}.TAF_ANN_UP_BASE
             SELECT { self.table_id_cols() }
                 ,AGE_NUM
                 ,GNDR_CD

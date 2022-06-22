@@ -69,7 +69,7 @@ class LCTN(APL):
     def build(self):
         # insert into permanent table
         z = f"""
-            CREATE TABLE {self.apl.DA_SCHEMA}.TAF_ANN_PL_LCTN AS
+            INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_LCTN
             SELECT
                  {self.table_id_cols()}
                 ,MC_LCTN_ID

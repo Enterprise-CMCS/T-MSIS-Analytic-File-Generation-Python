@@ -59,7 +59,7 @@ class SAREA(APL):
     def build(self):
         # insert into permanent table
         z = f"""
-            CREATE TABLE {self.apl.DA_SCHEMA}.TAF_ANN_PL_SAREA AS
+            INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_SAREA
             SELECT
                  {self.table_id_cols()}
                 ,MC_SAREA_NAME

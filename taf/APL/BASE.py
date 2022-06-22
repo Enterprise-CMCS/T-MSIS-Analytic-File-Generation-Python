@@ -463,7 +463,7 @@ class BASE(APL):
     def build(self):
         # insert into permanent table
         z = f"""
-            CREATE TABLE {self.apl.DA_SCHEMA}.TAF_ANN_PL_BASE_PL AS
+            INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_BASE_PL
             SELECT
                  {self.table_id_cols()}
                 ,{",".join(self.basecols)}

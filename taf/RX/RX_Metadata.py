@@ -639,11 +639,10 @@ class RX_Metadata:
 
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTH
         z = """
-                create table taf_python.taf_rxh as
+                insert into taf_python.taf_rxh
                 select
                     *
-                from
-                    (SELECT * FROM RXH)
+                from RXH
         """
 
         return z
@@ -658,11 +657,10 @@ class RX_Metadata:
 
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTL
         z = """
-                create table taf_python.taf_rxl as
+                insert into taf_python.taf_rxl
                 select
                     *
-                from
-                    (SELECT * FROM RXL)
+                from RXL
         """
 
         return z

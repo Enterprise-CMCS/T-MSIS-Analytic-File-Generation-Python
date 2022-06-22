@@ -334,7 +334,7 @@ class MCP07(MCP):
     def build(self, runner: MCP_Runner):
 
         z = f"""
-                CREATE TABLE {runner.DA_SCHEMA}.taf_mcp AS
+                INSERT INTO {runner.DA_SCHEMA}.taf_mcp
                 SELECT
                     *
                 FROM
