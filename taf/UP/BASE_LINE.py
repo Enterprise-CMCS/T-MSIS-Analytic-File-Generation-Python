@@ -44,7 +44,7 @@ class BASE_LINE(UP):
                 CREATE OR REPLACE TEMPORARY VIEW {file}l_hdr_lvl_{self.year} AS
                 SELECT submtg_state_cd
                     ,msis_ident_num
-			        ,{file}_link_key
+                    ,{file}_link_key
             """
 
             # For OT only, look at hcbs_srvc_cd - create indicators for each possible value of 1-7.
@@ -85,20 +85,20 @@ class BASE_LINE(UP):
 
                     z += f"""
                          ,{ TAF_Closure.sum_paid(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="!= {mcval}", paidcol="mdcd_pd_amt", outcol="{ind1}_{ind2}_PD") }
-					     ,{ TAF_Closure.sum_paid(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="= {mcval}", paidcol="mdcd_ffs_equiv_amt", outcol="{ind1}_{ind2}_FFS_EQUIV_AMT") }
+                         ,{ TAF_Closure.sum_paid(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="= {mcval}", paidcol="mdcd_ffs_equiv_amt", outcol="{ind1}_{ind2}_FFS_EQUIV_AMT") }
                     """
 
                     # Create indicators for any line with TOS = 119, 120, 121, 122  with TOC = 2/B
                     # will then sum at header-level
                     z += f"""
-					     ,{ TAF_Closure.any_rec(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="='{capval}'", condcol4="tos_cd", cond4="= '119'", outcol="{ind1}_{ind2}_ANY_MC_CMPRHNSV") }
-					     ,{ TAF_Closure.any_rec(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="='{capval}'", condcol4="tos_cd", cond4="= '120'", outcol="{ind1}_{ind2}_ANY_MC_PCCM") }
-					     ,{ TAF_Closure.any_rec(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="='{capval}'", condcol4="tos_cd", cond4="= '121'", outcol="{ind1}_{ind2}_ANY_MC_PVT_INS") }
-					     ,{ TAF_Closure.any_rec(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '122'",outcol="{ind1}_{ind2}_ANY_MC_PHP") }
-					     ,{ TAF_Closure.sum_paid(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '119'",paidcol="mdcd_pd_amt",outcol="{ind1}_{ind2}_MC_CMPRHNSV_PD") }
-				 	     ,{ TAF_Closure.sum_paid(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '120'",paidcol="mdcd_pd_amt",outcol="{ind1}_{ind2}_MC_PCCM_PD") }
-					     ,{ TAF_Closure.sum_paid(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '121'",paidcol="mdcd_pd_amt",outcol="{ind1}_{ind2}_MC_PVT_INS_PD") }
-					     ,{ TAF_Closure.sum_paid(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '122'",paidcol="mdcd_pd_amt",outcol="{ind1}_{ind2}_MC_PHP_PD") }
+                         ,{ TAF_Closure.any_rec(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="='{capval}'", condcol4="tos_cd", cond4="= '119'", outcol="{ind1}_{ind2}_ANY_MC_CMPRHNSV") }
+                         ,{ TAF_Closure.any_rec(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="='{capval}'", condcol4="tos_cd", cond4="= '120'", outcol="{ind1}_{ind2}_ANY_MC_PCCM") }
+                         ,{ TAF_Closure.any_rec(condcol1="{ind1}", condcol2="{ind2}", condcol3="clm_type_cd", cond3="='{capval}'", condcol4="tos_cd", cond4="= '121'", outcol="{ind1}_{ind2}_ANY_MC_PVT_INS") }
+                         ,{ TAF_Closure.any_rec(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '122'",outcol="{ind1}_{ind2}_ANY_MC_PHP") }
+                         ,{ TAF_Closure.sum_paid(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '119'",paidcol="mdcd_pd_amt",outcol="{ind1}_{ind2}_MC_CMPRHNSV_PD") }
+                          ,{ TAF_Closure.sum_paid(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '120'",paidcol="mdcd_pd_amt",outcol="{ind1}_{ind2}_MC_PCCM_PD") }
+                         ,{ TAF_Closure.sum_paid(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '121'",paidcol="mdcd_pd_amt",outcol="{ind1}_{ind2}_MC_PVT_INS_PD") }
+                         ,{ TAF_Closure.sum_paid(condcol1="{ind1}",condcol2="{ind2}",condcol3="clm_type_cd", cond3="= '{capval}'",condcol4="tos_cd", cond4="= '122'",paidcol="mdcd_pd_amt",outcol="{ind1}_{ind2}_MC_PHP_PD") }
                     """
             z += f"""
                  FROM {file}l_{self.year}

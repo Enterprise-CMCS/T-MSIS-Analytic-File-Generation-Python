@@ -90,26 +90,26 @@ class BASE_FNL(UP):
         for ind1 in self.inds1:
             for ind2 in self.inds2:
                 z += f"""
-					 ,coalesce(d.{ind1}_{ind2}_FFS_LT_DAYS, 0) as {ind1}_{ind2}_FFS_LT_DAYS
-					 ,coalesce(d.{ind1}_{ind2}_MC_LT_DAYS, 0) as {ind1}_{ind2}_MC_LT_DAYS
+                     ,coalesce(d.{ind1}_{ind2}_FFS_LT_DAYS, 0) as {ind1}_{ind2}_FFS_LT_DAYS
+                     ,coalesce(d.{ind1}_{ind2}_MC_LT_DAYS, 0) as {ind1}_{ind2}_MC_LT_DAYS
                 """
 
         # IP columns
         for ind1 in self.inds1:
             for ind2 in self.inds2:
                 z += f"""
-					 ,coalesce({ind1}_{ind2}_FFS_IP_DAYS, 0) as {ind1}_{ind2}_FFS_IP_DAYS
-					 ,coalesce({ind1}_{ind2}_MC_IP_DAYS, 0) as {ind1}_{ind2}_MC_IP_DAYS
-					 ,coalesce({ind1}_{ind2}_FFS_IP_STAYS, 0) as {ind1}_{ind2}_FFS_IP_STAYS
-					 ,coalesce({ind1}_{ind2}_MC_IP_STAYS, 0) as {ind1}_{ind2}_MC_IP_STAYS
+                     ,coalesce({ind1}_{ind2}_FFS_IP_DAYS, 0) as {ind1}_{ind2}_FFS_IP_DAYS
+                     ,coalesce({ind1}_{ind2}_MC_IP_DAYS, 0) as {ind1}_{ind2}_MC_IP_DAYS
+                     ,coalesce({ind1}_{ind2}_FFS_IP_STAYS, 0) as {ind1}_{ind2}_FFS_IP_STAYS
+                     ,coalesce({ind1}_{ind2}_MC_IP_STAYS, 0) as {ind1}_{ind2}_MC_IP_STAYS
                 """
 
         # delivery indicator
         z += f"""
              ,case when gndr_cd='F' and age_num > 9
-				   then coalesce(g.dlvry_ind, '0')
-				   else '0'
-				   end as dlvry_ind
+                   then coalesce(g.dlvry_ind, '0')
+                   else '0'
+                   end as dlvry_ind
         """
 
         z += f"""

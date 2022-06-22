@@ -38,26 +38,26 @@ class BASE_LT(UP):
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW lt_hdr_days_{self.year} AS
             SELECT submtg_state_cd
-		        ,msis_ident_num
-			    ,a.lt_link_key
-			    ,clm_type_cd
-			    ,MDCD
-			    ,SCHIP
-			    ,NON_XOVR
-			    ,XOVR
-			    ,srvc_endg_dt
-			    ,srvc_bgnng_dt
-			    ,admsn_dt
+                ,msis_ident_num
+                ,a.lt_link_key
+                ,clm_type_cd
+                ,MDCD
+                ,SCHIP
+                ,NON_XOVR
+                ,XOVR
+                ,srvc_endg_dt
+                ,srvc_bgnng_dt
+                ,admsn_dt
 
-			    ,case when srvc_bgnng_dt is not null then srvc_bgnng_dt
+                ,case when srvc_bgnng_dt is not null then srvc_bgnng_dt
                      when srvc_bgnng_dt_ln_min is not null then srvc_bgnng_dt_ln_min
-					 when admsn_dt is not null then admsn_dt
-					 else null
-				 end as bgnng_dt
+                     when admsn_dt is not null then admsn_dt
+                     else null
+                 end as bgnng_dt
 
-			    ,case when ANY_TOS_KEEP=1 or TOS_CD_NULL=1 then 1
+                ,case when ANY_TOS_KEEP=1 or TOS_CD_NULL=1 then 1
                      else 0
-				 end as CLAIM_TOS_KEEP
+                 end as CLAIM_TOS_KEEP
         """
 
         # Loop over all days of the year, and based on service beginning and ending date (when both are
@@ -74,12 +74,12 @@ class BASE_LT(UP):
                 num += 1
 
                 z += f"""
-					 ,case when bgnng_dt is not null and
+                     ,case when bgnng_dt is not null and
                                 srvc_endg_dt is not null and
                                 bgnng_dt <= to_date({self.year} + "-" + {mm} + "-" {dd}) and
                                 srvc_endg_dt >= to_date({self.year} + "-" + {mm} + "-" {dd})
-	                       then 1 else 0
-			               end as day{num}
+                           then 1 else 0
+                           end as day{num}
                 """
 
         z += f"""

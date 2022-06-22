@@ -40,14 +40,14 @@ class BASE_DE(UP):
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW de_{self.year} AS
             SELECT a.submtg_state_cd
-		       ,msis_ident_num
-			   ,age_num
-			   ,gndr_cd
-			   ,race_ethncty_exp_flag
-			   ,dual_elgbl_cd_ltst
-			   ,chip_cd_ltst
-			   ,elgblty_grp_cd_ltst
-			   ,masboe_cd_ltst
+               ,msis_ident_num
+               ,age_num
+               ,gndr_cd
+               ,race_ethncty_exp_flag
+               ,dual_elgbl_cd_ltst
+               ,chip_cd_ltst
+               ,elgblty_grp_cd_ltst
+               ,masboe_cd_ltst
         """
 
         # Create monthly indicators for each of the three needed CHIP_CD values, and
@@ -60,9 +60,9 @@ class BASE_DE(UP):
                 z += f"""CASE WHEN chip_cd_&mm = '{c}' THEN 1 ELSE 0 END as chip_cd_{mm}_{c}"""
 
             z += f"""cd_01_{c} + chip_cd_02_{c} + chip_cd_03_{c} + chip_cd_04_{c} + chip_cd_05_{c} + chip_cd_06_{c} +
-				     chip_cd_07_{c} + chip_cd_08_{c} + chip_cd_09_{c} + chip_cd_10_{c} + chip_cd_11_{c} + chip_cd_12_{c}
-				     as elgblty_{c}_mos
-			"""
+                     chip_cd_07_{c} + chip_cd_08_{c} + chip_cd_09_{c} + chip_cd_10_{c} + chip_cd_11_{c} + chip_cd_12_{c}
+                     as elgblty_{c}_mos
+            """
 
             # Loop over all values of DUAL_ELGBL_CD, and if any is non-null/00, set dual_elgbl_evr = 1 */
             z += f""",CASE WHEN"""

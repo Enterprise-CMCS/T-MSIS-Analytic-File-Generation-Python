@@ -513,12 +513,12 @@ class UP(TAF):
                     if file.casefold() != file2.casefold():
                         z += f"""
                              ,0 as {ind1}_{ind2}_ffs_{file2}_clm
-		        		     ,0 as {ind1}_{ind2}_mc_{file2}_clm
+                             ,0 as {ind1}_{ind2}_mc_{file2}_clm
                         """
                     elif file.casefold() == file2.casefold():
                         z += f"""
                              ,{ind1}_{ind2}_ffs_{file2}_clm
-				    	     ,{ind1}_{ind2}_mc_{file2}_clm
+                             ,{ind1}_{ind2}_mc_{file2}_clm
                         """
 
         z += f"""
@@ -595,8 +595,8 @@ class UP(TAF):
             acc += 1
 
             z += f"""
-				 ,d{acc}newborn as {diag}_newborn
-				 ,d{acc}maternal as {diag}_maternal
+                 ,d{acc}newborn as {diag}_newborn
+                 ,d{acc}maternal as {diag}_maternal
             """
 
         acc = 0
@@ -658,29 +658,29 @@ class UP(TAF):
         for diag in diag_cols:
             acc += 1
             z += f"""
-						left join
-						dgns_cd_lookup d{acc}
+                        left join
+                        dgns_cd_lookup d{acc}
 
-						on a.{diag} = d{acc}dgns_cd and
-						   a.{diag}_ind = d{acc}dgns_cd_ind
+                        on a.{diag} = d{acc}dgns_cd and
+                           a.{diag}_ind = d{acc}dgns_cd_ind
             """
 
         acc = 0
         for prcdr in prcdr_cols:
             acc += 1
             z += f"""
-						left join
-						prcdr_cd_lookup p{acc}
+                        left join
+                        prcdr_cd_lookup p{acc}
 
-						on a.{prcdr} = p{acc}prcdr_cd
+                        on a.{prcdr} = p{acc}prcdr_cd
             """
 
         z += f"""
-			 left join rev_cd_lookup r
+             left join rev_cd_lookup r
                  on a.rev_cd = r.rev_cd
-			)
+            )
 
-			group by submtg_state_cd
-			    ,msis_ident_num
+            group by submtg_state_cd
+                ,msis_ident_num
         """
         return z
