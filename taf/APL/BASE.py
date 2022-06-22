@@ -98,7 +98,7 @@ class BASE(APL):
             "LCTN_SPLMTL",
             "SAREA_SPLMTL",
             "ENRLMT_SPLMTL",
-            "OPRTG_AUTHRTY_SPLMTL"
+            "OPRTG_AUTHRTY_SPLMTL",
         ]
 
     # ---------------------------------------------------------------------------------
@@ -117,8 +117,8 @@ class BASE(APL):
             "%last_best(MC_PLAN_TYPE_CAT)",
             "%last_best(MC_CNTRCT_END_DT)",
             f"""{ APL.nonmiss_month(self,'MC_CNTRCT_END_DT') }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='MC_CNTRCT_EFCTV_DT', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='MC_CNTRCT_END_DT', nslots=1) }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='MC_CNTRCT_EFCTV_DT', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='MC_CNTRCT_END_DT', nslots='1') }""",
             "%last_best(MC_PGM_CD)",
             "%last_best(REIMBRSMT_ARNGMT_CD)",
             "%last_best(REIMBRSMT_ARNGMT_CAT)",
@@ -153,26 +153,26 @@ class BASE(APL):
             "%last_best(REG_FLAG)",
             "%last_best(CBSA_CD)",
             "%last_best(MC_PRFT_STUS_CD)",
-            "%last_best(BUSNS_PCT)"
+            "%last_best(BUSNS_PCT)",
         ]
 
         subcols2 = [
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_01', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_02', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_03', nslots=1) }"""
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_01', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_02', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_03', nslots='1') }""",
         ]
 
         subcols3 = [
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_01', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_02', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_03', nslots=1) }"""
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_01', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_02', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_03', nslots='1') }""",
         ]
 
         subcols4 = [
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_01', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_02', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_03', nslots=1) }""",
-            "%any_month(MC_PLAN_ID MC_NAME,PLAN_ID_FLAG,IS NOT NULL)"
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_01', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_02', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_03', nslots='1') }""",
+            "%any_month(MC_PLAN_ID MC_NAME,PLAN_ID_FLAG,IS NOT NULL)",
         ]
 
         outercols = [
@@ -189,11 +189,11 @@ class BASE(APL):
             fileseg="MCP",
             tblname="base_pl",
             inyear=self.year,
-            subcols=', '.join(subcols_),
-            subcols2=', '.join(subcols2_),
-            subcols3=', '.join(subcols3_),
-            subcols4=', '.join(subcols4_),
-            outercols=', '.join(outercols_)
+            subcols=", ".join(subcols_),
+            subcols2=", ".join(subcols2_),
+            subcols3=", ".join(subcols3_),
+            subcols4=", ".join(subcols4_),
+            outercols=", ".join(outercols_),
         )
 
         # create Accreditation0 so that separate records with a unique row for each set
@@ -227,8 +227,8 @@ class BASE(APL):
                            ,ACRDTN_ORG_{aa}_{mm} as ACRDTN_ORG
                            ,ACRDTN_ORG_ACHVMT_DT_{aa}_{mm} as ACRDTN_ORG_ACHVMT_DT
                            ,ACRDTN_ORG_END_DT_{aa}_{mm} as ACRDTN_ORG_END_DT
-					FROM base_pl_{self.year}
-					WHERE ACRDTN_ORG_{aa}_{mm} IS NOT NULL
+                    FROM base_pl_{self.year}
+                    WHERE ACRDTN_ORG_{aa}_{mm} IS NOT NULL
                     """
 
                 if not ((m == 12) and (a == 3)):

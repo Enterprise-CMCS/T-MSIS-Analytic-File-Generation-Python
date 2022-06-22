@@ -35,70 +35,59 @@ class OA(APL):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        subcols = [
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_01', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_02', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_03', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_04', nslots=1) }"""
-        ]
+        s = f""" { TAF_Closure.monthly_array(self, incol='WVR_ID_01', nslots='1') }
+                ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_02', nslots='1') }
+                ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_03', nslots='1') }
+                ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_04', nslots='1') }
+        """
 
-        subcols2 = [
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_05', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_06', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_07', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_08', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_09', nslots=1) }"""
-        ]
+        s2 = f""" { TAF_Closure.monthly_array(self, incol='WVR_ID_05', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_06', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_07', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_08', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_09', nslots='1') }
+        """
 
-        subcols3 = [
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_10', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_11', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_12', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_13', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_14', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='WVR_ID_15', nslots=1) }"""
-        ]
+        s3 = f""" { TAF_Closure.monthly_array(self, incol='WVR_ID_10', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_11', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_12', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_13', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_14', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_15', nslots='1') }
+        """
 
-        subcols4 = [
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_01', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_02', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_03', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_04', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_05', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_06', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_07', nslots=1) }"""
-        ]
+        s4 = f""" { TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_01', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_02', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_03', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_04', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_05', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_06', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_07', nslots='1') }
+        """
 
-        subcols5 = [
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_08', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_09', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_10', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_11', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_12', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_13', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_14', nslots=1) }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_15', nslots=1) }"""
-        ]
-
-        subcols_ = map(TAF_Closure.parse, subcols)
-        subcols2_ = map(TAF_Closure.parse, subcols2)
-        subcols3_ = map(TAF_Closure.parse, subcols3)
-        subcols4_ = map(TAF_Closure.parse, subcols4)
-        subcols5_ = map(TAF_Closure.parse, subcols5)
+        s5 = f""" { TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_08', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_09', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_10', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_11', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_12', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_13', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_14', nslots='1') }
+                 ,{ TAF_Closure.monthly_array(self, incol='OPRTG_AUTHRTY_15', nslots='1') }
+        """
 
         self.create_temp_table(
             fileseg="MCP",
             tblname="oa_pl",
             inyear=self.year,
-            subcols=', '.join(subcols_),
-            subcols2=', '.join(subcols2_),
-            subcols3=', '.join(subcols3_),
-            subcols4=', '.join(subcols4_),
-            subcols5=', '.join(subcols5_)
+            subcols=s,
+            subcols2=s2,
+            subcols3=s3,
+            subcols4=s4,
+            subcols5=s5,
         )
 
         # OpAuth0
-        z = f"""CREATE OR REPLACE TEMPORARY VIEW OpAuth0 AS""" + " "
+        z = """CREATE OR REPLACE TEMPORARY VIEW OpAuth0 AS""" + " "
 
         for m in range(1, 13):
             mm = "{:02d}".format(m)
@@ -158,7 +147,7 @@ class OA(APL):
         self.apl.append(type(self).__name__, z)
 
         # diststyle key distkey(MC_PLAN_ID)
-        z = f"""
+        z = """
             CREATE OR REPLACE TEMPORARY VIEW OpAuth1 AS
             select SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, WVR_ID, OPRTG_AUTHRTY
                         ,max(coalesce(OPRTG_AUTHRTY_FLAG_01,0)) as OPRTG_AUTHRTY_FLAG_01
