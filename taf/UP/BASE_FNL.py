@@ -322,6 +322,7 @@ class BASE_FNL(UP):
                 ,SCHIP_XOVR_MC_PHP_PD
             FROM base_fnl_{self.year}
         """
+        self.up.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------
