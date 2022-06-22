@@ -26,7 +26,7 @@ class OTL():
             select
 
                  {runner.DA_RUN_ID} as DA_RUN_ID,
-                {runner.get_link_key()} as OT_LINK_KEY,
+                 {runner.get_link_key_line()} as OT_LINK_KEY,
                 '{runner.version}' as OT_VRSN,
                 '{runner.TAF_FILE_DATE}' as OT_FIL_DT
 
@@ -49,7 +49,7 @@ class OTL():
                 , { TAF_Closure.fix_old_dates('PRCDR_CD_DT') }
                 , { TAF_Closure.var_set_proc('PRCDR_CD_IND') }
                 , { TAF_Closure.var_set_type1('PRCDR_1_MDFR_CD', lpad=2) }
-                , case when lpad(IMNZTN_TYPE_CD, 2, '0') = '88' then NULL
+                , case when lpad(IMNZTN_TYPE_CD, 2, '0') = '88' then typeof(NULL)
                     else { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound=29, multiple_condition='YES') }
                 , { TAF_Closure.var_set_type6('BILL_AMT', cond1='888888888.88', cond2='9999999999.99', cond3='999999.99', cond4='999999') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1='99999999.00', cond2='888888888.88', cond3='9999999999.99') }
@@ -77,9 +77,9 @@ class OTL():
                 , { TAF_Closure.var_set_type4('TOOTH_SRFC_CD', 'YES', cond1='B', cond2='D', cond3='F', cond4='I', cond5='L', cond6='M', cond7='O') }
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01', cond2='02', cond3='03', cond4='04') }
                 , case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
-                else null end as XIX_SRVC_CTGRY_CD
+                else typeof(null) end as XIX_SRVC_CTGRY_CD
                 , case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD
-                    else null end as XXI_SRVC_CTGRY_CD
+                    else typeof(null) end as XXI_SRVC_CTGRY_CD
                 , { TAF_Closure.var_set_type1('STATE_NOTN_TXT') }
                 , { TAF_Closure.var_set_fills('NDC_CD', cond1='0', cond2='8', cond3='9', cond4='#', spaces=True) }
                 , { TAF_Closure.var_set_type1('PRCDR_2_MDFR_CD', lpad=2) }
@@ -97,7 +97,7 @@ class OTL():
                     *,
                     case when LINE_ADJSTMT_IND is NOT NULL and
                     trim(LINE_ADJSTMT_IND)  in ('0', '1', '2', '3', '4', '5', '6')
-                    then trim(LINE_ADJSTMT_IND) else NULL end as LINE_ADJSTMT_IND_CLEAN
+                    then trim(LINE_ADJSTMT_IND) else typeof(NULL) end as LINE_ADJSTMT_IND_CLEAN
                 from
                     OTHR_TOC_LINE
                 ) H
@@ -116,8 +116,7 @@ class OTL():
                 INSERT INTO {runner.DA_SCHEMA}.taf_otl
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.line_columns) }
-                FROM
-                    (SELECT * FROM OTL)
+                FROM OTL
         """
 
         runner.append(type(self).__name__, z)

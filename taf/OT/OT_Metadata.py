@@ -100,6 +100,7 @@ class OT_Metadata:
         'DGNS_7_CD': TAF_Closure.compress_dots,
         'DGNS_8_CD': TAF_Closure.compress_dots,
         'DGNS_9_CD': TAF_Closure.compress_dots,
+        'LINE_ADJSTMT_IND': TAF_Closure.cleanADJSTMT_IND,
         'NCVRD_CHRGS_AMT': TAF_Closure.cast_as_dollar,
         'SRVC_ENDG_DT': dates_of_service
     }
