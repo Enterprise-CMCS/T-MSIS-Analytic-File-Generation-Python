@@ -47,10 +47,12 @@ class DE0006(DE):
 
         from waiver_{self.de.YEAR}"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
-        z = """create or replace temporary view;
-                insert into numbers
+        z = f"""create table if not exists {self.de.DA_SCHEMA}.numbers
+                (slot int, month string)
+                using CSV;
+                insert into {self.de.DA_SCHEMA}.numbers
                 values
             """
         for waiv in range(1, self.de.NWAIVSLOTS + 1):
@@ -63,7 +65,7 @@ class DE0006(DE):
                 if waiv < self.de.NWAIVSLOTS or m < 12:
                     z += ","
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = """create or replace temporary view waiver_long as
                 select distinct
@@ -115,12 +117,12 @@ class DE0006(DE):
 
                         from waiver_{self.de.YEAR} a
                             join
-                            numbers b
+                            {self.de.DA_SCHEMA}.numbers b
                             on true) sub ) sub2
 
                         where WAIVER_CAT > 0
                     """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = """create or replace temporary view waiver_counts as
 
@@ -158,7 +160,7 @@ class DE0006(DE):
                                                                         ,WAIVER_CAT) as LAST_WVR_TYPE_CD
                     from waiver_long) as num"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = """create or replace temporary view waiver_latest as
 
@@ -211,7 +213,7 @@ class DE0006(DE):
                 enrl.msis_ident_num = m{mm}.msis_ident_num
             """
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = f"""create or replace temporary view waiver_pit as
             select a.*,
@@ -227,7 +229,7 @@ class DE0006(DE):
 
             where WAIVER_SPLMTL=1"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
@@ -499,7 +501,7 @@ class DE0006(DE):
 
                 from waiver_out"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
         return
 
 # -----------------------------------------------------------------------------

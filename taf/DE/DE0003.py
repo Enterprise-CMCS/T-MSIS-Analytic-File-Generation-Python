@@ -100,11 +100,11 @@ class DE0003(DE):
                 on c.submtg_state_cd = p{cnt}.submtg_state_cd and
                     c.msis_ident_num = p{cnt}.msis_ident_num
                 """
-            self.de.append(type(self).__name__, z)
+            self.de.append(type(self).__name__, z + ';')
 
         if self.de.GETPRIOR == 0:
             z = f"""alter view address_phone_{self.de.YEAR} rename to address_phone_{self.de.YEAR}_out"""
-            self.de.append(type(self).__name__, z)
+            self.de.append(type(self).__name__, z + ';')
 
         z = f"""create or replace temporary view name_address_phone_{self.de.YEAR} as
                 select a.submtg_state_cd,
@@ -129,7 +129,7 @@ class DE0003(DE):
                     on a.submtg_state_cd = b.submtg_state_cd and
                     a.msis_ident_num = b.msis_ident_num
                 """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tblname}
                 select
@@ -149,7 +149,7 @@ class DE0003(DE):
 
                 from name_address_phone_{self.de.YEAR}
             """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

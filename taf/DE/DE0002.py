@@ -3,7 +3,7 @@ from taf.DE.DE_Runner import DE_Runner
 
 
 class DE0002(DE):
-    tblname: str = "eligibilitiy_dates"
+    tblname: str = "eligibility_dates"
 
     def __init__(self, runner: DE_Runner):
         DE.__init__(self, runner)
@@ -11,6 +11,7 @@ class DE0002(DE):
 
     def create(self):
         super().create()
+        self.numbers()
         self.create_temp(self.tblname)
         self.eligibility_dates('MDCD', 1)
         self.eligibility_dates('CHIP', 2)
@@ -23,8 +24,12 @@ class DE0002(DE):
 
         self.create_temp_table(tblname=tname, inyear=self.de.YEAR, subcols=s,
                                subcols2=s2, subcols3=s3, subcols4=s4)
-        z = """create or replace temporary view numbers as
-                insert into numbers
+
+    def numbers(self):
+        z = f"""create table if not exists {self.de.DA_SCHEMA}.numbers
+                (slot int, month string)
+                using CSV;
+                insert into {self.de.DA_SCHEMA}.numbers
                     values"""
         for s in range(1, 17):
             for m in range(1, 13):
@@ -34,6 +39,7 @@ class DE0002(DE):
                 z += f"""({s}, '{mm}')"""
                 if s < 16 or m < 12:
                     z += ","
+        self.de.append(type(self).__name__, z + ';')
 
     def eligibility_dates(self, dtype, dval):
         z = f"""create or replace temporary view {dtype}_dates_long as
@@ -43,68 +49,39 @@ class DE0002(DE):
                         ,{dtype}_ENRLMT_END_DT
                     from (
                     select *
+                            ,case
                     """
-        for m in range(1, 13):
-            mm = "{:02d}".format(m)
-            for a in range(1, 16):
-                aa = "{:02d}".format(a)
-
-                z += f"""
-                    SELECT
-                        ,CASE
-                        WHEN {mm} = 1 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_01
-                        ,CASE
-                        WHEN {mm} = 2 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_02
-                        ,CASE
-                        WHEN {mm} = 3 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_03
-                        ,CASE
-                        WHEN {mm} = 4 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_04
-                        ,CASE
-                        WHEN {mm} = 5 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_05
-                        ,CASE
-                        WHEN {mm} = 6 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_06
-                        ,CASE
-                        WHEN {mm} = 7 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_07
-                        ,CASE
-                        WHEN {mm} = 8 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_08
-                        ,CASE
-                        WHEN {mm} = 9 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_09
-                        ,CASE
-                        WHEN {mm} = 10 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_10
-                        ,CASE
-                        WHEN {mm} = 11 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_11
-                        ,CASE
-                        WHEN {mm} = 12 THEN 1 ELSE cast(NULL AS INTEGER)
-                        END AS {dtype}_ENRLMT_EFF_DT_12
+        for s in range(1, 17):
+            s = str(s).zfill(2)
+            for m in range(1, 13):
+                m = str(m).zfill(2)
+                z += f""" when slot={s} and month='{m}' then {dtype}_ENRLMT_EFF_DT_{s}_{m}"""
+        z += f""" end as {dtype}_ENRLMT_EFF_DT
+                ,case
+              """
+        for s in range(1, 17):
+            s = str(s).zfill(2)
+            for m in range(1, 13):
+                m = str(m).zfill(2)
+                z += f""" when slot={s} and month='{m}' then {dtype}_ENRLMT_END_DT_{s}_{m}"""
+        z += f""" end as {dtype}_ENRLMT_END_DT
                 from
                 (select a.submtg_state_cd
                        ,a.msis_ident_num
                 """
-                for m in range(1, 13):
-                    mm = "{:02d}".format(m)
-                    for a in range(1, 16):
-                        aa = "{:02d}".format(a)
-
-                        z += f"""
-                            ,a.{dtype}_ENRLMT_EFF_DT_{aa}_{mm}
-                            ,a.{dtype}_ENRLMT_END_DT_{aa}_{mm}
-                ,b.slot
+        for s in range(1, 17):
+            s = str(s).zfill(2)
+            for m in range(1, 13):
+                m = str(m).zfill(2)
+                z += f"""
+                    ,a.{dtype}_ENRLMT_EFF_DT_{s}_{m}
+                    ,a.{dtype}_ENRLMT_END_DT_{s}_{m}
+                """
+        z += f""",b.slot
                 ,b.month
-
-        from eligibility_dates_{dtype} a
+            from eligibility_dates_{self.de.YEAR} a
                 join
-                numbers b
+                {self.de.DA_SCHEMA}.numbers b
                 on true) sub ) sub2
 
         where {dtype}_ENRLMT_EFF_DT is not null
@@ -114,7 +91,7 @@ class DE0002(DE):
                     {dtype}_ENRLMT_EFF_DT,
                     {dtype}_ENRLMT_END_DT"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         # Create a unique date ID to filter on later
         z = f"""create or replace temporary view {dtype}_ids as
@@ -126,7 +103,7 @@ class DE0002(DE):
 
             from {dtype}_dates_long"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         # Join records for beneficiary to each other, but omit matches where it's the same record */
         # Get every dateID where their effective date is greater than or equal to another record's effective date
@@ -141,10 +118,10 @@ class DE0002(DE):
                         t1.msis_ident_num = t2.msis_ident_num and
                         t1.dateId <> t2.dateId
 
-                where date_cmp(t1.{dtype}_ENRLMT_EFF_DT,t2.{dtype}_ENRLMT_EFF_DT) in (0,1) and
-                    date_cmp(t1.{dtype}_ENRLMT_END_DT,t2.{dtype}_ENRLMT_END_DT) in (-1,0)"""
+                where datediff(t1.{dtype}_ENRLMT_EFF_DT,t2.{dtype}_ENRLMT_EFF_DT) <= 0 and
+                    datediff(t1.{dtype}_ENRLMT_END_DT,t2.{dtype}_ENRLMT_END_DT) >= 0"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         # Join initial date to overlapping dateIDs and remove
         z = f"""create or replace temporary view {dtype}_nonoverlaps as
@@ -158,7 +135,7 @@ class DE0002(DE):
 
                 where t2.dateid is null"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = f"""create or replace temporary view {dtype}_dates_out as
             select submtg_state_cd
@@ -202,7 +179,7 @@ class DE0002(DE):
 
                 group by submtg_state_cd, msis_ident_num, g"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         # Loop through months and compare effective date to first day of month, and end date to last day of month.
         # If at all within month, count the number of days
@@ -211,7 +188,7 @@ class DE0002(DE):
             select submtg_state_cd,
                     msis_ident_num,
                     {dtype}_ENRLMT_EFF_DT,
-                    {dtype}_ENRLMT_END_DT
+                    {dtype}_ENRLMT_END_DT,
 
             """
         for m in range(1, 12):
@@ -230,16 +207,16 @@ class DE0002(DE):
                 lday = "28"
 
             z += f"""case when DATEDIFF({dtype}_ENRLMT_EFF_DT,to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy')) in (-1,0) and
-                            DATEDIFF({dtype}_ENRLMT_END_DT,to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')) in (0,1) then
+                            DATEDIFF({dtype}_ENRLMT_END_DT,to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy') in (0,1) then
 
                         datediff(day,greatest({dtype}_ENRLMT_EFF_DT,to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')),
-                                least({dtype}_ENRLMT_END_DT,to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy'))) + 1
+                                least({dtype}_ENRLMT_END_DT,to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy') + 1
 
                         else 0
                         end as {dtype}_ENRLMT_DAYS_{mm}
                     from {dtype}_dates_out"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z += f"""create or replace temporary view {dtype}_days_out as
                 select *,
@@ -260,10 +237,10 @@ class DE0002(DE):
              group by submtg_state_cd,
                       msis_ident_num )"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         # TODO: refactor to pass in tblname to create_temp_table
-        z += f"""insert into &DA_SCHEMA..TAF_ANN_DE_{self.tblname}
+        z += f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{DE0002.tblname}
                 select
                     {DE.table_id_cols_sfx(self)}
                     ,ENRL_TYPE_FLAG
@@ -272,7 +249,7 @@ class DE0002(DE):
 
                 from dates_out
                 """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

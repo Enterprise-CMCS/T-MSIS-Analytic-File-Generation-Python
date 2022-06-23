@@ -64,7 +64,7 @@ class DE0005(DE):
 
         from managed_care_{self.de.YEAR}"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
@@ -480,7 +480,7 @@ class DE0005(DE):
                 where MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
                     MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1"""
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
         return
 
 # -----------------------------------------------------------------------------

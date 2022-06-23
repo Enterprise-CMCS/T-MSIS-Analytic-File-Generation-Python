@@ -34,7 +34,7 @@ class DE_Runner(TAF_Runner):
     #               in the da_config_macro above
     #  - ST_FILTER: List of states to run (if no states are listed, then take all) (read from job control
     #               table)
-    #  - PYEARS: Prior years (all years from 2014 to current year minus 1)
+    #  - PYEAR: Prior years (all years from 2014 to current year minus 1)
     #  - GETPRIOR: Indicator for whether there are ANY records in the prior yeara to do prior year lookback.
     #              If yes, set = 1 and look to prior yeara to get demographic information if current year
     #              is missing for each enrollee/demographic column. This will be determined with the macro
@@ -58,10 +58,12 @@ class DE_Runner(TAF_Runner):
         self.DA_RUN_ID: int = 0
         self.ROWCOUNT: int = 0
         self.TMSIS_SCHEMA = "TMSIS"
-        self.DA_SCHEMA = "TAF"
         self.ST_FILTER = ""
         self.GETPRIOR: int = 0  # TODO: how does this get set?
-        self.PYEARS: int = 0
+        self.PYEAR = self.YEAR - 1
+        self.PYEAR2 = self.YEAR - 2
+        self.FYEAR = self.YEAR + 1
+        self.PYEARS = []
 
     # ---------------------------------------------------------------------------------
     #
@@ -70,7 +72,7 @@ class DE_Runner(TAF_Runner):
     #
     # ---------------------------------------------------------------------------------
     def init(self):
-        from taf.DE.DE0001 import DE0001
+        from taf.DE.DE0001BASE import DE0001BASE
         from taf.DE.DE0002 import DE0002
         from taf.DE.DE0003 import DE0003
         from taf.DE.DE0005 import DE0005
@@ -79,7 +81,10 @@ class DE_Runner(TAF_Runner):
         from taf.DE.DE0008 import DE0008
         from taf.DE.DE0009 import DE0009
 
-        DE0001(self).create()
+        # ----------------------------------
+        # BASE gets called last despite 0001
+        # 0004 does not exist
+        # ----------------------------------
         DE0002(self).create()
         DE0003(self).create()
         DE0005(self).create()
@@ -87,6 +92,8 @@ class DE_Runner(TAF_Runner):
         DE0007(self).create()
         DE0008(self).create()
         DE0009(self).create()
+        DE0001BASE(self).create()
+
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
 

@@ -3,7 +3,7 @@ from taf.DE.DE_Runner import DE_Runner
 from taf.TAF_Closure import TAF_Closure
 
 
-class DE0001(DE):
+class DE0001BASE(DE):
 
     def __init__(self, runner: DE_Runner):
         # TODO: Review this
@@ -12,6 +12,16 @@ class DE0001(DE):
 
     # runner function
     def create(self):
+        DE.max_run_id(self, file="DE", tbl="taf_ann_de_base", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="DE", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="BSF", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="IP", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="IP", inyear=self.de.PYEAR)
+        DE.max_run_id(self, file="IP", inyear=self.de.FYEAR)
+        DE.max_run_id(self, file="LT", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="OT", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="RX", inyear=self.de.YEAR)
+
         self.create_temp()
         self.demographics(self.de.YEAR)
         self.create_base("base_demo")
@@ -241,30 +251,30 @@ class DE0001(DE):
             ,null :: smallint as PRGNCY_FLAG_12
             ,null :: smallint as PRGNCY_FLAG_EVR
 
-            ,,{TAF_Closure.monthly_array(self, incol='ELGBLTY_GRP_CD')}
+            ,{TAF_Closure.monthly_array(self, incol='ELGBLTY_GRP_CD')}
             {DE.last_best(self, 'ELGBLTY_GRP_CD', outcol='ELGBLTY_GRP_CD_LTST')}
-            ,,{TAF_Closure.monthly_array(self, incol='MASBOE_CD')}
+            ,{TAF_Closure.monthly_array(self, incol='MASBOE_CD')}
             {DE.last_best(self, incol='MASBOE_CD', outcol='MASBOE_CD_LTST')}
             {DE.last_best(self, incol='CARE_LVL_STUS_CD')}
-            ,,{TAF_Closure.ever_year('DEAF_DSBL_FLAG')}
-            ,,{TAF_Closure.ever_year('BLND_DSBL_FLAG')}
-            ,,{TAF_Closure.ever_year('DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
-            ,,{TAF_Closure.ever_year('DFCLTY_WLKG_DSBL_FLAG')}
-            ,,{TAF_Closure.ever_year('DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
-            ,,{TAF_Closure.ever_year('DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
-            ,,{TAF_Closure.ever_year('OTHR_DSBL_FLAG')}
+            ,{TAF_Closure.ever_year('DEAF_DSBL_FLAG')}
+            ,{TAF_Closure.ever_year('BLND_DSBL_FLAG')}
+            ,{TAF_Closure.ever_year('DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
+            ,{TAF_Closure.ever_year('DFCLTY_WLKG_DSBL_FLAG')}
+            ,{TAF_Closure.ever_year('DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
+            ,{TAF_Closure.ever_year('DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
+            ,{TAF_Closure.ever_year('OTHR_DSBL_FLAG')}
 
-            ,,{TAF_Closure.monthly_array(self, incol='CHIP_CD')}
+            ,{TAF_Closure.monthly_array(self, incol='CHIP_CD')}
             {DE.last_best(self, incol='CHIP_CD', outcol='CHIP_CD_LTST')}
 
-            ,,{TAF_Closure.monthly_array(self, incol='STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP')}
+            ,{TAF_Closure.monthly_array(self, incol='STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP')}
             {DE.last_best(self, incol='STATE_SPEC_ELGBLTY_FCTR_TXT',outcol='STATE_SPEC_ELGBLTY_GRP_LTST')}
-            ,,{TAF_Closure.monthly_array(self, incol='DUAL_ELGBL_CD')}
+            ,{TAF_Closure.monthly_array(self, incol='DUAL_ELGBL_CD')}
             {DE.last_best(self, incol='DUAL_ELGBL_CD',outcol='DUAL_ELGBL_CD_LTST')}
 
             {DE.mc_type_rank(self, smonth=1, emonth=2)}
 
-            ,,{TAF_Closure.monthly_array(self, incol='RSTRCTD_BNFTS_CD')}
+            ,{TAF_Closure.monthly_array(self, incol='RSTRCTD_BNFTS_CD')}
             {DE.last_best(self, incol='RSTRCTD_BNFTS_CD',outcol='RSTRCTD_BNFTS_CD_LTST')}
             {DE.last_best(self, incol='SSDI_IND')}
             {DE.last_best(self, incol='SSI_IND')}
@@ -300,7 +310,7 @@ class DE0001(DE):
 
         DE.create_temp_table(
             self,
-            tblname="basedemo",
+            tblname="base_demo",
             inyear=self.de.YEAR,
             subcols=f"""
                 {DE.last_best(self, incol='SSN_NUM')}
@@ -324,14 +334,14 @@ class DE0001(DE):
                 {DE.last_best(self, incol='RACE_ETHNCTY_FLAG')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_EXP_FLAG')}
 
-                ,,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
-                ,,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
-                ,,{TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_HOME')}
-                ,,{TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_HOME')}
-                ,,{TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_HOME')}
-                ,,{TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_MAIL')}
-                ,,{TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_MAIL')}
-                ,,{TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_MAIL')}
+                ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
+                ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
+                ,{TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_HOME')}
+                ,{TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_HOME')}
+                ,{TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_HOME')}
+                ,{TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_MAIL')}
+                ,{TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_MAIL')}
+                ,{TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_MAIL')}
                 {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_HOME')}
                 {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_MAIL')}
 
@@ -413,11 +423,11 @@ class DE0001(DE):
                             c.msis_ident_num = p{cnt}.msis_ident_num"""
 
             # Now if we do NOT have prior year data, simply rename base_demo_YR to base_demo_out
-            self.de.append(type(self).__name__, z)
+            self.de.append(type(self).__name__, z + ';')
 
         if self.de.GETPRIOR == 0:
             z = f"""alter view base_demo_{self.de.YEAR} rename to base_demo_{self.de.YEAR}_out"""
-            self.de.append(type(self).__name__, z)
+            self.de.append(type(self).__name__, z + ';')
 
         z = f"""create or replace temporary view base_{self.de.YEAR} as
                 select a.*,
@@ -458,9 +468,30 @@ class DE0001(DE):
                 on a.submtg_state_cd = b.submtg_state_cd and
                     a.msis_ident_num = b.msis_ident_num
             """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
-        z = f"""create or replace temporary view base_{self.de.YEAR}_final0
+        z = f"""create or replace temporary view enrolled_days_{self.de.YEAR} as
+                select coalesce(a.msis_ident_num,b.msis_ident_num) as msis_ident_num
+                    ,coalesce(a.submtg_state_cd,b.submtg_state_cd) as submtg_state_cd """
+        for mm in range(1, 13):
+            if mm < 10:
+                m = str(mm).zfill(2)
+            z += f""",a.MDCD_ENRLMT_DAYS_{m}
+                    ,b.CHIP_ENRLMT_DAYS_{m}
+                """
+        z += """,a.MDCD_ENRLMT_DAYS_YR
+                ,b.CHIP_ENRLMT_DAYS_YR
+                ,1 as EL_DTS_SPLMTL
+        from MDCD_days_out a
+            full outer join
+            CHIP_days_out b
+
+        on a.msis_ident_num = b.msis_ident_num and
+            a.submtg_state_cd = b.submtg_state_cd"""
+
+        self.de.append(type(self).__name__, z + ';')
+
+        z = f"""create or replace temporary view base_{self.de.YEAR}_final0 as
             select a.*"""
 
         for m in range(1, 13):
@@ -524,7 +555,7 @@ class DE0001(DE):
                 on a.submtg_state_cd = g.submtg_state_cd and
                 a.msis_ident_num = g.msis_ident_num
             """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         # Create a table of all unique state/MSIS IDs from claims, to join back to Base and create dummy records for
         # all benes with a claim and not in Base
@@ -542,8 +573,9 @@ class DE0001(DE):
 
                     union
                     {DE.unique_claims_ids(self, cltype='RX')}
+                )
             """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = f"""create or replace temporary view base_{self.de.YEAR}_final as
 
@@ -566,7 +598,7 @@ class DE0001(DE):
                 on a.submtg_state_cd = b.submtg_state_cd and
                 a.msis_ident_num = b.msis_ident_num
             """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{tblname}
             (DA_RUN_ID, DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, SUBMTG_STATE_CD, MSIS_IDENT_NUM {self.basecols()})
@@ -577,7 +609,7 @@ class DE0001(DE):
             from base_{self.de.YEAR}_final
             """
 
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
 
 # -----------------------------------------------------------------------------

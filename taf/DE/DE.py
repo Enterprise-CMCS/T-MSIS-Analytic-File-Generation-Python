@@ -15,7 +15,8 @@ class DE(TAF):
     #
     # ---------------------------------------------------------------------------------
     def create(self):
-        print('')
+        self.create_pyears()
+        pass
 
     # ---------------------------------------------------------------------------------
     #
@@ -83,8 +84,9 @@ class DE(TAF):
                 select * {outercols}
 
                     from (
-                        select enrl.submtg_state_cd,
-                            enrl.msis_ident_num
+                        select
+                             enrl.submtg_state_cd
+                            ,enrl.msis_ident_num
                             {subcols}
                             {subcols2}
                             {subcols3}
@@ -103,7 +105,7 @@ class DE(TAF):
                     msis_ident_num
 
         """
-        self.de.append(type(self).__name__, z)
+        self.de.append(type(self).__name__, z + ';')
 
     def mc_type_rank(self, smonth: int, emonth: int):
         priorities = ["01", "04", "05", "06", "15", "07", "14", "17", "08", "09", "10",
@@ -190,7 +192,7 @@ class DE(TAF):
     def address_same_year(self, incol):
         cnt = 0
         z = f""",case when yearpull = {self.de.YEAR} then c.{incol}"""
-        for pyear in range(1, self.de.PYEARS + 1):
+        for pyear in self.de.PYEARS:
             cnt += 1
             z += f""" when yearpull = {pyear} then p{cnt}.{incol}"""
 
@@ -240,36 +242,35 @@ class DE(TAF):
                 snum = s
 
             for m in range(1, 13):
-                mm = str(m)
-                if len(mm) == 1:
-                    mm = mm.zfill(2)
+                m = str(m).zfill(2)
 
-                if mm in ("01", "03", "05", "07", "08", "10", "12"):
+                if m in ("01", "03", "05", "07", "08", "10", "12"):
                     lday = "31"
-                if mm in ("09", "04", "06", "11"):
+                if m in ("09", "04", "06", "11"):
                     lday = "30"
-                if mm == "02" and self.de.YEAR % 4 == 0 and (self.de.YEAR % 100 != 0 or self.de.YEAR % 400 == 0):
+                if m == "02" and self.de.YEAR % 4 == 0 and (self.de.YEAR % 100 != 0 or self.de.YEAR % 400 == 0):
                     lday = "29"
-                elif mm == "02":
+                elif m == "02":
                     lday = "28"
 
                 # Truncate effective dates to the 1st of the month if prior to the first. Otherwise pull in the raw date.
                 if truncfirst == 1:
-                    z += f""",case when m{mm}.{incol}{snum} is not null and
-                            date_cmp(m{mm}.{incol}{snum},to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy') = -1
-                        then to_date('01 {mm} {self.de.YEAR}'),'dd mm yyyy')
-                        else m{mm}.{incol}{snum}
-                        end as {outcol}{snum}_{mm}
+                    z += f"""
+                        ,case when m{m}.{incol}{snum} is not null and
+                            datediff(m{m}.{incol}{snum},to_date('01 {m} {self.de.YEAR}','dd m yyyy')) >= 1
+                        then to_date('01 {m} {self.de.YEAR}','dd m yyyy')
+                        else m{m}.{incol}{snum}
+                        end as {outcol}{snum}_{m}
                         """
 
                 # Truncate end dates to the last day of the month if after the last day of the month. Otherwise pull in the
                 # raw date
                 if truncfirst == 0:
-                    z += f""",case when m{mm}.{incol}{snum} is not null and
-                            date_cmp(m{mm}.{incol}{snum},to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy') = 1
-                        then to_date('{lday} {mm} {self.de.YEAR}'),'dd mm yyyy')
-                        else m{mm}.{incol}{snum}
-                        end as {outcol}{snum}_{mm}
+                    z += f""",case when m{m}.{incol}{snum} is not null and
+                            datediff(m{m}.{incol}{snum},to_date('{lday} {m} {self.de.YEAR}','dd m yyyy')) <= -1
+                        then to_date('{lday} {m} {self.de.YEAR}','dd m yyyy')
+                        else m{m}.{incol}{snum}
+                        end as {outcol}{snum}_{m}
                         """
         return z
 
@@ -414,27 +415,28 @@ class DE(TAF):
                 a.da_run_id = b.da_run_id
 
             group by a.submtg_state_cd,
-                    b.msis_ident_num) as enrl"""
+                    b.msis_ident_num) as enrl """
 
-        for mm in range(1, 13):
-            if mm < 10:
-                mm = str(mm).zfill(2)
-            z += f"""left join
+        for m in range(1, 13):
+            if m < 10:
+                m = str(m).zfill(2)
+            z += f"""
+                left join
+                    (select b.* from
 
-                (select b.* from
+                    max_run_id_bsf_{self.de.YEAR} a
+                    inner join
+                    {self.de.DA_SCHEMA}.taf_mon_bsf b
 
-                max_run_id_bsf_{self.de.YEAR} a
-                inner join
-                {self.de.DA_SCHEMA}.taf_mon_bsf b
+                    on a.submtg_state_cd = b.submtg_state_cd and
+                        a.bsf_fil_dt = b.bsf_fil_dt and
+                        a.da_run_id = b.da_run_id
 
-                on a.submtg_state_cd = b.submtg_state_cd and
-                    a.bsf_fil_dt = b.bsf_fil_dt and
-                    a.da_run_id = b.da_run_id
+                    where substring(a.bsf_fil_dt,5,2)='{m}') as m{m}
 
-                where substring(a.bsf_fil_dt,5,2)='{mm}') as m{mm}
-
-                on enrl.submtg_state_cd=m{mm}.submtg_state_cd and
-                    enrl.msis_ident_num=m{mm}.msis_ident_num"""
+                    on enrl.submtg_state_cd=m{m}.submtg_state_cd and
+                        enrl.msis_ident_num=m{m}.msis_ident_num
+                """
         return z
 
     def last_best(self, incol, outcol="", prior=0):
@@ -462,7 +464,7 @@ class DE(TAF):
         return z
 
     def waiv_nonnull(self, outcol):
-        z = f""",case when """
+        z = """,case when """
         for m in range(1, 13):
             if m < 10:
                 mm = str(m).zfill(2)
@@ -554,6 +556,197 @@ class DE(TAF):
                     nullif( {incol}_12, {nullcond}) {condition}"""
 
         return f"{z} then 1 else 0 end as {outcol}"
+
+    def ST_FILTER(self):
+        return "and trim(submitting_state) not in ('94','96')"
+
+    def max_run_id(self, file="", tbl="", inyear=""):
+        if not inyear:
+            inyear = self.de.YEAR
+
+        # For NON state-specific runs (where job_parms_text does not include submtg_state_cd in)
+        # pull highest da_run_id by time
+
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW max_run_id_{file}_{inyear}_nat AS
+
+            SELECT {file}_fil_dt
+                ,max(da_run_id) AS da_run_id
+            FROM (
+                SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
+                    ,da_run_id
+                FROM {self.de.DA_SCHEMA}.job_cntl_parms
+                WHERE upper(substring(fil_type, 2)) = "{file}"
+                    AND sucsfl_ind = 1
+                    AND substring(job_parms_txt, 1, 4) = "{inyear}"
+        """
+
+        if inyear == self.de.PYEAR:
+            z += """
+                    AND substring(job_parms_txt, 6, 2) IN (
+                            '10'
+                            ,'11'
+                            ,'12'
+                            )
+            """
+
+        if inyear == self.de.FYEAR:
+            z += """
+                    AND substring(job_parms_txt, 6, 2) IN (
+                        '01'
+                        ,'02'
+                        ,'03'
+                        )
+            """
+
+        z += f"""
+                    AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\s+', ' ')) = 0
+                )
+
+            GROUP BY {file}_fil_dt
+        """
+        self.de.append(type(self).__name__, z + ';')
+
+        # For state-specific runs (where job_parms_text includes submtg_state_cd in)
+        # pull highest da_run_id by time and state;
+
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW max_run_id_{file}_{inyear}_ss AS
+
+            SELECT {file}_fil_dt
+                ,submtg_state_cd
+                ,max(da_run_id) AS da_run_id
+            FROM (
+                SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
+                    ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{2})') AS submtg_state_cd
+                    ,da_run_id
+                FROM {self.de.DA_SCHEMA}.job_cntl_parms
+                WHERE upper(substring(fil_type, 2)) = "{file}"
+                    AND sucsfl_ind = 1
+                    AND substring(job_parms_txt, 1, 4) = "{inyear}"
+        """
+
+        if inyear == self.de.PYEAR:
+            z += """
+                 AND substring(job_parms_txt, 6, 2) IN (
+                            '10'
+                            ,'11'
+                            ,'12'
+                            )
+            """
+
+        if inyear == self.de.FYEAR:
+            z += """
+                 AND substring(job_parms_txt, 6, 2) IN (
+                        '01'
+                        ,'02'
+                        ,'03'
+                        )
+            """
+
+        z += f"""
+                    AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\s+', ' ')) > 0
+                )
+
+            GROUP BY {file}_fil_dt
+                ,submtg_state_cd
+        """
+        self.de.append(type(self).__name__, z + ';')
+
+        # Now join the national and state lists by month - take the national run ID if higher than
+        # the state-specific, otherwise take the state-specific
+        # Must ALSO stack with the national IDs so they are not lost
+        # In outer query, get a list of unique IDs to pull
+
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW job_cntl_parms_both_{file}_{inyear} AS
+
+            SELECT DISTINCT {file}_fil_dt
+                ,da_run_id
+            FROM (
+                SELECT coalesce(a.{file}_fil_dt, b.{file}_fil_dt) AS {file}_fil_dt
+                    ,CASE
+                        WHEN a.da_run_id > b.da_run_id
+                            OR b.da_run_id IS NULL
+                            THEN a.da_run_id
+                        ELSE b.da_run_id
+                        END AS da_run_id
+                FROM max_run_id_{file}_{inyear}_nat a
+                FULL JOIN max_run_id_{file}_{inyear}_ss b ON a.{file}_fil_dt = b.{file}_fil_dt
+
+                UNION ALL
+
+                SELECT {file}_fil_dt
+                    ,da_run_id
+                FROM max_run_id_{file}_{inyear}_nat
+                ) c
+        """
+        self.de.append(type(self).__name__, z + ';')
+
+        # Now join to EFTS data to get table of month/state/run IDs to use for data pull
+        # Note must then take the highest da_run_id by state/month (if any state-specific runs
+        # were identified as being later than a national run)
+        # Note for DE only, strip off month from fil_dt
+
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW max_run_id_{file}_{inyear} AS
+
+            SELECT
+        """
+
+        if file.casefold() == "de":
+            z += f"""
+                 substring(a.{file}_fil_dt, 1, 4) AS {file}_fil_dt
+            """
+        else:
+            z += f"""
+                a.{file}_fil_dt
+            """
+
+        z += f"""
+                ,b.submtg_state_cd
+                ,max(b.da_run_id) AS da_run_id
+            FROM job_cntl_parms_both_{file}_{inyear} a
+            INNER JOIN (
+                SELECT da_run_id
+                    ,incldd_state_cd AS submtg_state_cd
+                FROM {self.de.DA_SCHEMA}.efts_fil_meta
+                WHERE incldd_state_cd != 'Missing'
+                ) b ON a.da_run_id = b.da_run_id
+        """
+
+        if self.ST_FILTER().count("ALL"):
+            z += f"""WHERE {self.ST_FILTER()}
+            """
+        z += f"""
+            GROUP BY a.{file}_fil_dt
+                ,b.submtg_state_cd
+        """
+        self.de.append(type(self).__name__, z + ';')
+
+        # # Insert into metadata table so we keep track of all monthly DA_RUN_IDs (both DE and claims)
+        # # that go into each annual UP file
+
+        # z = f"""
+        #     INSERT INTO {self.de.DA_SCHEMA}.TAF_ANN_UP_INP_SRC
+        #     SELECT {self.de.DA_SCHEMA} AS ANN_DA_RUN_ID
+        #         ,SUBMTG_STATE_CD
+        #         ,{file}_FIL_DT
+        #         ,DA_RUN_ID AS SRC_DA_RUN_ID
+        #     FROM max_run_id_{file}_{inyear}
+        # """
+        # self.de.append(type(self).__name__, z + ';')
+
+    # Macro create_pyears to create a list of all prior years (from current year minus 1 to 2014).
+    # Note for 2014 the list will be empty.
+
+    def create_pyears(self):
+        pyears = []
+
+        for py in range(2014, self.de.YEAR):
+            pyears.append(py)
+
+        self.de.PYEARS.extend(pyears)
 
     # -----------------------------------------------------------------------------
     # CC0 1.0 Universal
