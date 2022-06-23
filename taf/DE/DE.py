@@ -16,6 +16,15 @@ class DE(TAF):
     # ---------------------------------------------------------------------------------
     def create(self):
         self.create_pyears()
+        self.max_run_id(file="DE", tbl="taf_ann_de_base", inyear=self.de.YEAR)
+        self.max_run_id(file="DE", inyear=self.de.YEAR)
+        self.max_run_id(file="BSF", inyear=self.de.YEAR)
+        self.max_run_id(file="IP", inyear=self.de.YEAR)
+        self.max_run_id(file="IP", inyear=self.de.PYEAR)
+        self.max_run_id(file="IP", inyear=self.de.FYEAR)
+        self.max_run_id(file="LT", inyear=self.de.YEAR)
+        self.max_run_id(file="OT", inyear=self.de.YEAR)
+        self.max_run_id(file="RX", inyear=self.de.YEAR)
         pass
 
     # ---------------------------------------------------------------------------------
@@ -105,7 +114,8 @@ class DE(TAF):
                     msis_ident_num
 
         """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
+        print(f"""Creating Temp Table: {tblname}_{inyear}""")
 
     def mc_type_rank(self, smonth: int, emonth: int):
         priorities = ["01", "04", "05", "06", "15", "07", "14", "17", "08", "09", "10",
@@ -138,12 +148,14 @@ class DE(TAF):
             if mm < 10:
                 mm = str(mm).zfill(2)
 
-            z += f""",case when m{mm}.ENRL_TYPE_FLAG is null and m{mm}.msis_ident_num is not null
+            z += f"""
+                ,case when m{mm}.ENRL_TYPE_FLAG is null and m{mm}.msis_ident_num is not null
                 then 1
                 when m{mm}.msis_ident_num is not null
                 then 0
                 else null
-                end as MISG_ENRLMT_TYPE_IND_{mm}"""
+                end as MISG_ENRLMT_TYPE_IND_{mm}
+                """
 
         return z
 
@@ -266,7 +278,8 @@ class DE(TAF):
                 # Truncate end dates to the last day of the month if after the last day of the month. Otherwise pull in the
                 # raw date
                 if truncfirst == 0:
-                    z += f""",case when m{m}.{incol}{snum} is not null and
+                    z += f"""
+                        ,case when m{m}.{incol}{snum} is not null and
                             datediff(m{m}.{incol}{snum},to_date('{lday} {m} {self.de.YEAR}','dd m yyyy')) <= -1
                         then to_date('{lday} {m} {self.de.YEAR}','dd m yyyy')
                         else m{m}.{incol}{snum}
@@ -605,7 +618,7 @@ class DE(TAF):
 
             GROUP BY {file}_fil_dt
         """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         # For state-specific runs (where job_parms_text includes submtg_state_cd in)
         # pull highest da_run_id by time and state;
@@ -651,7 +664,7 @@ class DE(TAF):
             GROUP BY {file}_fil_dt
                 ,submtg_state_cd
         """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         # Now join the national and state lists by month - take the national run ID if higher than
         # the state-specific, otherwise take the state-specific
@@ -681,7 +694,7 @@ class DE(TAF):
                 FROM max_run_id_{file}_{inyear}_nat
                 ) c
         """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         # Now join to EFTS data to get table of month/state/run IDs to use for data pull
         # Note must then take the highest da_run_id by state/month (if any state-specific runs
@@ -722,24 +735,48 @@ class DE(TAF):
             GROUP BY a.{file}_fil_dt
                 ,b.submtg_state_cd
         """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
-        # # Insert into metadata table so we keep track of all monthly DA_RUN_IDs (both DE and claims)
-        # # that go into each annual UP file
+    def create_dates_out_root(self):
+        from taf.DE.DE0002 import DE0002
+        z = """create or replace temporary view dates_out as
+                (select msis_ident_num,
+                        submtg_state_cd,
+                        ENRL_TYPE_FLAG,
+                        MDCD_ENRLMT_EFF_DT as ENRLMT_EFCTV_CY_DT,
+                        MDCD_ENRLMT_END_DT as ENRLMT_END_CY_DT
+                from MDCD_dates_out)
 
-        # z = f"""
-        #     INSERT INTO {self.de.DA_SCHEMA}.TAF_ANN_UP_INP_SRC
-        #     SELECT {self.de.DA_SCHEMA} AS ANN_DA_RUN_ID
-        #         ,SUBMTG_STATE_CD
-        #         ,{file}_FIL_DT
-        #         ,DA_RUN_ID AS SRC_DA_RUN_ID
-        #     FROM max_run_id_{file}_{inyear}
-        # """
-        # self.de.append(type(self).__name__, z + ';')
+                union all
+
+                (select msis_ident_num,
+                        submtg_state_cd,
+                        ENRL_TYPE_FLAG,
+                        CHIP_ENRLMT_EFF_DT as ENRLMT_EFCTV_CY_DT,
+                        CHIP_ENRLMT_END_DT as ENRLMT_END_CY_DT
+                from CHIP_dates_out)
+
+        """
+        self.de.append(type(self).__name__, z)
+
+        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{DE0002.tbl_abrv} as
+                select
+                    {DE.table_id_cols_sfx(self)}
+                    ,ENRL_TYPE_FLAG
+                    ,ENRLMT_EFCTV_CY_DT
+                    ,ENRLMT_END_CY_DT
+
+                from dates_out
+                """
+
+        self.de.append(type(self).__name__, z)
+
+    def drop_table(self, tblname):
+        z = f"""drop table {self.de.DA_SCHEMA}.{tblname}"""
+        self.de.append(type(self).__name__, z)
 
     # Macro create_pyears to create a list of all prior years (from current year minus 1 to 2014).
     # Note for 2014 the list will be empty.
-
     def create_pyears(self):
         pyears = []
 

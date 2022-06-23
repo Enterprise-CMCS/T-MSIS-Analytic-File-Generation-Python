@@ -61,7 +61,7 @@ class DE0008(DE):
 
                 from hh_spo_{self.de.YEAR}"""
 
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         return
 
@@ -73,7 +73,7 @@ class DE0008(DE):
 
         from hh_spo_{self.de.YEAR}2"""
 
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
@@ -177,7 +177,7 @@ class DE0008(DE):
                     from hh_spo_{self.de.YEAR}2
                     where HH_SPO_SPLMTL=1"""
 
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
         return
 
 # -----------------------------------------------------------------------------

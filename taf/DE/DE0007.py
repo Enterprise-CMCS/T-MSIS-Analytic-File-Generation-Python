@@ -53,7 +53,7 @@ class DE0007(DE):
 
         from mfp_{self.de.YEAR}"""
 
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
@@ -81,7 +81,7 @@ class DE0007(DE):
                 from mfp_{self.de.YEAR}
                 where MFP_SPLMTL=1"""
 
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
         return
 
 # -----------------------------------------------------------------------------

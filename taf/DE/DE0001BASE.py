@@ -12,16 +12,6 @@ class DE0001BASE(DE):
 
     # runner function
     def create(self):
-        DE.max_run_id(self, file="DE", tbl="taf_ann_de_base", inyear=self.de.YEAR)
-        DE.max_run_id(self, file="DE", inyear=self.de.YEAR)
-        DE.max_run_id(self, file="BSF", inyear=self.de.YEAR)
-        DE.max_run_id(self, file="IP", inyear=self.de.YEAR)
-        DE.max_run_id(self, file="IP", inyear=self.de.PYEAR)
-        DE.max_run_id(self, file="IP", inyear=self.de.FYEAR)
-        DE.max_run_id(self, file="LT", inyear=self.de.YEAR)
-        DE.max_run_id(self, file="OT", inyear=self.de.YEAR)
-        DE.max_run_id(self, file="RX", inyear=self.de.YEAR)
-
         self.create_temp()
         self.demographics(self.de.YEAR)
         self.create_base("base_demo")
@@ -423,11 +413,11 @@ class DE0001BASE(DE):
                             c.msis_ident_num = p{cnt}.msis_ident_num"""
 
             # Now if we do NOT have prior year data, simply rename base_demo_YR to base_demo_out
-            self.de.append(type(self).__name__, z + ';')
+            self.de.append(type(self).__name__, z)
 
         if self.de.GETPRIOR == 0:
             z = f"""alter view base_demo_{self.de.YEAR} rename to base_demo_{self.de.YEAR}_out"""
-            self.de.append(type(self).__name__, z + ';')
+            self.de.append(type(self).__name__, z)
 
         z = f"""create or replace temporary view base_{self.de.YEAR} as
                 select a.*,
@@ -468,7 +458,7 @@ class DE0001BASE(DE):
                 on a.submtg_state_cd = b.submtg_state_cd and
                     a.msis_ident_num = b.msis_ident_num
             """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         z = f"""create or replace temporary view enrolled_days_{self.de.YEAR} as
                 select coalesce(a.msis_ident_num,b.msis_ident_num) as msis_ident_num
@@ -489,7 +479,7 @@ class DE0001BASE(DE):
         on a.msis_ident_num = b.msis_ident_num and
             a.submtg_state_cd = b.submtg_state_cd"""
 
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         z = f"""create or replace temporary view base_{self.de.YEAR}_final0 as
             select a.*"""
@@ -555,7 +545,7 @@ class DE0001BASE(DE):
                 on a.submtg_state_cd = g.submtg_state_cd and
                 a.msis_ident_num = g.msis_ident_num
             """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         # Create a table of all unique state/MSIS IDs from claims, to join back to Base and create dummy records for
         # all benes with a claim and not in Base
@@ -575,7 +565,7 @@ class DE0001BASE(DE):
                     {DE.unique_claims_ids(self, cltype='RX')}
                 )
             """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
         z = f"""create or replace temporary view base_{self.de.YEAR}_final as
 
@@ -598,9 +588,9 @@ class DE0001BASE(DE):
                 on a.submtg_state_cd = b.submtg_state_cd and
                 a.msis_ident_num = b.msis_ident_num
             """
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{tblname}
+        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{tblname}
             (DA_RUN_ID, DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, SUBMTG_STATE_CD, MSIS_IDENT_NUM {self.basecols()})
             select
                 {DE.table_id_cols_sfx(self, suffix='_comb')}
@@ -609,7 +599,7 @@ class DE0001BASE(DE):
             from base_{self.de.YEAR}_final
             """
 
-        self.de.append(type(self).__name__, z + ';')
+        self.de.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------
