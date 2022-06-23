@@ -230,14 +230,20 @@ class DE(TAF):
             """
         return z
 
-    def table_id_cols_sfx(self, suffix=""):
-        z = f"""{self.de.DA_RUN_ID} as DA_RUN_ID
-            ,cast ('{self.de.DA_RUN_ID}' || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
-            SUBMTG_STATE_CD{suffix} || '-' || MSIS_IDENT_NUM{suffix} as varchar(40)) as UP_LINK_KEY
-            ,'{self.de.YEAR}' as UP_FIL_DT
-            ,('{self.de.VERSION}') as ANN_UP_VRSN
+    def table_id_cols_sfx(self, suffix="", extra_cols=[]):
+        z = f"""cast ('{self.de.DA_RUN_ID}' || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
+            SUBMTG_STATE_CD{suffix} || '-' || MSIS_IDENT_NUM{suffix} as varchar(40)) as DE_LINK_KEY
+            ,'{self.de.YEAR}' as DE_FIL_DT
+            ,('{self.de.VERSION}') as ANN_DE_VRSN
+            ,MSIS_IDENT_NUM"""
+        if len(extra_cols) > 0:
+            z += ","
+        z += f"""
+            {",".join(extra_cols)}
+            ,to_timestamp('{self.de.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+            ,current_timestamp() as REC_UPDT_TS
+            ,{self.de.DA_RUN_ID} as DA_RUN_ID
             ,SUBMTG_STATE_CD
-            ,MSIS_IDENT_NUM
             """
         return z
 
@@ -759,13 +765,13 @@ class DE(TAF):
         """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{DE0002.tbl_abrv} as
+        extra_cols = ['ENRL_TYPE_FLAG',
+                      'ENRLMT_EFCTV_CY_DT',
+                      'ENRLMT_END_CY_DT'
+                     ]
+        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{DE0002.tbl_abrv}
                 select
-                    {DE.table_id_cols_sfx(self)}
-                    ,ENRL_TYPE_FLAG
-                    ,ENRLMT_EFCTV_CY_DT
-                    ,ENRLMT_END_CY_DT
-
+                    {DE.table_id_cols_sfx(self, suffix="", extra_cols=extra_cols)}
                 from dates_out
                 """
 
