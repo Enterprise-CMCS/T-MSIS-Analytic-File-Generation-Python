@@ -723,9 +723,9 @@ class TAF_Closure():
                     snum = s
 
                 if (s == 1):
-                    f"""m01.{incol}{snum} as {outcol}{snum}_01"""
+                    z += f"""m01.{incol}{snum} as {outcol}{snum}_01"""
                 else:
-                    f""", m01.{incol}{snum} as {outcol}{snum}_01"""
+                    z += f""", m01.{incol}{snum} as {outcol}{snum}_01"""
 
                 z += f"""
                 , m02.{incol}{snum} as {outcol}{snum}_02
@@ -879,7 +879,7 @@ class TAF_Closure():
         else:
             _outcol = outcol
 
-        return f""",max({incol}) as {_outcol}"""
+        return f"""max({incol}) as {_outcol}"""
 
     # --------------------------------------------------------------------
     #
