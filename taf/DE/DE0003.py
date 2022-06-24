@@ -6,10 +6,10 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0003(DE):
-    tblname: str = "cntct_dtls"
+    tbl_suffix: str = "cntct_dtls"
+    tblname: str = "address_phone"
 
     def __init__(self, runner: DE_Runner):
-        # TODO: Review this
         DE.__init__(DE, runner)
 
     def create(self):
@@ -56,7 +56,7 @@ class DE0003(DE):
                              inyear=self.de.YEAR,
                              subcols=f"""{DE.last_best(self, 'ELGBL_1ST_NAME')}
                                          {DE.last_best(self, 'ELGBL_LAST_NAME')}
-                                         {DE.last_best(self, 'ELGBL_MDL_INITL')}
+                                         {DE.last_best(self, 'ELGBL_MDL_INITL_NAME')}
                             """)
 
     def create_CNTCT_DTLS(self):
@@ -131,7 +131,7 @@ class DE0003(DE):
                 """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tblname}
+        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{self.tbl_suffix}
                 select
                     {DE.table_id_cols_sfx(self)}
                     ,ELGBL_1ST_NAME
