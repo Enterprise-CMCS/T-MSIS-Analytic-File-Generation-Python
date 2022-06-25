@@ -6,7 +6,7 @@
 # ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
-from calendar import monthrange
+from calendar import monthrange, isleap
 
 
 # ---------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ class BASE_LT(UP):
             CREATE OR REPLACE TEMPORARY VIEW lt_hdr_days_{self.year} AS
             SELECT submtg_state_cd
                 ,msis_ident_num
-                ,a.lt_link_key
+                ,lt_link_key
                 ,clm_type_cd
                 ,MDCD
                 ,SCHIP
@@ -49,13 +49,7 @@ class BASE_LT(UP):
                 ,srvc_endg_dt
                 ,srvc_bgnng_dt
                 ,admsn_dt
-
-                ,case when srvc_bgnng_dt is not null then srvc_bgnng_dt
-                     when srvc_bgnng_dt_ln_min is not null then srvc_bgnng_dt_ln_min
-                     when admsn_dt is not null then admsn_dt
-                     else null
-                 end as bgnng_dt
-
+                ,bgnng_dt
                 ,case when ANY_TOS_KEEP=1 or TOS_CD_NULL=1 then 1
                      else 0
                  end as CLAIM_TOS_KEEP
@@ -77,27 +71,109 @@ class BASE_LT(UP):
                 z += f"""
                      ,case when bgnng_dt is not null and
                                 srvc_endg_dt is not null and
-                                bgnng_dt <= to_date({self.year} + "-" + {mm} + "-" {dd}) and
-                                srvc_endg_dt >= to_date({self.year} + "-" + {mm} + "-" {dd})
+                                bgnng_dt <= to_date('{self.year}-{mm}-{dd}') and
+                                srvc_endg_dt >= to_date('{self.year}-{mm}-{dd}')
                            then 1 else 0
                            end as day{num}
                 """
 
         z += f"""
-             from lth_{self.year} a
-                 left join
-                 (select lt_link_key
-                         ,min(srvc_bgnng_dt_ln) as srvc_bgnng_dt_ln_min
-                         ,max(case when TOS_CD in ('009','043','044','045','046','047','048','049','050','059')
-                             then 1 else 0 end) as ANY_TOS_KEEP
-                         ,case when max(TOS_CD) is null
-                                 then 1 else 0
-                                 end as TOS_CD_NULL
-
-                 from ltl_{self.year}
-                 group by lt_link_key ) b
+             FROM (
+                 SELECT a.*
+                 ,b.srvc_bgnng_dt_ln_min
+                 ,b.ANY_TOS_KEEP
+                 ,b.TOS_CD_NULL
+                 ,case
+                      when srvc_bgnng_dt is not null then srvc_bgnng_dt
+                      when srvc_bgnng_dt_ln_min is not null then srvc_bgnng_dt_ln_min
+                      when admsn_dt is not null then admsn_dt
+                  else null
+                 end as bgnng_dt
+                 FROM lth_2021 a
+                 LEFT JOIN (
+                     SELECT lt_link_key
+                         ,min(srvc_bgnng_dt_ln) AS srvc_bgnng_dt_ln_min
+                         ,max(CASE
+                                 WHEN TOS_CD IN (
+                                         '009'
+                                         ,'043'
+                                         ,'044'
+                                         ,'045'
+                                         ,'046'
+                                         ,'047'
+                                         ,'048'
+                                         ,'049'
+                                         ,'050'
+                                         ,'059'
+                                         )
+                                     THEN 1
+                                 ELSE 0
+                                 END) AS ANY_TOS_KEEP
+                         ,CASE
+                             WHEN max(TOS_CD) IS NULL
+                                 THEN 1
+                             ELSE 0
+                             END AS TOS_CD_NULL
+                     FROM ltl_2021
+                     GROUP BY lt_link_key
+                     ) b
+                 ) c
         """
         self.up.append(type(self).__name__, z)
+
+        # Now by clm_type_cd, MDCD/SCHIP, and NON_XOVR/XOVR, get a count of unique days.
+        # Subset to claims based on TOS_CD values.
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW lt_hdr_days2_{self.year} AS
+            SELECT submtg_state_cd
+               ,msis_ident_num
+        """
+
+        for ind1 in self.inds1:
+            for ind2 in self.inds2:
+                # create columns to assign claim types for MDCD or SCHIP
+                if ind1.casefold() == "mdcd":
+                    ffsval = "1"
+                    mcval = "3"
+                elif ind1.casefold() == "schip":
+                    ffsval = "A"
+                    mcval = "C"
+                else:
+                    ffsval = ""
+                    mcval = ""
+
+                # Create macro vars to assign claim types for MDCD or SCHIP
+                # assign_toc
+                for num in range(1, 366 + (isleap(self.year))):
+                    if num == 1:
+                        z += ","
+
+                    if num > 1:
+                        z += " + "
+                    z += f"""max(case when {ind1}=1 and {ind2}=1 and clm_type_cd='{ffsval}' then day{num} else 0 end)"""
+                z += f""" as {ind1}_{ind2}_FFS_LT_DAYS"""
+
+                for num in range(1, 366 + (isleap(self.year))):
+                    if num == 1:
+                        z += ","
+
+                    if num > 1:
+                        z += " + "
+                    z += f"""max(case when {ind1}=1 and {ind2}=1 and clm_type_cd='{mcval}' then day{num} else 0 end)"""
+                z += f""" as {ind1}_{ind2}_MC_LT_DAYS"""
+
+        z += " "
+
+        z += f"""from lt_hdr_days_{self.year}
+		         where CLAIM_TOS_KEEP=1
+		         group by submtg_state_cd
+		             ,msis_ident_num
+        """
+
+        self.up.append(type(self).__name__, z)
+
+
+
 
 
 # -----------------------------------------------------------------------------

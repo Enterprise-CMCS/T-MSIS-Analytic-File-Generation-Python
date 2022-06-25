@@ -59,7 +59,7 @@ class BASE_HDR(UP):
             # For txnmy_ind, look if there are any values = 1, 2, 3;
             if file.casefold() != "rx":
                 z += f"""
-                      { TAF_Closure.any_rec(condcol1=f"{file}_mh_dx_ind", outcol=f"{file}_mh_dx_ind_any") }
+                     ,{ TAF_Closure.any_rec(condcol1=f"{file}_mh_dx_ind", outcol=f"{file}_mh_dx_ind_any") }
                      ,{ TAF_Closure.any_rec(condcol1=f"{file}_sud_dx_ind", outcol=f"{file}_sud_dx_ind_any")}
                      ,{ TAF_Closure.count_rec(condcol1=f"{file}_mh_dx_ind", condcol2="clm_type_cd", cond2="in ('1','A')", outcol=f"{file}_ffs_mh_clm")}
                      ,{ TAF_Closure.count_rec(condcol1=f"{file}_mh_dx_ind", condcol2="clm_type_cd", cond2="in ('3','C')", outcol=f"{file}_mc_mh_clm")}
@@ -108,12 +108,12 @@ class BASE_HDR(UP):
                             ,{ TAF_Closure.count_rec(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"='{mcval}'",outcol=f"{ind1}_{ind2}_MC_{file}_CLM") }
                         """
 
-                        # For NON_XOVR only, get count of supp claims and sum payments
-                        if ind2.casefold() == "non_xovr":
-                            z += f"""
-                                , {TAF_Closure.count_rec(condcol1=f"{ind1}", condcol2=f"{ind2}", condcol3="clm_type_cd", cond3=f"= '{suppval}'", outcol=f"{ind1}_{ind2}_SPLMTL_CLM") }
-                                , {TAF_Closure.sum_paid(condcol1=f"{ind1}", condcol2=f"{ind2}", condcol3="clm_type_cd", cond3=f"= '{suppval}'", outcol=f"TOT_{ind1}_{ind2}_SPLMTL_PD") }
-                            """
+                    # For NON_XOVR only, get count of supp claims and sum payments
+                    if ind2.casefold() == "non_xovr":
+                        z += f"""
+                            , {TAF_Closure.count_rec(condcol1=f"{ind1}", condcol2=f"{ind2}", condcol3="clm_type_cd", cond3=f"= '{suppval}'", outcol=f"{ind1}_{ind2}_SPLMTL_CLM") }
+                            , {TAF_Closure.sum_paid(condcol1=f"{ind1}", condcol2=f"{ind2}", condcol3="clm_type_cd", cond3=f"= '{suppval}'", outcol=f"TOT_{ind1}_{ind2}_SPLMTL_PD") }
+                        """
             z += f"""
                 from {file}h_{self.year}
                 group by submtg_state_cd

@@ -69,21 +69,21 @@ class BASE_FNL(UP):
         for ind1 in self.inds1:
             for ind2 in self.inds2:
                 z += f"""
-                     ,c.{ind1}_ {ind2}_PD
-                     ,coalesce(c.{ind1}_ {ind2}_MC_CMPRHNSV_CLM, 0) AS {ind1}_ {ind2}_MC_CMPRHNSV_CLM
-                     ,coalesce(c.{ind1}_ {ind2}_MC_PCCM_CLM, 0) AS {ind1}_ {ind2}_MC_PCCM_CLM
-                     ,coalesce(c.{ind1}_ {ind2}_MC_PVT_INS_CLM, 0) AS {ind1}_ {ind2}_MC_PVT_INS_CLM
-                     ,coalesce(c.{ind1}_ {ind2}_MC_PHP_CLM, 0) AS {ind1}_ {ind2}_MC_PHP_CLM
-                     ,c.{ind1}_ {ind2}_FFS_EQUIV_AMT
-                     ,c.{ind1}_ {ind2}_MC_CMPRHNSV_PD
-                     ,c.{ind1}_ {ind2}_MC_PCCM_PD
-                     ,c.{ind1}_ {ind2}_MC_PVT_INS_PD
-                     ,c.{ind1}_ {ind2}_MC_PHP_PD
+                     ,c.{ind1}_{ind2}_PD
+                     ,coalesce(c.{ind1}_{ind2}_MC_CMPRHNSV_CLM, 0) AS {ind1}_{ind2}_MC_CMPRHNSV_CLM
+                     ,coalesce(c.{ind1}_{ind2}_MC_PCCM_CLM, 0) AS {ind1}_{ind2}_MC_PCCM_CLM
+                     ,coalesce(c.{ind1}_{ind2}_MC_PVT_INS_CLM, 0) AS {ind1}_{ind2}_MC_PVT_INS_CLM
+                     ,coalesce(c.{ind1}_{ind2}_MC_PHP_CLM, 0) AS {ind1}_{ind2}_MC_PHP_CLM
+                     ,c.{ind1}_{ind2}_FFS_EQUIV_AMT
+                     ,c.{ind1}_{ind2}_MC_CMPRHNSV_PD
+                     ,c.{ind1}_{ind2}_MC_PCCM_PD
+                     ,c.{ind1}_{ind2}_MC_PVT_INS_PD
+                     ,c.{ind1}_{ind2}_MC_PHP_PD
                 """
 
         for hcbsval in self.hcbsvals:
             z += f"""
-                 COALESCE(c.hcbs_{hcbsval}_clm_flag, 0) AS hcbs_{hcbsval}_clm_flag
+                 ,COALESCE(c.hcbs_{hcbsval}_clm_flag, 0) AS hcbs_{hcbsval}_clm_flag
             """
 
         # LT columns

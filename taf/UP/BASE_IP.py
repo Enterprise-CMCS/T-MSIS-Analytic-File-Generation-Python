@@ -79,89 +79,91 @@ class BASE_IP(UP):
         # sortkey(submtg_state_cd,msis_ident_num)
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ipl_3yr_hdr AS
-
             SELECT *
             FROM (
                 SELECT *
-                    ,CASE
-                        WHEN admsn_dt IS NOT NULL
-                            THEN admsn_dt
-                        WHEN srvc_bgnng_dt_ln_min IS NOT NULL
-                            THEN srvc_bgnng_dt_ln_min
-                        ELSE NULL
-                        END AS claim_admsn_dt
-                    ,CASE
-                        WHEN dschrg_dt IS NOT NULL
-                            THEN dschrg_dt
-                        WHEN srvc_endg_dt_ln_max IS NOT NULL
-                            THEN srvc_endg_dt_ln_max
-                        ELSE NULL
-                        END AS claim_dschrg_dt
-
-                    -- Create claim_tos_keep (keep claim based on TOS_CD values) and invalid_dates (will
-                    --        drop based on dates if any of the following:
-                    --            - admission OR discharge null
-                    --            - discharge before admission
-                    --            - > 1.5 years between admission and discharge )
-
-                    ,CASE
-                        WHEN any_tos_keep = 1
-                            OR tos_cd_null = 1
-                            THEN 1
-                        ELSE 0
-                        END AS claim_tos_keep
-                    ,CASE
+                ,CASE
                         WHEN claim_admsn_dt IS NULL
                             OR claim_dschrg_dt IS NULL
                             OR claim_dschrg_dt < claim_admsn_dt
-                            OR (claim_dschrg_dt - claim_admsn_dt + 1) > (365.25 * 1.5)
+                            OR datediff(claim_dschrg_dt, claim_admsn_dt) + 1 > (365.25 * 1.5)
                             THEN 1
                         ELSE 0
                         END AS invalid_dates
                 FROM (
-                    SELECT submtg_state_cd
-                        ,msis_ident_num
-                        ,ip_link_key
-                        ,claim_provider
-                        ,ptnt_stus_cd
-                        ,FFS
-                        ,MDCD
-                        ,XOVR
-                        ,admsn_dt
-                        ,dschrg_dt
-                        ,min(srvc_bgnng_dt_ln) AS srvc_bgnng_dt_ln_min
-                        ,max(srvc_endg_dt_ln) AS srvc_endg_dt_ln_max
-                        ,max(CASE
-                                WHEN TOS_CD IN (
-                                        '001'
-                                        ,'060'
-                                        ,'084'
-                                        ,'086'
-                                        ,'090'
-                                        ,'091'
-                                        ,'092'
-                                        ,'093'
-                                        )
-                                    THEN 1
-                                ELSE 0
-                                END) AS any_tos_keep
+                    SELECT *
                         ,CASE
-                            WHEN max(TOS_CD) IS NULL
+                            WHEN admsn_dt IS NOT NULL
+                                THEN admsn_dt
+                            WHEN srvc_bgnng_dt_ln_min IS NOT NULL
+                                THEN srvc_bgnng_dt_ln_min
+                            ELSE NULL
+                            END AS claim_admsn_dt
+                        ,CASE
+                            WHEN dschrg_dt IS NOT NULL
+                                THEN dschrg_dt
+                            WHEN srvc_endg_dt_ln_max IS NOT NULL
+                                THEN srvc_endg_dt_ln_max
+                            ELSE NULL
+                            END AS claim_dschrg_dt
+
+                        -- Create claim_tos_keep (keep claim based on TOS_CD values) and invalid_dates (will
+                        --        drop based on dates if any of the following:
+                        --            - admission OR discharge null
+                        --            - discharge before admission
+                        --            - > 1.5 years between admission and discharge )
+
+                        ,CASE
+                            WHEN any_tos_keep = 1
+                                OR tos_cd_null = 1
                                 THEN 1
                             ELSE 0
-                            END AS tos_cd_null
-                    FROM ipl_3yr
-                    WHERE claim_provider IS NOT NULL
-                    GROUP BY submtg_state_cd
-                        ,msis_ident_num
-                        ,ip_link_key
-                        ,claim_provider
-                        ,ptnt_stus_cd
-                        ,FFS
-                        ,MDCD
-                        ,XOVR
-                        ,admsn_dt
-                        ,dschrg_dt
+                            END AS claim_tos_keep
+                    FROM (
+                        SELECT submtg_state_cd
+                            ,msis_ident_num
+                            ,ip_link_key
+                            ,claim_provider
+                            ,ptnt_stus_cd
+                            ,FFS
+                            ,MDCD
+                            ,XOVR
+                            ,admsn_dt
+                            ,dschrg_dt
+                            ,min(srvc_bgnng_dt_ln) AS srvc_bgnng_dt_ln_min
+                            ,max(srvc_endg_dt_ln) AS srvc_endg_dt_ln_max
+                            ,max(CASE
+                                    WHEN TOS_CD IN (
+                                            '001'
+                                            ,'060'
+                                            ,'084'
+                                            ,'086'
+                                            ,'090'
+                                            ,'091'
+                                            ,'092'
+                                            ,'093'
+                                            )
+                                        THEN 1
+                                    ELSE 0
+                                    END) AS any_tos_keep
+                            ,CASE
+                                WHEN max(TOS_CD) IS NULL
+                                    THEN 1
+                                ELSE 0
+                                END AS tos_cd_null
+                        FROM ipl_3yr
+                        WHERE claim_provider IS NOT NULL
+                        GROUP BY submtg_state_cd
+                            ,msis_ident_num
+                            ,ip_link_key
+                            ,claim_provider
+                            ,ptnt_stus_cd
+                            ,FFS
+                            ,MDCD
+                            ,XOVR
+                            ,admsn_dt
+                            ,dschrg_dt
+                        )
                     )
                 )
             WHERE claim_tos_keep = 1
@@ -358,9 +360,9 @@ class BASE_IP(UP):
                         --          AND the prior patient status code indicates discharge, then create a second stay
 
                         ,CASE
-                            WHEN claim_admsn_dt - coalesce(claim_dschrg_dt_lag, claim_admsn_dt) > 1
+                            WHEN datediff(coalesce(claim_dschrg_dt_lag, claim_admsn_dt), claim_admsn_dt) > 1
                                 OR (
-                                    claim_admsn_dt - coalesce(claim_dschrg_dt_lag, claim_admsn_dt) IN (
+                                    datediff(coalesce(claim_dschrg_dt_lag, claim_admsn_dt), claim_admsn_dt) IN (
                                         0
                                         ,1
                                         )
@@ -473,8 +475,8 @@ class BASE_IP(UP):
                     num += 1
 
                     z += f"""
-                         ,case when stay_admsn_dt <= to_date({ipyear} + "-" + {mm} + "-" + {dd})) and
-                                    stay_dschrg_dt >= to_date({ipyear}+ "-" + {mm} + "-" + {dd})
+                         ,case when stay_admsn_dt <= to_date('{ipyear}-{mm}-{dd}') and
+                                    stay_dschrg_dt >= to_date('{ipyear}-{mm}-{dd}')
                              then 1 else 0
                              end as day{num}
                     """
@@ -483,7 +485,7 @@ class BASE_IP(UP):
 
         z += f"""
              FROM ip_stays_out
-             WHERE (stay_dschrg_dt - stay_admsn_dt + 1) <= (365.25 * 1.5) and
+             WHERE (datediff(stay_dschrg_dt, stay_admsn_dt) + 1) <= (365.25 * 1.5) and
                  date_part('year',stay_dschrg_dt)={self.year}
         """
         self.up.append(type(self).__name__, z)
@@ -506,6 +508,9 @@ class BASE_IP(UP):
                 # For FFS and MC, sum daily indicators to create day counts, and then just count once for
                 # each matching record to get stay counts
                 for num in range(1, alldays + 1):
+                    if num == 1:
+                        z += ","
+
                     if num > 1:
                         z += " " + "+" + " "
 
@@ -527,6 +532,9 @@ class BASE_IP(UP):
                 """
 
                 for num in range(1, alldays + 1):
+                    if num == 1:
+                        z += ","
+
                     if num > 1:
                         z += " " + "+" + " "
 

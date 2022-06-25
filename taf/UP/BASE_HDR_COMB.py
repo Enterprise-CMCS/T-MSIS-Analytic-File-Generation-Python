@@ -57,47 +57,49 @@ class BASE_HDR_COMB(UP):
         for ind1 in self.inds1:
             for ind2 in self.inds2:
                 z += f"""
-                     ,{ TAF_Closure.getmax(incol='{ind1}_rcpnt_{ind2}_FFS_FLAG') }
-                     ,{ TAF_Closure.getmax(incol='{ind1}_rcpnt_{ind2}_MC_FLAG') }
-                     ,{ TAF_Closure.getmax(incol='TOT_{ind1}_{ind2}_PD') }
+                     ,{ TAF_Closure.getmax(incol=f"{ind1}_rcpnt_{ind2}_FFS_FLAG") }
+                     ,{ TAF_Closure.getmax(incol=f"{ind1}_rcpnt_{ind2}_MC_FLAG") }
+                     ,{ TAF_Closure.getmax(incol=f"TOT_{ind1}_{ind2}_PD") }
                 """
 
                 if ind2.casefold() == "non_xovr":
                     z += f"""
-                         ,{ TAF_Closure.sumrecs(incol='{ind1}_{ind2}_SPLMTL_CLM') }
-                         ,{ TAF_Closure.sumrecs(incol='{ind1}_{ind2}_SPLMTL_CLM') }
+                         ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_SPLMTL_CLM") }
+                         ,{ TAF_Closure.sumrecs(incol=f"TOT_{ind1}_{ind2}_SPLMTL_PD") }
                     """
 
         # Loop over the four file types and just take the max of all elements (all are in one file only
         # so there is only one record with an actual value coming from the inner query)
         for file in self.fltypes:
-            if file.casefold != "rx":
-                TAF_Closure.getmax(incol="{file}_mh_dx_ind_any")
-                TAF_Closure.getmax(incol="{file}_sud_dx_ind_any")
-                TAF_Closure.getmax(incol="{file}_mh_txnmy_ind_any")
-                TAF_Closure.getmax(incol="{file}_sud_txnmy_ind_any")
+            if file.casefold() != "rx":
+                z += f"""
+                    ,{ TAF_Closure.getmax(incol=f"{file}_mh_dx_ind_any") }
+                    ,{ TAF_Closure.getmax(incol=f"{file}_sud_dx_ind_any") }
+                    ,{ TAF_Closure.getmax(incol=f"{file}_mh_txnmy_ind_any") }
+                    ,{ TAF_Closure.getmax(incol=f"{file}_sud_txnmy_ind_any") }
 
-                TAF_Closure.getmax(incol="{file}_ffs_mh_clm")
-                TAF_Closure.getmax(incol="{file}_mc_mh_clm")
-                TAF_Closure.getmax(incol="{file}_ffs_sud_clm")
-                TAF_Closure.getmax(incol="{file}_mc_sud_clm")
+                    ,{ TAF_Closure.getmax(incol=f"{file}_ffs_mh_clm") }
+                    ,{ TAF_Closure.getmax(incol=f"{file}_mc_mh_clm") }
+                    ,{ TAF_Closure.getmax(incol=f"{file}_ffs_sud_clm") }
+                    ,{ TAF_Closure.getmax(incol=f"{file}_mc_sud_clm") }
 
-                TAF_Closure.getmax(incol="{file}_ffs_mh_pd")
-                TAF_Closure.getmax(incol="{file}_ffs_sud_pd")
+                    ,{ TAF_Closure.getmax(incol=f"{file}_ffs_mh_pd") }
+                    ,{ TAF_Closure.getmax(incol=f"{file}_ffs_sud_pd") }
+                """
 
                 # loop over MDCD/SCHIP and NON_XOVR/XOVR
                 for ind1 in self.inds1:
                     for ind2 in self.inds2:
                         z += f"""
-                             ,{ TAF_Closure.getmax(incol="TOT_{ind1}_{ind2}_FFS_{file}_PD") }
+                             ,{ TAF_Closure.getmax(incol=f"TOT_{ind1}_{ind2}_FFS_{file}_PD") }
                         """
 
                         # Only count claims for OT and RX - IP and LT will be counted when rolling up to
                         # visits/days
                         if file.casefold() in ("ot", "rx"):
                             z += f"""
-                                 ,{ TAF_Closure.getmax(incol="{ind1}_{ind2}_FFS_{file}_CLM") }
-                                 ,{ TAF_Closure.getmax(incol="{ind1}_{ind2}_MC_{file}_CLM") }
+                                 ,{ TAF_Closure.getmax(incol=f"{ind1}_{ind2}_FFS_{file}_CLM") }
+                                 ,{ TAF_Closure.getmax(incol=f"{ind1}_{ind2}_MC_{file}_CLM") }
                             """
 
         z += f"""

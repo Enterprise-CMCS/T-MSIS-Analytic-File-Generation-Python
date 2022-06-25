@@ -39,42 +39,48 @@ class BASE_DE(UP):
         # sortkey(submtg_state_cd,msis_ident_num)
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW de_{self.year} AS
-            SELECT a.submtg_state_cd
-               ,msis_ident_num
-               ,age_num
-               ,gndr_cd
-               ,race_ethncty_exp_flag
-               ,dual_elgbl_cd_ltst
-               ,chip_cd_ltst
-               ,elgblty_grp_cd_ltst
-               ,masboe_cd_ltst
+            SELECT *
         """
 
-        # Create monthly indicators for each of the three needed CHIP_CD values, and
-        # then for each sum, to create the number of months - loop over the three CHIPMOS
-        # values above that correspond to output monthly count var names
+        # Sum the monthly indicators for each of the three needed CHIP_CD values
         for c in self.chipmos:
-            for m in range(1, 13):
-                mm = "{:02d}".format(m)
-
-                z += f"""CASE WHEN chip_cd_&mm = '{c}' THEN 1 ELSE 0 END as chip_cd_{mm}_{c}"""
-
-            z += f"""cd_01_{c} + chip_cd_02_{c} + chip_cd_03_{c} + chip_cd_04_{c} + chip_cd_05_{c} + chip_cd_06_{c} +
+            z += f""",chip_cd_01_{c} + chip_cd_02_{c} + chip_cd_03_{c} + chip_cd_04_{c} + chip_cd_05_{c} + chip_cd_06_{c} +
                      chip_cd_07_{c} + chip_cd_08_{c} + chip_cd_09_{c} + chip_cd_10_{c} + chip_cd_11_{c} + chip_cd_12_{c}
                      as elgblty_{c}_mos
             """
 
-            # Loop over all values of DUAL_ELGBL_CD, and if any is non-null/00, set dual_elgbl_evr = 1 */
-            z += f""",CASE WHEN"""
+        z += f"""FROM (
+                SELECT a.submtg_state_cd
+                ,msis_ident_num
+                ,age_num
+                ,gndr_cd
+                ,race_ethncty_exp_flag
+                ,dual_elgbl_cd_ltst
+                ,chip_cd_ltst
+                ,elgblty_grp_cd_ltst
+                ,masboe_cd_ltst
+        """
+
+        # Create monthly indicators for each of the three needed CHIP_CD values
+        # loop over the three CHIPMOS values above that correspond to output monthly count var names
+        for c in self.chipmos:
             for m in range(1, 13):
                 mm = "{:02d}".format(m)
+                z += f""",CASE WHEN chip_cd_{mm} = '{c}' THEN 1 ELSE 0 END as chip_cd_{mm}_{c}"""
 
-                if m > 1:
-                    z += " " + "OR" + " "
+        # Loop over all values of DUAL_ELGBL_CD, and if any is non-null/00, set dual_elgbl_evr = 1 */
+        z += f""",CASE WHEN"""
+        for m in range(1, 13):
+            mm = "{:02d}".format(m)
 
-                z += f"""dual_elgbl_cd_{mm} IS NOT NULL and dual_elgbl_cd_{mm} != '00'
+            if m > 1:
+                z += " " + "OR" + " "
+            else:
+                z += " "
+
+            z += f"""dual_elgbl_cd_{mm} IS NOT NULL and dual_elgbl_cd_{mm} != '00'
                 """
-            z += "THEN 1 ELSE 0 END AS dual_elgbl_evr"
+        z += "THEN 1 ELSE 0 END AS dual_elgbl_evr"
 
         z += f"""
              FROM max_run_id_de_{self.year} a
@@ -84,6 +90,7 @@ class BASE_DE(UP):
                  and a.da_run_id = b.da_run_id
              WHERE misg_elgblty_data_ind != 1
                  OR misg_elgblty_data_ind IS NULL
+            )
         """
         self.up.append(type(self).__name__, z)
 

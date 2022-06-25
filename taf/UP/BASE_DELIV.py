@@ -79,20 +79,10 @@ class BASE_DELIV(UP):
             CREATE
                 OR replace TEMPORARY VIEW bene_deliv_{self.year} AS
 
-            SELECT coalesce(a.submtg_state_cd, b.submtg_state_cd) AS submtg_state_cd
-                ,coalesce(a.msis_ident_num, b.msis_ident_num) AS msis_ident_num
-                ,CASE
-                    WHEN maternal_ip = 1
-                        OR maternal_ot = 1
-                        THEN 1
-                    ELSE 0
-                    END AS maternal
-                ,CASE
-                    WHEN newborn_ip = 1
-                        OR newborn_ot = 1
-                        THEN 1
-                    ELSE 0
-                    END AS newborn
+            SELECT submtg_state_cd
+                ,msis_ident_num
+                ,maternal
+                ,newborn
                 ,CASE
                     WHEN maternal = 1
                         AND newborn = 0
@@ -105,9 +95,25 @@ class BASE_DELIV(UP):
                         THEN '3'
                     ELSE '0'
                     END AS dlvry_ind
-            FROM ip_deliv_{self.year} a
-            FULL JOIN ot_deliv_{self.year} b ON a.submtg_state_cd = b.submtg_state_cd
-                AND a.msis_ident_num = b.msis_ident_num
+            FROM (
+                SELECT coalesce(a.submtg_state_cd, b.submtg_state_cd) AS submtg_state_cd
+                    ,coalesce(a.msis_ident_num, b.msis_ident_num) AS msis_ident_num
+                    ,CASE
+                        WHEN maternal_ip = 1
+                            OR maternal_ot = 1
+                            THEN 1
+                        ELSE 0
+                        END AS maternal
+                    ,CASE
+                        WHEN newborn_ip = 1
+                            OR newborn_ot = 1
+                            THEN 1
+                        ELSE 0
+                        END AS newborn
+                FROM ip_deliv_{self.year} a
+                FULL JOIN ot_deliv_{self.year} b ON a.submtg_state_cd = b.submtg_state_cd
+                    AND a.msis_ident_num = b.msis_ident_num
+            )
         """
         self.up.append(type(self).__name__, z)
 

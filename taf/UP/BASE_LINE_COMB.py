@@ -48,24 +48,28 @@ class BASE_LINE_COMB(UP):
         for ind1 in self.inds1:
             for ind2 in self.inds2:
                 z += f"""
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_ANY_MC_CMPRHNSV",outcol="{ind1}_{ind2}_MC_CMPRHNSV_CLM") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_ANY_MC_PCCM",outcol="{ind1}_{ind2}_MC_PCCM_CLM") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_ANY_MC_PVT_INS",outcol="{ind1}_{ind2}_MC_PVT_INS_CLM") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_ANY_MC_PHP",outcol="{ind1}_{ind2}_MC_PHP_CLM") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_PD") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_FFS_EQUIV_AMT") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_MC_CMPRHNSV_PD") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_MC_PCCM_PD") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_MC_PVT_INS_PD") }
-                     ,{ TAF_Closure.sumrecs(incol="{ind1}_{ind2}_MC_PHP_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_ANY_MC_CMPRHNSV",outcol=f"{ind1}_{ind2}_MC_CMPRHNSV_CLM") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_ANY_MC_PCCM",outcol=f"{ind1}_{ind2}_MC_PCCM_CLM") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_ANY_MC_PVT_INS",outcol=f"{ind1}_{ind2}_MC_PVT_INS_CLM") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_ANY_MC_PHP",outcol=f"{ind1}_{ind2}_MC_PHP_CLM") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_FFS_EQUIV_AMT") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MC_CMPRHNSV_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MC_PCCM_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MC_PVT_INS_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MC_PHP_PD") }
                 """
 
         # Take max of HCBS indicators (note were hard-coded to 0 for all files except OT,
         # to make roll-up simpler
+        acc = 1
+
         for hcbsval in self.hcbsvals:
             z += f"""
-                 ,{ TAF_Closure.getmax(incol="hcbs_{acc}_clm_flag", outcol="hcbs_{hcbsval}_clm_flag") }
+                 ,{ TAF_Closure.getmax(incol=f"hcbs_{acc}_clm_flag", outcol=f"hcbs_{hcbsval}_clm_flag") }
             """
+
+            acc += 1
 
         z += f"""
              FROM (

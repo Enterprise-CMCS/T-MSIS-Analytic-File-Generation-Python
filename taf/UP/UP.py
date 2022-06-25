@@ -26,7 +26,7 @@ class UP(TAF):
 
         self.fltypes = ["IP", "LT", "OT", "RX"]
         self.inds1 = ["MDCD", "SCHIP"]
-        self.inds2 = ["XOVER", "NON_XOVR"]
+        self.inds2 = ["XOVR", "NON_XOVR"]
 
         # list of hcbs values corresponding to values of 1-7 to loop over to create indicators
         self.hcbsvals = [
@@ -54,6 +54,28 @@ class UP(TAF):
         UP.max_run_id(self, file="LT", inyear=self.year)
         UP.max_run_id(self, file="OT", inyear=self.year)
         UP.max_run_id(self, file="RX", inyear=self.year)
+
+        for ipyear in range(self.pyear, int(self.fyear) + 1):
+            UP.pullclaims(
+                self,
+                "IP",
+                hcols="ip_mh_dx_ind ip_sud_dx_ind ip_mh_txnmy_ind ip_sud_txnmy_ind admsn_dt dschrg_dt ptnt_stus_cd blg_prvdr_num blg_prvdr_npi_num admtg_dgns_cd admtg_dgns_cd_ind dgns_1_cd dgns_2_cd dgns_3_cd dgns_4_cd dgns_5_cd dgns_6_cd dgns_7_cd dgns_8_cd dgns_9_cd dgns_10_cd dgns_11_cd dgns_12_cd dgns_1_cd_ind dgns_2_cd_ind dgns_3_cd_ind dgns_4_cd_ind dgns_5_cd_ind dgns_6_cd_ind dgns_7_cd_ind dgns_8_cd_ind dgns_9_cd_ind dgns_10_cd_ind dgns_11_cd_ind dgns_12_cd_ind prcdr_1_cd prcdr_2_cd prcdr_3_cd prcdr_4_cd prcdr_5_cd prcdr_6_cd",
+                lcols="rev_cd",
+                inyear=ipyear,
+            )
+
+        UP.pullclaims(
+            self,
+            "LT",
+            hcols="lt_mh_dx_ind lt_sud_dx_ind lt_mh_txnmy_ind lt_sud_txnmy_ind srvc_bgnng_dt admsn_dt srvc_endg_dt dschrg_dt",
+        )
+        UP.pullclaims(
+            self,
+            "OT",
+            hcols="ot_mh_dx_ind ot_sud_dx_ind ot_mh_txnmy_ind ot_sud_txnmy_ind dgns_1_cd dgns_2_cd dgns_1_cd_ind dgns_2_cd_ind",
+            lcols="hcbs_srvc_cd prcdr_cd rev_cd",
+        )
+        UP.pullclaims(self, "RX")
 
     # ---------------------------------------------------------------------------------
     #
@@ -130,7 +152,7 @@ class UP(TAF):
                 ,max(da_run_id) AS da_run_id
             FROM (
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
-                    ,regexp_substr(substring(job_parms_txt, 10), '([0-9]{2})') AS submtg_state_cd
+                    ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{2})') AS submtg_state_cd
                     ,da_run_id
                 FROM {self.up.DA_SCHEMA}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
@@ -216,9 +238,9 @@ class UP(TAF):
             """
 
         z += f"""
-            b.submtg_state_cd
+                ,b.submtg_state_cd
                 ,max(b.da_run_id) AS da_run_id
-            FROM job_cntl_parms_both_{file}_{inyear}a
+            FROM job_cntl_parms_both_{file}_{inyear} a
             INNER JOIN (
                 SELECT da_run_id
                     ,incldd_state_cd AS submtg_state_cd
@@ -269,89 +291,106 @@ class UP(TAF):
     # For NON_XOVR/XOVR, if the input xovr_ind is null, look to tot_mdcr_ddctbl_amt
     # and tot_mdcr_coinsrnc_amt - if EITHER is > 0, set OXVR=1
     # ---------------------------------------------------------------------------------
-    def pullclaims(self, file: str, hcols, lcols, inyear):
+    def pullclaims(self, file: str, hcols="", lcols="", inyear=None):
+
+        if (inyear == None):
+            inyear = self.year
 
         # distkey(&file._link_key)
         # sortkey(&file._link_key)
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW {file}h_{inyear} AS
-
-            SELECT a.da_run_id
-                ,a.submtg_state_cd
-                ,msis_ident_num
-                ,{file}_link_key
-                ,clm_type_cd
-                ,tot_mdcd_pd_amt
-                ,sect_1115a_demo_ind
-                ,xovr_ind
-                ,pgm_type_cd
-                ,CASE
-                    WHEN clm_type_cd IN (
-                            '1'
-                            ,'2'
-                            ,'3'
-                            ,'5'
-                            )
-                        THEN 1
-                    ELSE 0
-                    END AS MDCD
-                ,CASE
-                    WHEN MDCD = 0
-                        THEN 1
-                    ELSE 0
-                    END AS SCHIP
-                ,CASE
-                    WHEN xovr_ind = '1'
-                        OR (
-                            xovr_ind IS NULL
-                            AND (
-                                tot_mdcr_ddctbl_amt > 0
-                                OR tot_mdcr_coinsrnc_amt > 0
+            SELECT *
+            FROM (
+                SELECT a.da_run_id
+                    ,a.submtg_state_cd
+                    ,msis_ident_num
+                    ,{file}_link_key
+                    ,clm_type_cd
+                    ,tot_mdcd_pd_amt
+                    ,sect_1115a_demo_ind
+                    ,xovr_ind
+                    ,pgm_type_cd
+                    ,CASE
+                        WHEN clm_type_cd IN (
+                                '1'
+                                ,'2'
+                                ,'3'
+                                ,'5'
                                 )
-                            )
-                        THEN 1
-                    ELSE 0
-                    END AS XOVR
-                ,CASE
-                    WHEN XOVR = 0
-                        THEN 1
-                    ELSE 0
-                    END AS NON_XOVR
-                ,CASE
-                    WHEN clm_type_cd IN (
-                            '1'
-                            ,'A'
-                            )
-                        THEN 1
-                    ELSE 0
-                    END AS FFS
+                            THEN 1
+                        ELSE 0
+                        END AS MDCD
+                    ,CASE
+                     WHEN clm_type_cd IN (
+                                '1'
+                                ,'2'
+                                ,'3'
+                                ,'5'
+                                )
+                            THEN 0
+                        ELSE 1
+                        END AS SCHIP
+                    ,CASE
+                        WHEN xovr_ind = '1'
+                            OR (
+                                xovr_ind IS NULL
+                                AND (
+                                    tot_mdcr_ddctbl_amt > 0
+                                    OR tot_mdcr_coinsrnc_amt > 0
+                                    )
+                                )
+                            THEN 1
+                        ELSE 0
+                        END AS XOVR
+                    ,CASE
+                        WHEN xovr_ind = '1'
+                            OR (
+                                xovr_ind IS NULL
+                                AND (
+                                    tot_mdcr_ddctbl_amt > 0
+                                    OR tot_mdcr_coinsrnc_amt > 0
+                                    )
+                                )
+                            THEN 0
+                        ELSE 1
+                        END AS NON_XOVR
+                    ,CASE
+                        WHEN clm_type_cd IN (
+                                '1'
+                                ,'A'
+                                )
+                            THEN 1
+                        ELSE 0
+                        END AS FFS
         """
 
         if hcols:
             z += f""","""
             z += f"""
-                 {",".join(hcols)}
+                 {",".join(hcols.split())}
             """
 
         z += f"""
-            FROM
+             FROM
 
-            max_run_id_{file}_{inyear} a
-            INNER JOIN {self.up.DA_SCHEMA}.taf_{file}h b ON a.submtg_state_cd = b.submtg_state_cd
-                AND a.{file}_fil_dt = b.{file}_fil_dt
-                AND a.da_run_id = b.da_run_id
-            WHERE clm_type_cd IN (
-                    '1'
-                    ,'2'
-                    ,'3'
-                    ,'5'
-                    ,'A'
-                    ,'B'
-                    ,'C'
-                    ,'E'
-                    )
+             max_run_id_{file}_{inyear} a
+             INNER JOIN {self.up.DA_SCHEMA}.taf_{file}h b ON a.submtg_state_cd = b.submtg_state_cd
+                 AND a.{file}_fil_dt = b.{file}_fil_dt
+                 AND a.da_run_id = b.da_run_id
+             WHERE clm_type_cd IN (
+                     '1'
+                     ,'2'
+                     ,'3'
+                     ,'5'
+                     ,'A'
+                     ,'B'
+                     ,'C'
+                     ,'E'
+                     )
                 AND msis_ident_num IS NOT NULL
                 AND substring(msis_ident_num, 1, 1) != '&'
+            )
         """
         self.up.append(type(self).__name__, z)
 
@@ -361,7 +400,7 @@ class UP(TAF):
         # distkey(&file._link_key)
         # sortkey(&file._link_key)
         z = f"""
-            CREATE TEMP TABLE {file}l0_{inyear} AS
+            CREATE OR REPLACE TEMPORARY VIEW {file}l0_{inyear} AS
 
             SELECT a.da_run_id
                 ,a.submtg_state_cd
@@ -380,7 +419,7 @@ class UP(TAF):
         if lcols:
             z += f""","""
             z += f"""
-                 {",".join(hcols)}
+                 {",".join(lcols.split())}
             """
 
         z += f"""
@@ -423,11 +462,11 @@ class UP(TAF):
         if lcols:
             z += f""","""
             z += f"""
-                 {",".join(hcols)}
+                 {",".join(lcols.split())}
             """
 
         z += f"""
-            FROM {file}h_{inyear}a
+            FROM {file}h_{inyear} a
             LEFT JOIN {file}l0_{inyear} b ON a.{file}_link_key = b.{file}_link_key
                 AND a.da_run_id = b.da_run_id
         """
@@ -499,32 +538,33 @@ class UP(TAF):
                         ,{file2}_ffs_sud_pd
                     """
 
-        for ind1 in self.inds1:
-            for ind2 in self.inds2:
-                if file.casefold() != file2.casefold():
-                    z += f"""typeof(NULL) as tot_{ind1}_{ind2}_ffs_{file2}_pd"""
+                for ind1 in self.inds1:
+                    for ind2 in self.inds2:
+                        if file.casefold() != file2.casefold():
+                            z += f""",typeof(NULL) as tot_{ind1}_{ind2}_ffs_{file2}_pd"""
 
-                if file.casefold() == file2.casefold():
-                    z += f"""tot_{ind1}_{ind2}_ffs_{file2}_pd"""
+                        if file.casefold() == file2.casefold():
+                            z += f""",tot_{ind1}_{ind2}_ffs_{file2}_pd"""
 
-                # only count claims for OT and RX
-                # IP and LT will be counted when rolling up to visits/days
-                if file2.casefold() in ("ot", "rx"):
-                    if file.casefold() != file2.casefold():
-                        z += f"""
-                             ,0 as {ind1}_{ind2}_ffs_{file2}_clm
-                             ,0 as {ind1}_{ind2}_mc_{file2}_clm
-                        """
-                    elif file.casefold() == file2.casefold():
-                        z += f"""
-                             ,{ind1}_{ind2}_ffs_{file2}_clm
-                             ,{ind1}_{ind2}_mc_{file2}_clm
-                        """
+                        # only count claims for OT and RX
+                        # IP and LT will be counted when rolling up to visits/days
+                        if file2.casefold() in ("ot", "rx"):
+                            if file.casefold() != file2.casefold():
+                                z += f"""
+                                    ,0 as {ind1}_{ind2}_ffs_{file2}_clm
+                                    ,0 as {ind1}_{ind2}_mc_{file2}_clm
+                                """
+                            elif file.casefold() == file2.casefold():
+                                z += f"""
+                                    ,{ind1}_{ind2}_ffs_{file2}_clm
+                                    ,{ind1}_{ind2}_mc_{file2}_clm
+                                """
 
         z += f"""
              FROM {file}h_bene_base_{self.year}
         """
-        self.up.append(type(self).__name__, z)
+
+        return z
 
     # ---------------------------------------------------------------------------------
     #
@@ -586,8 +626,50 @@ class UP(TAF):
                 ,max(newborn) as newborn_{file}
 
             from (
-                    select submtg_state_cd
-                        ,msis_ident_num
+                select *
+        """
+
+        # Create a final set of indicators that looks at ALL the above cols */
+        z += f"""
+                   ,case when rev_maternal=1
+        """
+        for diag in diag_cols:
+            z += f"""
+                    OR {diag}_maternal = 1
+            """
+
+        for prcdr in prcdr_cols:
+            z += f"""
+                    OR {prcdr}_maternal = 1
+            """
+
+        z += f"""
+                    then 1 else 0
+                    end as maternal
+        """
+
+        z += f"""
+                    ,case when rev_newborn=1
+        """
+        for diag in diag_cols:
+            z += f"""
+                     OR {diag}_newborn = 1
+            """
+
+        for prcdr in prcdr_cols:
+            z += f"""
+                     OR {prcdr}_newborn = 1
+            """
+
+        z += f"""
+                    then 1 else 0
+                    end as newborn
+        """
+
+        z += f"""
+             from (
+                 select submtg_state_cd
+                     ,msis_ident_num
         """
 
         acc = 0
@@ -595,8 +677,8 @@ class UP(TAF):
             acc += 1
 
             z += f"""
-                 ,d{acc}newborn as {diag}_newborn
-                 ,d{acc}maternal as {diag}_maternal
+                 ,d{acc}.newborn as {diag}_newborn
+                 ,d{acc}.maternal as {diag}_maternal
             """
 
         acc = 0
@@ -604,50 +686,13 @@ class UP(TAF):
             acc += 1
 
             z += f"""
-                 ,p{acc}newborn as {prcdr}_newborn
-                 ,p{acc}maternal as {prcdr}_maternal
+                 ,p{acc}.newborn as {prcdr}_newborn
+                 ,p{acc}.maternal as {prcdr}_maternal
             """
 
         z += f"""
              ,r.newborn as rev_newborn
              ,r.maternal as rev_maternal
-        """
-
-        # Create a final set of indicators that looks at ALL the above cols */
-        z += f"""
-             ,case when rev_maternal=1
-        """
-        for diag in diag_cols:
-            z += f"""
-                 OR {diag}_maternal = 1
-            """
-
-        for prcdr in prcdr_cols:
-            z += f"""
-                 OR {prcdr}_maternal = 1
-            """
-
-        z += f"""
-             then 1 else 0
-             end as maternal
-        """
-
-        z += f"""
-             ,case when rev_newborn=1
-        """
-        for diag in diag_cols:
-            z += f"""
-                 OR {diag}_newborn = 1
-            """
-
-        for prcdr in prcdr_cols:
-            z += f"""
-                 OR {prcdr}_newborn = 1
-            """
-
-        z += f"""
-             then 1 else 0
-             end as maternal
         """
 
         z += f"""
@@ -661,8 +706,8 @@ class UP(TAF):
                         left join
                         dgns_cd_lookup d{acc}
 
-                        on a.{diag} = d{acc}dgns_cd and
-                           a.{diag}_ind = d{acc}dgns_cd_ind
+                        on a.{diag} = d{acc}.dgns_cd and
+                           a.{diag}_ind = d{acc}.dgns_cd_ind
             """
 
         acc = 0
@@ -672,15 +717,135 @@ class UP(TAF):
                         left join
                         prcdr_cd_lookup p{acc}
 
-                        on a.{prcdr} = p{acc}prcdr_cd
+                        on a.{prcdr} = p{acc}.prcdr_cd
             """
 
         z += f"""
-             left join rev_cd_lookup r
-                 on a.rev_cd = r.rev_cd
+                 left join rev_cd_lookup r
+                     on a.rev_cd = r.rev_cd
+                )
             )
 
             group by submtg_state_cd
                 ,msis_ident_num
         """
         return z
+
+
+# -----------------------------------------------------------------------------
+# CC0 1.0 Universal
+
+# Statement of Purpose
+
+# The laws of most jurisdictions throughout the world automatically confer
+# exclusive Copyright and Related Rights (defined below) upon the creator and
+# subsequent owner(s) (each and all, an "owner") of an original work of
+# authorship and/or a database (each, a "Work").
+
+# Certain owners wish to permanently relinquish those rights to a Work for the
+# purpose of contributing to a commons of creative, cultural and scientific
+# works ("Commons") that the public can reliably and without fear of later
+# claims of infringement build upon, modify, incorporate in other works, reuse
+# and redistribute as freely as possible in any form whatsoever and for any
+# purposes, including without limitation commercial purposes. These owners may
+# contribute to the Commons to promote the ideal of a free culture and the
+# further production of creative, cultural and scientific works, or to gain
+# reputation or greater distribution for their Work in part through the use and
+# efforts of others.
+
+# For these and/or other purposes and motivations, and without any expectation
+# of additional consideration or compensation, the person associating CC0 with a
+# Work (the "Affirmer"), to the extent that he or she is an owner of Copyright
+# and Related Rights in the Work, voluntarily elects to apply CC0 to the Work
+# and publicly distribute the Work under its terms, with knowledge of his or her
+# Copyright and Related Rights in the Work and the meaning and intended legal
+# effect of CC0 on those rights.
+
+# 1. Copyright and Related Rights. A Work made available under CC0 may be
+# protected by copyright and related or neighboring rights ("Copyright and
+# Related Rights"). Copyright and Related Rights include, but are not limited
+# to, the following:
+
+#   i. the right to reproduce, adapt, distribute, perform, display, communicate,
+#   and translate a Work
+
+#   ii. moral rights retained by the original author(s) and/or performer(s)
+
+#   iii. publicity and privacy rights pertaining to a person's image or likeness
+#   depicted in a Work
+
+#   iv. rights protecting against unfair competition in regards to a Work,
+#   subject to the limitations in paragraph 4(a), below
+
+#   v. rights protecting the extraction, dissemination, use and reuse of data in
+#   a Work
+
+#   vi. database rights (such as those arising under Directive 96/9/EC of the
+#   European Parliament and of the Council of 11 March 1996 on the legal
+#   protection of databases, and under any national implementation thereof,
+#   including any amended or successor version of such directive) and
+
+#   vii. other similar, equivalent or corresponding rights throughout the world
+#   based on applicable law or treaty, and any national implementations thereof.
+
+# 2. Waiver. To the greatest extent permitted by, but not in contravention of,
+# applicable law, Affirmer hereby overtly, fully, permanently, irrevocably and
+# unconditionally waives, abandons, and surrenders all of Affirmer's Copyright
+# and Related Rights and associated claims and causes of action, whether now
+# known or unknown (including existing as well as future claims and causes of
+# action), in the Work (i) in all territories worldwide, (ii) for the maximum
+# duration provided by applicable law or treaty (including future time
+# extensions), (iii) in any current or future medium and for any number of
+# copies, and (iv) for any purpose whatsoever, including without limitation
+# commercial, advertising or promotional purposes (the "Waiver"). Affirmer makes
+# the Waiver for the benefit of each member of the public at large and to the
+# detriment of Affirmer's heirs and successors, fully intending that such Waiver
+# shall not be subject to revocation, rescission, cancellation, termination, or
+# any other legal or equitable action to disrupt the quiet enjoyment of the Work
+# by the public as contemplated by Affirmer's express Statement of Purpose.
+
+# 3. Public License Fallback. Should any part of the Waiver for any reason be
+# judged legally invalid or ineffective under applicable law, then the Waiver
+# shall be preserved to the maximum extent permitted taking into account
+# Affirmer's express Statement of Purpose. In addition, to the extent the Waiver
+# is so judged Affirmer hereby grants to each affected person a royalty-free,
+# non transferable, non sublicensable, non exclusive, irrevocable and
+# unconditional license to exercise Affirmer's Copyright and Related Rights in
+# the Work (i) in all territories worldwide, (ii) for the maximum duration
+# provided by applicable law or treaty (including future time extensions), (iii)
+# in any current or future medium and for any number of copies, and (iv) for any
+# purpose whatsoever, including without limitation commercial, advertising or
+# promotional purposes (the "License"). The License shall be deemed effective as
+# of the date CC0 was applied by Affirmer to the Work. Should any part of the
+# License for any reason be judged legally invalid or ineffective under
+# applicable law, such partial invalidity or ineffectiveness shall not
+# invalidate the remainder of the License, and in such case Affirmer hereby
+# affirms that he or she will not (i) exercise any of his or her remaining
+# Copyright and Related Rights in the Work or (ii) assert any associated claims
+# and causes of action with respect to the Work, in either case contrary to
+# Affirmer's express Statement of Purpose.
+
+# 4. Limitations and Disclaimers.
+
+#   a. No trademark or patent rights held by Affirmer are waived, abandoned,
+#   surrendered, licensed or otherwise affected by this document.
+
+#   b. Affirmer offers the Work as-is and makes no representations or warranties
+#   of any kind concerning the Work, express, implied, statutory or otherwise,
+#   including without limitation warranties of title, merchantability, fitness
+#   for a particular purpose, non infringement, or the absence of latent or
+#   other defects, accuracy, or the present or absence of errors, whether or not
+#   discoverable, all to the greatest extent permissible under applicable law.
+
+#   c. Affirmer disclaims responsibility for clearing rights of other persons
+#   that may apply to the Work or any use thereof, including without limitation
+#   any person's Copyright and Related Rights in the Work. Further, Affirmer
+#   disclaims responsibility for obtaining any necessary consents, permissions
+#   or other rights required for any use of the Work.
+
+#   d. Affirmer understands and acknowledges that Creative Commons is not a
+#   party to this document and has no duty or obligation with respect to this
+#   CC0 or use of the Work.
+
+# For more information, please see
+# <http://creativecommons.org/publicdomain/zero/1.0/>
