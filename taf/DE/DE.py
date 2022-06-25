@@ -234,7 +234,7 @@ class DE(TAF):
         z = f"""cast ('{self.de.DA_RUN_ID}' || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
             SUBMTG_STATE_CD{suffix} || '-' || MSIS_IDENT_NUM{suffix} as varchar(40)) as DE_LINK_KEY
             ,'{self.de.YEAR}' as DE_FIL_DT
-            ,('{self.de.VERSION}') as ANN_DE_VRSN
+            ,'{self.de.VERSION}' as ANN_DE_VRSN
             ,MSIS_IDENT_NUM"""
         if len(extra_cols) > 0:
             z += ","
@@ -302,8 +302,7 @@ class DE(TAF):
             nslots = self.de.NWAIVSLOTS
 
         for m in range(smonth, emonth + 1):
-            if m < 10:
-                m = str(m).zfill(2)
+            m = str(m).zfill(2)
             z = """,case when """
             for s in range(1, nslots + 1):
                 if s > 1:
@@ -345,19 +344,19 @@ class DE(TAF):
             outcol = incol + "_MOS"
 
         if raw == 1:
-            z = f""",coalesce(m01.{incol},0) || coalesce(m02.{incol},0) || coalesce(m03.{incol},0) ||
-            coalesce(m04.{incol},0) || coalesce(m05.{incol},0) || coalesce(m06.{incol},0) ||
-            coalesce(m07.{incol},0) || coalesce(m08.{incol},0) || coalesce(m09.{incol},0) ||
-            coalesce(m10.{incol},0) || coalesce(m11.{incol},0) || coalesce(m12.{incol},0)"""
+            z = f""",coalesce(m01.{incol},0) + coalesce(m02.{incol},0) + coalesce(m03.{incol},0) +
+            coalesce(m04.{incol},0) + coalesce(m05.{incol},0) + coalesce(m06.{incol},0) +
+            coalesce(m07.{incol},0) + coalesce(m08.{incol},0) + coalesce(m09.{incol},0) +
+            coalesce(m10.{incol},0) + coalesce(m11.{incol},0) + coalesce(m12.{incol},0)"""
 
         if raw == 0:
 
-            z = f""",coalesce({incol}_01,0) || coalesce({incol}_02,0) || coalesce({incol}_03,0) ||
-            coalesce({incol}_04,0) || coalesce({incol}_05,0) || coalesce({incol}_06,0) ||
-            coalesce({incol}_07,0) || coalesce({incol}_08,0) || coalesce({incol}_09,0) ||
-            coalesce({incol}_10,0) || coalesce({incol}_11,0) || coalesce({incol}_12,0)"""
+            z = f""",coalesce({incol}_01,0) + coalesce({incol}_02,0) + coalesce({incol}_03,0) +
+            coalesce({incol}_04,0) + coalesce({incol}_05,0) + coalesce({incol}_06,0) +
+            coalesce({incol}_07,0) + coalesce({incol}_08,0) + coalesce({incol}_09,0) +
+            coalesce({incol}_10,0) + coalesce({incol}_11,0) + coalesce({incol}_12,0)"""
 
-        z += f"""as {outcol}"""
+        z += f""" as {outcol}"""
 
         return z
 
@@ -379,22 +378,21 @@ class DE(TAF):
 
         z = ",case when "
         for m in range(smonth, emonth + 1):
-            if m < 10:
-                m = str(m).zfill(2)
-
+            mm = str(m).zfill(2)
+            
             for s in range(1, self.de.NMCSLOTS + 1):
 
-                z += f"""(nullif(nullif(trim(m{m}.MC_PLAN_TYPE_CD{s}),''),'00') is not null or
-                         (nullif(trim(m{m}.MC_PLAN_ID{s}),'') is not null and
+                z += f""" nullif(nullif(trim(m{mm}.MC_PLAN_TYPE_CD{s}),''),'00') is not null or
+                         (nullif(trim(m{mm}.MC_PLAN_ID{s}),'') is not null and
 
-                         trim(m{m}.MC_PLAN_ID{s}) not in ('0','00','000','0000','00000','000000','0000000',
+                         trim(m{mm}.MC_PLAN_ID{s}) not in ('0','00','000','0000','00000','000000','0000000',
                                                 '00000000','000000000','0000000000','00000000000','000000000000',
                                                 '8','88','888','8888','88888','888888','8888888',
                                                 '88888888','888888888','8888888888','88888888888','888888888888',
                                                 '9','99','999','9999','99999','999999','9999999',
-                                                '99999999','999999999','9999999999','99999999999','999999999999')) )
+                                                '99999999','999999999','9999999999','99999999999','999999999999'))
                      """
-                if {m} < {emonth} or {s} < {self.de.NMCSLOTS}:
+                if m < emonth or s < self.de.NMCSLOTS:
                     z += " or "
         z += f"""then 1
                 else 0

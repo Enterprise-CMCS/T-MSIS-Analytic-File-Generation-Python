@@ -27,27 +27,27 @@ class DE0005(DE):
         s6 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 4, 6)}"""
         s7 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 7, 9)}"""
         s7 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 10, 12)}"""
-        os = f""" {DE.sum_months(self, 'CMPRHNSV_MC_PLAN')}
-                  {DE.sum_months(self, 'TRDTNL_PCCM_MC_PLAN')}
-                  {DE.sum_months(self, 'ENHNCD_PCCM_MC_PLAN')}
-                  {DE.sum_months(self, 'HIO_MC_PLAN')}
-                  {DE.sum_months(self, 'PIHP_MC_PLAN')}
-                  {DE.sum_months(self, 'PAHP_MC_PLAN')}
-                  {DE.sum_months(self, 'LTC_PIHP_MC_PLAN')}
-                  {DE.sum_months(self, 'MH_PIHP_MC_PLAN')}
-                  {DE.sum_months(self, 'MH_PAHP_MC_PLAN')}
-                  {DE.sum_months(self, 'SUD_PIHP_MC_PLAN')}
-                  {DE.sum_months(self, 'SUD_PAHP_MC_PLAN')}
-                  {DE.sum_months(self, 'MH_SUD_PIHP_MC_PLAN')}
-                  {DE.sum_months(self, 'MH_SUD_PAHP_MC_PLAN')}
-                  {DE.sum_months(self, 'DNTL_PAHP_MC_PLAN')}
-                  {DE.sum_months(self, 'TRANSPRTN_PAHP_MC_PLAN')}
-                  {DE.sum_months(self, 'DEASE_MGMT_MC_PLAN')}
-                  {DE.sum_months(self, 'PACE_MC_PLAN')}
-                  {DE.sum_months(self, 'PHRMCY_PAHP_MC_PLAN')}
-                  {DE.sum_months(self, 'ACNTBL_MC_PLAN')}
-                  {DE.sum_months(self, 'HM_HOME_MC_PLAN')}
-                  {DE.sum_months(self, 'IC_DUALS_MC_PLAN')}
+        os = f"""{DE.sum_months(self, 'CMPRHNSV_MC_PLAN')}
+                 {DE.sum_months(self, 'TRDTNL_PCCM_MC_PLAN')}
+                 {DE.sum_months(self, 'ENHNCD_PCCM_MC_PLAN')}
+                 {DE.sum_months(self, 'HIO_MC_PLAN')}
+                 {DE.sum_months(self, 'PIHP_MC_PLAN')}
+                 {DE.sum_months(self, 'PAHP_MC_PLAN')}
+                 {DE.sum_months(self, 'LTC_PIHP_MC_PLAN')}
+                 {DE.sum_months(self, 'MH_PIHP_MC_PLAN')}
+                 {DE.sum_months(self, 'MH_PAHP_MC_PLAN')}
+                 {DE.sum_months(self, 'SUD_PIHP_MC_PLAN')}
+                 {DE.sum_months(self, 'SUD_PAHP_MC_PLAN')}
+                 {DE.sum_months(self, 'MH_SUD_PIHP_MC_PLAN')}
+                 {DE.sum_months(self, 'MH_SUD_PAHP_MC_PLAN')}
+                 {DE.sum_months(self, 'DNTL_PAHP_MC_PLAN')}
+                 {DE.sum_months(self, 'TRANSPRTN_PAHP_MC_PLAN')}
+                 {DE.sum_months(self, 'DEASE_MGMT_MC_PLAN')}
+                 {DE.sum_months(self, 'PACE_MC_PLAN')}
+                 {DE.sum_months(self, 'PHRMCY_PAHP_MC_PLAN')}
+                 {DE.sum_months(self, 'ACNTBL_MC_PLAN')}
+                 {DE.sum_months(self, 'HM_HOME_MC_PLAN')}
+                 {DE.sum_months(self, 'IC_DUALS_MC_PLAN')}
             """
         DE.create_temp_table(self, tblname=self.tblname, inyear=self.de.YEAR, subcols=s, subcols2=s2, subcols3=s3,
                              subcols4=s4, subcols5=s5, subcols6=s6, subcols7=s7, outercols=os)
@@ -69,7 +69,7 @@ class DE0005(DE):
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols_sfx}
+                    {DE.table_id_cols_sfx(self)}
                     ,CMPRHNSV_MC_PLAN_MOS
                     ,TRDTNL_PCCM_MC_PLAN_MOS
                     ,ENHNCD_PCCM_MC_PLAN_MOS
