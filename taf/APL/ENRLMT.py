@@ -50,6 +50,37 @@ class ENRLMT(APL):
         # create temporary table with just ENRLMT_SPLMTL to join to base
         self.create_splmlt(segname="ENRLMT", segfile="enrlmt_pl_" + str(self.year))
 
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def build(self):
+        # insert into permanent table
+        z = f"""
+            INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_ENRLMT
+            SELECT
+                 {self.table_id_cols()}
+                ,MC_PLAN_POP
+                ,MC_ENRLMT_FLAG_01
+                ,MC_ENRLMT_FLAG_02
+                ,MC_ENRLMT_FLAG_03
+                ,MC_ENRLMT_FLAG_04
+                ,MC_ENRLMT_FLAG_05
+                ,MC_ENRLMT_FLAG_06
+                ,MC_ENRLMT_FLAG_07
+                ,MC_ENRLMT_FLAG_08
+                ,MC_ENRLMT_FLAG_09
+                ,MC_ENRLMT_FLAG_10
+                ,MC_ENRLMT_FLAG_11
+                ,MC_ENRLMT_FLAG_12
+                ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
+            from lctn_pl_{self.year}"""
+        self.apl.append(type(self).__name__, z)
+
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
