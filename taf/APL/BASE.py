@@ -463,10 +463,12 @@ class BASE(APL):
     def build(self):
         # insert into permanent table
         z = f"""
-            INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_BASE_PL
+            INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_BASE
             SELECT
                  {self.table_id_cols()}
                 ,{",".join(self.basecols)}
+                ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
             FROM base_{self.year}_final
             """
         self.apl.append(type(self).__name__, z)

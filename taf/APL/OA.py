@@ -196,6 +196,8 @@ class OA(APL):
                 ,OPRTG_AUTHRTY_FLAG_10
                 ,OPRTG_AUTHRTY_FLAG_11
                 ,OPRTG_AUTHRTY_FLAG_12
+                ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
             from OpAuth1
             """
         self.apl.append(type(self).__name__, z)

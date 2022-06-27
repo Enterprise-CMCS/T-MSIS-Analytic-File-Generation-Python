@@ -76,6 +76,8 @@ class SAREA(APL):
                 ,MC_SAREA_LCTN_FLAG_10
                 ,MC_SAREA_LCTN_FLAG_11
                 ,MC_SAREA_LCTN_FLAG_12
+                ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
             from sarea_pl_{self.year}"""
         self.apl.append(type(self).__name__, z)
 
