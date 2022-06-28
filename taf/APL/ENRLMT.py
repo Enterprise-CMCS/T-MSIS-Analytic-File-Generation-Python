@@ -77,7 +77,7 @@ class ENRLMT(APL):
                 ,MC_ENRLMT_FLAG_12
                 ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
-            from lctn_pl_{self.year}"""
+            from enrlmt_pl_{self.year}"""
         self.apl.append(type(self).__name__, z)
 
 
