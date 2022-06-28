@@ -26,7 +26,7 @@ class DE0005(DE):
         s5 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 1, 3)}"""
         s6 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 4, 6)}"""
         s7 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 7, 9)}"""
-        s7 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 10, 12)}"""
+        s8 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 10, 12)}"""
         os = f"""{DE.sum_months(self, 'CMPRHNSV_MC_PLAN')}
                  {DE.sum_months(self, 'TRDTNL_PCCM_MC_PLAN')}
                  {DE.sum_months(self, 'ENHNCD_PCCM_MC_PLAN')}
@@ -50,7 +50,7 @@ class DE0005(DE):
                  {DE.sum_months(self, 'IC_DUALS_MC_PLAN')}
             """
         DE.create_temp_table(self, tblname=self.tblname, inyear=self.de.YEAR, subcols=s, subcols2=s2, subcols3=s3,
-                             subcols4=s4, subcols5=s5, subcols6=s6, subcols7=s7, outercols=os)
+                             subcols4=s4, subcols5=s5, subcols6=s6, subcols7=s7, subcols8=s8, outercols=os)
         return
 
     def create_mc_suppl_table(self):

@@ -51,7 +51,10 @@ class DE0006(DE):
 
         z = f"""create table if not exists {self.de.DA_SCHEMA}.numbers
                 (slot int, month string)
-                using CSV;
+                using parquet"""
+        self.de.append(type(self).__name__, z)
+
+        z = f"""
                 insert into {self.de.DA_SCHEMA}.numbers
                 values
             """
@@ -79,19 +82,18 @@ class DE0006(DE):
                         ,case"""
         for waiv in range(1, self.de.NWAIVSLOTS + 1):
             for m in range(1, 13):
-                mm = str(m)
-                if len(mm) == 1:
-                    mm.zfill(2)
-                f"""when slot={waiv} and month='{mm}' then WVR_TYPE_CD{waiv}_{mm}"""
-        z += """end as WVR_TYPE_CD"""
+                m = str(m).zfill(2)
+
+                z += f""" when slot={waiv} and month='{m}' then WVR_TYPE_CD{waiv}_{m}"""
+        z += """ end as WVR_TYPE_CD
+                ,case
+             """
 
         for waiv in range(1, self.de.NWAIVSLOTS + 1):
             for m in range(1, 13):
-                mm = str(m)
-                if len(mm) == 1:
-                    mm.zfill(2)
-                z += f"""when slot={waiv} and month='{mm}' then WAIVER_CAT{waiv}_{mm}"""
-        z += """end as WAIVER_CAT"""
+                m = str(m).zfill(2)
+                z += f""" when slot={waiv} and month='{m}' then WAIVER_CAT{waiv}_{m}"""
+        z += """ end as WAIVER_CAT """
 
         z += """from
                 (select a.submtg_state_cd
@@ -100,32 +102,30 @@ class DE0006(DE):
 
         for waiv in range(1, self.de.NWAIVSLOTS + 1):
             for m in range(1, 13):
-                mm = str(m)
-                if len(mm) == 1:
-                    mm.zfill(2)
-                z += f""",a.WVR_TYPE_CD{waiv}_{mm}"""
-                z += f""",case when a.WVR_TYPE_CD{waiv}_{mm} is not null and ((a.WVR_TYPE_CD{waiv}_{mm} >= '06'
-                            and a.WVR_TYPE_CD{waiv}_{mm} <= '20') or WVR_TYPE_CD{waiv}_{mm}='33')  then 1
-                        when a.WVR_TYPE_CD{waiv}_{mm} is not null
-                            and (a.WVR_TYPE_CD{waiv}_{mm} = '01' or (a.WVR_TYPE_CD{waiv}_{mm} >= '22'
-                            and a.WVR_TYPE_CD{waiv}_{mm} <= 30)) then 2
+                m = str(m).zfill(2)
+                z += f""",a.WVR_TYPE_CD{waiv}_{m}"""
+                z += f""",case when a.WVR_TYPE_CD{waiv}_{m} is not null
+                            and (a.WVR_TYPE_CD{waiv}_{m} >= '06' and a.WVR_TYPE_CD{waiv}_{m} <= '20')
+                            or (WVR_TYPE_CD{waiv}_{m}='33')  then 1
+                        when a.WVR_TYPE_CD{waiv}_{m} is not null
+                            and (a.WVR_TYPE_CD{waiv}_{m} = '01'
+                            or (a.WVR_TYPE_CD{waiv}_{m} >= '22' and a.WVR_TYPE_CD{waiv}_{m} <= 30)) then 2
                         else 0
-                        end as WAIVER_CAT{waiv}_{mm}
+                        end as WAIVER_CAT{waiv}_{m}
                     """
-                z += f""",b.slot
-                        ,b.month
+        z += f""",b.slot
+                ,b.month
 
-                        from waiver_{self.de.YEAR} a
-                            join
-                            {self.de.DA_SCHEMA}.numbers b
-                            on true) sub ) sub2
+                from waiver_{self.de.YEAR} a
+                    join
+                    {self.de.DA_SCHEMA}.numbers b
+                    on true) sub ) sub2
 
-                        where WAIVER_CAT > 0
-                    """
+                where WAIVER_CAT > 0
+            """
         self.de.append(type(self).__name__, z)
 
         z = """create or replace temporary view waiver_counts as
-
                 select submtg_state_cd
                         ,msis_ident_num
                         ,month
@@ -158,7 +158,7 @@ class DE0006(DE):
                                                                         ,msis_ident_num
                                                                         ,month
                                                                         ,WAIVER_CAT) as LAST_WVR_TYPE_CD
-                    from waiver_long) as num"""
+                    from waiver_long) as num """
 
         self.de.append(type(self).__name__, z)
 
@@ -234,7 +234,7 @@ class DE0006(DE):
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols_sfx}
+                    {DE.table_id_cols_sfx(self)}
                     ,_1915C_WVR_TYPE
                     ,_1115_WVR_TYPE
                     ,_1115_PHRMCY_PLUS_WVR_MOS

@@ -303,7 +303,9 @@ class DE(TAF):
 
         for m in range(smonth, emonth + 1):
             m = str(m).zfill(2)
-            z = """,case when """
+            z += """
+                    ,case when
+                 """
             for s in range(1, nslots + 1):
                 if s > 1:
                     z += " or "
@@ -314,28 +316,28 @@ class DE(TAF):
                 end as {outcol}_{m} """
         return z
 
-    def run_mc_slots(self, smonth, emonth):
-        z = f"""{DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'01'", outcol='CMPRHNSV_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'02'", outcol='TRDTNL_PCCM_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'03'", outcol='ENHNCD_PCCM_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'04'", outcol='HIO_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'05'", outcol='PIHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'06'", outcol='PAHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'07'", outcol='LTC_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'08'", outcol='MH_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'09'", outcol='MH_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'10'", outcol='SUD_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'11'", outcol='SUD_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'12'", outcol='MH_SUD_PIHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'13'", outcol='MH_SUD_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'14'", outcol='DNTL_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'15'", outcol='TRANSPRTN_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'16'", outcol='DEASE_MGMT_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'17'", outcol='PACE_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'18'", outcol='PHRMCY_PAHP_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'60'", outcol='ACNTBL_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'70'", outcol='HM_HOME_MC_PLAN', smonth=smonth, emonth=emonth)}
-                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'80'", outcol='IC_DUALS_MC_PLAN', smonth=smonth, emonth=emonth)}"""
+    def run_mc_slots(self, _smonth, _emonth):
+        z = f"""{DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'01'", outcol='CMPRHNSV_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'02'", outcol='TRDTNL_PCCM_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'03'", outcol='ENHNCD_PCCM_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'04'", outcol='HIO_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'05'", outcol='PIHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'06'", outcol='PAHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'07'", outcol='LTC_PIHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'08'", outcol='MH_PIHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'09'", outcol='MH_PAHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'10'", outcol='SUD_PIHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'11'", outcol='SUD_PAHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'12'", outcol='MH_SUD_PIHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'13'", outcol='MH_SUD_PAHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'14'", outcol='DNTL_PAHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'15'", outcol='TRANSPRTN_PAHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'16'", outcol='DEASE_MGMT_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'17'", outcol='PACE_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'18'", outcol='PHRMCY_PAHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'60'", outcol='ACNTBL_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'70'", outcol='HM_HOME_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'80'", outcol='IC_DUALS_MC_PLAN', smonth=_smonth, emonth=_emonth)}"""
         return z
 
     def sum_months(self, incol, raw=0, outcol=""):
@@ -360,17 +362,19 @@ class DE(TAF):
 
         return z
 
-    def run_waiv_slots(self, smonth, emonth):
-
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('22')", outcol='_1115_PHRMCY_PLUS_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('23')", outcol='_1115_DSTR_REL_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('24')", outcol='_1115_FP_ONLY_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('06','07','08','09','10','11','12','13','14','15','16','17','18','19','33')", outcol='_1915C_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('20')", outcol='_1915BC_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('02','03','04','05','32')", outcol='_1915B_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('01')", outcol='_1115_OTHR_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('21')", outcol='_1115_HIFA_WVR', smonth=smonth, emonth=emonth)
-        DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="('25','26','27','28','29','30','31')", outcol='_OTHR_WVR', smonth=smonth, emonth=emonth)
+    def run_waiv_slots(self, _smonth, _emonth):
+        z = f"""
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'22'", outcol='_1115_PHRMCY_PLUS_WVR', smonth=_smonth, emonth=_emonth)}
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'23'", outcol='_1115_DSTR_REL_WVR', smonth=_smonth, emonth=_emonth)}
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'24'", outcol='_1115_FP_ONLY_WVR', smonth=_smonth, emonth=_emonth)}
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'06','07','08','09','10','11','12','13','14','15','16','17','18','19','33'", outcol='_1915C_WVR', smonth=_smonth, emonth=_emonth)}
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'20'", outcol='_1915BC_WVR', smonth=_smonth, emonth=_emonth)}
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'02','03','04','05','32'", outcol='_1915B_WVR', smonth=_smonth, emonth=_emonth)}
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'01'", outcol='_1115_OTHR_WVR', smonth=_smonth, emonth=_emonth)}
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'21'", outcol='_1115_HIFA_WVR', smonth=_smonth, emonth=_emonth)}
+            {DE.mc_waiv_slots(self, incol='WVR_TYPE_CD', values="'25','26','27','28','29','30','31'", outcol='_OTHR_WVR', smonth=_smonth, emonth=_emonth)}
+            """
+        return z
 
     # Non-null/00 plan type
     # OR non-0, 8, 9 only or non-null ID
@@ -379,7 +383,7 @@ class DE(TAF):
         z = ",case when "
         for m in range(smonth, emonth + 1):
             mm = str(m).zfill(2)
-            
+
             for s in range(1, self.de.NMCSLOTS + 1):
 
                 z += f""" nullif(nullif(trim(m{mm}.MC_PLAN_TYPE_CD{s}),''),'00') is not null or
@@ -452,7 +456,7 @@ class DE(TAF):
                     where substring(a.bsf_fil_dt,5,2)='{m}') as m{m}
 
                     on enrl.submtg_state_cd=m{m}.submtg_state_cd and
-                        enrl.msis_ident_num=m{m}.msis_ident_num
+                       enrl.msis_ident_num=m{m}.msis_ident_num
                 """
         return z
 
@@ -488,7 +492,7 @@ class DE(TAF):
             for s in range(1, self.de.NWAIVSLOTS + 1):
                 z += f"""
                     m{mm}.WVR_ID{s} is not null or
-                    m{mm}.WVR_TYPE_CD{s} is not null"""
+                    m{mm}.WVR_TYPE_CD{s} is not null """
 
                 if m < 12 or s < self.de.NWAIVSLOTS:
                     z += " or "
