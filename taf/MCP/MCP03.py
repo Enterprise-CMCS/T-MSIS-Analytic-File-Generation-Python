@@ -207,6 +207,8 @@ class MCP03(MCP):
                 INSERT INTO {runner.DA_SCHEMA}.taf_mcl
                 SELECT
                     *
+                   ,to_timestamp('{self.mcp.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                   ,current_timestamp() as REC_UPDT_TS
                 FROM
                     MC03_Location_CNST
         """
