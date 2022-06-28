@@ -58,6 +58,7 @@ class APL_Runner(TAF_Runner):
 
         LCTN(self).build()
         SAREA(self).build()
+        ENRLMT(self).build()
         OA(self).build()
         BASE(self).build()
 
