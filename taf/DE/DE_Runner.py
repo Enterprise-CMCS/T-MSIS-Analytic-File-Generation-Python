@@ -55,11 +55,11 @@ class DE_Runner(TAF_Runner):
         self.MONTHSB = ["12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01"]
         self.RUNDATE = ""
         self.VERSION: int = 0
-        self.DA_RUN_ID: int = 0
+        self.DA_RUN_ID: int = run_id
         self.ROWCOUNT: int = 0
         self.TMSIS_SCHEMA = "TMSIS"
         self.ST_FILTER = ""
-        self.GETPRIOR: int = 0  # TODO: how does this get set?
+        self.GETPRIOR: int = 0
         self.PYEAR = self.YEAR - 1
         self.PYEAR2 = self.YEAR - 2
         self.FYEAR = self.YEAR + 1
