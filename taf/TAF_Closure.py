@@ -716,7 +716,7 @@ class TAF_Closure():
             , m11.{incol} as {outcol}_11
             , m12.{incol} as {outcol}_12"""
         else:
-            for s in range(1, int(nslots)):
+            for s in range(1, int(nslots) + 1):
                 if nslots == '1':
                     snum = ''
                 else:
@@ -831,7 +831,6 @@ class TAF_Closure():
                     nullif( {incol}_12, {nullcond}) {condition}"""
 
         return f"{z} then 1 else 0 end as {outcol}"
-
 
     # ---------------------------------------------------------------------------------
     #

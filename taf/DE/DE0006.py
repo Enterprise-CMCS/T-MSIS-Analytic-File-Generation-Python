@@ -149,16 +149,18 @@ class DE0006(DE):
                     from
 
                 (select *
-                        ,first_value( WVR_TYPE_CD ignore nulls) over (partition by submtg_state_cd
+                        ,first_value( WVR_TYPE_CD ) over (partition by submtg_state_cd
                                                                         ,msis_ident_num
                                                                         ,month
                                                                         ,WAIVER_CAT) as FIRST_WVR_TYPE_CD
 
-                            ,last_value( WVR_TYPE_CD ignore nulls) over (partition by submtg_state_cd
+                            ,last_value( WVR_TYPE_CD ) over (partition by submtg_state_cd
                                                                         ,msis_ident_num
                                                                         ,month
                                                                         ,WAIVER_CAT) as LAST_WVR_TYPE_CD
-                    from waiver_long) as num """
+                    from waiver_long
+                    where WVR_TYPE_CD is not null
+                ) as num """
 
         self.de.append(type(self).__name__, z)
 
@@ -193,9 +195,7 @@ class DE0006(DE):
             """
 
         for m in range(1, 13):
-            mm = str(m)
-            if len(mm) == 1:
-                mm.zfill(2)
+            m = str(m).zfill(2)
 
             z += f"""left join
 
@@ -204,13 +204,13 @@ class DE0006(DE):
                     ,max(_1915C_WVR_TYPE) as _1915C_WVR_TYPE
                     ,max(_1115_WVR_TYPE) as _1115_WVR_TYPE
             from waiver_counts
-            where month=%nrbquote('{mm}')
+            where month=('{m}')
 
             group by submtg_state_cd
-                    ,msis_ident_num) as m{mm}
+                    ,msis_ident_num) as m{m}
 
-            on enrl.submtg_state_cd = m{mm}.submtg_state_cd and
-                enrl.msis_ident_num = m{mm}.msis_ident_num
+            on enrl.submtg_state_cd = m{m}.submtg_state_cd and
+                enrl.msis_ident_num = m{m}.msis_ident_num
             """
 
         self.de.append(type(self).__name__, z)

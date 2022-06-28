@@ -1,3 +1,4 @@
+from datetime import datetime
 from taf.DE.DE_Runner import DE_Runner
 from taf.TAF import TAF
 
@@ -231,7 +232,7 @@ class DE(TAF):
         return z
 
     def table_id_cols_sfx(self, suffix="", extra_cols=[]):
-        z = f"""cast ('{self.de.DA_RUN_ID}' || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
+        z = f"""cast ({self.de.DA_RUN_ID} || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
             SUBMTG_STATE_CD{suffix} || '-' || MSIS_IDENT_NUM{suffix} as varchar(40)) as DE_LINK_KEY
             ,'{self.de.YEAR}' as DE_FIL_DT
             ,'{self.de.VERSION}' as ANN_DE_VRSN
@@ -240,7 +241,7 @@ class DE(TAF):
             z += ","
         z += f"""
             {",".join(extra_cols)}
-            ,to_timestamp('{self.de.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+            ,current_timestamp() as REC_ADD_TS
             ,current_timestamp() as REC_UPDT_TS
             ,{self.de.DA_RUN_ID} as DA_RUN_ID
             ,SUBMTG_STATE_CD
@@ -476,7 +477,7 @@ class DE(TAF):
             z += f"""
                     ,coalesce(c.{incol} """
             for p in self.de.PYEARS:
-                z += """
+                z += f"""
                     ,p{p}.{incol}
                 """
             z += ")"
