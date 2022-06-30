@@ -232,10 +232,10 @@ class DE0001BASE(DE):
             ,{TAF_Closure.monthly_array(self, incol='MASBOE_CD')}
             {DE.last_best(self, incol='MASBOE_CD', outcol='MASBOE_CD_LTST')}
             {DE.last_best(self, incol='CARE_LVL_STUS_CD')}
-            ,{DE.ever_year(incol='DEAF_DSBL_FLAG')}
+            ,{DE.ever_year(self, incol='DEAF_DSBL_FLAG')}
             ,{TAF_Closure.ever_year(incol='BLND_DSBL_FLAG')}
             ,{TAF_Closure.ever_year(incol='DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
-            ,{DE.ever_year(incol='DFCLTY_WLKG_DSBL_FLAG')}
+            ,{DE.ever_year(self, incol='DFCLTY_WLKG_DSBL_FLAG')}
             ,{TAF_Closure.ever_year(incol='DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
             ,{TAF_Closure.ever_year(incol='DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
             ,{TAF_Closure.ever_year(incol='OTHR_DSBL_FLAG')}
