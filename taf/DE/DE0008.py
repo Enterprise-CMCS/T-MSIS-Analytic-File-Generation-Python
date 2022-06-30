@@ -8,7 +8,6 @@ class DE0008(DE):
     tbl_suffix: str = "hh_spo"
 
     def __init__(self, runner: DE_Runner):
-        # TODO: Review this
         DE.__init__(self, runner)
 
     def create(self):

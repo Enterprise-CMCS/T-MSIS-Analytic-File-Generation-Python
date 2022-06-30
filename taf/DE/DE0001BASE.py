@@ -6,7 +6,6 @@ from taf.TAF_Closure import TAF_Closure
 class DE0001BASE(DE):
 
     def __init__(self, runner: DE_Runner):
-        # TODO: Review this
         DE.__init__(self, runner)
         self.de = runner
 
@@ -106,19 +105,6 @@ class DE0001BASE(DE):
             ,MDCD_ENRLMT_DAYS_11
             ,MDCD_ENRLMT_DAYS_12
             ,MDCD_ENRLMT_DAYS_YR
-            ,CHIP_ENRLMT_DAYS_01
-            ,CHIP_ENRLMT_DAYS_02
-            ,CHIP_ENRLMT_DAYS_03
-            ,CHIP_ENRLMT_DAYS_04
-            ,CHIP_ENRLMT_DAYS_05
-            ,CHIP_ENRLMT_DAYS_06
-            ,CHIP_ENRLMT_DAYS_07
-            ,CHIP_ENRLMT_DAYS_08
-            ,CHIP_ENRLMT_DAYS_09
-            ,CHIP_ENRLMT_DAYS_10
-            ,CHIP_ENRLMT_DAYS_11
-            ,CHIP_ENRLMT_DAYS_12
-            ,CHIP_ENRLMT_DAYS_YR
             ,CHIP_CD_01
             ,CHIP_CD_02
             ,CHIP_CD_03
@@ -246,10 +232,10 @@ class DE0001BASE(DE):
             ,{TAF_Closure.monthly_array(self, incol='MASBOE_CD')}
             {DE.last_best(self, incol='MASBOE_CD', outcol='MASBOE_CD_LTST')}
             {DE.last_best(self, incol='CARE_LVL_STUS_CD')}
-            ,{TAF_Closure.ever_year(incol='DEAF_DSBL_FLAG')}
+            ,{DE.ever_year(incol='DEAF_DSBL_FLAG')}
             ,{TAF_Closure.ever_year(incol='BLND_DSBL_FLAG')}
             ,{TAF_Closure.ever_year(incol='DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
-            ,{TAF_Closure.ever_year(incol='DFCLTY_WLKG_DSBL_FLAG')}
+            ,{DE.ever_year(incol='DFCLTY_WLKG_DSBL_FLAG')}
             ,{TAF_Closure.ever_year(incol='DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
             ,{TAF_Closure.ever_year(incol='DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
             ,{TAF_Closure.ever_year(incol='OTHR_DSBL_FLAG')}
@@ -283,7 +269,6 @@ class DE0001BASE(DE):
         s5 = f"""{DE.mc_type_rank(self, smonth=9, emonth=10)}"""
         s6 = f"""{DE.mc_type_rank(self, smonth=11, emonth=12)}"""
 
-        # TODO: What is fileseg??
         self.create_temp_table(tblname, self.de.YEAR, subcols=s,
                                subcols2=s2, subcols3=s3, subcols4=s4,
                                subcols5=s5, subcols6=s6)
@@ -464,10 +449,9 @@ class DE0001BASE(DE):
                 select coalesce(a.msis_ident_num,b.msis_ident_num) as msis_ident_num
                     ,coalesce(a.submtg_state_cd,b.submtg_state_cd) as submtg_state_cd """
         for mm in range(1, 13):
-            if mm < 10:
-                m = str(mm).zfill(2)
+            m = str(mm).zfill(2)
             z += f""",a.MDCD_ENRLMT_DAYS_{m}
-                    ,b.CHIP_ENRLMT_DAYS_{m}
+                     ,b.CHIP_ENRLMT_DAYS_{m}
                 """
         z += """,a.MDCD_ENRLMT_DAYS_YR
                 ,b.CHIP_ENRLMT_DAYS_YR

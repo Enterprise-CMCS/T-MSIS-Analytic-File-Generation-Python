@@ -32,10 +32,10 @@ class DE0009(DE):
                 {DE.last_best(self, 'HCBS_TECH_DEP_MF_NON_HHCC_FLAG', outcol='HCBS_TCH_DP_MF_NON_HHCC_FLAG')}
                 {DE.last_best(self, 'HCBS_DSBL_OTHR_NON_HHCC_FLAG')}
                 ,{TAF_Closure.monthly_array(self, 'CARE_LVL_STUS_CD')}
-                ,{TAF_Closure.monthly_array(self, 'DFCLTY_CONC_DSBL_FLAG,outcol=DFCLTY_CNCNTRTNG_DSBL_FLAG')}
+                ,{TAF_Closure.monthly_array(self, 'DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG')}
                 ,{TAF_Closure.monthly_array(self, 'DFCLTY_WLKG_DSBL_FLAG')}
-                ,{TAF_Closure.monthly_array(self, 'DFCLTY_DRSNG_BATHG_DSBL_FLAG,outcol=DFCLTY_DRSNG_BTH_DSBL_FLAG')}
-                ,{TAF_Closure.monthly_array(self, 'DFCLTY_ERRANDS_ALN_DSBL_FLAG,outcol=DFCLTY_ERNDS_ALN_DSBL_FLAG')}
+                ,{TAF_Closure.monthly_array(self, 'DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG')}
+                ,{TAF_Closure.monthly_array(self, 'DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG')}
                 ,{TAF_Closure.ever_year(incol='LCKIN_FLAG', outcol='LCKIN_FLAG')}
                 {DE.last_best(self, 'LCKIN_PRVDR_NUM1')}
                 {DE.nonmiss_month(self, 'LCKIN_PRVDR_NUM1')}
@@ -141,7 +141,7 @@ class DE0009(DE):
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols_pre}
+                    {DE.table_id_cols_pre(self)}
                     ,HCBS_AGED_NON_HHCC_FLAG
                     ,HCBS_PHYS_DSBL_NON_HHCC_FLAG
                     ,HCBS_INTEL_DSBL_NON_HHCC_FLAG
