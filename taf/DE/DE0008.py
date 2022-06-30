@@ -4,7 +4,7 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0008(DE):
-    table_name: str = "HHSPO"
+    table_name: str = "hhspo"
     tbl_suffix: str = "hh_spo"
 
     def __init__(self, runner: DE_Runner):
@@ -21,7 +21,7 @@ class DE0008(DE):
 
         s = f""",{TAF_Closure.monthly_array(self, 'HH_PGM_PRTCPNT_FLAG')}
                 {DE.last_best(self, 'HH_PRVDR_NUM')}
-                {DE.last_best(self, 'HH_ENT_NAME)')}
+                {DE.last_best(self, 'HH_ENT_NAME')}
                 {DE.last_best(self, 'MH_HH_CHRNC_COND_FLAG')}
                 {DE.last_best(self, 'SA_HH_CHRNC_COND_FLAG')}
                 {DE.last_best(self, 'ASTHMA_HH_CHRNC_COND_FLAG')}
@@ -36,13 +36,13 @@ class DE0008(DE):
                 ,{TAF_Closure.monthly_array(self, '_1932A_SPO_FLAG')}
                 ,{TAF_Closure.monthly_array(self, '_1915A_SPO_FLAG')}
                 ,{TAF_Closure.monthly_array(self, '_1937_ABP_SPO_FLAG')}
-                {DE.ever_year(self, 'HH_PGM_PRTCPNT_FLAG')}
-                {DE.ever_year(self, 'CMNTY_1ST_CHS_SPO_FLAG)')}
-                {DE.ever_year(self, '_1915I_SPO_FLAG)')}
-                {DE.ever_year(self, '_1915J_SPO_FLAG)')}
-                {DE.ever_year(self, '_1932A_SPO_FLAG')}
-                {DE.ever_year(self, '_1915A_SPO_FLAG')}
-                {DE.ever_year(self, '_1937_ABP_SPO_FLAG')}
+                ,{DE.ever_year(self, 'HH_PGM_PRTCPNT_FLAG')}
+                ,{DE.ever_year(self, 'CMNTY_1ST_CHS_SPO_FLAG')}
+                ,{DE.ever_year(self, '_1915I_SPO_FLAG')}
+                ,{DE.ever_year(self, '_1915J_SPO_FLAG')}
+                ,{DE.ever_year(self, '_1932A_SPO_FLAG')}
+                ,{DE.ever_year(self, '_1915A_SPO_FLAG')}
+                ,{DE.ever_year(self, '_1937_ABP_SPO_FLAG')}
             """
 
         # Create MFP_SPLMTL (which will go onto the base segment AND determines
@@ -52,14 +52,14 @@ class DE0008(DE):
                                 OVRWT_HH_CHRNC_COND_FLAG HIV_AIDS_HH_CHRNC_COND_FLAG \
                                 OTHR_HH_CHRNC_COND_FLAG', 'HH_CHRNC_COND_ANY')
 
-        DE.create_temp_table(self, tblname=self.table_name, inyear="", subcols=s, outercols=os)
+        DE.create_temp_table(self, tblname=self.table_name, inyear=self.de.YEAR, subcols=s, outercols=os)
 
-        z = f"""create or replace temporary view hh_spo_{self.de.YEAR}2 as
+        z = f"""create or replace temporary view {self.table_name}_{self.de.YEAR}2 as
 
                 select *
                     {DE.any_col('HH_PGM_PRTCPNT_FLAG_EVR CMNTY_1ST_CHS_SPO_FLAG_EVR _1915I_SPO_FLAG_EVR _1915J_SPO_FLAG_EVR _1932A_SPO_FLAG_EVR _1915A_SPO_FLAG_EVR _1937_ABP_SPO_FLAG_EVR  HH_CHRNC_COND_ANY', 'HH_SPO_SPLMTL')}
 
-                from hh_spo_{self.de.YEAR}"""
+                from {self.table_name}_{self.de.YEAR}"""
 
         self.de.append(type(self).__name__, z)
 
@@ -71,14 +71,14 @@ class DE0008(DE):
                 ,msis_ident_num
                 ,HH_SPO_SPLMTL
 
-        from hh_spo_{self.de.YEAR}2"""
+        from {self.table_name}_{self.de.YEAR}2"""
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.table_name}
                 select
 
-                    {DE.table_id_cols_sfx}
+                    {DE.table_id_cols_pre(self)}
                     ,HH_PGM_PRTCPNT_FLAG_01
                     ,HH_PGM_PRTCPNT_FLAG_02
                     ,HH_PGM_PRTCPNT_FLAG_03
@@ -173,8 +173,9 @@ class DE0008(DE):
                     ,_1937_ABP_SPO_FLAG_10
                     ,_1937_ABP_SPO_FLAG_11
                     ,_1937_ABP_SPO_FLAG_12
+                    {DE.table_id_cols_sfx(self)}
 
-                    from hh_spo_{self.de.YEAR}2
+                    from {self.table_name}_{self.de.YEAR}2
                     where HH_SPO_SPLMTL=1"""
 
         self.de.append(type(self).__name__, z)

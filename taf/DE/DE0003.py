@@ -133,7 +133,7 @@ class DE0003(DE):
 
         z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{self.tbl_suffix}
                 select
-                    {DE.table_id_cols_sfx(self)}
+                    {DE.table_id_cols_pre(self)}
                     ,ELGBL_1ST_NAME
                     ,ELGBL_LAST_NAME
                     ,ELGBL_MDL_INITL_NAME
@@ -146,6 +146,7 @@ class DE0003(DE):
                     ,ELGBL_CNTY_CD
                     ,ELGBL_STATE_CD
                     ,ELGBL_PHNE_NUM_HOME
+                    {DE.table_id_cols_sfx(self)}
 
                 from name_address_phone_{self.de.YEAR}
             """

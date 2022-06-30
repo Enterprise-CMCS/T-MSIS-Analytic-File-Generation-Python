@@ -69,7 +69,7 @@ class DE0005(DE):
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols_sfx(self)}
+                    {DE.table_id_cols_pre(self)}
                     ,CMPRHNSV_MC_PLAN_MOS
                     ,TRDTNL_PCCM_MC_PLAN_MOS
                     ,ENHNCD_PCCM_MC_PLAN_MOS
@@ -475,6 +475,7 @@ class DE0005(DE):
                     ,MC_PLAN_TYPE_CD16_10
                     ,MC_PLAN_TYPE_CD16_11
                     ,MC_PLAN_TYPE_CD16_12
+                     {DE.table_id_cols_sfx(self)}
 
                 from managed_care_{self.de.YEAR}
                 where MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or

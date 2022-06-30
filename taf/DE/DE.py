@@ -1,4 +1,3 @@
-from datetime import datetime
 from taf.DE.DE_Runner import DE_Runner
 from taf.TAF import TAF
 
@@ -17,7 +16,6 @@ class DE(TAF):
     # ---------------------------------------------------------------------------------
     def create(self):
         self.create_pyears()
-        self.max_run_id(file="DE", tbl="taf_ann_de_base", inyear=self.de.YEAR)
         self.max_run_id(file="DE", inyear=self.de.YEAR)
         self.max_run_id(file="BSF", inyear=self.de.YEAR)
         self.max_run_id(file="IP", inyear=self.de.YEAR)
@@ -231,7 +229,7 @@ class DE(TAF):
             """
         return z
 
-    def table_id_cols_sfx(self, suffix="", extra_cols=[]):
+    def table_id_cols_pre(self, suffix="", extra_cols=[]):
         z = f"""cast ({self.de.DA_RUN_ID} || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
             SUBMTG_STATE_CD{suffix} || '-' || MSIS_IDENT_NUM{suffix} as varchar(40)) as DE_LINK_KEY
             ,'{self.de.YEAR}' as DE_FIL_DT
@@ -239,8 +237,11 @@ class DE(TAF):
             ,MSIS_IDENT_NUM"""
         if len(extra_cols) > 0:
             z += ","
-        z += f"""
-            {",".join(extra_cols)}
+        z += f"""{",".join(extra_cols)}"""
+        return z
+
+    def table_id_cols_sfx(self, suffix="", extra_cols=[]):
+        z = f"""
             ,current_timestamp() as REC_ADD_TS
             ,current_timestamp() as REC_UPDT_TS
             ,{self.de.DA_RUN_ID} as DA_RUN_ID
@@ -399,7 +400,7 @@ class DE(TAF):
                      """
                 if m < emonth or s < self.de.NMCSLOTS:
                     z += " or "
-        z += f"""then 1
+        z += f""" then 1
                 else 0
                 end as {outcol}_{smonth}_{emonth}"""
         return z
@@ -408,14 +409,15 @@ class DE(TAF):
 
         cols = incols.split(" ")
         listcols = [newcols for newcols in cols if newcols != '']
-        cnt = len(listcols)
+        cnt = 0
         z = """,case when """
-        for c in range(1, cnt + 1):
-            if c > 1:
+        for col in listcols:
+            if cnt > 0:
                 z += " or "
-            z += f"""c {condition}"""
+            z += f"""{col}{condition}"""
+            cnt += 1
 
-        z += f"""then 1 else 0
+        z += f""" then 1 else 0
                 end as {outcol}
             """
         return z
@@ -507,7 +509,7 @@ class DE(TAF):
     def ever_year(self, incol, condition='=1', raw=1, outcol='', usenulls=0, nullcond=''):
 
         if outcol == '':
-            outcol = incol
+            outcol = incol + "_EVR"
 
         if usenulls == 0:
 
@@ -548,34 +550,33 @@ class DE(TAF):
             if raw == 1:
 
                 z = f"""case when
-                    nullif(m01. {incol}, {nullcond}) {condition} or
-                    nullif(m02. {incol}, {nullcond}) {condition} or
-                    nullif(m03. {incol}, {nullcond}) {condition} or
-                    nullif(m04. {incol}, {nullcond}) {condition} or
-                    nullif(m05. {incol}, {nullcond}) {condition} or
-                    nullif(m06. {incol}, {nullcond}) {condition} or
-                    nullif(m07. {incol}, {nullcond}) {condition} or
-                    nullif(m08. {incol}, {nullcond}) {condition} or
-                    nullif(m09. {incol}, {nullcond}) {condition} or
-                    nullif(m10. {incol}, {nullcond}) {condition} or
-                    nullif(m11. {incol}, {nullcond}) {condition} or
-                    nullif(m12. {incol}, {nullcond}) {condition}"""
-
+                    nullif(m01.{incol}, {nullcond}) {condition} or
+                    nullif(m02.{incol}, {nullcond}) {condition} or
+                    nullif(m03.{incol}, {nullcond}) {condition} or
+                    nullif(m04.{incol}, {nullcond}) {condition} or
+                    nullif(m05.{incol}, {nullcond}) {condition} or
+                    nullif(m06.{incol}, {nullcond}) {condition} or
+                    nullif(m07.{incol}, {nullcond}) {condition} or
+                    nullif(m08.{incol}, {nullcond}) {condition} or
+                    nullif(m09.{incol}, {nullcond}) {condition} or
+                    nullif(m10.{incol}, {nullcond}) {condition} or
+                    nullif(m11.{incol}, {nullcond}) {condition} or
+                    nullif(m12.{incol}, {nullcond}) {condition}"""
             if raw == 0:
 
                 z = f"""case when
-                    nullif( {incol}_01, {nullcond}) {condition} or
-                    nullif( {incol}_02, {nullcond}) {condition} or
-                    nullif( {incol}_03, {nullcond}) {condition} or
-                    nullif( {incol}_04, {nullcond}) {condition} or
-                    nullif( {incol}_05, {nullcond}) {condition} or
-                    nullif( {incol}_06, {nullcond}) {condition} or
-                    nullif( {incol}_07, {nullcond}) {condition} or
-                    nullif( {incol}_08, {nullcond}) {condition} or
-                    nullif( {incol}_09, {nullcond}) {condition} or
-                    nullif( {incol}_10, {nullcond}) {condition} or
-                    nullif( {incol}_11, {nullcond}) {condition} or
-                    nullif( {incol}_12, {nullcond}) {condition}"""
+                    nullif({incol}_01, {nullcond}) {condition} or
+                    nullif({incol}_02, {nullcond}) {condition} or
+                    nullif({incol}_03, {nullcond}) {condition} or
+                    nullif({incol}_04, {nullcond}) {condition} or
+                    nullif({incol}_05, {nullcond}) {condition} or
+                    nullif({incol}_06, {nullcond}) {condition} or
+                    nullif({incol}_07, {nullcond}) {condition} or
+                    nullif({incol}_08, {nullcond}) {condition} or
+                    nullif({incol}_09, {nullcond}) {condition} or
+                    nullif({incol}_10, {nullcond}) {condition} or
+                    nullif({incol}_11, {nullcond}) {condition} or
+                    nullif({incol}_12, {nullcond}) {condition}"""
 
         return f"{z} then 1 else 0 end as {outcol}"
 
@@ -738,8 +739,9 @@ class DE(TAF):
         """
 
         if self.ST_FILTER().count("ALL"):
-            z += f"""WHERE {self.ST_FILTER()}
-            """
+            z += f"""
+                 WHERE {self.ST_FILTER()}
+                 """
         z += f"""
             GROUP BY a.{file}_fil_dt
                 ,b.submtg_state_cd
@@ -774,7 +776,8 @@ class DE(TAF):
                      ]
         z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{DE0002.tbl_abrv}
                 select
-                    {DE.table_id_cols_sfx(self, suffix="", extra_cols=extra_cols)}
+                    {DE.table_id_cols_pre(self, suffix="", extra_cols=extra_cols)}
+                    {DE.table_id_cols_sfx(self)}
                 from dates_out
                 """
 

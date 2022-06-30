@@ -27,7 +27,7 @@ class DE0007(DE):
                 {DE.last_best(self, 'MFP_QLFYD_RSDNC_CD')}
                 ,{TAF_Closure.monthly_array(self, 'MFP_PRTCPNT_FLAG')}
                 {DE.last_best(self, 'MFP_PRTCPNT_FLAG', outcol='MFP_PRTCPNT_FLAG_LTST')}
-                ,{TAF_Closure.ever_year(self, 'MFP_PRTCPNT_FLAG')}
+                ,{DE.ever_year(self, incol='MFP_PRTCPNT_FLAG')}
             """
 
         # Create MFP_SPLMTL (which will go onto the base segment AND determines
@@ -58,7 +58,7 @@ class DE0007(DE):
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols_sfx(self)}
+                    {DE.table_id_cols_pre(self)}
                     ,MFP_PRTCPTN_ENDD_RSN_CD
                     ,MFP_LVS_WTH_FMLY_CD
                     ,MFP_QLFYD_INSTN_CD
@@ -77,6 +77,7 @@ class DE0007(DE):
                     ,MFP_PRTCPNT_FLAG_11
                     ,MFP_PRTCPNT_FLAG_12
                     ,MFP_PRTCPNT_FLAG_LTST
+                    {DE.table_id_cols_sfx(self)}
 
                 from mfp_{self.de.YEAR}
                 where MFP_SPLMTL=1"""

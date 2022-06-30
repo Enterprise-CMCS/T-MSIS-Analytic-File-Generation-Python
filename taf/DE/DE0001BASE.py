@@ -246,13 +246,13 @@ class DE0001BASE(DE):
             ,{TAF_Closure.monthly_array(self, incol='MASBOE_CD')}
             {DE.last_best(self, incol='MASBOE_CD', outcol='MASBOE_CD_LTST')}
             {DE.last_best(self, incol='CARE_LVL_STUS_CD')}
-            ,{TAF_Closure.ever_year('DEAF_DSBL_FLAG')}
-            ,{TAF_Closure.ever_year('BLND_DSBL_FLAG')}
-            ,{TAF_Closure.ever_year('DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
-            ,{TAF_Closure.ever_year('DFCLTY_WLKG_DSBL_FLAG')}
-            ,{TAF_Closure.ever_year('DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
-            ,{TAF_Closure.ever_year('DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
-            ,{TAF_Closure.ever_year('OTHR_DSBL_FLAG')}
+            ,{TAF_Closure.ever_year(incol='DEAF_DSBL_FLAG')}
+            ,{TAF_Closure.ever_year(incol='BLND_DSBL_FLAG')}
+            ,{TAF_Closure.ever_year(incol='DFCLTY_CONC_DSBL_FLAG',outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
+            ,{TAF_Closure.ever_year(incol='DFCLTY_WLKG_DSBL_FLAG')}
+            ,{TAF_Closure.ever_year(incol='DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
+            ,{TAF_Closure.ever_year(incol='DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
+            ,{TAF_Closure.ever_year(incol='OTHR_DSBL_FLAG')}
 
             ,{TAF_Closure.monthly_array(self, incol='CHIP_CD')}
             {DE.last_best(self, incol='CHIP_CD', outcol='CHIP_CD_LTST')}
@@ -593,8 +593,9 @@ class DE0001BASE(DE):
         z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{tblname}
             (DA_RUN_ID, DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, SUBMTG_STATE_CD, MSIS_IDENT_NUM {self.basecols()})
             select
-                {DE.table_id_cols_sfx(self, suffix='_comb')}
+                {DE.table_id_cols_pre(self, suffix='_comb')}
                 {self.basecols()}
+                {DE.table_id_cols_sfx(self)}
 
             from base_{self.de.YEAR}_final
             """

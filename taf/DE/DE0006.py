@@ -215,7 +215,7 @@ class DE0006(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view waiver_pit as
+        z = f"""create or replace temporary view waiver_out as
             select a.*,
                 b._1915C_WVR_TYPE,
                 b._1115_WVR_TYPE
@@ -234,7 +234,7 @@ class DE0006(DE):
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols_sfx(self)}
+                    {DE.table_id_cols_pre(self)}
                     ,_1915C_WVR_TYPE
                     ,_1115_WVR_TYPE
                     ,_1115_PHRMCY_PLUS_WVR_MOS
@@ -498,6 +498,7 @@ class DE0006(DE):
                     ,WVR_TYPE_CD10_10
                     ,WVR_TYPE_CD10_11
                     ,WVR_TYPE_CD10_12
+                    {DE.table_id_cols_sfx(self)}
 
                 from waiver_out"""
 

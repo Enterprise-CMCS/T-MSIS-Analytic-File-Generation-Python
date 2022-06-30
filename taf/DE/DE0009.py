@@ -36,7 +36,7 @@ class DE0009(DE):
                 ,{TAF_Closure.monthly_array(self, 'DFCLTY_WLKG_DSBL_FLAG')}
                 ,{TAF_Closure.monthly_array(self, 'DFCLTY_DRSNG_BATHG_DSBL_FLAG,outcol=DFCLTY_DRSNG_BTH_DSBL_FLAG')}
                 ,{TAF_Closure.monthly_array(self, 'DFCLTY_ERRANDS_ALN_DSBL_FLAG,outcol=DFCLTY_ERNDS_ALN_DSBL_FLAG')}
-                ,{TAF_Closure.ever_year('LCKIN_FLAG', outcol='LCKIN_FLAG')}
+                ,{TAF_Closure.ever_year(incol='LCKIN_FLAG', outcol='LCKIN_FLAG')}
                 {DE.last_best(self, 'LCKIN_PRVDR_NUM1')}
                 {DE.nonmiss_month(self, 'LCKIN_PRVDR_NUM1')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD1')}
@@ -55,29 +55,29 @@ class DE0009(DE):
                 ,{TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD3')}
                 {DE.last_best(self, 'LTSS_LVL_CARE_CD3', outcol='LTSS_LVL_CARE_CD3_LTST')}
                 ,{TAF_Closure.monthly_array(self, 'SSDI_IND')}
-                ,{TAF_Closure.monthly_array(self, 'SSI_IND')}'
+                ,{TAF_Closure.monthly_array(self, 'SSI_IND')}
                 ,{TAF_Closure.monthly_array(self, 'SSI_STATE_SPLMT_STUS_CD')}
                 ,{TAF_Closure.monthly_array(self, 'SSI_STUS_CD')}
                 ,{TAF_Closure.monthly_array(self, 'BIRTH_CNCPTN_IND')}
                 ,{TAF_Closure.monthly_array(self, 'TANF_CASH_CD')}
                 ,{TAF_Closure.monthly_array(self, 'TPL_INSRNC_CVRG_IND')}
                 ,{TAF_Closure.monthly_array(self, 'TPL_OTHR_CVRG_IND')}
-                {DE.ever_year(self, 'CARE_LVL_STUS_CD', condition='is not null')}
-                {DE.ever_year(self, 'LTSS_LVL_CARE_CD1', condition='is not null')}
-                {DE.ever_year(self, 'LTSS_LVL_CARE_CD2', condition='is not null')}
-                {DE.ever_year(self, 'LTSS_LVL_CARE_CD3', condition='is not null')}
-                {DE.ever_year(self, 'DFCLTY_CONC_DSBL_FLAG', outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
-                {DE.ever_year(self, 'DFCLTY_WLKG_DSBL_FLAG')}
-                {DE.ever_year(self, 'DFCLTY_DRSNG_BATHG_DSBL_FLAG', outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
-                {DE.ever_year(self, 'DFCLTY_ERRANDS_ALN_DSBL_FLAG', outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
-                {DE.ever_year(self, 'SSDI_IND')}
-                {DE.ever_year(self, 'SSI_IND')}
-                {DE.ever_year(self, 'BIRTH_CNCPTN_IND')}
-                {DE.ever_year(self, 'TPL_INSRNC_CVRG_IND')}
-                {DE.ever_year(self, 'TPL_OTHR_CVRG_IND')}
-                {DE.ever_year(self, 'SSI_STATE_SPLMT_STUS_CD', usenulls=1, nullcond='000', condition='is not null')}
-                {DE.ever_year(self, 'SSI_STUS_CD', usenulls=1, nullcond='000',condition='is not null')}
-                {DE.ever_year(self, 'TANF_CASH_CD', condition="='2'")}
+                ,{DE.ever_year(self, 'CARE_LVL_STUS_CD', condition='is not null')}
+                ,{DE.ever_year(self, 'LTSS_LVL_CARE_CD1', condition='is not null')}
+                ,{DE.ever_year(self, 'LTSS_LVL_CARE_CD2', condition='is not null')}
+                ,{DE.ever_year(self, 'LTSS_LVL_CARE_CD3', condition='is not null')}
+                ,{DE.ever_year(self, 'DFCLTY_CONC_DSBL_FLAG', outcol='DFCLTY_CNCNTRTNG_DSBL_FLAG_EVR')}
+                ,{DE.ever_year(self, 'DFCLTY_WLKG_DSBL_FLAG')}
+                ,{DE.ever_year(self, 'DFCLTY_DRSNG_BATHG_DSBL_FLAG', outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
+                ,{DE.ever_year(self, 'DFCLTY_ERRANDS_ALN_DSBL_FLAG', outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
+                ,{DE.ever_year(self, 'SSDI_IND')}
+                ,{DE.ever_year(self, 'SSI_IND')}
+                ,{DE.ever_year(self, 'BIRTH_CNCPTN_IND')}
+                ,{DE.ever_year(self, 'TPL_INSRNC_CVRG_IND')}
+                ,{DE.ever_year(self, 'TPL_OTHR_CVRG_IND')}
+                ,{DE.ever_year(self, 'SSI_STATE_SPLMT_STUS_CD', usenulls=1, nullcond='000', condition='is not null')}
+                ,{DE.ever_year(self, 'SSI_STUS_CD', usenulls=1, nullcond='000',condition='is not null')}
+                ,{DE.ever_year(self, 'TANF_CASH_CD', condition="='2'")}
             """
 
         # Create HCBS_COND_SPLMTL (which will go onto the base segment AND determines
@@ -141,7 +141,7 @@ class DE0009(DE):
         z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
-                    {DE.table_id_cols_sfx}
+                    {DE.table_id_cols_pre}
                     ,HCBS_AGED_NON_HHCC_FLAG
                     ,HCBS_PHYS_DSBL_NON_HHCC_FLAG
                     ,HCBS_INTEL_DSBL_NON_HHCC_FLAG
@@ -357,6 +357,7 @@ class DE0009(DE):
                     ,TPL_OTHR_CVRG_IND_10
                     ,TPL_OTHR_CVRG_IND_11
                     ,TPL_OTHR_CVRG_IND_12
+                    {DE.table_id_cols_sfx(self)}
 
                     from disability_need_{self.de.YEAR}2
                     where HCBS_COND_SPLMTL=1 or
