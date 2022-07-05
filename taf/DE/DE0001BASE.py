@@ -579,7 +579,7 @@ class DE0001BASE(DE):
             select
                 {DE.table_id_cols_pre(self, suffix='_comb')}
                 {self.basecols()}
-                {DE.table_id_cols_sfx(self}
+                {DE.table_id_cols_sfx(self)}
 
             from base_{self.de.YEAR}_final
             """
