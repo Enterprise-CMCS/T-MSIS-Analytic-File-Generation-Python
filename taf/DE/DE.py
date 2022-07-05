@@ -240,13 +240,21 @@ class DE(TAF):
         z += f"""{",".join(extra_cols)}"""
         return z
 
-    def table_id_cols_sfx(self, suffix="", extra_cols=[]):
-        z = f"""
-            ,current_timestamp() as REC_ADD_TS
-            ,current_timestamp() as REC_UPDT_TS
-            ,{self.de.DA_RUN_ID} as DA_RUN_ID
-            ,SUBMTG_STATE_CD
-            """
+    def table_id_cols_sfx(self, suffix="", extra_cols=[], as_select=False):
+        z = ""
+        if as_select is False:
+            z += f"""
+                ,current_timestamp() as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
+                ,{self.de.DA_RUN_ID} as DA_RUN_ID
+                ,SUBMTG_STATE_CD
+                """
+        else:
+            z += """,REC_ADD_TS
+                    ,REC_UPDT_TS
+                    ,DA_RUN_ID
+                    ,SUBMTG_STATE_CD
+                 """
         return z
 
     def monthly_array_eldts(self, incol, outcol, nslots=16, truncfirst=1):

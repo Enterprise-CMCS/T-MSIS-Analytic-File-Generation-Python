@@ -238,7 +238,7 @@ class DE0001BASE(DE):
             ,{DE.ever_year(self, incol='DFCLTY_WLKG_DSBL_FLAG')}
             ,{TAF_Closure.ever_year(incol='DFCLTY_DRSNG_BATHG_DSBL_FLAG',outcol='DFCLTY_DRSNG_BTH_DSBL_FLAG_EVR')}
             ,{TAF_Closure.ever_year(incol='DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG_EVR')}
-            ,{TAF_Closure.ever_year(incol='OTHR_DSBL_FLAG')}
+            ,{DE.ever_year(self, incol='OTHR_DSBL_FLAG')}
 
             ,{TAF_Closure.monthly_array(self, incol='CHIP_CD')}
             {DE.last_best(self, incol='CHIP_CD', outcol='CHIP_CD_LTST')}
@@ -575,11 +575,11 @@ class DE0001BASE(DE):
         self.de.append(type(self).__name__, z)
 
         z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{tblname}
-            (DA_RUN_ID, DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, SUBMTG_STATE_CD, MSIS_IDENT_NUM {self.basecols()})
+            (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
             select
                 {DE.table_id_cols_pre(self, suffix='_comb')}
                 {self.basecols()}
-                {DE.table_id_cols_sfx(self)}
+                {DE.table_id_cols_sfx(self}
 
             from base_{self.de.YEAR}_final
             """
