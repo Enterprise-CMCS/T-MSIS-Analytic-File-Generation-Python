@@ -122,20 +122,18 @@ class DE(TAF):
 
         z = ""
 
-        for mm in range(smonth, emonth):
-
-            if mm < 10:
-                mm = str(mm).zfill(2)
+        for mm in range(smonth, emonth + 1):
+            mm = str(mm).zfill(2)
 
             z += ",case "
             for p in priorities:
                 z += " when ("
 
-                for s in range(1, self.de.NMCSLOTS - 1):
+                for s in range(1, self.de.NMCSLOTS + 1):
                     z += f"""m{mm}.MC_PLAN_TYPE_CD{s} = '{p}'"""
-                    if s < self.de.NMCSLOTS - 2:
+                    if s < self.de.NMCSLOTS:
                         z += " or "
-                z += f""" ) then ('{p}')"""
+                z += f""" ) then '{p}'"""
             z += f""" else null
             end as MC_PLAN_TYPE_CD_{mm}
             """

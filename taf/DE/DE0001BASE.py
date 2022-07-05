@@ -13,7 +13,7 @@ class DE0001BASE(DE):
     def create(self):
         self.create_temp()
         self.demographics(self.de.YEAR)
-        self.create_base("base_demo")
+        self.create_base("base")
 
     # define base columns here
     def basecols(self):
@@ -105,6 +105,19 @@ class DE0001BASE(DE):
             ,MDCD_ENRLMT_DAYS_11
             ,MDCD_ENRLMT_DAYS_12
             ,MDCD_ENRLMT_DAYS_YR
+            ,CHIP_ENRLMT_DAYS_01
+            ,CHIP_ENRLMT_DAYS_02
+            ,CHIP_ENRLMT_DAYS_03
+            ,CHIP_ENRLMT_DAYS_04
+            ,CHIP_ENRLMT_DAYS_05
+            ,CHIP_ENRLMT_DAYS_06
+            ,CHIP_ENRLMT_DAYS_07
+            ,CHIP_ENRLMT_DAYS_08
+            ,CHIP_ENRLMT_DAYS_09
+            ,CHIP_ENRLMT_DAYS_10
+            ,CHIP_ENRLMT_DAYS_11
+            ,CHIP_ENRLMT_DAYS_12
+            ,CHIP_ENRLMT_DAYS_YR
             ,CHIP_CD_01
             ,CHIP_CD_02
             ,CHIP_CD_03
@@ -469,12 +482,12 @@ class DE0001BASE(DE):
             select a.*"""
 
         for m in range(1, 13):
-            if m < 10:
-                m = str(m).zfill(2)
-                z += f"""
-                    ,coalesce(b.MDCD_ENRLMT_DAYS_{m},0) as MDCD_ENRLMT_DAYS_{m}
-                    ,coalesce(b.CHIP_ENRLMT_DAYS_{m},0) as CHIP_ENRLMT_DAYS_{m}
-                    """
+            m = str(m).zfill(2)
+            z += f"""
+                ,coalesce(b.MDCD_ENRLMT_DAYS_{m},0) as MDCD_ENRLMT_DAYS_{m}
+                ,coalesce(b.CHIP_ENRLMT_DAYS_{m},0) as CHIP_ENRLMT_DAYS_{m}
+                """
+
         z += f""",coalesce(b.MDCD_ENRLMT_DAYS_YR,0) as MDCD_ENRLMT_DAYS_YR
                  ,coalesce(b.CHIP_ENRLMT_DAYS_YR,0) as CHIP_ENRLMT_DAYS_YR
                  ,coalesce(b.EL_DTS_SPLMTL,0) as EL_DTS_SPLMTL
