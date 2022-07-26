@@ -12,7 +12,7 @@ from taf.IP.IP_Metadata import IP_Metadata
 from taf.TAF_Closure import TAF_Closure
 
 
-class IPH():
+class IPH:
 
     # ---------------------------------------------------------------------------------
     #
@@ -189,24 +189,16 @@ class IPH():
                 , { TAF_Closure.var_set_type6('MDCD_DSH_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('DRG_OUTLIER_AMT', cond1='888888888.88') }
 
-                --- regexp_count does not exist within databricks sql
-                , case
-                    when (length(drg_rltv_wt_num) - coalesce(length(regexp_replace(drg_rltv_wt_num, "[^0-9.]", "")), 0)) > 0
-                      or (length(drg_rltv_wt_num) - coalesce(length(regexp_replace(drg_rltv_wt_num, "[.]", "")), 0)) > 1
-                        then NULL
-                    when cast(drg_rltv_wt_num as numeric(8, 0)) > 9999999
-                      THEN NULL
-                    else cast(drg_rltv_wt_num as numeric(11, 4))
-                    end as DRG_RLTV_WT_NUM
+                , drg_rltv_wt_num
 
                 , { TAF_Closure.var_set_type6('MDCR_PD_AMT', cond1='888888888.88', cond2='8888888.88', cond3='88888888888.00', cond4='88888888888.88', cond5='99999999999.00', cond6='9999999999.99') }
                 , { TAF_Closure.var_set_type6('TOT_MDCR_DDCTBL_AMT', cond1='888888888.88', cond2='99999', cond3='88888888888.00') }
                 , { TAF_Closure.var_set_type6('TOT_MDCR_COINSRNC_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type2('MDCR_CMBND_DDCTBL_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2('mdcr_reimbrsmt_type_cd', 2, cond1='01', cond2='02', cond3='03', cond4='04', cond5='05', cond6='06', cond7='07', cond8='08', cond9='09') }
-                , { TAF_Closure.var_set_type6('BENE_COINSRNC_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
-                , { TAF_Closure.var_set_type6('BENE_COPMT_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
-                , { TAF_Closure.var_set_type6('BENE_DDCTBL_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_COINSRNC_PD_AMT',new='BENE_COINSRNC_AMT',cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_COPMT_PD_AMT',new='BENE_COPMT_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT',new='BENE_DDCTBL_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
                 , { TAF_Closure.var_set_type2('COPAY_WVD_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.fix_old_dates('OCRNC_01_CD_EFCTV_DT') }
                 , { TAF_Closure.fix_old_dates('OCRNC_01_CD_END_DT') }
@@ -251,18 +243,16 @@ class IPH():
                 , cast(nullif(IAP_CONDITION_IND, IAP_CONDITION_IND) as char(6)) as IAP_COND_IND
                 , cast(nullif(PRIMARY_HIERARCHICAL_CONDITION, PRIMARY_HIERARCHICAL_CONDITION) as char(9)) as PRMRY_HIRCHCL_COND,
 
-                from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS,
-                from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS,
-                case
-                    when SRVC_ENDG_DT_DRVD < to_date('1600-01-01') then to_date('1599-12-31')
-                    else SRVC_ENDG_DT_DRVD
-                end as SRVC_ENDG_DT_DRVD,
-                case
-                    when SRVC_ENDG_DT_CD is NOT NULL
-                    and trim(SRVC_ENDG_DT_CD) in ('1', '2', '3', '4', '5') then trim(SRVC_ENDG_DT_CD)
-                    else NULL
-                end as SRVC_ENDG_DT_CD
+                , from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS
+                , from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS
 
+                , { TAF_Closure.fix_old_dates('SRVC_ENDG_DT_DRVD')}
+	            , { TAF_Closure.var_set_type2('SRVC_ENDG_DT_CD',0,cond1='1',cond2='2',cond3='3',cond4='4',cond5='5') }
+	            , { TAF_Closure.var_set_taxo('BLG_PRVDR_NPPES_TXNMY_CD',cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X',
+									  cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY')}
+
+	            , DGNS_1_CCSR_DFLT_CTGRY_CD
+                , fasc.fed_srvc_ctgry_cd
             FROM (
                 select
                     *,
@@ -272,8 +262,9 @@ class IPH():
                 from
                     IP_HEADER_GROUPER
                 ) H
-            """
-
+                LEFT JOIN IP_HDR_ROLLED fasc
+                    ON H.ip_link_key = fasc.ip_link_key
+        """
         runner.append(type(self).__name__, z)
 
     # -----------------------------------------------------------------------------
@@ -290,8 +281,8 @@ class IPH():
                 FROM
                     (SELECT * FROM IPH)
         """
-
         runner.append(type(self).__name__, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

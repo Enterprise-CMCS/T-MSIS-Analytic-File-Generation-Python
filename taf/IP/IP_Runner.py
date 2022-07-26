@@ -34,6 +34,16 @@ class IP_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
+        #   1 - ccs_proc
+        #   2 - ccs_dx
+        # -------------------------------------------------
+        grouper = TAF_Grouper(self)
+        grouper.fetch_nppes("IP")
+        grouper.fetch_ccs("IP")
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
         #   1 - HEADER_IP
         #   2 - HEADER2_IP
         #   3 - NO_DISCHARGE_DATES
@@ -43,16 +53,9 @@ class IP_Runner(TAF_Runner):
         #   7 - FA_HDR_IP
         # -------------------------------------------------
         claims = TAF_Claims(self)
-        claims.AWS_Claims_Family_Table_Link('tmsis', 'CIP00002', 'TMSIS_CLH_REC_IP', 'IP', 'DSCHRG_DT')
-
-        # -------------------------------------------------
-        #   V-7 !!!
-        # -------------------------------------------------
-        #   - taxo_switches
-        #   - nppes_npi_step2
-        #   - selected_txnmy_cdx
-        #   - ccs_proc
-        # -------------------------------------------------
+        claims.AWS_Claims_Family_Table_Link(
+            "tmsis", "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT"
+        )
 
         # -------------------------------------------------
         #   Produces:
@@ -63,7 +66,7 @@ class IP_Runner(TAF_Runner):
         #   4 - IP_HEADER
         # -------------------------------------------------
         ip = IP(self)
-        ip.AWS_Extract_Line('tmsis', 'IP', 'IP', 'CIP00003', 'TMSIS_CLL_REC_IP')
+        ip.AWS_Extract_Line("tmsis", "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP")
 
         # -------------------------------------------------
         #   Produces:
@@ -72,8 +75,10 @@ class IP_Runner(TAF_Runner):
         #   2 - IP_TAXONOMY
         #   3 - IP_HEADER_GROUPER
         # -------------------------------------------------
-        grouper = TAF_Grouper(self)
-        grouper.AWS_Assign_Grouper_Data_Conv('IP', 'IP_HEADER', 'IP_LINE', 'DSCHRG_DT', True, True, True, True, True)
+        grouper.AWS_Assign_Grouper_Data_Conv(
+            "IP", "IP_HEADER", "IP_LINE", "DSCHRG_DT", True, True, True, True, True
+        )
+        grouper.fasc_code("IP")
 
         # -------------------------------------------------
         #   Produces:
@@ -89,16 +94,6 @@ class IP_Runner(TAF_Runner):
         # -------------------------------------------------
         IPL().create(self)
 
-        # -------------------------------------------------
-        #   V-7 ???
-        # -------------------------------------------------
-        #   - ip_header_0
-        #   - ip_lne
-        #   - ip_combined
-        #   - ip_lne_flag_tos_cat
-        #   - ip_hdr_rolled_0
-        #   - ip_hdr_rolled
-        # -------------------------------------------------
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
