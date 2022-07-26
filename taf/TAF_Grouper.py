@@ -1,48 +1,236 @@
-from taf.TAF_Closure import TAF_Closure, TAF_Closure
+from taf.TAF import TAF
+from taf.TAF_Metadata import TAF_Metadata
+from taf.TAF_Closure import TAF_Closure
 from taf.TAF_Runner import TAF_Runner
 
 
-class TAF_Grouper():
+class TAF_Grouper:
 
     otmh9f = [
-        '290', '291', '292', '293', '294', '295', '296', '297', '298', '299', '300', '301', '302',
-        '306', '307', '308', '309', '310', '311', '312', '313', '314', '315', '316', '317', '318', '319']
+        "290",
+        "291",
+        "292",
+        "293",
+        "294",
+        "295",
+        "296",
+        "297",
+        "298",
+        "299",
+        "300",
+        "301",
+        "302",
+        "306",
+        "307",
+        "308",
+        "309",
+        "310",
+        "311",
+        "312",
+        "313",
+        "314",
+        "315",
+        "316",
+        "317",
+        "318",
+        "319",
+    ]
 
     otmh0f = [
-        'F01', 'F02', 'F03', 'F04', 'F05', 'F06', 'F07', 'F08', 'F09',
-        'F20', 'F21', 'F22', 'F23', 'F24', 'F25', 'F26', 'F27', 'F28', 'F29',
-        'F30', 'F31', 'F32', 'F33', 'F34', 'F35', 'F36', 'F37', 'F38', 'F39',
-        'F40', 'F41', 'F42', 'F43', 'F44', 'F45', 'F46', 'F47', 'F48', 'F49',
-        'F50', 'F51', 'F52', 'F53', 'F54', 'F55', 'F56', 'F57', 'F58', 'F59',
-        'F60', 'F61', 'F62', 'F63', 'F64', 'F65', 'F66', 'F67', 'F68', 'F69',
-        'F70', 'F71', 'F72', 'F73', 'F74', 'F75', 'F76', 'F77', 'F78', 'F79',
-        'F80', 'F81', 'F82', 'F83', 'F84', 'F85', 'F86', 'F87', 'F88', 'F89',
-        'F90', 'F91', 'F92', 'F93', 'F94', 'F95', 'F96', 'F97', 'F98', 'F99']
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F20",
+        "F21",
+        "F22",
+        "F23",
+        "F24",
+        "F25",
+        "F26",
+        "F27",
+        "F28",
+        "F29",
+        "F30",
+        "F31",
+        "F32",
+        "F33",
+        "F34",
+        "F35",
+        "F36",
+        "F37",
+        "F38",
+        "F39",
+        "F40",
+        "F41",
+        "F42",
+        "F43",
+        "F44",
+        "F45",
+        "F46",
+        "F47",
+        "F48",
+        "F49",
+        "F50",
+        "F51",
+        "F52",
+        "F53",
+        "F54",
+        "F55",
+        "F56",
+        "F57",
+        "F58",
+        "F59",
+        "F60",
+        "F61",
+        "F62",
+        "F63",
+        "F64",
+        "F65",
+        "F66",
+        "F67",
+        "F68",
+        "F69",
+        "F70",
+        "F71",
+        "F72",
+        "F73",
+        "F74",
+        "F75",
+        "F76",
+        "F77",
+        "F78",
+        "F79",
+        "F80",
+        "F81",
+        "F82",
+        "F83",
+        "F84",
+        "F85",
+        "F86",
+        "F87",
+        "F88",
+        "F89",
+        "F90",
+        "F91",
+        "F92",
+        "F93",
+        "F94",
+        "F95",
+        "F96",
+        "F97",
+        "F98",
+        "F99",
+    ]
 
-    otsu9f = ['303', '304', '305']
+    otsu9f = ["303", "304", "305"]
 
-    otsu0f = ['F10', 'F11', 'F12', 'F13', 'F14', 'F15', 'F16', 'F17', 'F18', 'F19']
+    otsu0f = ["F10", "F11", "F12", "F13", "F14", "F15", "F16", "F17", "F18", "F19"]
 
     otmtax = [
-        '101Y00000X', '101YM0800X', '101YP1600X', '101YP2500X', '101YS0200X', '102L00000X',
-        '102X00000X', '103G00000X', '103GC0700X', '103K00000X', '103T00000X', '103TA0700X',
-        '103TC0700X', '103TC2200X', '103TB0200X', '103TC1900X', '103TE1000X', '103TE1100X',
-        '103TF0000X', '103TF0200X', '103TP2701X', '103TH0004X', '103TH0100X', '103TM1700X',
-        '103TM1800X', '103TP0016X', '103TP0814X', '103TP2700X', '103TR0400X', '103TS0200X',
-        '103TW0100X', '104100000X', '1041C0700X', '1041S0200X', '106E00000X', '106H00000X',
-        '106S00000X', '163WP0808X', '163WP0809X', '163WP0807X', '167G00000X', '1835P1300X',
-        '2080P0006X', '2080P0008X', '2084B0040X', '2084P0804X', '2084F0202X', '2084P0805X',
-        '2084P0005X', '2084P0015X', '2084P0800X', '225XM0800X', '251S00000X', '252Y00000X',
-        '261QM0801X', '261QM0850X', '261QM0855X', '273R00000X', '283Q00000X', '320600000X',
-        '320900000X', '3104A0630X', '3104A0625X', '310500000X', '311500000X', '315P00000X',
-        '320800000X', '320900000X', '322D00000X', '323P00000X', '363LP0808X', '364SP0807X',
-        '364SP0808X', '364SP0809X', '364SP0810X', '364SP0811X', '364SP0812X', '364SP0813X',
-        '385HR2055X', '385HR2060X']
+        "101Y00000X",
+        "101YM0800X",
+        "101YP1600X",
+        "101YP2500X",
+        "101YS0200X",
+        "102L00000X",
+        "102X00000X",
+        "103G00000X",
+        "103GC0700X",
+        "103K00000X",
+        "103T00000X",
+        "103TA0700X",
+        "103TC0700X",
+        "103TC2200X",
+        "103TB0200X",
+        "103TC1900X",
+        "103TE1000X",
+        "103TE1100X",
+        "103TF0000X",
+        "103TF0200X",
+        "103TP2701X",
+        "103TH0004X",
+        "103TH0100X",
+        "103TM1700X",
+        "103TM1800X",
+        "103TP0016X",
+        "103TP0814X",
+        "103TP2700X",
+        "103TR0400X",
+        "103TS0200X",
+        "103TW0100X",
+        "104100000X",
+        "1041C0700X",
+        "1041S0200X",
+        "106E00000X",
+        "106H00000X",
+        "106S00000X",
+        "163WP0808X",
+        "163WP0809X",
+        "163WP0807X",
+        "167G00000X",
+        "1835P1300X",
+        "2080P0006X",
+        "2080P0008X",
+        "2084B0040X",
+        "2084P0804X",
+        "2084F0202X",
+        "2084P0805X",
+        "2084P0005X",
+        "2084P0015X",
+        "2084P0800X",
+        "225XM0800X",
+        "251S00000X",
+        "252Y00000X",
+        "261QM0801X",
+        "261QM0850X",
+        "261QM0855X",
+        "273R00000X",
+        "283Q00000X",
+        "320600000X",
+        "320900000X",
+        "3104A0630X",
+        "3104A0625X",
+        "310500000X",
+        "311500000X",
+        "315P00000X",
+        "320800000X",
+        "320900000X",
+        "322D00000X",
+        "323P00000X",
+        "363LP0808X",
+        "364SP0807X",
+        "364SP0808X",
+        "364SP0809X",
+        "364SP0810X",
+        "364SP0811X",
+        "364SP0812X",
+        "364SP0813X",
+        "385HR2055X",
+        "385HR2060X",
+    ]
 
     otstax = [
-        '101YA0400X', '103TA0400X', '163WA0400X', '207LA0401X', '207QA0401X',
-        '207RA0401X', '2084A0401X', '2084P0802X', '261QM2800X', '261QR0405X',
-        '276400000X', '324500000X', '3245S0500X', '2083A0300X']
+        "101YA0400X",
+        "103TA0400X",
+        "163WA0400X",
+        "207LA0401X",
+        "207QA0401X",
+        "207RA0401X",
+        "2084A0401X",
+        "2084P0802X",
+        "261QM2800X",
+        "261QR0405X",
+        "276400000X",
+        "324500000X",
+        "3245S0500X",
+        "2083A0300X",
+    ]
 
     # ---------------------------------------------------------------------------------
     #
@@ -65,7 +253,9 @@ class TAF_Grouper():
         select = []
         if MDC:
 
-            select.append(f",coalesce(m14.XREF_VAL, m13.XREF_VAL, m12.XREF_VAL, NULL) as MAJOR_DIAGNOSTIC_CATEGORY")
+            select.append(
+                f",coalesce(m14.XREF_VAL, m13.XREF_VAL, m12.XREF_VAL, NULL) as MAJOR_DIAGNOSTIC_CATEGORY"
+            )
 
         return "\n".join(select)
 
@@ -93,7 +283,9 @@ class TAF_Grouper():
         select = []
         if PHC:
             # these columns are mutex and take on the first populated value
-            select.append(f",coalesce(h12.XREF_VAL, h13.XREF_VAL, h14.XREF_VAL, h16.XREF_VAL, NULL) as PRIMARY_HIERARCHICAL_CONDITION")
+            select.append(
+                f",coalesce(h12.XREF_VAL, h13.XREF_VAL, h14.XREF_VAL, h16.XREF_VAL, NULL) as PRIMARY_HIERARCHICAL_CONDITION"
+            )
 
         return "\n".join(select)
 
@@ -107,17 +299,33 @@ class TAF_Grouper():
         select = []
         if MH_SUD:
 
-            select.append(f",case when (DGNS_1_CD_IND = '1') and (substring (DGNS_1_TEMP, 1, 3) in {tuple(TAF_Grouper.otmh9f)}) then 1 else 0 end as {filetyp}M91")
-            select.append(f",case when (DGNS_1_CD_IND = '1') and (substring (DGNS_1_TEMP, 1, 3) in {tuple(TAF_Grouper.otsu9f)}) then 1 else 0 end as {filetyp}S91")
+            select.append(
+                f",case when (DGNS_1_CD_IND = '1') and (substring (DGNS_1_TEMP, 1, 3) in {tuple(TAF_Grouper.otmh9f)}) then 1 else 0 end as {filetyp}M91"
+            )
+            select.append(
+                f",case when (DGNS_1_CD_IND = '1') and (substring (DGNS_1_TEMP, 1, 3) in {tuple(TAF_Grouper.otsu9f)}) then 1 else 0 end as {filetyp}S91"
+            )
 
-            select.append(f",case when (DGNS_2_CD_IND = '1') and (substring (DGNS_2_TEMP, 1, 3) in {tuple(TAF_Grouper.otmh9f)}) then 1 else 0 end as {filetyp}M92")
-            select.append(f",case when (DGNS_2_CD_IND = '1') and (substring (DGNS_2_TEMP, 1, 3) in {tuple(TAF_Grouper.otsu9f)}) then 1 else 0 end as {filetyp}S92")
+            select.append(
+                f",case when (DGNS_2_CD_IND = '1') and (substring (DGNS_2_TEMP, 1, 3) in {tuple(TAF_Grouper.otmh9f)}) then 1 else 0 end as {filetyp}M92"
+            )
+            select.append(
+                f",case when (DGNS_2_CD_IND = '1') and (substring (DGNS_2_TEMP, 1, 3) in {tuple(TAF_Grouper.otsu9f)}) then 1 else 0 end as {filetyp}S92"
+            )
 
-            select.append(f",case when (DGNS_1_CD_IND = '2') and (substring (DGNS_1_TEMP, 1, 3) in {tuple(TAF_Grouper.otmh0f)}) then 1 else 0 end as {filetyp}M01")
-            select.append(f",case when (DGNS_1_CD_IND = '2') and (substring (DGNS_1_TEMP, 1, 3) in {tuple(TAF_Grouper.otsu0f)}) then 1 else 0 end as {filetyp}S01")
+            select.append(
+                f",case when (DGNS_1_CD_IND = '2') and (substring (DGNS_1_TEMP, 1, 3) in {tuple(TAF_Grouper.otmh0f)}) then 1 else 0 end as {filetyp}M01"
+            )
+            select.append(
+                f",case when (DGNS_1_CD_IND = '2') and (substring (DGNS_1_TEMP, 1, 3) in {tuple(TAF_Grouper.otsu0f)}) then 1 else 0 end as {filetyp}S01"
+            )
 
-            select.append(f",case when (DGNS_2_CD_IND = '2') and (substring (DGNS_2_TEMP, 1, 3) in {tuple(TAF_Grouper.otmh0f)}) then 1 else 0 end as {filetyp}M02")
-            select.append(f",case when (DGNS_2_CD_IND = '2') and (substring (DGNS_2_TEMP, 1, 3) in {tuple(TAF_Grouper.otsu0f)}) then 1 else 0 end as {filetyp}S02")
+            select.append(
+                f",case when (DGNS_2_CD_IND = '2') and (substring (DGNS_2_TEMP, 1, 3) in {tuple(TAF_Grouper.otmh0f)}) then 1 else 0 end as {filetyp}M02"
+            )
+            select.append(
+                f",case when (DGNS_2_CD_IND = '2') and (substring (DGNS_2_TEMP, 1, 3) in {tuple(TAF_Grouper.otsu0f)}) then 1 else 0 end as {filetyp}S02"
+            )
 
         return "\n".join(select)
 
@@ -131,10 +339,28 @@ class TAF_Grouper():
         select = []
         if MH_SUD:
 
-            select.append(',')
-            select.append(TAF_Closure.var_set_fills('DGNS_1_CD', cond1='0', cond2='8', cond3='9', cond4='#', new='DGNS_1_TEMP'))
-            select.append(',')
-            select.append(TAF_Closure.var_set_fills('DGNS_2_CD', cond1='0', cond2='8', cond3='9', cond4='#', new='DGNS_2_TEMP'))
+            select.append(",")
+            select.append(
+                TAF_Closure.var_set_fills(
+                    "DGNS_1_CD",
+                    cond1="0",
+                    cond2="8",
+                    cond3="9",
+                    cond4="#",
+                    new="DGNS_1_TEMP",
+                )
+            )
+            select.append(",")
+            select.append(
+                TAF_Closure.var_set_fills(
+                    "DGNS_2_CD",
+                    cond1="0",
+                    cond2="8",
+                    cond3="9",
+                    cond4="#",
+                    new="DGNS_2_TEMP",
+                )
+            )
 
             return "\n".join(select)
 
@@ -148,8 +374,12 @@ class TAF_Grouper():
         select = []
         if TAXONOMY:
 
-            select.append(f",case when TEMP_TAXONMY is NULL then null when TEMP_TAXONMY in {tuple(TAF_Grouper.otmtax)} then 1 else 0 end as {filetyp}_MH_TAXONOMY_IND_HDR")
-            select.append(f",case when TEMP_TAXONMY is NULL then null when TEMP_TAXONMY in {tuple(TAF_Grouper.otstax)} then 1 else 0 end as {filetyp}_SUD_TAXONOMY_IND_HDR")
+            select.append(
+                f",case when TEMP_TAXONMY is NULL then null when TEMP_TAXONMY in {tuple(TAF_Grouper.otmtax)} then 1 else 0 end as {filetyp}_MH_TAXONOMY_IND_HDR"
+            )
+            select.append(
+                f",case when TEMP_TAXONMY is NULL then null when TEMP_TAXONMY in {tuple(TAF_Grouper.otstax)} then 1 else 0 end as {filetyp}_SUD_TAXONOMY_IND_HDR"
+            )
 
         return "\n".join(select)
 
@@ -163,8 +393,20 @@ class TAF_Grouper():
         select = []
         if TAXONOMY:
 
-            select.append(',')
-            select.append(TAF_Closure.var_set_taxo('BLG_PRVDR_TXNMY_CD', cond1='8888888888',  cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY', new='TEMP_TAXONMY'))
+            select.append(",")
+            select.append(
+                TAF_Closure.var_set_taxo(
+                    "BLG_PRVDR_TXNMY_CD",
+                    cond1="8888888888",
+                    cond2="9999999999",
+                    cond3="000000000X",
+                    cond4="999999999X",
+                    cond5="NONE",
+                    cond6="XXXXXXXXXX",
+                    cond7="NO TAXONOMY",
+                    new="TEMP_TAXONMY",
+                )
+            )
 
         return "\n".join(select)
 
@@ -178,9 +420,15 @@ class TAF_Grouper():
         join = []
         if MDC:
 
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m12 on m12.LKP_VAL=a.drg_cd and {self.rep_yr} <= 2012 and m12.FRMT_NAME_TXT = 'MDC12FM'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m13 on m13.LKP_VAL=a.drg_cd and {self.rep_yr}  = 2013 and m13.FRMT_NAME_TXT = 'MDC13FM'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m14 on m14.LKP_VAL=a.drg_cd and {self.rep_yr} >= 2014 and m14.FRMT_NAME_TXT = 'MDC14FM'")
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m12 on m12.LKP_VAL=a.drg_cd and {self.rep_yr} <= 2012 and m12.FRMT_NAME_TXT = 'MDC12FM'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m13 on m13.LKP_VAL=a.drg_cd and {self.rep_yr}  = 2013 and m13.FRMT_NAME_TXT = 'MDC13FM'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m14 on m14.LKP_VAL=a.drg_cd and {self.rep_yr} >= 2014 and m14.FRMT_NAME_TXT = 'MDC14FM'"
+            )
 
         return "\n".join(join)
 
@@ -194,13 +442,27 @@ class TAF_Grouper():
         join = []
         if IAP:
 
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i93 on i93.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=3 and a.DGNS_1_CD_IND='1' and i93.FRMT_NAME_TXT = 'IAP93F'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i94 on i94.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='1' and i94.FRMT_NAME_TXT = 'IAP94F'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i95 on i95.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='1' and i95.FRMT_NAME_TXT = 'IAP95F'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i04 on i04.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='2' and i04.FRMT_NAME_TXT = 'IAP04F'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i05 on i05.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='2' and i05.FRMT_NAME_TXT = 'IAP05F'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i06 on i06.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=6 and a.DGNS_1_CD_IND='2' and i06.FRMT_NAME_TXT = 'IAP06F'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i07 on i07.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=7 and a.DGNS_1_CD_IND='2' and i07.FRMT_NAME_TXT = 'IAP07F'")
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i93 on i93.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=3 and a.DGNS_1_CD_IND='1' and i93.FRMT_NAME_TXT = 'IAP93F'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i94 on i94.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='1' and i94.FRMT_NAME_TXT = 'IAP94F'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i95 on i95.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='1' and i95.FRMT_NAME_TXT = 'IAP95F'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i04 on i04.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='2' and i04.FRMT_NAME_TXT = 'IAP04F'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i05 on i05.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='2' and i05.FRMT_NAME_TXT = 'IAP05F'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i06 on i06.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=6 and a.DGNS_1_CD_IND='2' and i06.FRMT_NAME_TXT = 'IAP06F'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i07 on i07.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=7 and a.DGNS_1_CD_IND='2' and i07.FRMT_NAME_TXT = 'IAP07F'"
+            )
 
         return "\n".join(join)
 
@@ -214,11 +476,19 @@ class TAF_Grouper():
         join = []
         if PHC:
 
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h12 on h12.LKP_VAL=a.dgns_1_cd and {self.rep_yr} <= 2012 and h12.FRMT_NAME_TXT = 'HCC12FM'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h13 on h13.LKP_VAL=a.dgns_1_cd and {self.rep_yr}  = 2013 and h13.FRMT_NAME_TXT = 'HCC13FM'")
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h12 on h12.LKP_VAL=a.dgns_1_cd and {self.rep_yr} <= 2012 and h12.FRMT_NAME_TXT = 'HCC12FM'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h13 on h13.LKP_VAL=a.dgns_1_cd and {self.rep_yr}  = 2013 and h13.FRMT_NAME_TXT = 'HCC13FM'"
+            )
 
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h14 on h14.LKP_VAL=a.dgns_1_cd and ({self.rep_yr}   = 2014  or ({self.rep_yr} = 2015 and {self.rep_mo} < 10)) and h14.FRMT_NAME_TXT = 'HCC14FM'")
-            join.append(f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h16 on h16.LKP_VAL=a.dgns_1_cd and (({self.rep_yr} >= 2016) or ({self.rep_yr} = 2015 and {self.rep_mo} >=10)) and h16.FRMT_NAME_TXT = 'HCC16FM'")
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h14 on h14.LKP_VAL=a.dgns_1_cd and ({self.rep_yr}   = 2014  or ({self.rep_yr} = 2015 and {self.rep_mo} < 10)) and h14.FRMT_NAME_TXT = 'HCC14FM'"
+            )
+            join.append(
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h16 on h16.LKP_VAL=a.dgns_1_cd and (({self.rep_yr} >= 2016) or ({self.rep_yr} = 2015 and {self.rep_mo} >=10)) and h16.FRMT_NAME_TXT = 'HCC16FM'"
+            )
 
         return "\n".join(join)
 
@@ -232,19 +502,23 @@ class TAF_Grouper():
         select = []
         if MH_SUD:
 
-            select.append(f""",
+            select.append(
+                f""",
                 case when ((DGNS_1_CD_IND < '1' or DGNS_1_CD_IND > '2' or DGNS_1_CD_IND is NULL or DGNS_1_TEMP is NULL) and
                            (DGNS_2_CD_IND < '1' or DGNS_2_CD_IND > '2' or DGNS_2_CD_IND is NULL or DGNS_2_TEMP is NULL)) then null
                     when ({filetyp}M91+{filetyp}M92+{filetyp}M01+{filetyp}M02 > 0) then 1
                     when ({filetyp}M91+{filetyp}M92 = 0 or {filetyp}M01+{filetyp}M02 = 0) then 0
-                end as {filetyp}_MH_DX_IND""")
+                end as {filetyp}_MH_DX_IND"""
+            )
 
-            select.append(f""",
+            select.append(
+                f""",
                 case when ((DGNS_1_CD_IND < '1' or DGNS_1_CD_IND > '2' or DGNS_1_CD_IND is NULL or DGNS_1_TEMP is NULL) and
                            (DGNS_2_CD_IND < '1' or DGNS_2_CD_IND > '2' or DGNS_2_CD_IND is NULL or DGNS_2_TEMP is NULL)) then null
                     when ({filetyp}S91+{filetyp}S92+{filetyp}S01+{filetyp}S02 > 0) then 1
                     when ({filetyp}S91+{filetyp}S92 = 0 or {filetyp}S01+{filetyp}S02 = 0) then 0
-                end as {filetyp}_SUD_DX_IND""")
+                end as {filetyp}_SUD_DX_IND"""
+            )
 
         return "\n".join(select)
 
@@ -258,19 +532,23 @@ class TAF_Grouper():
         select = []
         if TAXONOMY:
 
-            select.append(f""",
+            select.append(
+                f""",
                 case when a.{filetyp}_MH_TAXONOMY_IND_HDR is null
                     and l.{filetyp}_MH_TAXONOMY_IND_LINE is null then null
                     when (coalesce(a.{filetyp}_MH_TAXONOMY_IND_HDR,0) + coalesce(l.{filetyp}_MH_TAXONOMY_IND_LINE,0))=2 then 1
                     when a.{filetyp}_MH_TAXONOMY_IND_HDR=1 then 2
-                    when l.{filetyp}_MH_TAXONOMY_IND_LINE=1 then 3 else 0 end as {filetyp}_MH_TAXONOMY_IND""")
+                    when l.{filetyp}_MH_TAXONOMY_IND_LINE=1 then 3 else 0 end as {filetyp}_MH_TAXONOMY_IND"""
+            )
 
-            select.append(f""",
+            select.append(
+                f""",
                 case when a.{filetyp}_SUD_TAXONOMY_IND_HDR is null
                     and l.{filetyp}_SUD_TAXONOMY_IND_LINE is null then null
                     when (coalesce(a.{filetyp}_SUD_TAXONOMY_IND_HDR,0) + coalesce(l.{filetyp}_SUD_TAXONOMY_IND_LINE,0))=2 then 1
                     when a.{filetyp}_SUD_TAXONOMY_IND_HDR=1 then 2
-                    when l.{filetyp}_SUD_TAXONOMY_IND_LINE=1 then 3 else 0 end as {filetyp}_SUD_TAXONOMY_IND""")
+                    when l.{filetyp}_SUD_TAXONOMY_IND_LINE=1 then 3 else 0 end as {filetyp}_SUD_TAXONOMY_IND"""
+            )
 
         return "\n".join(select)
 
@@ -284,14 +562,16 @@ class TAF_Grouper():
         join = []
         if TAXONOMY:
 
-            join.append(f"""
+            join.append(
+                f"""
                 left join {filetyp}_TAXONOMY l
                 on
                     l.NEW_SUBMTG_STATE_CD_LINE = a.NEW_SUBMTG_STATE_CD
                 and l.ORGNL_CLM_NUM_LINE = a.ORGNL_CLM_NUM
                 and l.ADJSTMT_CLM_NUM_LINE = a.ADJSTMT_CLM_NUM
                 and l.ADJDCTN_DT_LINE = a.ADJDCTN_DT
-                and l.LINE_ADJSTMT_IND = a.ADJSTMT_IND""")
+                and l.LINE_ADJSTMT_IND = a.ADJSTMT_IND"""
+            )
 
         return "\n".join(join)
 
@@ -306,7 +586,9 @@ class TAF_Grouper():
         if MDC:
 
             # code Major Diagnostic Indicator
-            select.append(",coalesce(m14.XREF_VAL,m13.XREF_VAL,m12.XREF_VAL,null) as MAJOR_DIAGNOSTIC_CATEGORY")
+            select.append(
+                ",coalesce(m14.XREF_VAL,m13.XREF_VAL,m12.XREF_VAL,null) as MAJOR_DIAGNOSTIC_CATEGORY"
+            )
 
         if IAP:
 
@@ -317,7 +599,9 @@ class TAF_Grouper():
 
             # code Primary Hierarchical Condition
             # these variables are mutually exclusive and it takes the first populated value
-            select.append(",coalesce(h12.XREF_VAL,h13.XREF_VAL,h14.XREF_VAL,h16.XREF_VAL,null) as PRIMARY_HIERARCHICAL_CONDITION")
+            select.append(
+                ",coalesce(h12.XREF_VAL,h13.XREF_VAL,h14.XREF_VAL,h16.XREF_VAL,null) as PRIMARY_HIERARCHICAL_CONDITION"
+            )
 
         return "\n".join(select)
 
@@ -326,7 +610,18 @@ class TAF_Grouper():
     #
     #
     # ---------------------------------------------------------------------------------
-    def AWS_Assign_Grouper_Data_Conv(self, filetyp, clm_tbl, line_tbl, analysis_date, MDC=True, IAP=True, PHC=True, MH_SUD=True, TAXONOMY=True):
+    def AWS_Assign_Grouper_Data_Conv(
+        self,
+        filetyp,
+        clm_tbl,
+        line_tbl,
+        analysis_date,
+        MDC=True,
+        IAP=True,
+        PHC=True,
+        MH_SUD=True,
+        TAXONOMY=True,
+    ):
 
         z = f"""
             create or replace temporary view {clm_tbl}_STEP1 as
@@ -406,6 +701,1262 @@ class TAF_Grouper():
 
             { self.join_taxonomy(TAXONOMY, filetyp) }
 
+        """
+        self.runner.append(filetyp, z)
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def fetch_nppes(self, filetyp: str):
+        z = f"""
+            create or replace temporary view taxo_switches as
+            select prvdr_npi
+        """
+
+        for i in range(1, 13):
+            z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' ')::char,
+            """
+
+        z += f"""
+                            nvl(hc_prvdr_prmry_txnmy_sw_15,' ')::char))))))))))))))
+                        as sw_positions
+
+                    ,regexp_count(sw_positions,'Y') as taxo_switches
+        """
+
+        for i in range(1, 14):
+            z += f"""
+                    ,case when hc_prvdr_txnmy_cd_{i} is not null and
+                            hc_prvdr_txnmy_cd_{i} <> ' ' then 'X' else ' ' end as taxopos{i}
+            """
+
+        for i in range(1, 13):
+            z += f"""
+                 concat(taxopos{i},
+            """
+
+        z += f"""
+                        taxopos15))))))))))))))
+                        as cd_positions
+
+                    ,regexp_count(cd_positions,'X') as taxo_cds
+        """
+
+        for i in range(1, 14):
+            z += f"""
+                    ,case when hc_prvdr_txnmy_cd_{i} is not null and
+                            hc_prvdr_txnmy_cd_{i} <> ' ' then {i} else null end as taxo{i}
+            """
+
+        z += f"""
+            from {self.runner.DA_SCHEMA}.DATA_ANLTCS_PRVDR_NPI_DATA_VW
+        """
+        self.runner.append(filetyp, z)
+
+        z = f"""
+            create or replace temporary view nppes_npi_step2 as
+            select a.prvdr_npi
+                ,taxo_switches
+                ,sw_positions
+                ,taxo_cds
+                ,cd_positions
+                ,position('Y' in sw_positions) as primary_switch_position
+                ,case when taxo_switches = 1 then
+                            subarray(array(
+        """
+
+        for i in range(1, 13):
+            z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
+        """
+
+        z += f"""
+                                            nvl(hc_prvdr_txnmy_cd_15,' ')),position('Y' in sw_positions)-1,1)
+                        when taxo_switches = 0 and taxo_cds = 1 then
+                            subarray(array(
+        """
+
+        for i in range(1, 13):
+            z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
+        """
+
+        z += f"""
+                                            nvl(hc_prvdr_txnmy_cd_15,' ')),position('X' in cd_positions)-1,1)
+                        when taxo_switches = 0 and taxo_cds > 1 then null
+                        when taxo_switches > 1 then
+                            subarray(array(
+        """
+        for i in range(1, 13):
+            z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
+        """
+
+        z += f"""
+             nvl(hc_prvdr_txnmy_cd_15,' ')),least(
+        """
+
+        for j in range(1, 13):
+            z += f"""
+                 taxo{j},
+            """
+
+        z += f"""
+                 taxo15)-1,1)
+                        else null
+                    end as selected_txnmy_cdx
+        """
+
+        for i in range(1, 14):
+            z += f"""
+                 ,hc_prvdr_txnmy_cd_{i}
+            """
+
+        for i in range(1, 14):
+            z += f"""
+                 ,taxo{i}
+            """
+
+        z += f"""
+            from {self.runner.DA_SCHEMA}.DATA_ANLTCS_PRVDR_NPI_DATA_VW a
+                inner join
+                taxo_switches b
+            on	   a.prvdr_npi=b.prvdr_npi
+            where  b.taxo_cds>0
+        """
+        self.runner.append(filetyp, z)
+
+        z = f"""
+            create temp table nppes_npi as
+                select *
+                from (
+                select cast(prvdr_npi as varchar(10)) as prvdr_npi
+
+                    ,case when selected_txnmy_cdx is null then null
+                            else substring(json_serialize(selected_txnmy_cdx),3,10)
+                            end as selected_txnmy_cd
+
+                    ,case when selected_txnmy_cd in { TAF_Metadata.vs_ICF_Taxo }
+                            then 1 else 0 end as prvdr_txnmy_icf
+
+                    ,case when selected_txnmy_cd in { TAF_Metadata.vs_NF_Taxo }
+                            then 1 else 0 end as prvdr_txnmy_nf
+
+                    ,case when selected_txnmy_cd in { TAF_Metadata.vs_Othr_Res_Taxo }
+                            then 1 else 0 end as prvdr_txnmy_othr_res
+
+                    ,case when selected_txnmy_cd in { TAF_Metadata.vs_IP_Taxo }
+                            then 1 else 0 end as prvdr_txnmy_IP
+                from nppes_npi_step2
+                ) a
+        """
+        self.runner.append(filetyp, z)
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def fetch_ccs(self, filetyp: str):
+        z = f"""
+            SELECT cd_rng
+                ,ccs
+                ,CASE
+                    WHEN ccs IN { TAF_Metadata.vs_Lab_CCS_Cat }
+                        THEN 'Lab       '
+                    WHEN ccs IN { TAF_Metadata.vs_Rad_CCS_Cat }
+                        THEN 'Rad       '
+                    WHEN ccs IN { TAF_Metadata.vs_DME_CCS_Cat }
+                        THEN 'DME       '
+                    WHEN ccs IN { TAF_Metadata.vs_transp_CCS_Cat }
+                        THEN 'Transprt  '
+                    ELSE NULL
+                    END AS code_cat
+            FROM {self.runner.DA_SCHEMA}.CCS_SRVCS_PRCDR_RFRNC
+        """
+        self.runner.append(filetyp, z)
+
+        z = f"""
+            SELECT icd_10_cm_cd
+                ,dflt_ccsr_ctgry_ip
+                ,dflt_ccsr_ctgry_ip AS dflt_ccsr_ctgry_lt
+                ,dflt_ccsr_ctgry_op AS dflt_ccsr_ctgry_ot
+            FROM {self.runner.DA_SCHEMA}.DXCCSR_RFRNC
+        """
+        self.runner.append(filetyp, z)
+
+    # ---------------------------------------------------------------------------------
+    #
+    #   federally assigned service category
+    #
+    # ---------------------------------------------------------------------------------
+    def fasc_code(self, filetyp: str):
+        # claim header
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_header_0 AS
+            SELECT submtg_state_cd
+                ,msis_ident_num
+                ,da_run_id
+                ,{filetyp}_fil_dt as fil_dt
+                ,{filetyp}_link_key
+                ,{filetyp}_vrsn as vrsn
+                ,"{filetyp}" as file_type
+                ,clm_type_cd
+                ,srvc_trkng_type_cd
+                ,srvc_trkng_pymt_amt
+		        ,blg_prvdr_txnmy_cd
+        """
+
+        if filetyp.casefold() == "ip":
+            z += f"""
+                 ,mdcd_dsh_pd_amt
+                 ,CASE
+                     WHEN (
+                             mdcd_dsh_pd_amt IS NOT NULL
+                             AND mdcd_dsh_pd_amt != 0
+                             )
+                         THEN 1
+                     ELSE 0
+                     END AS non_msng_dsh_pd
+            """
+
+        z += f"""
+             ,tot_mdcd_pd_amt
+             ,blg_prvdr_npi_num
+        """
+
+        if filetyp.casefold() == "rx":
+            z += f"""
+                 ,cmpnd_drug_ind
+            """
+
+        if filetyp.casefold() != "rx":
+            z += f"""
+                 ,dgns_1_cd
+                 ,dgns_2_cd
+                 ,bill_type_cd
+                 ,CASE
+                     WHEN length(bill_type_cd) = 3
+                         AND substring(bill_type_cd, 1, 1) != '0'
+                         THEN '0' || substring(bill_type_cd, 1, 3)
+                     WHEN length(bill_type_cd) = 4
+                         AND bill_type_cd NOT IN ('0000')
+                         THEN bill_type_cd
+                     ELSE NULL
+                     END AS bill_type_cd_upd
+                 ,CASE
+                     WHEN dgns_1_cd IS NULL
+                         THEN 1
+                     ELSE 0
+                     END AS dgns_1_cd_null
+            """
+
+        if filetyp.casefold() == "ot":
+            z += f"""
+                 ,srvc_plc_cd
+            """
+
+        z += f"""
+             num_cll
+             ,CASE
+                 WHEN clm_type_cd IN (
+                         '1'
+                         ,'A'
+                         ,'U'
+                         )
+                     THEN '1_FFS'
+                 WHEN clm_type_cd IN (
+                         '2'
+                         ,'B'
+                         ,'V'
+                         )
+                     THEN '2_CAP'
+                 WHEN clm_type_cd IN (
+                         '3'
+                         ,'C'
+                         ,'W'
+                         )
+                     THEN '3_ENC'
+                 WHEN clm_type_cd IN (
+                         '4'
+                         ,'D'
+                         ,'X'
+                         )
+                     THEN '4_SRVC_TRKG'
+                 WHEN clm_type_cd IN (
+                         '5'
+                         ,'E'
+                         ,'Y'
+                         )
+                     THEN '5_SUPP'
+                 ELSE NULL
+                 END AS clm_type_grp_ctgry
+        """
+
+        z += f"""
+             FROM iph
+        """
+        self.runner.append(filetyp, z)
+
+        # service line
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_LNE AS
+            SELECT submtg_state_cd
+                ,msis_ident_num
+                ,da_run_id
+                ,line_num
+                ,{filetyp}_fil_dt AS fil_dt
+                ,{filetyp}_link_key
+                ,{filetyp}_vrsn AS vrsn
+                ,mdcd_pd_amt
+                ,xix_srvc_ctgry_cd
+                ,tos_cd
+                ,xxi_srvc_ctgry_cd
+                ,bnft_type_cd
+        """
+
+        if filetyp.casefold() != "rx":
+            z += f"""
+                 srvcng_prvdr_txnmy_cd
+		         ,rev_cd
+		         ,min(CASE
+			         	WHEN rev_cd IS NULL
+					         THEN 1
+				         ELSE 0
+				         END) OVER (
+			         PARTITION BY submtg_state_cd
+			         ,{filetyp}_link_key
+			         ) AS all_null_rev_cd
+		         ,max(CASE
+		         		WHEN rev_cd IN (
+				         		'0510'
+				         		,'0511'
+					         	,'0512'
+					         	,'0513'
+					         	,'0514'
+					         	,'0515'
+					         	,'0516'
+						        ,'0517'
+					         	,'0518'
+					        	,'0519'
+					        	,'0520'
+					        	,'0521'
+						        ,'0522'
+					        	,'0523'
+					        	,'0524'
+					        	,'0525'
+					        	,'0526'
+					        	,'0527'
+					        	,'0528'
+					        	,'0529'
+				         		)
+				         	THEN 1
+				         ELSE 0
+				         END) OVER (
+			         PARTITION BY submtg_state_cd
+			         ,{filetyp}_link_key
+			         ) AS ever_clinic_rev
+		         ,max(CASE
+				         WHEN rev_cd IN (
+					         	'0650'
+					         	,'0651'
+						        ,'0652'
+						        ,'0653'
+						        ,'0654'
+						        ,'0655'
+					        	,'0656'
+					        	,'0657'
+					        	,'0658'
+					        	,'0659'
+					        	,'0115'
+					        	,'0125'
+					        	,'0135'
+					        	,'0145'
+					         	)
+					         THEN 1
+				         ELSE 0
+				         END) OVER (
+			         PARTITION BY submtg_state_cd
+			         ,{filetyp}_link_key
+			         ) AS ever_hospice_rev
+		         ,min(CASE
+				         WHEN rev_cd IN { TAF_Metadata.vs_HH_Rev_cd }
+				         	THEN 1
+				         WHEN rev_cd IS NOT NULL
+				         	THEN 0
+				         ELSE NULL
+			         	END) OVER (
+			         PARTITION BY submtg_state_cd
+			         ,{filetyp}_link_key
+			         ) AS only_hh_rev
+            """
+
+        if filetyp.casefold() == "ot":
+            z += f"""
+                 ,hcbs_txnmy
+                 ,prcdr_cd
+                 ,hcpcs_rate
+                 ,srvcng_prvdr_num
+                 ,srvcng_prvdr_npi_num
+                 ,min(CASE
+                         WHEN prcdr_cd IS NULL
+                             THEN 1
+                         ELSE 0
+                         END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS all_null_prcdr_cd
+                 ,min(CASE
+                         WHEN hcpcs_rate IS NULL
+                             THEN 1
+                         ELSE 0
+                         END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS all_null_hcpcs_cd
+                 ,max(CASE
+                         WHEN prcdr_cd IS NULL
+                             AND hcpcs_rate IS NULL
+                             THEN 1
+                         ELSE 0
+                         END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS ever_null_prcdr_hcpcs_cd
+                 ,max(CASE
+                         WHEN prcdr_cd IS NOT NULL
+                             OR hcpcs_rate IS NOT NULL
+                             THEN 1
+                         ELSE 0
+                        END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS ever_valid_prcdr_hcpcs_cd
+                 ,min(CASE
+                         WHEN prcdr_cd IN { TAF_Metadata.vs_HH_Proc_cd }
+                             OR hcpcs_rate IN { TAF_Metadata.vs_HH_Proc_cd }
+                             THEN 1
+                         WHEN prcdr_cd IS NULL
+                             AND hcpcs_rate IS NULL
+                             THEN NULL
+                         ELSE 0
+                         END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS only_hh_procs
+            """
+
+        if filetyp.casefold() == "rx":
+            z += f"""
+            ,ndc_cd
+            ,min(CASE
+				WHEN ndc_cd IS NULL
+					THEN 1
+				ELSE 0
+				END) OVER (
+			PARTITION BY submtg_state_cd
+			,{filetyp}_link_key
+			) AS all_null_ndc_cd
+		    ,max(CASE
+				WHEN (
+						(
+							length(ndc_cd) = 10
+							OR length(ndc_cd) = 11
+							)
+						AND ndc_cd ! ~ '([^0-9])'
+						)
+					THEN 1
+				ELSE 0
+				END) OVER (
+			PARTITION BY submtg_state_cd
+			,{filetyp}_link_key
+			) AS ever_valid_ndc
+            """
+
+        z += f"""
+        ,max(CASE
+                WHEN bnft_type_cd IN ('039')
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_icf_bnft_typ
+        ,max(CASE
+                WHEN tos_cd IN (
+                        '123'
+                        ,'131'
+                        ,'135'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_dsh_drg_ehr_tos
+        ,max(CASE
+                WHEN tos_cd IN (
+                        '119'
+                        ,'120'
+                        ,'121'
+                        ,'122'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_cap_pymt_tos
+        ,max(CASE
+                WHEN tos_cd IN (
+                        '119'
+                        ,'120'
+                        ,'121'
+                        ,'122'
+                        ,'138'
+                        ,'139'
+                        ,'140'
+                        ,'141'
+                        ,'142'
+                        ,'143'
+                        ,'144'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_cap_tos
+        ,max(CASE
+                WHEN tos_cd IN (
+                        '119'
+                        ,'122'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_php_tos
+        ,max(CASE
+                WHEN tos_cd IN ('123')
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_dsh_tos
+        ,max(CASE
+                WHEN tos_cd IN ('131')
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_drg_rbt_tos
+        ,max(CASE
+                WHEN tos_cd IN (
+                        '036'
+                        ,'018'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}link_key
+            ) AS ever_dme_hhs_tos
+        ,max(CASE
+                WHEN xix_srvc_ctgry_cd IN (
+                        '001B'
+                        ,'002B'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_dsh_xix_srvc_ctgry
+        ,max(CASE
+                WHEN xix_srvc_ctgry_cd IN (
+                        '07A1'
+                        ,'07A2'
+                        ,'07A3'
+                        ,'07A4'
+                        ,'07A5'
+                        ,'07A6'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_othr_fin_xix_srvc_ctgry
+        ,max(CASE
+                WHEN CLL_STUS_CD IN (
+                        '542'
+                        ,'585'
+                        ,'654'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_denied_line
+        """
+        self.runner.append(filetyp, z)
+
+        # combine claim header and line
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_COMBINED AS
+            SELECT
+                b.*
+                ,case when { TAF_Closure.misslogic("msis_ident_num","len(trim(msis_ident_num))") } then 1 else 0 end as inval_msis_id
+                ,case when (cmc_php =0  and
+                                other_pmpm =0 and
+                                dsh_flag =0  and
+                                clm_type_cd is null and
+                                ever_cap_pymt_tos=1)
+                    then 1 else 0 end as cap_tos_null_toc
+
+                ,case when (cmc_php =0  and
+                                other_pmpm =0 and
+                                dsh_flag =0  and
+                                clm_type_cd in ('4','D','X') )
+                    then 1 else 0 end as srvc_trkg
+
+                ,case when (cmc_php =0  and
+                                other_pmpm =0 and
+                                dsh_flag =0  and
+                                clm_type_cd in ('5','E','Y') and
+                            ( { TAF_Closure.misslogic("msis_ident_num","len(trim(msis_ident_num))") } )
+        """
+
+        if filetyp.casefold() in ("lt", "ip"):
+            z += f"""
+                 or (bill_type_cd_upd is null and
+                     dgns_1_cd is null)
+            """
+        elif filetyp.casefold() == "ot":
+            z += f"""
+                 or (all_null_rev_cd =1 and
+                  all_null_prcdr_cd=1 and
+                  all_null_hcpcs_cd =1)
+            """
+        elif filetyp.casefold() == "rx":
+            z += f"""
+                 or (all_null_ndc_cd =1)
+            """
+
+        z += f"""
+                            ) )
+                        then 1 else 0 end as supp_clms
+
+                        ,row_number() over (partition by submtg_state_cd,
+                                                        {filetyp}_link_key
+                                order by submtg_state_cd,{filetyp}_link_key)
+                                as rec_cnt
+            from (select
+                    a.*
+        """
+
+        if filetyp.casefold() != "rx":
+            z += f"""
+                    ,case when cmc_php =0  and
+                                other_pmpm =0 and
+                                ((clm_type_cd in ('4','D','X','5','E','Y') and
+                                (srvc_trkng_type_cd in ('02') or
+                                    ever_dsh_tos=1))
+                                or
+
+                                (clm_type_cd in ('4','X','5','Y') and
+                                    ever_dsh_xix_srvc_ctgry=1)
+            """
+            if filetyp.casefold() == "ip":
+                z += f"""
+                                    or
+                                    (clm_type_cd in ('1') and
+                                    (mdcd_dsh_pd_amt is not null or mdcd_dsh_pd_amt !=0 ) and
+                                    ever_dsh_xix_srvc_ctgry=1
+                                    )
+                """
+
+        z += f"""
+                                      )
+                            then 1 else 0 end as dsh_flag
+        """
+
+        if filetyp.casefold() == "rx":
+            z += f"""
+                        ,0 as dsh_flag
+            """
+
+        z += f"""
+                from ( select
+                        h.*
+                        ,l.line_num
+                        ,l.mdcd_pd_amt
+                        ,l.xix_srvc_ctgry_cd
+                        ,l.tos_cd
+                        ,l.xxi_srvc_ctgry_cd
+                        ,l.bnft_type_cd
+                        ,l.ever_icf_bnft_typ
+        """
+
+        if filetyp.casefold() != "rx":
+            z += f"""
+                        ,l.rev_cd
+                        ,l.all_null_rev_cd
+                        ,case when bill_type_cd_upd is null then 1 else 0 end as upd_bill_type_cd_null
+                        ,substring(bill_type_cd_upd,2,1) as bill_typ_byte2
+                        ,substring(bill_type_cd_upd,3,1) as bill_typ_byte3
+                        ,l.ever_clinic_rev
+                        ,l.ever_hospice_rev
+                        ,l.only_hh_rev
+                        ,l.srvcng_prvdr_txnmy_cd
+            """
+        elif filetyp.casefold() == "ot":
+            z += f"""
+                        ,case when h.srvc_plc_cd is null then 1 else 0 end as srvc_plc_cd_null
+                        ,l.hcbs_txnmy
+                        ,l.prcdr_cd
+                        ,l.hcpcs_rate
+                        ,l.all_null_prcdr_cd
+                        ,l.all_null_hcpcs_cd
+                        ,l.ever_null_prcdr_hcpcs_cd
+                        ,l.ever_valid_prcdr_hcpcs_cd
+                        ,l.srvcng_prvdr_num
+                        ,l.srvcng_prvdr_npi_num
+                        ,l.only_hh_procs
+            """
+        elif filetyp.casefold() == "rx":
+            z += f"""
+                        ,l.ndc_cd
+                        ,l.all_null_ndc_cd
+                        ,l.ever_valid_ndc
+            """
+
+        z += f"""
+                        ,l.ever_dsh_drg_ehr_tos
+                        ,l.ever_cap_tos
+                        ,l.ever_cap_pymt_tos
+                        ,l.ever_php_tos
+                        ,l.ever_dsh_tos
+                        ,l.ever_drg_rbt_tos
+                        ,l.ever_dme_hhs_tos
+                        ,l.ever_dsh_xix_srvc_ctgry
+                        ,l.ever_othr_fin_xix_srvc_ctgry
+                        ,l.ever_denied_line
+        """
+
+        # cmc php and pmpm
+        z += f"""
+                        ,case when (srvc_trkng_type_cd not in ('01') or srvc_trkng_type_cd is null) and
+        """
+
+        if filetyp.casefold() == "ot":
+            z += f"""
+                                    (
+                                        ( clm_type_cd in ('2','B','V') and
+                                        (ever_dsh_drg_ehr_tos=0 or ever_dsh_drg_ehr_tos is null)
+                                        ) OR
+                                        ( clm_type_cd in ('4','D','X','5','E','Y') and
+                                        (ever_cap_tos=1)
+                                        )
+                                        ) and
+            """
+        elif filetyp.casefold() in ("lt", "ip"):
+            z += f"""
+                                        ( clm_type_cd in ('2','B','V') and
+                                        (ever_dsh_drg_ehr_tos=0 or ever_dsh_drg_ehr_tos is null)
+                                        ) and
+                                    (bill_type_cd_upd is null and dgns_1_cd is null ) and
+            """
+        elif filetyp.casefold() == "rx":
+            z += f"""
+                                        ( clm_type_cd in ('2','B','V') and
+                                        (ever_dsh_drg_ehr_tos=0 or ever_dsh_drg_ehr_tos is null)
+                                        ) and
+                                        (cmpnd_drug_ind is null and all_null_ndc_cd=1 ) and
+            """
+
+        z += f"""
+                                    (ever_php_tos=1)
+                                then 1 else 0 end as cmc_php
+
+
+                            ,case when (srvc_trkng_type_cd not in ('01') or srvc_trkng_type_cd is null) and
+        """
+
+        if filetyp.casefold() == "ot":
+            z += f"""
+                                        (
+                                        ( clm_type_cd in ('2','B','V') and
+                                            (ever_dsh_drg_ehr_tos=0 or ever_dsh_drg_ehr_tos is null)
+                                            ) OR
+                                            ( clm_type_cd in ('4','D','X','5','E','Y') and
+                                            (ever_cap_tos=1)
+                                            )
+                                        ) and
+            """
+
+        if filetyp.casefold() in ("lt", "ip"):
+            z += f"""
+                                        ( ( clm_type_cd in ('2','B','V') and
+                                            (ever_dsh_drg_ehr_tos=0 or ever_dsh_drg_ehr_tos is null)
+                                        ) and
+                                        (bill_type_cd_upd is null and dgns_1_cd is null )
+                                        ) and
+            """
+        elif filetyp.casefold() == "rx":
+            z += f"""
+                                        ( ( clm_type_cd in ('2','B','V') and
+                                        (ever_dsh_drg_ehr_tos=0 or ever_dsh_drg_ehr_tos is null)
+                                        ) and
+                                        (cmpnd_drug_ind is null and all_null_ndc_cd=1 )
+                                        ) and
+            """
+
+        z += f"""
+                                        (ever_php_tos=0 or ever_php_tos is null)
+
+                                    then 1 else 0 end as other_pmpm
+
+                from {filetyp}_header_0 h
+                        left join
+                        {filetyp}_lne l
+
+                on h.submtg_state_cd=l.submtg_state_cd and
+                    h.{filetyp}_link_key=l.{filetyp}_link_key ) a ) b
+        """
+        self.runner.append(filetyp, z)
+
+        # create columns for non financial claims
+        z = f"""
+            create temp table {filetyp}_LNE_FLAG_TOS_CNT as
+            select *
+        """
+
+        if filetyp.casefold() == "ot":
+            z += f"""
+                    ,max(dental_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as dental_clms
+                    ,sum(dental_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as dental_lne_cnts
+
+                    ,max(trnsprt_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as trnsprt_clms
+                    ,sum(trnsprt_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as trnsprt_lne_cnts
+
+                    ,max(othr_hcbs_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as othr_hcbs_clms
+                    ,sum(othr_hcbs_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as othr_hcbs_lne_cnts
+
+                    ,min(case when Lab_lne_clms=1 then 1
+                            when prcdr_cd is null and hcpcs_rate is null then null
+                            else 0 end) over (partition by submtg_state_cd,&fl._link_key) as Lab_clms
+
+                    ,sum(Lab_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as Lab_lne_cnts
+
+                    ,min(case when Rad_lne_clms=1 then 1
+                            when prcdr_cd is null and hcpcs_rate is null then null
+                            else 0 end) over (partition by submtg_state_cd,&fl._link_key) as Rad_clms
+
+                    ,sum(Rad_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as Rad_lne_cnts
+
+                    ,max(DME_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as DME_clms
+                    ,sum(DME_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as DME_lne_cnts
+            """
+
+        if filetyp.casefold() == "rx":
+            z += f"""
+                    ,max(DME_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as DME_clms
+                    ,sum(DME_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as DME_lne_cnts
+            """
+
+        z += f"""
+            from (select
+                            a.*
+        """
+
+        if filetyp.casefold() == "lt":
+            z += f"""
+                            ,b.prvdr_txnmy_icf
+                            ,b.prvdr_txnmy_nf
+                            ,b.prvdr_txnmy_othr_res
+            """
+        elif filetyp.casefold() == "ot":
+            z += f"""
+                            ,b.code_cat as prcdr_ccs_cat
+                            ,c.code_cat as hcpcs_ccs_cat
+
+                            ,case when  not_fin_clm=1 and
+                                        (all_null_rev_cd=0 or
+                                        (bill_type_cd_upd is not null and srvc_plc_cd is null))
+                                then 1 else 0 end as inst_clms
+
+                            ,case when not_fin_clm=1 and
+                                        (
+                                        ((all_null_rev_cd=1 or all_null_rev_cd is null) and /**headers with no line included*/
+                                        bill_type_cd_upd is not null and
+                                        srvc_plc_cd is not null) or
+
+                                        ((all_null_rev_cd=1 or all_null_rev_cd is null) and
+                                        bill_type_cd_upd is null and
+                                        srvc_plc_cd is not null) or
+
+                                        ((all_null_rev_cd=1 or all_null_rev_cd is null) and
+                                        bill_type_cd_upd is null and
+                                        srvc_plc_cd is null and
+                                        (ever_null_prcdr_hcpcs_cd =0)/**ALL prcdr code OR HCPCS is non-null*/
+
+                                        )
+                                        )
+                                then 1 else 0 end as prof_clms
+
+                            ,case when not_fin_clm=1 and
+                                        (
+                                        ((all_null_rev_cd=1 or all_null_rev_cd is null) and /**headers with no line included*/
+                                        bill_type_cd_upd is not null and
+                                        srvc_plc_cd is not null) or
+
+                                        ((all_null_rev_cd=1 or all_null_rev_cd is null) and
+                                        bill_type_cd_upd is null and
+                                        srvc_plc_cd is not null) or
+
+                                        ((all_null_rev_cd=1 or all_null_rev_cd is null) and
+                                        bill_type_cd_upd is null and
+                                        srvc_plc_cd is null and
+                                        (ever_valid_prcdr_hcpcs_cd =1 ) /**At least one non-null HCPCS or PRCDR code **/
+                                        )
+                                        )
+                                then 1 else 0 end as prof_clms_2
+
+                            ,case when not_fin_clm=1 and
+                                        ((length(prcdr_cd)=5 and substring(prcdr_cd,1,1)='D') or
+                                            (length(hcpcs_rate)=5 and substring(hcpcs_rate,1,1)='D')
+                                        )
+                                then 1 else 0 end as dental_lne_clms
+
+                            ,case when not_fin_clm=1 and
+                                        (b.code_cat ='Transprt' or
+                                        c.code_cat ='Transprt')
+                                then 1 else 0 end as trnsprt_lne_clms
+
+                            ,case when not_fin_clm=1 and
+                                    (substring(rev_cd,1,3) in ('066','310') or
+                                            prcdr_cd in {TAF_Metadata.vs_Othr_HCBS_Proc_cd} or
+                                            hcpcs_rate in {TAF_Metadata.vs_Othr_HCBS_Proc_cd} or
+                                            (prcdr_cd in ('T2025') and srvc_plc_cd in ('12') ) or
+                                            (hcpcs_rate in ('T2025') and srvc_plc_cd in ('12') ) or
+                                            bnft_type_cd in ('045') or
+                                            hcbs_txnmy in {TAF_Metadata.vs_Othr_HCBS_Taxo}
+                                    )
+                                    then 1 else 0 end as othr_hcbs_lne_clms
+
+
+                            ,case when not_fin_clm=1 and
+                                        (b.code_cat ='Lab' or
+                                        c.code_cat ='Lab' )
+                                then 1 else 0 end as Lab_lne_clms
+
+                            ,case when not_fin_clm=1 and
+                                        (b.code_cat ='Rad' or
+                                        c.code_cat ='Rad' )
+                                then 1 else 0 end as Rad_lne_clms
+
+
+                            ,case when not_fin_clm=1 and
+                                    (b.code_cat ='DME' or
+                                        c.code_cat ='DME' )
+                                then 1 else 0 end as DME_lne_clms
+            """
+
+        if filetyp.casefold() in ("lt", "ip"):
+            z += f"""
+                            ,case when not_fin_clm=1 and
+                                    ( (substring(bill_type_cd_upd,2,1) in ('1', '4') and
+                                        substring(bill_type_cd_upd,3,1) in ('1','2')
+                                        ) or b.prvdr_txnmy_ip=1
+                                        )
+                                    then 1 else 0 end as inp_clms
+
+                            ,case when not_fin_clm=1 and
+                                        (b.prvdr_txnmy_icf=1 or
+                                        (substring(bill_type_cd_upd,2,1) in ('6') and
+                                        substring(bill_type_cd_upd,3,1) in ('5','6') )
+                                        )
+                                then 1 else 0 end as ic_clms
+
+                            ,case when  not_fin_clm=1 and
+                                    ( b.prvdr_txnmy_nf=1 or
+                                    (substring(bill_type_cd_upd,2,1) in ('2')) or
+                                    (substring(bill_type_cd_upd,2,2) in ('18') )
+                                    )
+                                then 1 else 0 end as nf_clms
+
+                            ,case when  not_fin_clm=1 and
+                                    ( b.prvdr_txnmy_othr_res=1 or
+                                    (substring(bill_type_cd_upd,2,2) in ('86') )
+                                    )
+                                then 1 else 0 end as othr_res_clms
+            """
+
+        if filetyp.casefold() in ("ot", "lt", "ip"):
+            z += f"""
+                            ,case when not_fin_clm=1 and
+                                        ((substring(bill_type_cd_upd,2,1) in ('1') and
+                                        substring(bill_type_cd_upd,3,1) in ('3','4')) or
+
+                                        (substring(bill_type_cd_upd,2,1) in ('8') and
+                                        substring(bill_type_cd_upd,3,1) in ('3','4','5','9'))
+                                        )
+                                    then 1 else 0 end as op_hosp_clms
+
+                            ,case when not_fin_clm=1 and
+                                        (substring(bill_type_cd_upd,2,1) in ('7') or
+                                        ever_clinic_rev =1)
+                                then 1 else 0 end as clinic_clms
+
+                            ,case when not_fin_clm=1 and
+                                    (substring(bill_type_cd_upd,2,2) in ('81','82') or
+                                            ever_hospice_rev=1)
+                                    then 1 else 0 end as hospice_clms
+
+                            ,case when not_fin_clm=1 and
+                                        (substring(bill_type_cd_upd,1,3) in ('032','033','034') or
+                                        only_hh_rev =1
+                                        %if "&fl."="ot" %then %do;
+                                        or  only_hh_procs=1
+                                        %end;
+                                        )
+                                    then 1 else 0 end as HH_clms
+            """
+        elif filetyp.casefold() == "rx":
+            z += f"""
+                            ,case when not_fin_clm=1 and
+                                    (ever_valid_ndc =1 or ever_valid_ndc is null or
+                                    (ever_valid_ndc =0 and
+                                        ever_dme_hhs_tos =0) )
+                                then 1 else 0 end as rx_clms
+
+
+                            ,case when not_fin_clm=1 and
+                                        (ever_valid_ndc =0 and
+                                        ever_dme_hhs_tos =1)
+                                then 1 else 0 end as DME_lne_clms
+            """
+
+        z += f"""
+                    from (select *,
+                                    case when cmc_php=0 and other_pmpm=0 and
+                                            dsh_flag=0 and srvc_trkg=0 and
+                                            supp_clms=0 and cap_tos_null_toc=0
+                                        then 1 else 0 end as not_fin_clm
+                            from {filetyp}_combined
+                            )a
+        """
+
+        if filetyp.casefold() in ("lt", "ip"):
+            z += f"""
+                        left join nppes_npi b
+                        on a.blg_prvdr_npi_num=b.prvdr_npi
+            """
+        elif filetyp.casefold() == "ot":
+            z += f"""
+                        left join ccs_proc b
+                        on a.prcdr_cd=b.cd_rng
+
+                        left join ccs_proc c
+                        on a.hcpcs_rate=c.cd_rng
+            """
+
+        z += f"""
+                    ) s1
+        """
+        self.runner.append(filetyp, z)
+
+        # roll up to claim header
+
+        # ---------------------------------------------------------------------
+        # select the first claim line from each set of claims
+        # that is header level file
+        # not rolling up because some line columns are needed for qa tab
+        # ---------------------------------------------------------------------
+        z += f"""
+             create temp table {filetyp}_HDR_ROLLED_0 as
+             select b.*
+                     ,inp_clms + rx_clms + ic_clms + nf_clms + othr_res_clms +
+                     dental_clms + trnsprt_clms + othr_hcbs_clms + op_hosp_clms +
+                     clinic_clms + hospice_clms + all_othr_inst_clms +
+
+                     lab_clms + rad_clms + hh_clms + dme_clms +
+                     all_othr_prof_clms as tot_num_srvc_flag
+                     ,case when (inp_clms + rx_clms + ic_clms + nf_clms + othr_res_clms +
+                                 dental_clms + trnsprt_clms + othr_hcbs_clms + op_hosp_clms +
+                                 clinic_clms + hospice_clms + all_othr_inst_clms +
+                                 lab_clms + rad_clms + hh_clms + dme_clms +
+                                 all_othr_prof_clms ) =0
+
+                             then 0
+                             when (inp_clms + rx_clms + ic_clms + nf_clms + othr_res_clms +
+                                 dental_clms + trnsprt_clms + othr_hcbs_clms + op_hosp_clms +
+                                 clinic_clms + hospice_clms + all_othr_inst_clms +
+                                 lab_clms + rad_clms + hh_clms + dme_clms +
+                                 all_othr_prof_clms) = 1
+                             then 1
+                             when (inp_clms + rx_clms + ic_clms + nf_clms + othr_res_clms +
+                                 dental_clms + trnsprt_clms + othr_hcbs_clms + op_hosp_clms +
+                                 clinic_clms + hospice_clms + all_othr_inst_clms +
+                                 lab_clms + rad_clms + hh_clms + dme_clms +
+                                 all_othr_prof_clms ) > 1
+                             then 2 else null end as num_srvc_flag_grp
+
+                     ,case when inst_clms=0 and
+                             prof_clms=0
+                         then 1 else 0 end as not_inst_prof
+
+             from ( select
+                     a.*
+                     ,cmc_php + other_pmpm + dsh_flag + other_fin
+                     as tot_num_fin_flag
+        """
+
+        if filetyp.casefold() != "rx":
+            z += f"""
+                 ,0 as rx_clms
+            """
+
+        if filetyp.casefold() != "ot":
+            z += f"""
+                     ,0 as inst_clms
+                     ,0 as prof_clms
+
+                     ,0 as dental_clms
+                     ,0 dental_lne_cnts
+
+                     ,0 as trnsprt_clms
+                     ,0 as trnsprt_lne_cnts
+
+                     ,0 as othr_hcbs_clms
+                     ,0 as othr_hcbs_lne_cnts
+
+                     ,0 as Lab_clms
+                     ,0 as Lab_lne_cnts
+
+                     ,0 as Rad_clms
+                     ,0 as Rad_lne_cnts
+
+                     ,0 as all_othr_inst_clms
+                     ,0 as all_othr_prof_clms
+            """
+
+        if filetyp.casefold() in ("ot", "rx"):
+            z += f"""
+                     ,0 as nf_clms /**Only in IP/LT**/
+                     ,0 as inp_clms
+                     ,0 as ic_clms
+                     ,0 as othr_res_clms
+            """
+
+        if filetyp.casefold() == "rx":
+            z += f"""
+                     /**Only in OT/IP/LT**/
+                     ,0 as op_hosp_clms
+                     ,0 as clinic_clms
+                     ,0 as hospice_clms
+                     ,0 as hh_clms
+            """
+
+        if filetyp.casefold() in ("lt", "ip"):
+            z += f"""
+                     /**Only in OT/RX**/
+                     ,0 as dme_clms
+                     ,0 as DME_lne_cnts
+            """
+
+        z += f"""
+             from (select
+                     *
+                     ,case when (srvc_trkg=1 or supp_clms=1 or cap_tos_null_toc=1)
+                             then 1 else 0 end as other_fin
+        """
+
+        if filetyp.casefold() == "ot":
+            z += f"""
+                     ,case when  not_fin_clm=1 and
+                                 inst_clms=1 and
+                                 dental_clms=0 and
+                                 trnsprt_clms=0 and
+                                 othr_hcbs_clms=0 and
+                                 op_hosp_clms=0 and
+                                 clinic_clms=0 and
+                                 hospice_clms=0
+                             then 1 else 0 end as all_othr_inst_clms
+
+                     ,case when  not_fin_clm=1 and
+                                 prof_clms=1 and
+                                 dental_clms=0 and
+                                 trnsprt_clms=0 and
+                                 othr_hcbs_clms=0 and
+                                 Lab_clms=0 and
+                                 Rad_clms=0 and
+                                 hh_clms=0 and
+                                 DME_clms=0
+                             then 1 else 0 end as all_othr_prof_clms
+            """
+
+        z += f"""
+             from {filetyp}_lne_flag_tos_cat
+             where rec_cnt=1 ) a ) b
+        """
+        self.runner.append(filetyp, z)
+
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_HDR_ROLLED AS
+            SELECT *
+                ,CASE
+                    WHEN cmc_php = 1
+                        THEN '11'
+                    WHEN other_pmpm = 1
+                        THEN '12'
+                    WHEN dsh_flag = 1
+                        THEN '13'
+                    WHEN other_fin = 1
+                        THEN '14'
+                    WHEN inp_clms = 1
+                        THEN '21'
+                    WHEN rx_clms = 1
+                        THEN '41'
+                    WHEN nf_clms = 1
+                        THEN '22'
+                    WHEN ic_clms = 1
+                        THEN '23'
+                    WHEN othr_res_clms = 1
+                        THEN '24'
+                    WHEN hospice_clms = 1
+                        THEN '25'
+                    WHEN rad_clms = 1
+                        THEN '31'
+                    WHEN lab_clms = 1
+                        THEN '32'
+                    WHEN hh_clms = 1
+                        THEN '33'
+                    WHEN trnsprt_clms = 1
+                        THEN '34'
+                    WHEN dental_clms = 1
+                        THEN '35'
+                    WHEN op_hosp_clms = 1
+                        THEN '26'
+                    WHEN clinic_clms = 1
+                        THEN '27'
+                    WHEN othr_hcbs_clms = 1
+                        THEN '36'
+                    WHEN dme_clms = 1
+                        THEN '37'
+                    WHEN all_othr_inst_clms = 1
+                        THEN '28'
+                    WHEN all_othr_prof_clms = 1
+                        THEN '38'
+                    END AS fed_srvc_ctgry_cd
+            FROM {filetyp}_HDR_ROLLED_0
         """
         self.runner.append(filetyp, z)
 

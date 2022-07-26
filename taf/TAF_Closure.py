@@ -1,4 +1,4 @@
-class TAF_Closure():
+class TAF_Closure:
 
     # ---------------------------------------------------------------------------------
     #
@@ -34,7 +34,9 @@ class TAF_Closure():
     #
     # ---------------------------------------------------------------------------------
     def compress_dots(colname: str, alias: str):
-        return f"trim(translate(upper({alias}.{colname}), '.', '')) as {colname.lower()}"
+        return (
+            f"trim(translate(upper({alias}.{colname}), '.', '')) as {colname.lower()}"
+        )
 
     # ---------------------------------------------------------------------------------
     #
@@ -59,7 +61,7 @@ class TAF_Closure():
     #
     #
     # --------------------------------------------------------------------
-    def var_set_type1(var: str, upper: bool = False, lpad: int = 0, new: str = 'NO'):
+    def var_set_type1(var: str, upper: bool = False, lpad: int = 0, new: str = "NO"):
         result = []
         if lpad == 0:
             if upper:
@@ -73,7 +75,7 @@ class TAF_Closure():
             else:
                 result.append(f"lpad(trim({var}),{lpad},'0')")
             result.append("else NULL end")
-        if new == 'NO':
+        if new == "NO":
             result.append(f"as {var}")
         else:
             result.append(f"as {new}")
@@ -87,16 +89,16 @@ class TAF_Closure():
     def var_set_type2(
         var: str,
         lpad: int = 0,
-        cond1: str = '@',
-        cond2: str = '@',
-        cond3: str = '@',
-        cond4: str = '@',
-        cond5: str = '@',
-        cond6: str = '@',
-        cond7: str = '@',
-        cond8: str = '@',
-        cond9: str = '@',
-        cond10: str = '@'
+        cond1: str = "@",
+        cond2: str = "@",
+        cond3: str = "@",
+        cond4: str = "@",
+        cond5: str = "@",
+        cond6: str = "@",
+        cond7: str = "@",
+        cond8: str = "@",
+        cond9: str = "@",
+        cond10: str = "@",
     ):
 
         result = []
@@ -108,23 +110,23 @@ class TAF_Closure():
 
         result.append(f"in ('{cond1}'")
 
-        if cond2 != '@':
+        if cond2 != "@":
             result.append(f", '{cond2}'")
-        if cond3 != '@':
+        if cond3 != "@":
             result.append(f", '{cond3}'")
-        if cond4 != '@':
+        if cond4 != "@":
             result.append(f", '{cond4}'")
-        if cond5 != '@':
+        if cond5 != "@":
             result.append(f", '{cond5}'")
-        if cond6 != '@':
+        if cond6 != "@":
             result.append(f", '{cond6}'")
-        if cond7 != '@':
+        if cond7 != "@":
             result.append(f", '{cond7}'")
-        if cond8 != '@':
+        if cond8 != "@":
             result.append(f", '{cond8}'")
-        if cond9 != '@':
+        if cond9 != "@":
             result.append(f", '{cond9}'")
-        if cond10 != '@':
+        if cond10 != "@":
             result.append(f", '{cond10}'")
 
         result.append(") then")
@@ -145,28 +147,28 @@ class TAF_Closure():
     # --------------------------------------------------------------------
     def var_set_type3(
         var: str,
-        cond1: str = '@',
-        cond2: str = '@',
-        cond3: str = '@',
-        cond4: str = '@',
-        cond5: str = '@',
-        cond6: str = '@',
+        cond1: str = "@",
+        cond2: str = "@",
+        cond3: str = "@",
+        cond4: str = "@",
+        cond5: str = "@",
+        cond6: str = "@",
         spaces: bool = True,
-        new: str = 'NO'
+        new: str = "NO",
     ):
 
         result = []
         result.append(f"case when {var} in ('{cond1}'")
 
-        if cond2 != '@':
+        if cond2 != "@":
             result.append(f", '{cond2}'")
-        if cond3 != '@':
+        if cond3 != "@":
             result.append(f", '{cond3}'")
-        if cond4 != '@':
+        if cond4 != "@":
             result.append(f", '{cond4}'")
-        if cond5 != '@':
+        if cond5 != "@":
             result.append(f", '{cond5}'")
-        if cond6 != '@':
+        if cond6 != "@":
             result.append(f", '{cond6}'")
 
         result.append(")")
@@ -174,20 +176,20 @@ class TAF_Closure():
         if spaces:
             result.append(f"or nullif(trim('{cond1}'),'') is NULL")
 
-            if cond2 != '@':
+            if cond2 != "@":
                 result.append(f"or nullif(trim('{cond2}'),'') is NULL")
-            if cond3 != '@':
+            if cond3 != "@":
                 result.append(f"or nullif(trim('{cond3}'),'') is NULL")
-            if cond4 != '@':
+            if cond4 != "@":
                 result.append(f"or nullif(trim('{cond4}'),'') is NULL")
-            if cond5 != '@':
+            if cond5 != "@":
                 result.append(f"or nullif(trim('{cond5}'),'') is NULL")
-            if cond6 != '@':
+            if cond6 != "@":
                 result.append(f"or nullif(trim('{cond6}'),'') is NULL")
 
         result.append(f"then NULL else {var} end")
 
-        if new == 'NO':
+        if new == "NO":
             result.append(f"as {var}")
         else:
             result.append(f"as {new}")
@@ -202,16 +204,16 @@ class TAF_Closure():
     def var_set_type4(
         var: str,
         upper: bool = False,
-        cond1: str = '@',
-        cond2: str = '@',
-        cond3: str = '@',
-        cond4: str = '@',
-        cond5: str = '@',
-        cond6: str = '@',
-        cond7: str = '@',
-        cond8: str = '@',
-        cond9: str = '@',
-        cond10: str = '@'
+        cond1: str = "@",
+        cond2: str = "@",
+        cond3: str = "@",
+        cond4: str = "@",
+        cond5: str = "@",
+        cond6: str = "@",
+        cond7: str = "@",
+        cond8: str = "@",
+        cond9: str = "@",
+        cond10: str = "@",
     ):
         result = []
 
@@ -224,23 +226,23 @@ class TAF_Closure():
 
         result.append(f"in ('{cond1}'")
 
-        if cond2 != '@':
+        if cond2 != "@":
             result.append(f", '{cond2}'")
-        if cond3 != '@':
+        if cond3 != "@":
             result.append(f", '{cond3}'")
-        if cond4 != '@':
+        if cond4 != "@":
             result.append(f", '{cond4}'")
-        if cond5 != '@':
+        if cond5 != "@":
             result.append(f", '{cond5}'")
-        if cond6 != '@':
+        if cond6 != "@":
             result.append(f", '{cond6}'")
-        if cond7 != '@':
+        if cond7 != "@":
             result.append(f", '{cond7}'")
-        if cond8 != '@':
+        if cond8 != "@":
             result.append(f", '{cond8}'")
-        if cond9 != '@':
+        if cond9 != "@":
             result.append(f", '{cond9}'")
-        if cond10 != '@':
+        if cond10 != "@":
             result.append(f", '{cond10}'")
 
         result.append(") then")
@@ -259,12 +261,22 @@ class TAF_Closure():
     #
     #
     # --------------------------------------------------------------------
-    def var_set_type5(var: str, lpad: int = 2, lowerbound: int = 1, upperbound: int = 10, multiple_condition: bool = False):
+    def var_set_type5(
+        var: str,
+        lpad: int = 2,
+        lowerbound: int = 1,
+        upperbound: int = 10,
+        multiple_condition: bool = False,
+    ):
 
         result = []
 
-        result.append(f"case when ({var} is not NULL and ((length(lpad({var},{lpad}, '0')) - coalesce(length(regexp_replace(lpad({var},{lpad}, '0'), '[0-9]{{{lpad}}}', '')), 0))) > 0) then")
-        result.append(f"   case when ({var} >= {lowerbound} and {var} <= {upperbound}) then lpad({var}, {lpad}, '0')")
+        result.append(
+            f"case when ({var} is not NULL and ((length(lpad({var},{lpad}, '0')) - coalesce(length(regexp_replace(lpad({var},{lpad}, '0'), '[0-9]{{{lpad}}}', '')), 0))) > 0) then"
+        )
+        result.append(
+            f"   case when ({var} >= {lowerbound} and {var} <= {upperbound}) then lpad({var}, {lpad}, '0')"
+        )
         result.append("    else NULL end")
         result.append("else NULL end")
 
@@ -282,33 +294,33 @@ class TAF_Closure():
     # --------------------------------------------------------------------
     def var_set_type6(
         var: str,
-        cond1: str = '@',
-        cond2: str = '@',
-        cond3: str = '@',
-        cond4: str = '@',
-        cond5: str = '@',
-        cond6: str = '@',
-        new: str = 'NO'
+        cond1: str = "@",
+        cond2: str = "@",
+        cond3: str = "@",
+        cond4: str = "@",
+        cond5: str = "@",
+        cond6: str = "@",
+        new: str = "NO",
     ):
 
         result = []
 
         result.append(f"case when {var} in ({cond1}")
 
-        if cond2 != '@':
+        if cond2 != "@":
             result.append(f", {cond2}")
-        if cond3 != '@':
+        if cond3 != "@":
             result.append(f", {cond3}")
-        if cond4 != '@':
+        if cond4 != "@":
             result.append(f", {cond4}")
-        if cond5 != '@':
+        if cond5 != "@":
             result.append(f", {cond5}")
-        if cond6 != '@':
+        if cond6 != "@":
             result.append(f", {cond6}")
 
         result.append(f") then NULL else {var} end as")
 
-        if new == 'NO':
+        if new == "NO":
             result.append(f"{var}")
         else:
             result.append(f"{new}")
@@ -421,33 +433,45 @@ class TAF_Closure():
     # --------------------------------------------------------------------
     def var_set_fills(
         var: str,
-        cond1: str = '@',
-        cond2: str = '@',
-        cond3: str = '@',
-        cond4: str = '@',
-        cond5: str = '@',
-        cond6: str = '@',
+        cond1: str = "@",
+        cond2: str = "@",
+        cond3: str = "@",
+        cond4: str = "@",
+        cond5: str = "@",
+        cond6: str = "@",
         spaces: bool = True,
-        new: str = 'NO'
+        new: str = "NO",
     ):
 
         result = []
 
         result.append("case when")
-        result.append(f"((length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond1}]+', '')), 0)) = 0")
+        result.append(
+            f"((length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond1}]+', '')), 0)) = 0"
+        )
 
-        if cond2 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond2}]+', '')), 0)) = 0")
-        if cond3 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond3}]+', '')), 0)) = 0")
-        if cond4 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond4}]+', '')), 0)) = 0")
-        if cond5 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond5}]+', '')), 0)) = 0")
-        if cond6 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond6}]+', '')), 0)) = 0")
+        if cond2 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond2}]+', '')), 0)) = 0"
+            )
+        if cond3 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond3}]+', '')), 0)) = 0"
+            )
+        if cond4 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond4}]+', '')), 0)) = 0"
+            )
+        if cond5 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond5}]+', '')), 0)) = 0"
+            )
+        if cond6 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond6}]+', '')), 0)) = 0"
+            )
 
-        result.append(')')
+        result.append(")")
         if spaces:
             result.append(f"or nullif(trim({var}),'') is null")
 
@@ -455,7 +479,7 @@ class TAF_Closure():
 
         result.append(f"else {var} end as")
 
-        if new == 'NO':
+        if new == "NO":
             result.append(f"{var}")
         else:
             result.append(f"{new}")
@@ -469,32 +493,44 @@ class TAF_Closure():
     # --------------------------------------------------------------------
     def var_set_fillpr(
         var: str,
-        cond1: str = '@',
-        cond2: str = '@',
-        cond3: str = '@',
-        cond4: str = '@',
-        cond5: str = '@',
-        cond6: str = '@',
+        cond1: str = "@",
+        cond2: str = "@",
+        cond3: str = "@",
+        cond4: str = "@",
+        cond5: str = "@",
+        cond6: str = "@",
         spaces: bool = True,
-        new: str = 'NO'
+        new: str = "NO",
     ):
         result = []
 
         result.append(f"case when {var} = '0.00' or")
-        result.append(f"((length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond1}]+', '')), 0)) = 0")
+        result.append(
+            f"((length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond1}]+', '')), 0)) = 0"
+        )
 
-        if cond2 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond2}]+', '')), 0)) = 0")
-        if cond3 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond3}]+', '')), 0)) = 0")
-        if cond4 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond4}]+', '')), 0)) = 0")
-        if cond5 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond5}]+', '')), 0)) = 0")
-        if cond6 != '@':
-            result.append(f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond6}]+', '')), 0)) = 0")
+        if cond2 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond2}]+', '')), 0)) = 0"
+            )
+        if cond3 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond3}]+', '')), 0)) = 0"
+            )
+        if cond4 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond4}]+', '')), 0)) = 0"
+            )
+        if cond5 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond5}]+', '')), 0)) = 0"
+            )
+        if cond6 != "@":
+            result.append(
+                f"or (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^{cond6}]+', '')), 0)) = 0"
+            )
 
-        result.append(')')
+        result.append(")")
         if spaces:
             result.append(f"or nullif(trim({var}),'') is null")
 
@@ -502,7 +538,7 @@ class TAF_Closure():
 
         result.append(f"else {var} end as")
 
-        if new == 'NO':
+        if new == "NO":
             result.append(f"{var}")
         else:
             result.append(f"{new}")
@@ -532,34 +568,36 @@ class TAF_Closure():
     # --------------------------------------------------------------------
     def var_set_taxo(
         var: str,
-        cond1: str = '@',
-        cond2: str = '@',
-        cond3: str = '@',
-        cond4: str = '@',
-        cond5: str = '@',
-        cond6: str = '@',
-        cond7: str = '@',
+        cond1: str = "@",
+        cond2: str = "@",
+        cond3: str = "@",
+        cond4: str = "@",
+        cond5: str = "@",
+        cond6: str = "@",
+        cond7: str = "@",
         spaces: bool = True,
-        new: str = 'NO'
+        new: str = "NO",
     ):
 
         result = []
 
-        result.append(f"case when (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^0]+', '')), 0) = 0)")
+        result.append(
+            f"case when (length(trim({var})) - coalesce(length(regexp_replace(trim({var}), '[^0]+', '')), 0) = 0)"
+        )
 
         result.append(f"or {var} in ('{cond1}',")
 
-        if cond2 != '@':
+        if cond2 != "@":
             result.append(f"'{cond2}',")
-        if cond3 != '@':
+        if cond3 != "@":
             result.append(f"'{cond3}',")
-        if cond4 != '@':
+        if cond4 != "@":
             result.append(f"'{cond4}',")
-        if cond5 != '@':
+        if cond5 != "@":
             result.append(f"'{cond5}',")
-        if cond6 != '@':
+        if cond6 != "@":
             result.append(f"'{cond6}',")
-        if cond7 != '@':
+        if cond7 != "@":
             result.append(f"'{cond7}'")
 
         result.append(")")
@@ -568,22 +606,22 @@ class TAF_Closure():
 
             result.append(f"or nullif(trim('{cond1}'),'') is NULL")
 
-            if cond2 != '@':
+            if cond2 != "@":
                 result.append(f"or nullif(trim('{cond2}'),'') is NULL")
-            if cond3 != '@':
+            if cond3 != "@":
                 result.append(f"or nullif(trim('{cond3}'),'') is NULL")
-            if cond4 != '@':
+            if cond4 != "@":
                 result.append(f"or nullif(trim('{cond4}'),'') is NULL")
-            if cond5 != '@':
+            if cond5 != "@":
                 result.append(f"or nullif(trim('{cond5}'),'') is NULL")
-            if cond6 != '@':
+            if cond6 != "@":
                 result.append(f"or nullif(trim('{cond6}'),'') is NULL")
-            if cond6 != '@':
+            if cond6 != "@":
                 result.append(f"or nullif(trim('{cond7}'),'') is NULL")
 
         result.append(f"then NULL else {var} end")
 
-        if new == 'NO':
+        if new == "NO":
             result.append(f"as {var}")
         else:
             result.append(f"as {new}")
@@ -626,10 +664,7 @@ class TAF_Closure():
     #
     #
     # ---------------------------------------------------------------------------------
-    zpad = {
-        'XIX_SRVC_CTGRY_CD': 4,
-        'XXI_SRVC_CTGRY_CD': 3
-    }
+    zpad = {"XIX_SRVC_CTGRY_CD": 4, "XXI_SRVC_CTGRY_CD": 3}
 
     # ---------------------------------------------------------------------------------
     #
@@ -652,6 +687,7 @@ class TAF_Closure():
                      else nullif(trim(upper({var_cd})),'')
                    end as {var_cd}
         """
+
     # ---------------------------------------------------------------------------------
     #
     #
@@ -673,9 +709,9 @@ class TAF_Closure():
     #
     #
     # ---------------------------------------------------------------------------------
-    def last_best(incol, outcol=''):
+    def last_best(incol, outcol=""):
 
-        if outcol == '':
+        if outcol == "":
             outcol = incol
 
         return f"""
@@ -696,12 +732,12 @@ class TAF_Closure():
     #             slots>1, we will add slot # before _MO suffix
     #
     # ---------------------------------------------------------------------------------
-    def monthly_array(self, incol, outcol='', nslots='1'):
-        z = ''
-        if outcol == '':
+    def monthly_array(self, incol, outcol="", nslots="1"):
+        z = ""
+        if outcol == "":
             outcol = incol
 
-        if (nslots == '1'):
+        if nslots == "1":
             return f"""
               m01.{incol} as {outcol}_01
             , m02.{incol} as {outcol}_02
@@ -717,12 +753,12 @@ class TAF_Closure():
             , m12.{incol} as {outcol}_12"""
         else:
             for s in range(1, int(nslots) + 1):
-                if nslots == '1':
-                    snum = ''
+                if nslots == "1":
+                    snum = ""
                 else:
                     snum = s
 
-                if (s == 1):
+                if s == 1:
                     z += f"""m01.{incol}{snum} as {outcol}{snum}_01"""
                 else:
                     z += f""", m01.{incol}{snum} as {outcol}{snum}_01"""
@@ -757,9 +793,9 @@ class TAF_Closure():
     #      nullcond=additional value to look for when usenulls=1
     #
     # ---------------------------------------------------------------------------------
-    def ever_year(incol, condition='=1', raw=1, outcol='', usenulls=0, nullcond=''):
+    def ever_year(incol, condition="=1", raw=1, outcol="", usenulls=0, nullcond=""):
 
-        if outcol == '':
+        if outcol == "":
             outcol = incol
 
         if usenulls == 0:
@@ -900,7 +936,17 @@ class TAF_Closure():
     # condition
     #
     # --------------------------------------------------------------------
-    def count_rec(condcol1="", cond1="=1", condcol2="", cond2="=1", condcol3="", cond3="=1", condcol4="", cond4="=1", outcol=""):
+    def count_rec(
+        condcol1="",
+        cond1="=1",
+        condcol2="",
+        cond2="=1",
+        condcol3="",
+        cond3="=1",
+        condcol4="",
+        cond4="=1",
+        outcol="",
+    ):
 
         z = f"""SUM(CASE WHEN {condcol1} {cond1}
         """
@@ -929,7 +975,17 @@ class TAF_Closure():
     # given condition
     #
     # --------------------------------------------------------------------
-    def any_rec(condcol1="", cond1="=1", condcol2="", cond2="=1", condcol3="", cond3="=1", condcol4="", cond4="=1", outcol=""):
+    def any_rec(
+        condcol1="",
+        cond1="=1",
+        condcol2="",
+        cond2="=1",
+        condcol3="",
+        cond3="=1",
+        condcol4="",
+        cond4="=1",
+        outcol="",
+    ):
 
         z = f"""MAX(CASE WHEN {condcol1} {cond1}
         """
@@ -958,7 +1014,18 @@ class TAF_Closure():
     # where the given column equals the given condition
     #
     # --------------------------------------------------------------------
-    def sum_paid(condcol1="", cond1="=1", condcol2="", cond2="=1", condcol3="", cond3="=1", condcol4="", cond4="=1", paidcol="tot_mdcd_pd_amt", outcol=""):
+    def sum_paid(
+        condcol1="",
+        cond1="=1",
+        condcol2="",
+        cond2="=1",
+        condcol3="",
+        cond3="=1",
+        condcol4="",
+        cond4="=1",
+        paidcol="tot_mdcd_pd_amt",
+        outcol="",
+    ):
 
         if not outcol:
             _outcol = condcol1
@@ -993,21 +1060,39 @@ class TAF_Closure():
     #
     #
     #
+    #
+    # --------------------------------------------------------------------
+    def misslogic(var, length):
+        return f"""
+               (
+               {var} LIKE (8 { "{length}" })
+               OR {var} LIKE (9 { "{length}" })
+               OR {var} LIKE (0 { "{length}" })
+               OR {var} ! ~ '[(a-z)|(A-Z)|(0-9)]'
+               OR {var} = '&'
+               OR {var} IS NULL
+               )
+        """
+
+    # --------------------------------------------------------------------
+    #
+    #
+    #
     # --------------------------------------------------------------------
     passthrough = {
-        '%any_month': any_month,
-        '%any_rec': any_rec,
-        '%count_rec': count_rec,
-        '%ever_year': ever_year,
-        '%fix_old_dates': fix_old_dates,
-        '%getmax': getmax,
-        '%last_best': last_best,
-        '%monthly_array': monthly_array,
-        '%set_end_dt': set_end_dt,
-        '%sum_paid': sum_paid,
-        '%sumrecs': sumrecs,
-        '%upper_case': upper_case,
-        '%zero_pad': zero_pad
+        "%any_month": any_month,
+        "%any_rec": any_rec,
+        "%count_rec": count_rec,
+        "%ever_year": ever_year,
+        "%fix_old_dates": fix_old_dates,
+        "%getmax": getmax,
+        "%last_best": last_best,
+        "%monthly_array": monthly_array,
+        "%set_end_dt": set_end_dt,
+        "%sum_paid": sum_paid,
+        "%sumrecs": sumrecs,
+        "%upper_case": upper_case,
+        "%zero_pad": zero_pad,
     }
 
     # --------------------------------------------------------------------
@@ -1022,45 +1107,56 @@ class TAF_Closure():
         pos = [0]
         tokens = []
         while i >= 0:
-            i = var.find('%', i, oplen)
+            i = var.find("%", i, oplen)
             if i >= 0:
                 pos.extend([i])
                 i += 1
         pos.extend([oplen])
         i = 0
         for p in pos[:-1]:
-            s = var[p:pos[i + 1]]
+            s = var[p : pos[i + 1]]
             tokens.extend([s])
             i += 1
         conditions = []
         for t in tokens:
-            t1 = t[0:t.find('(')]
-            t2 = t[t.find('('):len(t)]
+            t1 = t[0 : t.find("(")]
+            t2 = t[t.find("(") : len(t)]
             macro = [t1, t2]
             if len(macro[0]) > 1:
                 if macro[0].strip() in TAF_Closure.passthrough.keys():
                     predicate = macro[1]
-                    k_pos = predicate.find(')')
+                    k_pos = predicate.find(")")
                     params = predicate[1:k_pos]
-                    trail = predicate[k_pos + 1:len(predicate)]
-                    args = params.split(',')
-                    if (len(args) == 1):
-                        conditions.append(TAF_Closure.passthrough[macro[0].strip()](args[0]))
-                    elif (len(args) == 2):
-                        conditions.append(TAF_Closure.passthrough[macro[0].strip()](args[0], args[1]))
-                    elif (len(args) == 3):
-                        conditions.append(TAF_Closure.passthrough[macro[0].strip()](args[0], args[1], args[2]))
+                    trail = predicate[k_pos + 1 : len(predicate)]
+                    args = params.split(",")
+                    if len(args) == 1:
+                        conditions.append(
+                            TAF_Closure.passthrough[macro[0].strip()](args[0])
+                        )
+                    elif len(args) == 2:
+                        conditions.append(
+                            TAF_Closure.passthrough[macro[0].strip()](args[0], args[1])
+                        )
+                    elif len(args) == 3:
+                        conditions.append(
+                            TAF_Closure.passthrough[macro[0].strip()](
+                                args[0], args[1], args[2]
+                            )
+                        )
                     conditions.append(trail)
                     m = 2
                     while m < len(macro):
-                        conditions.append(str(macro[m]).format(**TAF_Closure.passthrough))
+                        conditions.append(
+                            str(macro[m]).format(**TAF_Closure.passthrough)
+                        )
                         m += 1
                 else:
                     conditions.append(str(t).format(**TAF_Closure.passthrough))
             else:
                 conditions.append(str(t).format(**TAF_Closure.passthrough))
 
-        return '\n'.join(conditions)
+        return "\n".join(conditions)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
