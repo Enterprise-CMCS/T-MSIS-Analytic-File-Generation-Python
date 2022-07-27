@@ -252,7 +252,6 @@ class IPH:
 									  cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY')}
 
 	            , DGNS_1_CCSR_DFLT_CTGRY_CD
-                , fasc.fed_srvc_ctgry_cd
             FROM (
                 select
                     *,
@@ -262,8 +261,6 @@ class IPH:
                 from
                     IP_HEADER_GROUPER
                 ) H
-                LEFT JOIN IP_HDR_ROLLED fasc
-                    ON H.ip_link_key = fasc.ip_link_key
         """
         runner.append(type(self).__name__, z)
 
@@ -278,8 +275,10 @@ class IPH:
                 INSERT INTO {runner.DA_SCHEMA}.taf_iph
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
-                FROM
-                    (SELECT * FROM IPH)
+                    ,fasc.fed_srvc_ctgry_cd
+                FROM IPH AS H
+                LEFT JOIN IP_HDR_ROLLED fasc
+                    ON H.ip_link_key = fasc.ip_link_key
         """
         runner.append(type(self).__name__, z)
 

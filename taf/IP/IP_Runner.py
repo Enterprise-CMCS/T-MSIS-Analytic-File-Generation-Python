@@ -81,7 +81,6 @@ class IP_Runner(TAF_Runner):
         grouper.AWS_Assign_Grouper_Data_Conv(
             "IP", "IP_HEADER", "IP_LINE", "DSCHRG_DT", True, True, True, True, True
         )
-        grouper.fasc_code("IP")
 
         # -------------------------------------------------
         #   Produces:
@@ -90,12 +89,17 @@ class IP_Runner(TAF_Runner):
         # -------------------------------------------------
         IPH().create(self)
 
+        grouper.fasc_code("IP")
+
+        IPH().build(self)
+
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
         #   - IPL
         # -------------------------------------------------
         IPL().create(self)
+        IPL().build(self)
 
 
 # -----------------------------------------------------------------------------
