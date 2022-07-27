@@ -878,25 +878,29 @@ class TAF_Grouper:
 
         z = f"""
             create or replace temporary view nppes_npi as
-                select *
-                from (
-                select cast(prvdr_npi as varchar(10)) as prvdr_npi
+                select
+                     a.prvdr_npi
+                    ,a.selected_txnmy_cd
 
-                    ,case when selected_txnmy_cdx is null then null
-                            else substring(json_serialize(selected_txnmy_cdx),3,10)
-                            end as selected_txnmy_cd
-
-                    ,case when selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_ICF_Taxo) }')
+                    ,case when a.selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_ICF_Taxo) }')
                             then 1 else 0 end as prvdr_txnmy_icf
 
-                    ,case when selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_NF_Taxo) }')
+                    ,case when a.selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_NF_Taxo) }')
                             then 1 else 0 end as prvdr_txnmy_nf
 
-                    ,case when selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_Othr_Res_Taxo) }')
+                    ,case when a.selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_Othr_Res_Taxo) }')
                             then 1 else 0 end as prvdr_txnmy_othr_res
 
-                    ,case when selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_IP_Taxo) }')
+                    ,case when a.selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_IP_Taxo) }')
                             then 1 else 0 end as prvdr_txnmy_IP
+                from (
+                    select
+                         cast(prvdr_npi as varchar(10)) as prvdr_npi
+
+                        ,case when selected_txnmy_cdx is null then null
+                            else substring(array_join(selected_txnmy_cdx,''),3,10)
+                            end as selected_txnmy_cd
+
                 from nppes_npi_step2
                 ) a
         """
