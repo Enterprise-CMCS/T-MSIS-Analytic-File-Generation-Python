@@ -34,6 +34,19 @@ class OT_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
+        #   1 - TAXO_SWITCHES
+        #   2 - NPPES_NPI_STEP2
+        #   3 - NPPES_NPI
+        #   4 - CCS_PROC
+        #   5 - CCS_DX
+        # -------------------------------------------------
+        grouper = TAF_Grouper(self)
+        grouper.fetch_nppes("OTHR_TOC")
+        grouper.fetch_ccs("OTHR_TOC")
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
         #   1 - HEADER_OTHR_TOC
         #   2 - HEADER2_OTHR_TOC
         #   3 - NO_DISCHARGE_DATES
@@ -43,16 +56,9 @@ class OT_Runner(TAF_Runner):
         #   7 - FA_HDR_OTHR_TOC
         # -------------------------------------------------
         claims = TAF_Claims(self)
-        claims.AWS_Claims_Family_Table_Link('tmsis', 'COT00002', 'TMSIS_CLH_REC_OTHR_TOC', 'OTHR_TOC', 'a.SRVC_ENDG_DT')
-
-        # -------------------------------------------------
-        #   V-7 !!!
-        # -------------------------------------------------
-        #   - taxo_switches
-        #   - nppes_npi_step2
-        #   - selected_txnmy_cdx
-        #   - ccs_proc
-        # -------------------------------------------------
+        claims.AWS_Claims_Family_Table_Link(
+            "tmsis", "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
+        )
 
         # -------------------------------------------------
         #   Produces:
@@ -63,7 +69,9 @@ class OT_Runner(TAF_Runner):
         #   4 - OTHR_TOC_HEADER
         # -------------------------------------------------
         ot = OT(self)
-        ot.AWS_Extract_Line('tmsis', 'OTHR_TOC', 'OTHR_TOC', 'COT00003', 'TMSIS_CLL_REC_OTHR_TOC')
+        ot.AWS_Extract_Line(
+            "tmsis", "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
+        )
 
         # -------------------------------------------------
         #   Produces:
@@ -73,34 +81,38 @@ class OT_Runner(TAF_Runner):
         #   3 - OTHR_TOC_HEADER_GROUPER
         # -------------------------------------------------
         grouper = TAF_Grouper(self)
-        grouper.AWS_Assign_Grouper_Data_Conv('OTHR_TOC', 'OTHR_TOC_HEADER', 'OTHR_TOC_LINE', 'a.SRVC_ENDG_DT_HEADER', False, True, True, True, True)
+        grouper.AWS_Assign_Grouper_Data_Conv(
+            "OTHR_TOC",
+            "OTHR_TOC_HEADER",
+            "OTHR_TOC_LINE",
+            "a.SRVC_ENDG_DT_HEADER",
+            False,
+            True,
+            True,
+            True,
+            True,
+        )
 
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
         #   - OTH
+        #   - TAF_OTH
         # -------------------------------------------------
         OTH().create(self)
+
+        grouper.fasc_code("OTHR_TOC")
+
         OTH().build(self)
 
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
         #   - OTL
+        #   - TAF_OTL
         # -------------------------------------------------
         OTL().create(self)
         OTL().build(self)
-
-        # -------------------------------------------------
-        #   V-7 ???
-        # -------------------------------------------------
-        #   - othr_toc_header_0
-        #   - othr_toc_lne
-        #   - othr_toc_combined
-        #   - othr_toc_lne_flag_tos_cat
-        #   - othr_toc_hdr_rolled_0
-        #   - othr_toc_hdr_rolled
-        # -------------------------------------------------
 
 
 # -----------------------------------------------------------------------------

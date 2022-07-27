@@ -33,6 +33,19 @@ class LT_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
+        #   1 - TAXO_SWITCHES
+        #   2 - NPPES_NPI_STEP2
+        #   3 - NPPES_NPI
+        #   4 - CCS_PROC
+        #   5 - CCS_DX
+        # -------------------------------------------------
+        grouper = TAF_Grouper(self)
+        grouper.fetch_nppes("LT")
+        grouper.fetch_ccs("LT")
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
         #   1 - HEADER_LT
         #   2 - HEADER2_LT
         #   3 - NO_DISCHARGE_DATES
@@ -42,16 +55,9 @@ class LT_Runner(TAF_Runner):
         #   7 - FA_HDR_LT
         # -------------------------------------------------
         claims = TAF_Claims(self)
-        claims.AWS_Claims_Family_Table_Link('tmsis', 'CLT00002', 'TMSIS_CLH_REC_LT', 'LT', 'SRVC_ENDG_DT')
-
-        # -------------------------------------------------
-        #   V-7 !!!
-        # -------------------------------------------------
-        #   - taxo_switches
-        #   - nppes_npi_step2
-        #   - selected_txnmy_cdx
-        #   - ccs_proc
-        # -------------------------------------------------
+        claims.AWS_Claims_Family_Table_Link(
+            "tmsis", "CLT00002", "TMSIS_CLH_REC_LT", "LT", "SRVC_ENDG_DT"
+        )
 
         # -------------------------------------------------
         #   Produces:
@@ -62,7 +68,7 @@ class LT_Runner(TAF_Runner):
         #   4 - LT_HEADER
         # -------------------------------------------------
         lt = LT(self)
-        lt.AWS_Extract_Line('tmsis', 'LT', 'LT', 'CLT00003', 'TMSIS_CLL_REC_LT')
+        lt.AWS_Extract_Line("tmsis", "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT")
 
         # -------------------------------------------------
         #   Produces:
@@ -72,39 +78,30 @@ class LT_Runner(TAF_Runner):
         #   3 - LT_HEADER_GROUPER
         # -------------------------------------------------
         grouper = TAF_Grouper(self)
-        grouper.AWS_Assign_Grouper_Data_Conv('LT', 'LT_HEADER', 'LT_LINE', 'SRVC_ENDG_DT', False, True, True, True, True)
+        grouper.AWS_Assign_Grouper_Data_Conv(
+            "LT", "LT_HEADER", "LT_LINE", "SRVC_ENDG_DT", False, True, True, True, True
+        )
+
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
         #   - LTH
+        #   - TAF_LTH
         # -------------------------------------------------
         LTH().create(self)
+
+        grouper.fasc_code("LT")
+
         LTH().build(self)
 
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
         #   - LTL
+        #   - TAF_LTL
         # -------------------------------------------------
         LTL().create(self)
         LTL().build(self)
-
-        # -------------------------------------------------
-        #   V-7 ???
-        # -------------------------------------------------
-        #   - lt_header_0
-        #   - lt_lne
-        #   - lt_combined
-        #   - lt_lne_flag_tos_cat
-        #   - lt_hdr_rolled_0
-        #   - lt_hdr_rolled
-        # -------------------------------------------------
-
-        # -------------------------------------------------
-        #   Populates:
-        # -------------------------------------------------
-        #   - TAF_LTL
-        # -------------------------------------------------
 
 
 # -----------------------------------------------------------------------------

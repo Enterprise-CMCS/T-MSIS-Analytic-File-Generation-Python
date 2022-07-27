@@ -1,6 +1,7 @@
 from taf.LT.LT_Metadata import LT_Metadata
 from taf.LT.LT_Runner import LT_Runner
 from taf.TAF import TAF
+from taf.TAF_Closure import TAF_Closure
 
 
 class LT(TAF):
@@ -12,7 +13,7 @@ class LT(TAF):
     # -----------------------------------------------------------------------------
     def __init__(self, runner: LT_Runner):
         super().__init__(runner)
-        self.st_fil_type = 'LT'
+        self.st_fil_type = "LT"
 
     # -----------------------------------------------------------------------------
     #
@@ -38,7 +39,7 @@ class LT(TAF):
         self.runner.append(self.st_fil_type, z)
 
         z = f"""
-            create or replace temporary view {fl2}_LINE as
+            create or replace temporary view {fl2}_LINE_PRE_NPPES as
             select
                 a.*,
                 row_number() over (
@@ -57,14 +58,7 @@ class LT(TAF):
                         a.TMSIS_FIL_NAME,
                         a.REC_NUM
                 ) as RN,
-
-                CASE
-                    WHEN A.SUBMTG_STATE_CD = '97' THEN '42'
-                    WHEN A.SUBMTG_STATE_CD = '96' THEN '19'
-                    WHEN A.SUBMTG_STATE_CD = '94' THEN '30'
-                    WHEN A.SUBMTG_STATE_CD = '93' THEN '56'
-                    ELSE A.SUBMTG_STATE_CD
-                    END AS NEW_SUBMTG_STATE_CD_LINE
+                , a.SUBMTG_STATE_CD AS NEW_SUBMTG_STATE_CD_LINE
 
             from
                 {fl2}_LINE_IN as A
@@ -78,6 +72,20 @@ class LT(TAF):
                 H.ADJSTMT_CLM_NUM = a.ADJSTMT_CLM_NUM_LINE and
                 H.ADJDCTN_DT = a.ADJDCTN_DT_LINE and
                 H.ADJSTMT_IND = a.LINE_ADJSTMT_IND
+        """
+        self.runner.append(self.st_fil_type, z)
+
+        # join line file with NPPES to pick up servicing provider taxonomy code
+        z = f"""
+            create or replace temporary view {fl2}_LINE as
+            select
+                a.*
+               ,{TAF_Closure.var_set_taxo("SELECTED_TXNMY_CD",cond1="8888888888", cond2="9999999999", cond3="000000000X", cond4="999999999X",
+									      cond5="NONE", cond6="XXXXXXXXXX", cond7="NO TAXONOMY", NEW="SRVCNG_PRVDR_NPPES_TXNMY_CD")}
+            from {fl2}_LINE_PRE_NPPES as a
+            left join NPPES_NPI n
+                on n.prvdr_npi = a.SRVCNG_PRVDR_NPI_NUM
+
         """
         self.runner.append(self.st_fil_type, z)
 
@@ -214,6 +222,7 @@ class LT(TAF):
                     (SELECT * FROM LTL)
         """
         self.runner.append(self.st_fil_type, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

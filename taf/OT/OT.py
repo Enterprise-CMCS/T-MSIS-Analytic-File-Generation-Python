@@ -1,6 +1,7 @@
 from taf.OT.OT_Metadata import OT_Metadata
 from taf.OT.OT_Runner import OT_Runner
 from taf.TAF import TAF
+from taf.TAF_Closure import TAF_Closure
 
 
 class OT(TAF):
@@ -12,7 +13,7 @@ class OT(TAF):
     # -----------------------------------------------------------------------------
     def __init__(self, runner: OT_Runner):
         super().__init__(runner)
-        self.st_fil_type = 'OTHR_TOC'
+        self.st_fil_type = "OTHR_TOC"
 
     # -----------------------------------------------------------------------------
     #
@@ -38,7 +39,7 @@ class OT(TAF):
         self.runner.append(self.st_fil_type, z)
 
         z = f"""
-            create or replace temporary view {fl2}_LINE as
+            create or replace temporary view {fl2}_LINE_PRE_NPPES as
             select
                 a.*,
                 row_number() over (
@@ -71,6 +72,22 @@ class OT(TAF):
                 H.ADJSTMT_CLM_NUM = a.ADJSTMT_CLM_NUM_LINE and
                 H.ADJDCTN_DT = a.ADJDCTN_DT_LINE and
                 H.ADJSTMT_IND = a.LINE_ADJSTMT_IND
+        """
+        self.runner.append(self.st_fil_type, z)
+
+        # join line file with NPPES to pick up servicing provider taxonomy code
+        z = f"""
+            create or replace temporary view {fl2}_LINE as
+            select
+                a.*
+                ,{TAF_Closure.var_set_taxo("SELECTED_TXNMY_CD",cond1="8888888888", cond2="9999999999", cond3="000000000X", cond4="999999999X",
+									      cond5="NONE", cond6="XXXXXXXXXX", cond7="NO TAXONOMY", NEW="SRVCNG_PRVDR_NPPES_TXNMY_CD")}
+                ,ccs.ccs as prcdr_ccs_ctgry_cd
+            from {fl2}_LINE_PRE_NPPES as a
+            left join NPPES_NPI n
+                on n.prvdr_npi = a.PRSCRBNG_PRVDR_NPI_NUM    ---misnomer on OT input
+            left join ccs_proc ccs
+                on ccs.cd_rng = a.prcdr_cd
         """
         self.runner.append(self.st_fil_type, z)
 
@@ -114,6 +131,7 @@ class OT(TAF):
                 HEADER.ADJSTMT_IND = RN.LINE_ADJSTMT_IND
         """
         self.runner.append(self.st_fil_type, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

@@ -10,7 +10,7 @@ from taf.TAF_Closure import TAF_Closure
 from taf.TAF_Metadata import TAF_Metadata
 
 
-class LTL():
+class LTL:
 
     # --------------------------------------------------------------------------------- }
     #
@@ -73,10 +73,10 @@ class LTL():
                 , case when PRVDR_FAC_TYPE_CD in ('100000000', '170000000', '250000000', '260000000', '270000000', '280000000', '290000000', '300000000', '310000000', '320000000', '330000000', '340000000', '380000000') then PRVDR_FAC_TYPE_CD
                     else NULL end as PRVDR_FAC_TYPE_CD
 
-                , { TAF_Closure.var_set_type6('NDC_QTY', cond1='999999', cond2='888888', cond3='88888.888', cond4='888888.888', cond5='999999.998', cond6='888888.880') }
-                , { TAF_Closure.var_set_type1('HCPCS_RATE') }
-                , { TAF_Closure.var_set_fills('NDC_CD', cond1='0', cond2='8', cond3='9', cond4='#', spaces=True) }
-                , { TAF_Closure.var_set_type4('UOM_CD', True, cond1='F2', cond2='ML', cond3='GR', cond4='UN', cond5='ME') }
+                , { TAF_Closure.var_set_type6('RC_QTY_ACTL', new='ACTL_SRVC_QTY',	cond1='88888.888', cond2='99999.990', cond3='999999') }
+                , { TAF_Closure.var_set_type6('RC_QTY_ALOWD', new='ALOWD_SRVC_QTY',	cond1='88888.888', cond2='888888.890') }
+                , { TAF_Closure.var_set_type1(var='REV_CD',lpad=4) }
+                , { TAF_Closure.var_set_type6('REV_CHRG_AMT', cond1='8888888888.88', cond2='88888888.88', cond3='888888888.88', cond4='88888888888.88', cond5='99999999.90', cond6='9999999999.99') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1='888888888.88', cond2='99999999.00', cond3='9999999999.99') }
                 , { TAF_Closure.var_set_type6('MDCD_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('OTHR_INSRNC_AMT', cond1='888888888.88', cond2='88888888888.00', cond3='88888888888.88') }
@@ -84,7 +84,6 @@ class LTL():
                 , { TAF_Closure.var_set_type6('TPL_AMT', cond1='888888888.88', cond2='88888888888.80', cond3='999999.99') }
 
                 ,RN as LINE_NUM
-
             FROM (
                 select
                     *,
@@ -114,6 +113,7 @@ class LTL():
         """
 
         runner.append(type(self).__name__, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
