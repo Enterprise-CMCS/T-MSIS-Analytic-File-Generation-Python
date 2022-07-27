@@ -34,8 +34,11 @@ class IP_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
-        #   1 - ccs_proc
-        #   2 - ccs_dx
+        #   1 - TAXO_SWITCHES
+        #   2 - NPPES_NPI_STEP2
+        #   3 - NPPES_NPI
+        #   4 - CCS_PROC
+        #   5 - CCS_DX
         # -------------------------------------------------
         grouper = TAF_Grouper(self)
         grouper.fetch_nppes("IP")

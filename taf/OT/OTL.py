@@ -10,7 +10,7 @@ from taf.TAF_Closure import TAF_Closure
 from taf.TAF_Metadata import TAF_Metadata
 
 
-class OTL():
+class OTL:
 
     # --------------------------------------------------------------------------------- }
     #
@@ -91,7 +91,8 @@ class OTL():
                 , { TAF_Closure.var_set_type4('UOM_CD', 'YES', cond1='F2', cond2='ML', cond3='GR', cond4='UN', cond5='ME') }
                 , { TAF_Closure.var_set_type6('NDC_QTY', cond1='999999', cond2='999999.998', cond3='888888.000', cond4='888888.880', cond5='88888.888', cond6='888888.888') }
                 , RN as LINE_NUM
-
+                , PRCDR_CCS_CTGRY_CD
+                , SRVCNG_PRVDR_NPPES_TXNMY_CD
             from (
                 select
                     *,
@@ -120,6 +121,7 @@ class OTL():
         """
 
         runner.append(type(self).__name__, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

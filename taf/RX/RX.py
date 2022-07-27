@@ -12,7 +12,7 @@ class RX(TAF):
     # -----------------------------------------------------------------------------
     def __init__(self, runner: RX_Runner):
         super().__init__(runner)
-        self.st_fil_type = 'RX'
+        self.st_fil_type = "RX"
 
     # -----------------------------------------------------------------------------
     #
@@ -195,6 +195,7 @@ class RX(TAF):
                     (SELECT * FROM RXL)
         """
         self.runner.append(self.st_fil_type, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

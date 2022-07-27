@@ -9,7 +9,7 @@ from taf.OT.OT_Metadata import OT_Metadata
 from taf.TAF_Closure import TAF_Closure
 
 
-class OTH():
+class OTH:
 
     # --------------------------------------------------------------------------------- }
     #
@@ -99,7 +99,7 @@ class OTH():
                 , { TAF_Closure.var_set_type1('RMTNC_NUM') }
                 , { TAF_Closure.var_set_type6('DAILY_RATE', cond1='88888', cond2='88888.80', cond3='88888.88') }
                 , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2') }
-                , { TAF_Closure.var_set_type6('TOT_BILL_AMT', cond1='999999.00', cond2='888888888.88', cond3='9999999.99', cond4='99999999.90', cond5='999999.99') }
+                , { TAF_Closure.var_set_type6('TOT_BILL_AMT', cond1='999999.00', cond2='888888888.88', cond3='9999999.99', cond4='99999999.90', cond5='999999.99', cond6='9999999999.99') }
                 , { TAF_Closure.var_set_type6('TOT_ALOWD_AMT', cond1='99999999', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('TOT_MDCD_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('TOT_COPAY_AMT', cond1='888888888.88', cond2='9999999.99', cond3='88888888888.00') }
@@ -111,11 +111,11 @@ class OTH():
                 , { TAF_Closure.var_set_type6('TP_COPMT_PD_AMT', cond1='888888888.88', cond2='888888888', cond3='888888888.00', cond4='99999999999.00') }
                 , { TAF_Closure.var_set_type2('MDCR_CMBND_DDCTBL_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2('mdcr_reimbrsmt_type_cd', 2, cond1='01', cond2='02', cond3='03', cond4='04', cond5='05', cond6='06', cond7='07', cond8='08', cond9='09') }
-                , { TAF_Closure.var_set_type6('BENE_COINSRNC_AMT', cond1='888888888.88', cond2='888888888', cond3='88888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_COINSRNC_PD_AMT', new='BENE_COINSRNC_AMT',cond1='888888888.88', cond2='888888888', cond3='88888888888.00') }
                 , { TAF_Closure.fix_old_dates('BENE_COINSRNC_PD_DT') }
-                , { TAF_Closure.var_set_type6('BENE_COPMT_AMT',  cond1='888888888.88', cond2='888888888', cond3='88888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_COPMT_PD_AMT', new='BENE_COPMT_AMT', cond1='888888888.88', cond2='888888888', cond3='88888888888.00') }
                 , { TAF_Closure.fix_old_dates('BENE_COPMT_PD_DT') }
-                , { TAF_Closure.var_set_type6('BENE_DDCTBL_AMT',  cond1='888888888.88', cond2='888888888', cond3='88888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT', new='BENE_DDCTBL_AMT', cond1='888888888.88', cond2='888888888', cond3='88888888888.00') }
                 , { TAF_Closure.fix_old_dates('BENE_DDCTBL_PD_DT') }
                 , { TAF_Closure.var_set_type2('COPAY_WVD_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.fix_old_dates('CPTATD_AMT_RQSTD_DT') }
@@ -161,7 +161,13 @@ class OTH():
 
                 , cast(nullif(IAP_CONDITION_IND, IAP_CONDITION_IND) as char(6)) as IAP_COND_IND
                 , cast(nullif(PRIMARY_HIERARCHICAL_CONDITION, PRIMARY_HIERARCHICAL_CONDITION) as char(9)) as PRMRY_HIRCHCL_COND
-
+                ,to_timestamp('{runner.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
+                , { TAF_Closure.fix_old_dates('SRVC_ENDG_DT_DRVD') }
+                , { TAF_Closure.var_set_type2('SRVC_ENDG_DT_CD',0,cond1='1',cond2='2',cond3='3',cond4='4',cond5='5') }
+                , { TAF_Closure.var_set_taxo('BLG_PRVDR_NPPES_TXNMY_CD',cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X',
+                                                    cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
+                ,DGNS_1_CCSR_DFLT_CTGRY_CD
             from (
                 select
                     *,
@@ -184,12 +190,17 @@ class OTH():
 
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_oth
-                SELECT
+                SELECT h.da_run_id,
+                    ,h.ot_link_key
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
-                FROM OTH
+                    ,fasc.fed_srvc_ctgry_cd
+                FROM OTH as h
+                LEFT JOIN OTHR_TOC_HDR_ROLLED fasc
+                    on h.ot_link_key = fasc.ot_link_key
         """
 
         runner.append(type(self).__name__, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

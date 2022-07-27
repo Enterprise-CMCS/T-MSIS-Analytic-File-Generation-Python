@@ -1,4 +1,5 @@
 from taf.TAF_Claims import TAF_Claims
+from taf.TAF_Grouper import TAF_Grouper
 from taf.TAF_Runner import TAF_Runner
 
 
@@ -33,6 +34,19 @@ class RX_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
+        #   1 - TAXO_SWITCHES
+        #   2 - NPPES_NPI_STEP2
+        #   3 - NPPES_NPI
+        #   4 - CCS_PROC
+        #   5 - CCS_DX
+        # -------------------------------------------------
+        grouper = TAF_Grouper(self)
+        grouper.fetch_nppes("RX")
+        grouper.fetch_ccs("RX")
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
         #   1 - HEADER_RX
         #   2 - HEADER2_RX
         #   3 - NO_DISCHARGE_DATES
@@ -42,16 +56,9 @@ class RX_Runner(TAF_Runner):
         #   7 - FA_HDR_RX
         # -------------------------------------------------
         claims = TAF_Claims(self)
-        claims.AWS_Claims_Family_Table_Link('tmsis', 'CRX00002', 'TMSIS_CLH_REC_RX', 'RX', 'RX_FILL_DT')
-
-        # -------------------------------------------------
-        #   V-7 !!!
-        # -------------------------------------------------
-        #   - taxo_switches
-        #   - nppes_npi_step2
-        #   - selected_txnmy_cdx
-        #   - ccs_proc
-        # -------------------------------------------------
+        claims.AWS_Claims_Family_Table_Link(
+            "tmsis", "CRX00002", "TMSIS_CLH_REC_RX", "RX", "RX_FILL_DT"
+        )
 
         # -------------------------------------------------
         #   Produces:
@@ -62,7 +69,7 @@ class RX_Runner(TAF_Runner):
         #   4 - RX_HEADER
         # -------------------------------------------------
         rx = RX(self)
-        rx.AWS_Extract_Line('tmsis', 'RX', 'RX', 'CRX00003', 'TMSIS_CLL_REC_RX')
+        rx.AWS_Extract_Line("tmsis", "RX", "RX", "CRX00003", "TMSIS_CLL_REC_RX")
 
         # -------------------------------------------------
         #   Produces:
@@ -87,19 +94,16 @@ class RX_Runner(TAF_Runner):
         RXL().create(self)
 
         # -------------------------------------------------
-        #   V-7 ???
+        #   Produces:
         # -------------------------------------------------
-        #   - rx_header_0
-        #   - rx_lne
-        #   - rx_combined
-        #   - rx_lne_flag_tos_cat
-        #   - rx_hdr_rolled_0
-        #   - rx_hdr_rolled
+        #
         # -------------------------------------------------
+        grouper.fasc_code("RX")
 
         # -------------------------------------------------
         #   Populates:
         # -------------------------------------------------
+        #   - TAF_RXH
         #   - TAF_RXL
         # -------------------------------------------------
         RXH().build(self)
