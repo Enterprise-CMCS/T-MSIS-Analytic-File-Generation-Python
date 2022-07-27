@@ -82,7 +82,7 @@ class IP(TAF):
             select
                 a.*
                ,{TAF_Closure.var_set_taxo("SELECTED_TXNMY_CD",cond1="8888888888", cond2="9999999999", cond3="000000000X", cond4="999999999X",
-									      cond5="NONE", cond6="XXXXXXXXXX", cond7="NO TAXONOMY", NEW="SRVCNG_PRVDR_NPPES_TXNMY_CD")}
+									      cond5="NONE", cond6="XXXXXXXXXX", cond7="NO TAXONOMY", new="SRVCNG_PRVDR_NPPES_TXNMY_CD")}
             from {fl2}_LINE_PRE_NPPES as a
             left join NPPES_NPI n
                 on n.prvdr_npi = a.PRSCRBNG_PRVDR_NPI_NUM    --misnomer on IP input

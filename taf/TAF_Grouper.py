@@ -713,43 +713,93 @@ class TAF_Grouper:
     def fetch_nppes(self, filetyp: str):
         z = f"""
             create or replace temporary view taxo_switches as
-            select prvdr_npi
+            select prvdr_npi,
         """
 
-        for i in range(1, 13):
-            z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' ')::char,
+        for i in range(1, 15):
+            z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' '),
             """
 
         z += f"""
-                            nvl(hc_prvdr_prmry_txnmy_sw_15,' ')::char))))))))))))))
+                            nvl(hc_prvdr_prmry_txnmy_sw_15,' ')))))))))))))))
                         as sw_positions
-
-                    ,regexp_count(sw_positions,'Y') as taxo_switches
         """
 
-        for i in range(1, 14):
-            z += f"""
-                    ,case when hc_prvdr_txnmy_cd_{i} is not null and
-                            hc_prvdr_txnmy_cd_{i} <> ' ' then 'X' else ' ' end as taxopos{i}
-            """
+        # ------------------------------------------------------------------------------
+        #   taxo switches
+        # ------------------------------------------------------------------------------
 
-        for i in range(1, 13):
+        # ,length(sw_positions)
+        z += ', length('
+
+        for i in range(1, 15):
+            z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' '),"""
+        z += f"""nvl(hc_prvdr_prmry_txnmy_sw_15,' ')))))))))))))))"""
+
+        # - coalesce(length(regexp_replace(sw_positions, 'Y', ''), 0)) as taxo_switches
+        z += ') - coalesce(length(regexp_replace('
+
+        for i in range(1, 15):
+            z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' '),"""
+        z += f"""nvl(hc_prvdr_prmry_txnmy_sw_15,' ')))))))))))))))"""
+
+        z += ", 'Y', '')), 0) as taxo_switches,"
+        # ------------------------------------------------------------------------------
+
+        # ------------------------------------------------------------------------------
+        #   taxopos
+        # ------------------------------------------------------------------------------
+        taxopos = f"""
+            case when hc_prvdr_txnmy_cd_{{0}} is not null and
+                    hc_prvdr_txnmy_cd_{{0}} <> ' ' then 'X'
+            """
+        # ------------------------------------------------------------------------------
+        for i in range(1, 16):
             z += f"""
-                 concat(taxopos{i},
+                {taxopos.format(i)} else ' ' end as taxopos{i},
+            """
+        # ------------------------------------------------------------------------------
+
+        for i in range(1, 15):
+            z += f"""
+                 concat({taxopos.format(i)} else ' ' end,
             """
 
         z += f"""
-                        taxopos15))))))))))))))
-                        as cd_positions
+                    {taxopos.format(15)} else ' ' end))))))))))))))
+                    as cd_positions
 
-                    ,regexp_count(cd_positions,'X') as taxo_cds
         """
 
-        for i in range(1, 14):
+        # ------------------------------------------------------------------------------
+        #   taxo_cds
+        # ------------------------------------------------------------------------------
+
+        # ,length(cd_positions)
+        z += ', length('
+
+        for i in range(1, 15):
+            z += f"""concat(nvl({taxopos.format(i)} else ' ' end,' '),"""
+        z += f"""nvl({taxopos.format(15)} else ' ' end, ' ')))))))))))))))"""
+
+        # - coalesce(length(regexp_replace(cd_positions, 'X', ''), 0)) as taxo_cds
+        z += ') - coalesce(length(regexp_replace('
+
+        for i in range(1, 15):
+            z += f"""concat(nvl({taxopos.format(i)} else ' ' end, ' '),"""
+        z += f"""nvl({taxopos.format(15)} else ' ' end, ' ')))))))))))))))"""
+
+        z += ", 'X', '')), 0) as taxo_cds,"
+
+        # ------------------------------------------------------------------------------
+
+        for i in range(1, 15):
             z += f"""
-                    ,case when hc_prvdr_txnmy_cd_{i} is not null and
+                    case when hc_prvdr_txnmy_cd_{i} is not null and
                             hc_prvdr_txnmy_cd_{i} <> ' ' then {i} else null end as taxo{i}
             """
+            if i < 14:
+                z += ','
 
         z += f"""
             from {self.runner.DA_SCHEMA}.DATA_ANLTCS_PRVDR_NPI_DATA_VW
@@ -765,30 +815,30 @@ class TAF_Grouper:
                 ,cd_positions
                 ,position('Y' in sw_positions) as primary_switch_position
                 ,case when taxo_switches = 1 then
-                            subarray(array(
+                            slice(array(
         """
 
-        for i in range(1, 13):
+        for i in range(1, 15):
             z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
         """
 
         z += f"""
-                                            nvl(hc_prvdr_txnmy_cd_15,' ')),position('Y' in sw_positions)-1,1)
+                                            nvl(hc_prvdr_txnmy_cd_15,' ')),position('Y' in sw_positions),1)
                         when taxo_switches = 0 and taxo_cds = 1 then
-                            subarray(array(
+                            slice(array(
         """
 
-        for i in range(1, 13):
+        for i in range(1, 15):
             z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
         """
 
         z += f"""
-                                            nvl(hc_prvdr_txnmy_cd_15,' ')),position('X' in cd_positions)-1,1)
+                                            nvl(hc_prvdr_txnmy_cd_15,' ')),position('X' in cd_positions),1)
                         when taxo_switches = 0 and taxo_cds > 1 then null
                         when taxo_switches > 1 then
-                            subarray(array(
+                            slice(array(
         """
-        for i in range(1, 13):
+        for i in range(1, 15):
             z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
         """
 
@@ -796,23 +846,23 @@ class TAF_Grouper:
              nvl(hc_prvdr_txnmy_cd_15,' ')),least(
         """
 
-        for j in range(1, 13):
+        for j in range(1, 14):
             z += f"""
                  taxo{j},
             """
 
         z += f"""
-                 taxo15)-1,1)
+                 taxo14)-1,1)
                         else null
                     end as selected_txnmy_cdx
         """
 
-        for i in range(1, 14):
+        for i in range(1, 16):
             z += f"""
                  ,hc_prvdr_txnmy_cd_{i}
             """
 
-        for i in range(1, 14):
+        for i in range(1, 15):
             z += f"""
                  ,taxo{i}
             """
@@ -827,7 +877,7 @@ class TAF_Grouper:
         self.runner.append(filetyp, z)
 
         z = f"""
-            create temp table nppes_npi as
+            create or replace temporary view nppes_npi as
                 select *
                 from (
                 select cast(prvdr_npi as varchar(10)) as prvdr_npi
@@ -836,16 +886,16 @@ class TAF_Grouper:
                             else substring(json_serialize(selected_txnmy_cdx),3,10)
                             end as selected_txnmy_cd
 
-                    ,case when selected_txnmy_cd in { TAF_Metadata.vs_ICF_Taxo }
+                    ,case when selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_ICF_Taxo) }')
                             then 1 else 0 end as prvdr_txnmy_icf
 
-                    ,case when selected_txnmy_cd in { TAF_Metadata.vs_NF_Taxo }
+                    ,case when selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_NF_Taxo) }')
                             then 1 else 0 end as prvdr_txnmy_nf
 
-                    ,case when selected_txnmy_cd in { TAF_Metadata.vs_Othr_Res_Taxo }
+                    ,case when selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_Othr_Res_Taxo) }')
                             then 1 else 0 end as prvdr_txnmy_othr_res
 
-                    ,case when selected_txnmy_cd in { TAF_Metadata.vs_IP_Taxo }
+                    ,case when selected_txnmy_cd in ('{ "','".join(TAF_Metadata.vs_IP_Taxo) }')
                             then 1 else 0 end as prvdr_txnmy_IP
                 from nppes_npi_step2
                 ) a
@@ -863,13 +913,13 @@ class TAF_Grouper:
             SELECT cd_rng
                 ,ccs
                 ,CASE
-                    WHEN ccs IN { TAF_Metadata.vs_Lab_CCS_Cat }
+                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
                         THEN 'Lab       '
-                    WHEN ccs IN { TAF_Metadata.vs_Rad_CCS_Cat }
+                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_Rad_CCS_Cat) }')
                         THEN 'Rad       '
-                    WHEN ccs IN { TAF_Metadata.vs_DME_CCS_Cat }
+                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_DME_CCS_Cat) }')
                         THEN 'DME       '
-                    WHEN ccs IN { TAF_Metadata.vs_transp_CCS_Cat }
+                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_transp_CCS_Cat) }')
                         THEN 'Transprt  '
                     ELSE NULL
                     END AS code_cat
@@ -905,7 +955,7 @@ class TAF_Grouper:
                 ,clm_type_cd
                 ,srvc_trkng_type_cd
                 ,srvc_trkng_pymt_amt
-		        ,blg_prvdr_txnmy_cd
+                ,blg_prvdr_txnmy_cd
         """
 
         if filetyp.casefold() == "ip":
@@ -1019,77 +1069,77 @@ class TAF_Grouper:
         if filetyp.casefold() != "rx":
             z += f"""
                  srvcng_prvdr_txnmy_cd
-		         ,rev_cd
-		         ,min(CASE
-			         	WHEN rev_cd IS NULL
-					         THEN 1
-				         ELSE 0
-				         END) OVER (
-			         PARTITION BY submtg_state_cd
-			         ,{filetyp}_link_key
-			         ) AS all_null_rev_cd
-		         ,max(CASE
-		         		WHEN rev_cd IN (
-				         		'0510'
-				         		,'0511'
-					         	,'0512'
-					         	,'0513'
-					         	,'0514'
-					         	,'0515'
-					         	,'0516'
-						        ,'0517'
-					         	,'0518'
-					        	,'0519'
-					        	,'0520'
-					        	,'0521'
-						        ,'0522'
-					        	,'0523'
-					        	,'0524'
-					        	,'0525'
-					        	,'0526'
-					        	,'0527'
-					        	,'0528'
-					        	,'0529'
-				         		)
-				         	THEN 1
-				         ELSE 0
-				         END) OVER (
-			         PARTITION BY submtg_state_cd
-			         ,{filetyp}_link_key
-			         ) AS ever_clinic_rev
-		         ,max(CASE
-				         WHEN rev_cd IN (
-					         	'0650'
-					         	,'0651'
-						        ,'0652'
-						        ,'0653'
-						        ,'0654'
-						        ,'0655'
-					        	,'0656'
-					        	,'0657'
-					        	,'0658'
-					        	,'0659'
-					        	,'0115'
-					        	,'0125'
-					        	,'0135'
-					        	,'0145'
-					         	)
-					         THEN 1
-				         ELSE 0
-				         END) OVER (
-			         PARTITION BY submtg_state_cd
-			         ,{filetyp}_link_key
-			         ) AS ever_hospice_rev
-		         ,min(CASE
-				         WHEN rev_cd IN { TAF_Metadata.vs_HH_Rev_cd }
-				         	THEN 1
-				         WHEN rev_cd IS NOT NULL
-				         	THEN 0
-				         ELSE NULL
-			         	END) OVER (
-			         PARTITION BY submtg_state_cd
-			         ,{filetyp}_link_key
-			         ) AS only_hh_rev
+                 ,rev_cd
+                 ,min(CASE
+                         WHEN rev_cd IS NULL
+                             THEN 1
+                         ELSE 0
+                         END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS all_null_rev_cd
+                 ,max(CASE
+                         WHEN rev_cd IN (
+                                 '0510'
+                                ,'0511'
+                                ,'0512'
+                                ,'0513'
+                                ,'0514'
+                                ,'0515'
+                                ,'0516'
+                                ,'0517'
+                                ,'0518'
+                                ,'0519'
+                                ,'0520'
+                                ,'0521'
+                                ,'0522'
+                                ,'0523'
+                                ,'0524'
+                                ,'0525'
+                                ,'0526'
+                                ,'0527'
+                                ,'0528'
+                                ,'0529'
+                                )
+                             THEN 1
+                         ELSE 0
+                         END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS ever_clinic_rev
+                 ,max(CASE
+                         WHEN rev_cd IN (
+                                 '0650'
+                                ,'0651'
+                                ,'0652'
+                                ,'0653'
+                                ,'0654'
+                                ,'0655'
+                                ,'0656'
+                                ,'0657'
+                                ,'0658'
+                                ,'0659'
+                                ,'0115'
+                                ,'0125'
+                                ,'0135'
+                                ,'0145'
+                                 )
+                             THEN 1
+                         ELSE 0
+                         END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS ever_hospice_rev
+                 ,min(CASE
+                         WHEN rev_cd IN { TAF_Metadata.vs_HH_Rev_cd }
+                             THEN 1
+                         WHEN rev_cd IS NOT NULL
+                             THEN 0
+                         ELSE NULL
+                         END) OVER (
+                     PARTITION BY submtg_state_cd
+                     ,{filetyp}_link_key
+                     ) AS only_hh_rev
             """
 
         if filetyp.casefold() == "ot":
@@ -1151,27 +1201,27 @@ class TAF_Grouper:
             z += f"""
             ,ndc_cd
             ,min(CASE
-				WHEN ndc_cd IS NULL
-					THEN 1
-				ELSE 0
-				END) OVER (
-			PARTITION BY submtg_state_cd
-			,{filetyp}_link_key
-			) AS all_null_ndc_cd
-		    ,max(CASE
-				WHEN (
-						(
-							length(ndc_cd) = 10
-							OR length(ndc_cd) = 11
-							)
-						AND ndc_cd ! ~ '([^0-9])'
-						)
-					THEN 1
-				ELSE 0
-				END) OVER (
-			PARTITION BY submtg_state_cd
-			,{filetyp}_link_key
-			) AS ever_valid_ndc
+                WHEN ndc_cd IS NULL
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS all_null_ndc_cd
+            ,max(CASE
+                WHEN (
+                        (
+                            length(ndc_cd) = 10
+                            OR length(ndc_cd) = 11
+                            )
+                        AND ndc_cd ! ~ '([^0-9])'
+                        )
+                    THEN 1
+                ELSE 0
+                END) OVER (
+            PARTITION BY submtg_state_cd
+            ,{filetyp}_link_key
+            ) AS ever_valid_ndc
             """
 
         z += f"""
@@ -1534,41 +1584,41 @@ class TAF_Grouper:
 
         # create columns for non financial claims
         z = f"""
-            create temp table {filetyp}_LNE_FLAG_TOS_CNT as
+            create or replace temporary view {filetyp}_LNE_FLAG_TOS_CNT as
             select *
         """
 
         if filetyp.casefold() == "ot":
             z += f"""
-                    ,max(dental_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as dental_clms
-                    ,sum(dental_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as dental_lne_cnts
+                    ,max(dental_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as dental_clms
+                    ,sum(dental_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as dental_lne_cnts
 
-                    ,max(trnsprt_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as trnsprt_clms
-                    ,sum(trnsprt_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as trnsprt_lne_cnts
+                    ,max(trnsprt_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as trnsprt_clms
+                    ,sum(trnsprt_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as trnsprt_lne_cnts
 
-                    ,max(othr_hcbs_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as othr_hcbs_clms
-                    ,sum(othr_hcbs_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as othr_hcbs_lne_cnts
+                    ,max(othr_hcbs_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as othr_hcbs_clms
+                    ,sum(othr_hcbs_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as othr_hcbs_lne_cnts
 
                     ,min(case when Lab_lne_clms=1 then 1
                             when prcdr_cd is null and hcpcs_rate is null then null
-                            else 0 end) over (partition by submtg_state_cd,&fl._link_key) as Lab_clms
+                            else 0 end) over (partition by submtg_state_cd,{filetyp}_link_key) as Lab_clms
 
-                    ,sum(Lab_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as Lab_lne_cnts
+                    ,sum(Lab_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as Lab_lne_cnts
 
                     ,min(case when Rad_lne_clms=1 then 1
                             when prcdr_cd is null and hcpcs_rate is null then null
-                            else 0 end) over (partition by submtg_state_cd,&fl._link_key) as Rad_clms
+                            else 0 end) over (partition by submtg_state_cd,{filetyp}_link_key) as Rad_clms
 
-                    ,sum(Rad_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as Rad_lne_cnts
+                    ,sum(Rad_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as Rad_lne_cnts
 
-                    ,max(DME_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as DME_clms
-                    ,sum(DME_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as DME_lne_cnts
+                    ,max(DME_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as DME_clms
+                    ,sum(DME_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as DME_lne_cnts
             """
 
         if filetyp.casefold() == "rx":
             z += f"""
-                    ,max(DME_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as DME_clms
-                    ,sum(DME_lne_clms) over (partition by submtg_state_cd,&fl._link_key) as DME_lne_cnts
+                    ,max(DME_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as DME_clms
+                    ,sum(DME_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as DME_lne_cnts
             """
 
         z += f"""
@@ -1723,7 +1773,7 @@ class TAF_Grouper:
                             ,case when not_fin_clm=1 and
                                         (substring(bill_type_cd_upd,1,3) in ('032','033','034') or
                                         only_hh_rev =1
-                                        %if "&fl."="ot" %then %do;
+                                        %if "{filetyp}"="ot" %then %do;
                                         or  only_hh_procs=1
                                         %end;
                                         )
@@ -1781,7 +1831,7 @@ class TAF_Grouper:
         # not rolling up because some line columns are needed for qa tab
         # ---------------------------------------------------------------------
         z += f"""
-             create temp table {filetyp}_HDR_ROLLED_0 as
+             create or replace temporary view {filetyp}_HDR_ROLLED_0 as
              select b.*
                      ,inp_clms + rx_clms + ic_clms + nf_clms + othr_res_clms +
                      dental_clms + trnsprt_clms + othr_hcbs_clms + op_hosp_clms +
