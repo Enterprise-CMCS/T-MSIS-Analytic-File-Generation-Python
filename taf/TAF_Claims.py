@@ -179,12 +179,12 @@ class TAF_Claims():
     #
     # ---------------------------------------------------------------------------------
     def AWS_Claims_Family_Table_Link(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, analysis_date):
-
         # -----------------------------------------------------------------------------
         #
         #  HEADER_?
         #
         # -----------------------------------------------------------------------------
+        # FIXME: change base table or view when TMSIS changes are made
         z = f"""
             create or replace temporary view HEADER_{fl} as
 
@@ -193,7 +193,7 @@ class TAF_Claims():
                 { self.analysis_date(fl, analysis_date) }
 
             from
-                {TMSIS_SCHEMA}.{_2x_segment} A
+                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
 
             where
                 ( {self.where_analysis_date(fl, analysis_date, self.rep_yr, self.rep_mo) } )
