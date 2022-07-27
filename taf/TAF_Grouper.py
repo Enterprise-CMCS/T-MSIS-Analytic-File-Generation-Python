@@ -914,6 +914,7 @@ class TAF_Grouper:
     # ---------------------------------------------------------------------------------
     def fetch_ccs(self, filetyp: str):
         z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW ccs_proc AS
             SELECT cd_rng
                 ,ccs
                 ,CASE
@@ -932,6 +933,7 @@ class TAF_Grouper:
         self.runner.append(filetyp, z)
 
         z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW ccs_dx AS
             SELECT icd_10_cm_cd
                 ,dflt_ccsr_ctgry_ip
                 ,dflt_ccsr_ctgry_ip AS dflt_ccsr_ctgry_lt
