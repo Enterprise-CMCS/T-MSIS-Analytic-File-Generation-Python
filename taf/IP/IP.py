@@ -23,6 +23,7 @@ class IP(TAF):
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
 
         # Create a temporary line file
+        # FIXME: change base table or view when TMSIS changes are made
         z = f"""
             create or replace temporary view {fl2}_LINE_IN as
             select
@@ -30,11 +31,11 @@ class IP(TAF):
                 { IP_Metadata.selectDataElements(tab_no, 'a') }
 
             from
-                {TMSIS_SCHEMA}.{_2x_segment} A
+                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
 
             where
                 a.TMSIS_ACTV_IND = 1
-                and (a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})
+                and concat(a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})
         """
         self.runner.append(self.st_fil_type, z)
 

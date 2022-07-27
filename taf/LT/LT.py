@@ -23,6 +23,7 @@ class LT(TAF):
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
 
         # Subset line file and attach row numbers to all records belonging to an ICN set.  Fix PA & IA
+        # FIXME: change base table or view when TMSIS changes are made
         z = f"""
             create or replace temporary view {fl2}_LINE_IN as
             select
@@ -30,7 +31,7 @@ class LT(TAF):
                 { LT_Metadata.selectDataElements(tab_no, 'a') }
 
             from
-                {TMSIS_SCHEMA}.{_2x_segment} A
+                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
 
             where
                 a.TMSIS_ACTV_IND = 1

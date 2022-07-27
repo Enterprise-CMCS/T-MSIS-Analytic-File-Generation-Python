@@ -241,7 +241,7 @@ class IPH:
                 , IP_SUD_TAXONOMY_IND as IP_SUD_TXNMY_IND
                 , null::char(3) as MAJ_DGNSTC_CTGRY
                 , cast(nullif(IAP_CONDITION_IND, IAP_CONDITION_IND) as char(6)) as IAP_COND_IND
-                , cast(nullif(PRIMARY_HIERARCHICAL_CONDITION, PRIMARY_HIERARCHICAL_CONDITION) as char(9)) as PRMRY_HIRCHCL_COND,
+                , cast(nullif(PRIMARY_HIERARCHICAL_CONDITION, PRIMARY_HIERARCHICAL_CONDITION) as char(9)) as PRMRY_HIRCHCL_COND
 
                 , from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS
                 , from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS

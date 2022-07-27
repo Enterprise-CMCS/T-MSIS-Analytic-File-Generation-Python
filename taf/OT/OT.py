@@ -23,6 +23,7 @@ class OT(TAF):
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
 
         # Create a temporary line file
+        # FIXME: change base table or view when TMSIS changes are made
         z = f"""
             create or replace temporary view {fl2}_LINE_IN as
             select
@@ -30,7 +31,7 @@ class OT(TAF):
                 { OT_Metadata.selectDataElements(tab_no, 'a') }
 
             from
-                {TMSIS_SCHEMA}.{_2x_segment} A
+                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
 
             where
                 a.TMSIS_ACTV_IND = 1

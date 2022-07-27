@@ -55,6 +55,20 @@ class IP_Metadata:
     #
     #
     # ---------------------------------------------------------------------------------
+    def finalFormatter(output_columns):
+
+        new_line_comma = "\n\t\t\t,"
+
+        columns = output_columns.copy()
+
+        return new_line_comma.join(columns)
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
     def dates_of_service(colname: str, alias: str):
         return f"""
             case
@@ -218,8 +232,7 @@ class IP_Metadata:
             "DGNS_POA_9_CD_IND",
             "DRG_CD",
             "DRG_CD_IND",
-            "SRVC_ENDG_DT_DRVD_H",
-            "SRVC_ENDG_DT_CD_H" "DSCHRG_DT",
+            "DSCHRG_DT",
             "DSCHRG_HR_NUM",
             "DRG_DESC",
             "DRG_OUTLIER_AMT",

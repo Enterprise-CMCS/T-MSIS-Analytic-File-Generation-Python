@@ -1064,14 +1064,12 @@ class TAF_Closure:
     # --------------------------------------------------------------------
     def misslogic(var, length):
         return f"""
-               (
-               {var} LIKE (8 { "{length}" })
-               OR {var} LIKE (9 { "{length}" })
-               OR {var} LIKE (0 { "{length}" })
-               OR {var} ! ~ '[(a-z)|(A-Z)|(0-9)]'
+               {var} LIKE '8{{{length}}}'
+               OR {var} LIKE '9{{{length}}}'
+               OR {var} LIKE '0{{{length}}}'
+               OR {var} not rlike '[(a-z)|(A-Z)|(0-9)]'
                OR {var} = '&'
                OR {var} IS NULL
-               )
         """
 
     # --------------------------------------------------------------------

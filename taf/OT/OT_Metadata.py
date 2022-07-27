@@ -88,31 +88,6 @@ class OT_Metadata:
     #
     #
     # ---------------------------------------------------------------------------------
-    def deriveENDG_DT(colname: str, alias: str):
-        return f"""
-               coalesce({alias}.SRVC_ENDG_DT,{alias}.SRVC_BGNNG_DT) as {colname}
-        """
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    def deriveENDG_DT_CD(colname: str, alias: str):
-        return f"""
-               case when {alias}.SRVC_ENDG_DT is not null then '2'
-                    when {alias}.SRVC_ENDG_DT is null and {alias}.SRVC_BGNNG_DT is not null then '3'
-                    else null
-               end as {colname}
-        """
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     cleanser = {
         "ADJDCTN_DT": TAF_Closure.coalesce_date,
         "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
@@ -134,8 +109,6 @@ class OT_Metadata:
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "SRVC_ENDG_DT": dates_of_service,
-        "SRVC_ENDG_DT_DRVD_H": deriveENDG_DT,
-        "SRVC_ENDG_DT_CD_H": deriveENDG_DT_CD,
     }
 
     # ---------------------------------------------------------------------------------
