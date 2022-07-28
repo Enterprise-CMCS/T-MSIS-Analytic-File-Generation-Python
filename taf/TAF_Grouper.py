@@ -641,7 +641,18 @@ class TAF_Grouper:
             create or replace temporary view {clm_tbl}_STEP1 as
             select
                 a.*
-                ,ccs_dx.dflt_ccsr_ctgry_{filetyp} as dgns_1_ccsr_dflt_ctgry_cd
+            """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ccs_dx.dflt_ccsr_ctgry_ot as dgns_1_ccsr_dflt_ctgry_cd
+            """
+        else:
+            z += f"""
+                 ,ccs_dx.dflt_ccsr_ctgry_{filetyp} as dgns_1_ccsr_dflt_ctgry_cd
+            """
+
+        z += f"""
                 { self.select_condition_category(MDC, IAP, PHC) }
                 { self.icd(MH_SUD, filetyp) }
                 { self.select_taxonomy(TAXONOMY, filetyp) }
@@ -680,7 +691,7 @@ class TAF_Grouper:
                     ,max(case when TEMP_TAXONMY_LINE is null
             """
 
-            if filetyp.casefold() == "ot":
+            if filetyp.casefold() == "othr_toc":
                 z += f"""
                      and SRVCNG_PRVDR_NPPES_TXNMY_CD is null
                 """
@@ -689,7 +700,7 @@ class TAF_Grouper:
                     then null when TEMP_TAXONMY_LINE in { tuple(TAF_Grouper.otmtax) }
             """
 
-            if filetyp.casefold() == "ot":
+            if filetyp.casefold() == "othr_toc":
                 z += f"""
                      or SRVCNG_PRVDR_NPPES_TXNMY_CD in { tuple(TAF_Grouper.otmtax) }
                 """
@@ -698,7 +709,7 @@ class TAF_Grouper:
                     ,max(case when TEMP_TAXONMY_LINE is null
                  """
 
-            if filetyp.casefold() == "ot":
+            if filetyp.casefold() == "othr_toc":
                 z += f"""
                      and SRVCNG_PRVDR_NPPES_TXNMY_CD is null
                 """
@@ -706,7 +717,7 @@ class TAF_Grouper:
             z += f"""
                  then null when TEMP_TAXONMY_LINE in { tuple(TAF_Grouper.otstax) }
                  """
-            if filetyp.casefold() == "ot":
+            if filetyp.casefold() == "othr_toc":
                 z += f"""
                      or SRVCNG_PRVDR_NPPES_TXNMY_CD in { tuple(TAF_Grouper.otstax) }
                 """
@@ -1006,10 +1017,24 @@ class TAF_Grouper:
             SELECT submtg_state_cd
                 ,msis_ident_num
                 ,da_run_id
+            """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                ,ot_fil_dt as fil_dt
+                ,ot_link_key
+                ,ot_vrsn as vrsn
+                ,'ot' as file_type
+            """
+        else:
+            z += f"""
                 ,{filetyp}_fil_dt as fil_dt
                 ,{filetyp}_link_key
                 ,{filetyp}_vrsn as vrsn
                 ,"{filetyp}" as file_type
+            """
+
+        z += f"""
                 ,clm_type_cd
                 ,srvc_trkng_type_cd
                 ,srvc_trkng_pymt_amt
@@ -1060,7 +1085,7 @@ class TAF_Grouper:
                      END AS dgns_1_cd_null
             """
 
-        if filetyp.casefold() == "ot":
+        if filetyp.casefold() == "othr_toc":
             z += f"""
                  ,srvc_plc_cd
             """
@@ -1102,9 +1127,14 @@ class TAF_Grouper:
                  END AS clm_type_grp_ctgry
         """
 
-        z += f"""
-             FROM iph
-        """
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 FROM oth
+            """
+        else:
+            z += f"""
+                FROM {filetyp}h
+            """
         self.runner.append(filetyp, z)
 
         # service line
@@ -1114,9 +1144,22 @@ class TAF_Grouper:
                 ,msis_ident_num
                 ,da_run_id
                 ,line_num
-                ,{filetyp}_fil_dt AS fil_dt
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                ,ot_fil_dt as fil_dt
+                ,ot_link_key
+                ,ot_vrsn as vrsn
+            """
+        else:
+            z += f"""
+                ,{filetyp}_fil_dt as fil_dt
                 ,{filetyp}_link_key
-                ,{filetyp}_vrsn AS vrsn
+                ,{filetyp}_vrsn as vrsn
+            """
+
+        z += f"""
                 ,mdcd_pd_amt
                 ,xix_srvc_ctgry_cd
                 ,tos_cd
@@ -1134,7 +1177,18 @@ class TAF_Grouper:
                          ELSE 0
                          END) OVER (
                      PARTITION BY submtg_state_cd
+            """
+
+            if (filetyp.casefold() == 'othr_toc'):
+                z += f"""
+                     ,ot_link_key
+                """
+            else:
+                z += f"""
                      ,{filetyp}_link_key
+                """
+
+            z += f"""
                      ) AS all_null_rev_cd
                  ,max(CASE
                          WHEN rev_cd IN (
@@ -1163,7 +1217,18 @@ class TAF_Grouper:
                          ELSE 0
                          END) OVER (
                      PARTITION BY submtg_state_cd
+            """
+
+            if (filetyp.casefold() == 'othr_toc'):
+                z += f"""
+                     ,ot_link_key
+                """
+            else:
+                z += f"""
                      ,{filetyp}_link_key
+                """
+
+            z += f"""
                      ) AS ever_clinic_rev
                  ,max(CASE
                          WHEN rev_cd IN (
@@ -1186,7 +1251,18 @@ class TAF_Grouper:
                          ELSE 0
                          END) OVER (
                      PARTITION BY submtg_state_cd
+            """
+
+            if (filetyp.casefold() == 'othr_toc'):
+                z += f"""
+                     ,ot_link_key
+                """
+            else:
+                z += f"""
                      ,{filetyp}_link_key
+                """
+
+            z += f"""
                      ) AS ever_hospice_rev
                  ,min(CASE
                          WHEN rev_cd IN { tuple(TAF_Metadata.vs_HH_Rev_cd) }
@@ -1196,11 +1272,22 @@ class TAF_Grouper:
                          ELSE NULL
                          END) OVER (
                      PARTITION BY submtg_state_cd
+            """
+
+            if (filetyp.casefold() == 'othr_toc'):
+                z += f"""
+                     ,ot_link_key
+                """
+            else:
+                z += f"""
                      ,{filetyp}_link_key
+                """
+
+            z += f"""
                      ) AS only_hh_rev
             """
 
-        if filetyp.casefold() == "ot":
+        if filetyp.casefold() == "othr_toc":
             z += f"""
                  ,hcbs_txnmy
                  ,prcdr_cd
@@ -1213,7 +1300,7 @@ class TAF_Grouper:
                          ELSE 0
                          END) OVER (
                      PARTITION BY submtg_state_cd
-                     ,{filetyp}_link_key
+                     ,ot_link_key
                      ) AS all_null_prcdr_cd
                  ,min(CASE
                          WHEN hcpcs_rate IS NULL
@@ -1221,7 +1308,7 @@ class TAF_Grouper:
                          ELSE 0
                          END) OVER (
                      PARTITION BY submtg_state_cd
-                     ,{filetyp}_link_key
+                     ,ot_link_key
                      ) AS all_null_hcpcs_cd
                  ,max(CASE
                          WHEN prcdr_cd IS NULL
@@ -1230,7 +1317,7 @@ class TAF_Grouper:
                          ELSE 0
                          END) OVER (
                      PARTITION BY submtg_state_cd
-                     ,{filetyp}_link_key
+                     ,ot_link_key
                      ) AS ever_null_prcdr_hcpcs_cd
                  ,max(CASE
                          WHEN prcdr_cd IS NOT NULL
@@ -1239,7 +1326,7 @@ class TAF_Grouper:
                          ELSE 0
                         END) OVER (
                      PARTITION BY submtg_state_cd
-                     ,{filetyp}_link_key
+                     ,ot_link_key
                      ) AS ever_valid_prcdr_hcpcs_cd
                  ,min(CASE
                          WHEN prcdr_cd IN { tuple(TAF_Metadata.vs_HH_Proc_cd) }
@@ -1251,7 +1338,7 @@ class TAF_Grouper:
                          ELSE 0
                          END) OVER (
                      PARTITION BY submtg_state_cd
-                     ,{filetyp}_link_key
+                     ,ot_link_key
                      ) AS only_hh_procs
             """
 
@@ -1289,7 +1376,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_icf_bnft_typ
         ,max(CASE
                 WHEN tos_cd IN (
@@ -1301,7 +1399,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_dsh_drg_ehr_tos
         ,max(CASE
                 WHEN tos_cd IN (
@@ -1314,7 +1423,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_cap_pymt_tos
         ,max(CASE
                 WHEN tos_cd IN (
@@ -1334,7 +1454,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_cap_tos
         ,max(CASE
                 WHEN tos_cd IN (
@@ -1345,7 +1476,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_php_tos
         ,max(CASE
                 WHEN tos_cd IN ('123')
@@ -1353,7 +1495,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_dsh_tos
         ,max(CASE
                 WHEN tos_cd IN ('131')
@@ -1361,7 +1514,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_drg_rbt_tos
         ,max(CASE
                 WHEN tos_cd IN (
@@ -1372,7 +1536,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_dme_hhs_tos
         ,max(CASE
                 WHEN xix_srvc_ctgry_cd IN (
@@ -1383,7 +1558,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_dsh_xix_srvc_ctgry
         ,max(CASE
                 WHEN xix_srvc_ctgry_cd IN (
@@ -1398,7 +1584,18 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
+        """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
             ) AS ever_othr_fin_xix_srvc_ctgry
         ,max(CASE
                 WHEN CLL_STUS_CD IN (
@@ -1410,10 +1607,28 @@ class TAF_Grouper:
                 ELSE 0
                 END) OVER (
             PARTITION BY submtg_state_cd
-            ,{filetyp}_link_key
-            ) AS ever_denied_line
-        FROM {filetyp}L
         """
+
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 ,ot_link_key
+            """
+        else:
+            z += f"""
+                 ,{filetyp}_link_key
+            """
+
+        z += f"""
+            ) AS ever_denied_line
+        """
+        if (filetyp.casefold() == 'othr_toc'):
+            z += f"""
+                 FROM OTL
+            """
+        else:
+            z += f"""
+                 FROM {filetyp}L
+            """
         self.runner.append(filetyp, z)
 
         # combine claim header and line
@@ -1447,7 +1662,7 @@ class TAF_Grouper:
                  or (bill_type_cd_upd is null and
                      dgns_1_cd is null)
             """
-        elif filetyp.casefold() == "ot":
+        elif filetyp.casefold() == "othr_toc":
             z += f"""
                  or (all_null_rev_cd =1 and
                   all_null_prcdr_cd=1 and
@@ -1462,8 +1677,20 @@ class TAF_Grouper:
                         then 1 else 0 end as supp_clms
 
                         ,row_number() over (partition by submtg_state_cd,
+             """
+
+        if filetyp.casefold() == "othr_toc":
+            z += f"""
+                                                        ot_link_key
+                                order by submtg_state_cd,ot_link_key)
+            """
+        else:
+            z += f"""
                                                         {filetyp}_link_key
                                 order by submtg_state_cd,{filetyp}_link_key)
+            """
+
+        z += f"""
                                 as rec_cnt
             from (select
                     a.*
@@ -1526,7 +1753,7 @@ class TAF_Grouper:
                         ,l.only_hh_rev
                         ,l.srvcng_prvdr_txnmy_cd
             """
-        elif filetyp.casefold() == "ot":
+        if filetyp.casefold() == "othr_toc":
             z += f"""
                         ,case when h.srvc_plc_cd is null then 1 else 0 end as srvc_plc_cd_null
                         ,l.hcbs_txnmy
@@ -1540,7 +1767,7 @@ class TAF_Grouper:
                         ,l.srvcng_prvdr_npi_num
                         ,l.only_hh_procs
             """
-        elif filetyp.casefold() == "rx":
+        if filetyp.casefold() == "rx":
             z += f"""
                         ,l.ndc_cd
                         ,l.all_null_ndc_cd
@@ -1565,7 +1792,7 @@ class TAF_Grouper:
                         ,case when (srvc_trkng_type_cd not in ('01') or srvc_trkng_type_cd is null) and
         """
 
-        if filetyp.casefold() == "ot":
+        if filetyp.casefold() == "othr_toc":
             z += f"""
                                     (
                                         ( clm_type_cd in ('2','B','V') and
@@ -1599,7 +1826,7 @@ class TAF_Grouper:
                             ,case when (srvc_trkng_type_cd not in ('01') or srvc_trkng_type_cd is null) and
         """
 
-        if filetyp.casefold() == "ot":
+        if filetyp.casefold() == "othr_toc":
             z += f"""
                                         (
                                         ( clm_type_cd in ('2','B','V') and
@@ -1638,7 +1865,19 @@ class TAF_Grouper:
                         {filetyp}_lne l
 
                 on h.submtg_state_cd=l.submtg_state_cd and
-                    h.{filetyp}_link_key=l.{filetyp}_link_key ) a ) b
+        """
+
+        if filetyp.casefold() == 'othr_toc':
+            z += f"""
+                 h.ot_link_key=l.ot_link_key
+            """
+        else:
+            z += f"""
+                 h.{filetyp}_link_key=l.{filetyp}_link_key
+            """
+
+        z += f"""
+             ) a ) b
         """
         self.runner.append(filetyp, z)
 
@@ -1648,31 +1887,31 @@ class TAF_Grouper:
             select *
         """
 
-        if filetyp.casefold() == "ot":
+        if filetyp.casefold() == "othr_toc":
             z += f"""
-                    ,max(dental_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as dental_clms
-                    ,sum(dental_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as dental_lne_cnts
+                    ,max(dental_lne_clms) over (partition by submtg_state_cd,ot_link_key) as dental_clms
+                    ,sum(dental_lne_clms) over (partition by submtg_state_cd,ot_link_key) as dental_lne_cnts
 
-                    ,max(trnsprt_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as trnsprt_clms
-                    ,sum(trnsprt_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as trnsprt_lne_cnts
+                    ,max(trnsprt_lne_clms) over (partition by submtg_state_cd,ot_link_key) as trnsprt_clms
+                    ,sum(trnsprt_lne_clms) over (partition by submtg_state_cd,ot_link_key) as trnsprt_lne_cnts
 
-                    ,max(othr_hcbs_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as othr_hcbs_clms
-                    ,sum(othr_hcbs_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as othr_hcbs_lne_cnts
+                    ,max(othr_hcbs_lne_clms) over (partition by submtg_state_cd,ot_link_key) as othr_hcbs_clms
+                    ,sum(othr_hcbs_lne_clms) over (partition by submtg_state_cd,ot_link_key) as othr_hcbs_lne_cnts
 
                     ,min(case when Lab_lne_clms=1 then 1
                             when prcdr_cd is null and hcpcs_rate is null then null
-                            else 0 end) over (partition by submtg_state_cd,{filetyp}_link_key) as Lab_clms
+                            else 0 end) over (partition by submtg_state_cd,ot_link_key) as Lab_clms
 
-                    ,sum(Lab_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as Lab_lne_cnts
+                    ,sum(Lab_lne_clms) over (partition by submtg_state_cd,ot_link_key) as Lab_lne_cnts
 
                     ,min(case when Rad_lne_clms=1 then 1
                             when prcdr_cd is null and hcpcs_rate is null then null
-                            else 0 end) over (partition by submtg_state_cd,{filetyp}_link_key) as Rad_clms
+                            else 0 end) over (partition by submtg_state_cd,ot_link_key) as Rad_clms
 
-                    ,sum(Rad_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as Rad_lne_cnts
+                    ,sum(Rad_lne_clms) over (partition by submtg_state_cd,ot_link_key) as Rad_lne_cnts
 
-                    ,max(DME_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as DME_clms
-                    ,sum(DME_lne_clms) over (partition by submtg_state_cd,{filetyp}_link_key) as DME_lne_cnts
+                    ,max(DME_lne_clms) over (partition by submtg_state_cd,ot_link_key) as DME_clms
+                    ,sum(DME_lne_clms) over (partition by submtg_state_cd,ot_link_key) as DME_lne_cnts
             """
 
         if filetyp.casefold() == "rx":
@@ -1692,7 +1931,7 @@ class TAF_Grouper:
                             ,b.prvdr_txnmy_nf
                             ,b.prvdr_txnmy_othr_res
             """
-        elif filetyp.casefold() == "ot":
+        if filetyp.casefold() == "othr_toc":
             z += f"""
                             ,b.code_cat as prcdr_ccs_cat
                             ,c.code_cat as hcpcs_ccs_cat
@@ -1752,12 +1991,12 @@ class TAF_Grouper:
 
                             ,case when not_fin_clm=1 and
                                     (substring(rev_cd,1,3) in ('066','310') or
-                                            prcdr_cd in {TAF_Metadata.vs_Othr_HCBS_Proc_cd} or
-                                            hcpcs_rate in {TAF_Metadata.vs_Othr_HCBS_Proc_cd} or
+                                            prcdr_cd in {tuple(TAF_Metadata.vs_Othr_HCBS_Proc_cd)} or
+                                            hcpcs_rate in {tuple(TAF_Metadata.vs_Othr_HCBS_Proc_cd)} or
                                             (prcdr_cd in ('T2025') and srvc_plc_cd in ('12') ) or
                                             (hcpcs_rate in ('T2025') and srvc_plc_cd in ('12') ) or
                                             bnft_type_cd in ('045') or
-                                            hcbs_txnmy in {TAF_Metadata.vs_Othr_HCBS_Taxo}
+                                            hcbs_txnmy in {tuple(TAF_Metadata.vs_Othr_HCBS_Taxo)}
                                     )
                                     then 1 else 0 end as othr_hcbs_lne_clms
 
@@ -1809,7 +2048,7 @@ class TAF_Grouper:
                                 then 1 else 0 end as othr_res_clms
             """
 
-        if filetyp.casefold() in ("ot", "lt", "ip"):
+        if filetyp.casefold() in ("othr_toc", "lt", "ip"):
             z += f"""
                             ,case when not_fin_clm=1 and
                                         ((substring(bill_type_cd_upd,2,1) in ('1') and
@@ -1835,7 +2074,7 @@ class TAF_Grouper:
                                         only_hh_rev =1
             """
 
-            if filetyp.casefold() == "ot":
+            if filetyp.casefold() == "othr_toc":
                 z += f"""
                      or  only_hh_procs=1
                 """
@@ -1873,7 +2112,7 @@ class TAF_Grouper:
                         left join nppes_npi b
                         on a.blg_prvdr_npi_num=b.prvdr_npi
             """
-        elif filetyp.casefold() == "ot":
+        elif filetyp.casefold() == "othr_toc":
             z += f"""
                         left join ccs_proc b
                         on a.prcdr_cd=b.cd_rng
@@ -1938,7 +2177,7 @@ class TAF_Grouper:
                  ,0 as rx_clms
             """
 
-        if filetyp.casefold() != "ot":
+        if filetyp.casefold() != "othr_toc":
             z += f"""
                      ,0 as inst_clms
                      ,0 as prof_clms
@@ -1962,7 +2201,7 @@ class TAF_Grouper:
                      ,0 as all_othr_prof_clms
             """
 
-        if filetyp.casefold() in ("ot", "rx"):
+        if filetyp.casefold() in ("othr_toc", "rx"):
             z += f"""
                      ,0 as nf_clms /**Only in IP/LT**/
                      ,0 as inp_clms
@@ -1993,7 +2232,7 @@ class TAF_Grouper:
                              then 1 else 0 end as other_fin
         """
 
-        if filetyp.casefold() == "ot":
+        if filetyp.casefold() == "othr_toc":
             z += f"""
                      ,case when  not_fin_clm=1 and
                                  inst_clms=1 and
