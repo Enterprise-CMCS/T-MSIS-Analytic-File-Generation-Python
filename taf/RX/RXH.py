@@ -98,7 +98,6 @@ class RXH:
                 , { TAF_Closure.var_set_type2('COPAY_WVD_IND', 0, cond1='0', cond2='1') }
                 , cll_cnt
                 , num_cll
-                , fasc.fed_srvc_ctgry_cd
             from (
                 select
                     *,

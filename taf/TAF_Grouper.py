@@ -1470,34 +1470,36 @@ class TAF_Grouper:
         """
 
         if filetyp.casefold() != "rx":
-            z += f"""
-                    ,case when cmc_php =0  and
-                                other_pmpm =0 and
-                                ((clm_type_cd in ('4','D','X','5','E','Y') and
-                                (srvc_trkng_type_cd in ('02') or
-                                    ever_dsh_tos=1))
-                                or
 
-                                (clm_type_cd in ('4','X','5','Y') and
-                                    ever_dsh_xix_srvc_ctgry=1)
+            z += f"""
+                ,case when cmc_php =0  and
+                other_pmpm =0 and
+                ((clm_type_cd in ('4','D','X','5','E','Y') and
+                (srvc_trkng_type_cd in ('02') or
+                    ever_dsh_tos=1))
+                or
+
+                (clm_type_cd in ('4','X','5','Y') and
+                    ever_dsh_xix_srvc_ctgry=1)
             """
+            
             if filetyp.casefold() == "ip":
                 z += f"""
-                                    or
-                                    (clm_type_cd in ('1') and
-                                    (mdcd_dsh_pd_amt is not null or mdcd_dsh_pd_amt !=0 ) and
-                                    ever_dsh_xix_srvc_ctgry=1
-                                    )
+                    or
+                    (clm_type_cd in ('1') and
+                    (mdcd_dsh_pd_amt is not null or mdcd_dsh_pd_amt !=0 ) and
+                    ever_dsh_xix_srvc_ctgry=1
+                    )
                 """
 
-        z += f"""
-                                      )
-                            then 1 else 0 end as dsh_flag
-        """
+            z += f"""
+                )
+                then 1 else 0 end as dsh_flag
+            """
 
         if filetyp.casefold() == "rx":
             z += f"""
-                        ,0 as dsh_flag
+                ,0 as dsh_flag
             """
 
         z += f"""
