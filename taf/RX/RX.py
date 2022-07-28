@@ -58,13 +58,7 @@ class RX(TAF):
                         a.REC_NUM
                 ) as RN
                 ,a.*
-                ,CASE
-                    WHEN A.SUBMTG_STATE_CD = '97' THEN '42'
-                    WHEN A.SUBMTG_STATE_CD = '96' THEN '19'
-                    WHEN A.SUBMTG_STATE_CD = '94' THEN '30'
-                    WHEN A.SUBMTG_STATE_CD = '93' THEN '56'
-                    ELSE A.SUBMTG_STATE_CD
-                    END AS NEW_SUBMTG_STATE_CD_LINE
+                ,a.submtg_state_cd as new_submtg_state_cd_line
                 ,CASE
                     WHEN A.DRUG_UTLZTN_CD IS NULL THEN NULL
                     ELSE SUBSTRING(A.DRUG_UTLZTN_CD,1,2)
