@@ -89,18 +89,11 @@ class LT_Runner(TAF_Runner):
         #   - TAF_LTH
         # -------------------------------------------------
         LTH().create(self)
+        LTL().create(self)
 
         grouper.fasc_code("LT")
 
         LTH().build(self)
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   - LTL
-        #   - TAF_LTL
-        # -------------------------------------------------
-        LTL().create(self)
         LTL().build(self)
 
 

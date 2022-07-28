@@ -135,68 +135,6 @@ class RX(TAF):
         """
         self.runner.append(self.st_fil_type, z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
-    def build(self):
-
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_RXL
-        z = """
-                create or replace temporary view TAF_RXL as
-                select
-                      DA_RUN_ID
-                    , RX_LINK_KEY
-                    , RX_VRSN
-                    , RX_FIL_DT
-                    , TMSIS_RUN_ID
-                    , MSIS_IDENT_NUM
-                    , SUBMTG_STATE_CD
-                    , ORGNL_CLM_NUM
-                    , ADJSTMT_CLM_NUM
-                    , ORGNL_LINE_NUM
-                    , ADJSTMT_LINE_NUM
-                    , ADJDCTN_DT
-                    , LINE_ADJSTMT_IND
-                    , TOS_CD
-                    , NDC_CD
-                    , UOM_CD
-                    , SUPLY_DAYS_CNT
-                    , NEW_REFL_IND
-                    , BRND_GNRC_IND
-                    , DSPNS_FEE_AMT
-                    , DRUG_UTLZTN_CD
-                    , DTL_MTRC_DCML_QTY
-                    , CMPND_DSG_FORM_CD
-                    , REBT_ELGBL_IND
-                    , IMNZTN_TYPE_CD
-                    , BNFT_TYPE_CD
-                    , ALOWD_SRVC_QTY
-                    , ACTL_SRVC_QTY
-                    , CMS_64_FED_REIMBRSMT_CTGRY_CD
-                    , XIX_SRVC_CTGRY_CD
-                    , XXI_SRVC_CTGRY_CD
-                    , CLL_STUS_CD
-                    , BILL_AMT
-                    , ALOWD_AMT
-                    , COPAY_AMT
-                    , TPL_AMT
-                    , MDCD_PD_AMT
-                    , MDCR_PD_AMT
-                    , MDCD_FFS_EQUIV_AMT
-                    , MDCR_COINSRNC_PD_AMT
-                    , MDCR_DDCTBL_AMT
-                    , OTHR_INSRNC_AMT
-                    , RSN_SRVC_CD
-                    , PROF_SRVC_CD
-                    , RSLT_SRVC_CD
-                    , LINE_NUM
-                from
-                    (SELECT * FROM RXL)
-        """
-        self.runner.append(self.st_fil_type, z)
-
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

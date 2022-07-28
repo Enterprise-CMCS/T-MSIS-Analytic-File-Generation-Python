@@ -100,18 +100,11 @@ class OT_Runner(TAF_Runner):
         #   - TAF_OTH
         # -------------------------------------------------
         OTH().create(self)
+        OTL().create(self)
 
         grouper.fasc_code("OTHR_TOC")
 
         OTH().build(self)
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   - OTL
-        #   - TAF_OTL
-        # -------------------------------------------------
-        OTL().create(self)
         OTL().build(self)
 
 

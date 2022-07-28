@@ -179,7 +179,7 @@ class OTH:
                 ) H
             """
 
-        runner.append(type(self).__name__, z)
+        runner.append("OTHR_TOC", z)
 
     # -----------------------------------------------------------------------------
     #
@@ -189,14 +189,16 @@ class OTH:
     def build(self, runner: OT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_oth
-                SELECT h.da_run_id,
-                    ,h.ot_link_key
+                CREATE TABLE {runner.DA_SCHEMA}.taf_oth AS
+                SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
-                    ,fasc.fed_srvc_ctgry_cd
-                FROM OTH as h
-                LEFT JOIN OTHR_TOC_HDR_ROLLED fasc
-                    on h.ot_link_key = fasc.ot_link_key
+                FROM (
+                    SELECT h.*
+                        ,fasc.fed_srvc_ctgry_cd
+                    FROM OTH AS h
+                        LEFT JOIN OTHR_TOC_HDR_ROLLED AS fasc
+                            ON h.ot_link_key = fasc.ot_link_key
+                )
         """
 
         runner.append(type(self).__name__, z)

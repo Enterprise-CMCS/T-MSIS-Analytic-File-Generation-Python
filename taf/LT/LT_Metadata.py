@@ -724,6 +724,8 @@ class LT_Metadata:
         "LT_SUD_TXNMY_IND",
         "IAP_COND_IND",
         "PRMRY_HIRCHCL_COND",
+        "REC_ADD_TS",
+        "REC_UPDT_TS",
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
         "FED_SRVC_CTGRY_CD",
@@ -778,6 +780,8 @@ class LT_Metadata:
         "OTHR_INSRNC_AMT",
         "MDCD_FFS_EQUIV_AMT",
         "TPL_AMT",
+        "REC_ADD_TS",
+        "REC_UPDT_TS",
         "LINE_NUM",
     ]
 

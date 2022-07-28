@@ -64,9 +64,10 @@ class IP_Runner(TAF_Runner):
         #   Produces:
         # -------------------------------------------------
         #   1 - IP_LINE_IN
-        #   2 - IP_LINE
-        #   3 - RN_IP
-        #   4 - IP_HEADER
+        #   2 - IP_LINE_PRE_NPPES
+        #   3 - IP_LINE
+        #   4 - RN_IP
+        #   5 - IP_HEADER
         # -------------------------------------------------
         ip = IP(self)
         ip.AWS_Extract_Line("tmsis", "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP")
@@ -88,17 +89,11 @@ class IP_Runner(TAF_Runner):
         #   - IPH
         # -------------------------------------------------
         IPH().create(self)
+        IPL().create(self)
 
         grouper.fasc_code("IP")
 
         IPH().build(self)
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   - IPL
-        # -------------------------------------------------
-        IPL().create(self)
         IPL().build(self)
 
 

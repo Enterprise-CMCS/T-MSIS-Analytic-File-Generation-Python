@@ -83,6 +83,9 @@ class LTL:
                 , { TAF_Closure.var_set_type6('MDCD_FFS_EQUIV_AMT', cond1='888888888.88', cond2='88888888888.80', cond3='999999.99') }
                 , { TAF_Closure.var_set_type6('TPL_AMT', cond1='888888888.88', cond2='88888888888.80', cond3='999999.99') }
 
+                , from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS
+                , from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS
+
                 ,RN as LINE_NUM
             FROM (
                 select
@@ -95,7 +98,7 @@ class LTL:
                 ) H
             """
 
-        runner.append(type(self).__name__, z)
+        runner.append("LT", z)
 
     # -----------------------------------------------------------------------------
     #
@@ -105,11 +108,10 @@ class LTL:
     def build(self, runner: LT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_ltl
+                CREATE TABLE {runner.DA_SCHEMA}.taf_ltl AS
                 SELECT
-                    *
-                FROM
-                    (SELECT * FROM LTL)
+                    { LT_Metadata.finalFormatter(LT_Metadata.line_columns) }
+                FROM LTL
         """
 
         runner.append(type(self).__name__, z)

@@ -107,12 +107,10 @@ class RXH:
                     then trim(ADJSTMT_IND) else typeof(NULL) end as ADJSTMT_IND_CLEAN
                 from
                     RX_HEADER
-                ) H
-                LEFT JOIN IP_HDR_ROLLED fasc
-                    ON H.ip_link_key = fasc.ip_link_key
+                )
             """
 
-        runner.append(type(self).__name__, z)
+        runner.append("RX", z)
 
     # -----------------------------------------------------------------------------
     #
@@ -122,11 +120,16 @@ class RXH:
     def build(self, runner: RX_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_rxh
+                CREATE TABLE {runner.DA_SCHEMA}.taf_rxh AS
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
-                FROM
-                    (SELECT * FROM RXH)
+                FROM (
+                    SELECT h.*
+                        ,fasc.fed_srvc_ctgry_cd
+                    FROM RXH AS h
+                        LEFT JOIN RX_HDR_ROLLED AS fasc
+                            ON h.rx_link_key = fasc.rx_link_key
+                )
         """
 
         runner.append(type(self).__name__, z)

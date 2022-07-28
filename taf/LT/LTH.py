@@ -193,7 +193,7 @@ class LTH:
                 ) H
             """
 
-        runner.append(type(self).__name__, z)
+        runner.append("LT", z)
 
     # -----------------------------------------------------------------------------
     #
@@ -203,12 +203,16 @@ class LTH:
     def build(self, runner: LT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_lth
-                SELECT h.*
-                    ,fasc.fed_srvc_ctgry_cd
-                FROM LTH h
-                LEFT JOIN LTH_HDR_ROLLED fasc
-                    on h.lt_link_key = fasc.lt_link_key
+                CREATE TABLE {runner.DA_SCHEMA}.taf_lth AS
+                SELECT
+                    { LT_Metadata.finalFormatter(LT_Metadata.header_columns) }
+                FROM (
+                    SELECT h.*
+                        ,fasc.fed_srvc_ctgry_cd
+                    FROM LTH AS h
+                        LEFT JOIN LT_HDR_ROLLED AS fasc
+                            ON h.lt_link_key = fasc.lt_link_key
+                )
         """
 
         runner.append(type(self).__name__, z)
