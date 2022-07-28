@@ -262,7 +262,7 @@ class IPH:
                     IP_HEADER_GROUPER
                 ) H
         """
-        runner.append(type(self).__name__, z)
+        runner.append("IP", z)
 
     # -----------------------------------------------------------------------------
     #
@@ -272,13 +272,16 @@ class IPH:
     def build(self, runner: IP_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_iph
+                CREATE TABLE {runner.DA_SCHEMA}.taf_iph AS
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
-                    ,fasc.fed_srvc_ctgry_cd
-                FROM IPH AS H
-                LEFT JOIN IP_HDR_ROLLED fasc
-                    ON H.ip_link_key = fasc.ip_link_key
+                FROM (
+                    SELECT h.*
+                        ,fasc.fed_srvc_ctgry_cd
+                    FROM IPH AS h
+                        LEFT JOIN IP_HDR_ROLLED AS fasc
+                            ON h.ip_link_key = fasc.ip_link_key
+                )
         """
         runner.append(type(self).__name__, z)
 

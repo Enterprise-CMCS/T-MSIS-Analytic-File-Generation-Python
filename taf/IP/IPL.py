@@ -80,6 +80,9 @@ class IPL:
                 , { TAF_Closure.var_set_type6('OTHR_INSRNC_AMT', cond1=888888888.88, cond2=88888888888.00, cond3=88888888888.88) }
                 , { TAF_Closure.var_set_type6('MDCD_FFS_EQUIV_AMT',cond1=888888888.88, cond2=88888888888.80, cond3=999999.99) }
 
+                , from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS
+                , from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS
+
                 ,RN as LINE_NUM
 
             FROM (
@@ -93,7 +96,7 @@ class IPL:
                 ) H
             """
 
-        runner.append(type(self).__name__, z)
+        runner.append("IP", z)
 
     # -----------------------------------------------------------------------------
     #
@@ -103,11 +106,10 @@ class IPL:
     def build(self, runner: IP_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_ipl
+                CREATE OR REPLACE TABLE {runner.DA_SCHEMA}.taf_ipl AS
                 SELECT
-                    { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
-                FROM
-                    (SELECT * FROM IPL)
+                    { IP_Metadata.finalFormatter(IP_Metadata.line_columns) }
+                FROM IPL
         """
 
         runner.append(type(self).__name__, z)
