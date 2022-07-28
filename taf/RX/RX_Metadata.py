@@ -233,7 +233,7 @@ class RX_Metadata:
             "REBT_ELGBL_IND",
             "SUBMTG_STATE_CD",
             "TPL_AMT",
-            "stc_cd",
+            "STC_CD",
             "UOM_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
@@ -475,7 +475,7 @@ class RX_Metadata:
         "ADJDCTN_DT": "ADJDCTN_DT_LINE",
         "ADJSTMT_CLM_NUM": "ADJSTMT_CLM_NUM_LINE",
         "ORGNL_CLM_NUM": "ORGNL_CLM_NUM_LINE",
-        "stc_cd": "TOS_CD",
+        "STC_CD": "TOS_CD",
     }
 
     # ---------------------------------------------------------------------------------
@@ -586,7 +586,7 @@ class RX_Metadata:
         "SUPLY_DAYS_CNT",
         "NEW_REFL_IND",
         "BRND_GNRC_IND",
-        "DSPNS_FEE_SBMTD",
+        "DSPNS_FEE_AMT",
         "DRUG_UTLZTN_CD",
         "DTL_MTRC_DCML_QTY",
         "CMPND_DSG_FORM_CD",
@@ -601,7 +601,7 @@ class RX_Metadata:
         "CLL_STUS_CD",
         "BILL_AMT",
         "ALOWD_AMT",
-        "BENE_COPMT_PD_AMT",
+        "COPAY_AMT",
         "TPL_AMT",
         "MDCD_PD_AMT",
         "MDCR_PD_AMT",
