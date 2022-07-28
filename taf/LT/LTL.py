@@ -60,10 +60,10 @@ class LTL:
 
                 , { TAF_Closure.var_set_type2('BLG_UNIT_CD', 2, cond1='01',  cond2='02', cond3='03', cond4='04', cond5='05', cond6='06', cond7='07') }
 
-                , { TAF_Closure.var_set_type6('IP_LT_ACTL_SRVC_QTY', new='ACTL_SRVC_QTY', cond1='999999', cond2='88888.888', cond3='99999.990') }
-                , { TAF_Closure.var_set_type6('IP_LT_ALOWD_SRVC_QTY', new='ALOWD_SRVC_QTY', cond1='888888.89', cond2='88888.888') }
-                , { TAF_Closure.var_set_type1('REV_CD', lpad=4) }
-                , { TAF_Closure.var_set_type6('REV_CHRG_AMT', cond1='88888888888.88', cond2='99999999.9', cond3='888888888.88', cond4='8888888888.88', cond5='88888888.88') }
+                , { TAF_Closure.var_set_fills('NDC_CD',cond1='0',cond2='8',cond3='9',cond4='#', spaces='YES') }
+                , { TAF_Closure.var_set_type4('UOM_CD','YES',cond1='F2', cond2='ML', cond3='GR', cond4='UN', cond5='ME') }
+                , { TAF_Closure.var_set_type6('NDC_QTY', cond1='888888', cond2='888888.888', cond3='999999', cond4='88888.888', cond5='888888.880', cond6='999999.998') }
+                , { TAF_Closure.var_set_type1(var='HCPCS_RATE') }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NPI_NUM', new='SRVCNG_PRVDR_NPI_NUM') }
                 , { TAF_Closure.var_set_taxo('SRVCNG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }

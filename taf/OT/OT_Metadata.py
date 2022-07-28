@@ -260,9 +260,7 @@ class OT_Metadata:
             "TOT_COPAY_AMT",
             "TOT_MDCD_PD_AMT",
             "TOT_OTHR_INSRNC_AMT",
-            "TOT_TPL_AMT",
-            "SRVC_ENDG_DT_DRVD_H",
-            "SRVC_ENDG_DT_CD_H",
+            "TOT_TPL_AMT"
         ],
         "COT00003": [
             "TMSIS_FIL_NAME",
