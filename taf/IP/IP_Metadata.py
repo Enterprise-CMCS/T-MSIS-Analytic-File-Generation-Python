@@ -783,7 +783,7 @@ class IP_Metadata:
         "SRVC_ENDG_DT_CD",
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
-        "FED_SRVC_CTGRY_CD",
+        "FED_SRVC_CTGRY_CD"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -836,7 +836,7 @@ class IP_Metadata:
         "MDCD_FFS_EQUIV_AMT",
         "REC_ADD_TS",
         "REC_UPDT_TS",
-        "LINE_NUM",
+        "LINE_NUM"
     ]
 
     # -----------------------------------------------------------------------------
