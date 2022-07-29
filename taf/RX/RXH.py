@@ -98,6 +98,8 @@ class RXH:
                 , { TAF_Closure.var_set_type2('COPAY_WVD_IND', 0, cond1='0', cond2='1') }
                 , cll_cnt
                 , num_cll
+                ,to_timestamp('{runner.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
             from (
                 select
                     *,
@@ -119,7 +121,7 @@ class RXH:
     def build(self, runner: RX_Runner):
 
         z = f"""
-                CREATE TABLE {runner.DA_SCHEMA}.taf_rxh AS
+                INSERT INTO {runner.DA_SCHEMA}.taf_rxh
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
                 FROM (

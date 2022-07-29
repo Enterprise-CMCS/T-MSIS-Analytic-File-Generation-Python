@@ -116,7 +116,7 @@ class OTL:
     def build(self, runner: OT_Runner):
 
         z = f"""
-                CREATE TABLE {runner.DA_SCHEMA}.taf_otl AS
+                INSERT INTO {runner.DA_SCHEMA}.taf_otl
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.line_columns) }
                 FROM OTL

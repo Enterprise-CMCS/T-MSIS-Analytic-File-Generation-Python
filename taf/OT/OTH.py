@@ -156,8 +156,8 @@ class OTH:
 
                 , OTHR_TOC_MH_DX_IND as OT_MH_DX_IND
                 , OTHR_TOC_SUD_DX_IND as OT_SUD_DX_IND
-                , OTHR_TOC_MH_TAXONOMY_IND as OT_MH_TAXONOMY_IND
-                , OTHR_TOC_SUD_TAXONOMY_IND as OT_SUD_TAXONOMY_IND
+                , OTHR_TOC_MH_TAXONOMY_IND as OT_MH_TXNMY_IND
+                , OTHR_TOC_SUD_TAXONOMY_IND as OT_SUD_TXNMY_IND
 
                 , cast(nullif(IAP_CONDITION_IND, IAP_CONDITION_IND) as char(6)) as IAP_COND_IND
                 , cast(nullif(PRIMARY_HIERARCHICAL_CONDITION, PRIMARY_HIERARCHICAL_CONDITION) as char(9)) as PRMRY_HIRCHCL_COND
@@ -189,7 +189,7 @@ class OTH:
     def build(self, runner: OT_Runner):
 
         z = f"""
-                CREATE TABLE {runner.DA_SCHEMA}.taf_oth AS
+                INSERT INTO {runner.DA_SCHEMA}.taf_oth
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
                 FROM (

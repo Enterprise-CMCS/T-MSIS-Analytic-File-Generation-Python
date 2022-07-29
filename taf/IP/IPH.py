@@ -272,7 +272,7 @@ class IPH:
     def build(self, runner: IP_Runner):
 
         z = f"""
-                CREATE TABLE {runner.DA_SCHEMA}.taf_iph AS
+                INSERT INTO {runner.DA_SCHEMA}.taf_iph
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
                 FROM (

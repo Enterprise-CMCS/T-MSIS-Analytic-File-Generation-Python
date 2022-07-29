@@ -545,6 +545,8 @@ class OT_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
+        "DA_RUN_ID",
+        "OT_LINK_KEY",
         "OT_VRSN",
         "OT_FIL_DT",
         "TMSIS_RUN_ID",
@@ -664,10 +666,17 @@ class OT_Metadata:
         "NUM_CLL",
         "OT_MH_DX_IND",
         "OT_SUD_DX_IND",
-        "OT_MH_TAXONOMY_IND",
-        "OT_SUD_TAXONOMY_IND",
+        "OT_MH_TXNMY_IND",
+        "OT_SUD_TXNMY_IND",
         "IAP_COND_IND",
         "PRMRY_HIRCHCL_COND",
+        "REC_ADD_TS",
+        "REC_UPDT_TS",
+        "SRVC_ENDG_DT_DRVD",
+        "SRVC_ENDG_DT_CD",
+        "BLG_PRVDR_NPPES_TXNMY_CD",
+        "DGNS_1_CCSR_DFLT_CTGRY_CD",
+        "FED_SRVC_CTGRY_CD"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -735,6 +744,8 @@ class OT_Metadata:
         "PRE_AUTHRZTN_NUM",
         "UOM_CD",
         "NDC_QTY",
+        "REC_ADD_TS",
+        "REC_UPDT_TS",
         "LINE_NUM",
         "PRCDR_CCS_CTGRY_CD",
         "SRVCNG_PRVDR_NPPES_TXNMY_CD",

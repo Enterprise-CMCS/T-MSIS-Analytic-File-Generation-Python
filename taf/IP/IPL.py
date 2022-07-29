@@ -106,7 +106,7 @@ class IPL:
     def build(self, runner: IP_Runner):
 
         z = f"""
-                CREATE OR REPLACE TABLE {runner.DA_SCHEMA}.taf_ipl AS
+                INSERT INTO {runner.DA_SCHEMA}.taf_ipl
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.line_columns) }
                 FROM IPL

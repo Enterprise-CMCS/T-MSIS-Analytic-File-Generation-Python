@@ -110,7 +110,7 @@ class RXL:
     def build(self, runner: RX_Runner):
 
         z = f"""
-                CREATE TABLE {runner.DA_SCHEMA}.taf_rxl AS
+                INSERT INTO {runner.DA_SCHEMA}.taf_rxl
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.line_columns) }
                 FROM RXL

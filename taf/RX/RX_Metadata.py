@@ -564,6 +564,9 @@ class RX_Metadata:
         "COPAY_WVD_IND",
         "CLL_CNT",
         "NUM_CLL",
+        "REC_ADD_TS",
+        "REC_UPDT_TS",
+        "FED_SRVC_CTGRY_CD"
     ]
 
     line_columns = [
@@ -612,7 +615,9 @@ class RX_Metadata:
         "RSN_SRVC_CD",
         "PROF_SRVC_CD",
         "RSLT_SRVC_CD",
-        "LINE_NUM",
+        "REC_ADD_TS",
+        "REC_UPDT_TS",
+        "LINE_NUM"
     ]
 
     # -----------------------------------------------------------------------------

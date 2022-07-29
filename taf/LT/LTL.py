@@ -108,7 +108,7 @@ class LTL:
     def build(self, runner: LT_Runner):
 
         z = f"""
-                CREATE TABLE {runner.DA_SCHEMA}.taf_ltl AS
+                INSERT INTO {runner.DA_SCHEMA}.taf_ltl
                 SELECT
                     { LT_Metadata.finalFormatter(LT_Metadata.line_columns) }
                 FROM LTL
