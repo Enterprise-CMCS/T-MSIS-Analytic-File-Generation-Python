@@ -52,6 +52,7 @@ class MCP06(MCP):
             "tms_reporting_period",
             "record_number",
             "submitting_state",
+            "submitting_state as submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             "%zero_pad(managed_care_plan_pop, 2)",
             "%fix_old_dates(managed_care_plan_pop_eff_date)",
@@ -115,20 +116,8 @@ class MCP06(MCP):
 
         self.process_06_population("MC02_Main_RAW", "MC06_Population_RAW")
 
-        self.recode_notnull(
-            "MC06_Population_RAW",
-            self.srtlist,
-            "mc_formats_sm",
-            "STFIPC",
-            "submitting_state",
-            "SUBMTG_STATE_CD",
-            "MC06_Population_STV",
-            "C",
-            2,
-        )
-
         self.recode_lookup(
-            "MC06_Population_STV",
+            "MC06_Population_RAW",
             self.srtlist,
             "mc_formats_sm",
             "ELIG2V",
@@ -155,12 +144,7 @@ class MCP06(MCP):
                 create or replace temporary view MC06_Population as
                 select
                     {self.mcp.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*') || '-' || SPCL) as varchar(32))
-                    else
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32))
-                    end as MCP_LINK_KEY,
+                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32)) as MCP_LINK_KEY,
                     '{self.mcp.TAF_FILE_DATE}' as MCP_FIL_DT,
                     '{self.mcp.version}' as MCP_VRSN,
                     tms_run_id as TMSIS_RUN_ID,

@@ -47,15 +47,19 @@ class PRV10(PRV):
                   'tms_reporting_period',
                   'record_number',
                   'submitting_state',
+                  'submitting_state as submtg_state_cd',
                   '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
                   '%upper_case(prov_location_id) as prov_location_id',
                   'bed_count',
-                  'bed_type_code',
+                  """case
+                      when trim(TRAILING FROM bed_type_code) in ('1','2','3','4') then trim(TRAILING FROM bed_type_code)
+                      else null
+                   end as bed_type_code""",
                   'bed_type_eff_date',
                   'bed_type_end_date']
 
         # copy 10(bed type) provider rows
-        whr10 = "(bed_type_code is not null and bed_type_code <> '8') or bed_count is not null"
+        whr10 = "(trim(TRAILING FROM bed_type_code) in ('1','2','3','4')) or (bed_count is not null and bed_count<>0)"
 
         self.copy_activerows('Prov10_BedType_Latest1',
                              cols10,
@@ -106,20 +110,10 @@ class PRV10(PRV):
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV10_Final)
 
-        self.process_10_beds('Prov03_Locations',
+        self.process_10_beds('Prov03_Locations_g0',
                              'Prov10_BedType')
 
-        self.recode_notnull('Prov10_BedType',
-                            self.srtlistl,
-                            'prv_formats_sm',
-                            'STFIPC',
-                            'submitting_state',
-                            'SUBMTG_STATE_CD',
-                            'Prov10_BedType_STV',
-                            'C',
-                            2)
-
-        self.recode_lookup('Prov10_BedType_STV',
+        self.recode_lookup('Prov10_BedType',
                            self.srtlistl,
                            'prv_formats_sm',
                            'BEDCDV',
@@ -130,14 +124,9 @@ class PRV10(PRV):
                            1)
 
         z = f"""
-            create or replace temporary view Prov10_BedType_CNST as
+            create or replace temporary view Prov10_BedType_CNST_tmp as
                 select {self.prv.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**') || '-' || SPCL) as varchar(74))
-                    else
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74))
-                    end as PRV_LOC_LINK_KEY,
+                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74)) as PRV_LOC_LINK_KEY,
                     '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
@@ -149,9 +138,149 @@ class PRV10(PRV):
                     to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
                     current_timestamp() as REC_UPDT_TS
                 from Prov10_BedType_TYP
-                where BED_TYPE_CD is not null or bed_count is not null
+                where BED_TYPE_CD is not null or (bed_count is not null and bed_count<>0)
                 order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID, PRVDR_LCTN_ID
             """
+        self.prv.append(type(self).__name__, z)
+
+
+        z = f"""
+            create or replace temporary view loc__g as
+                select
+                    DA_RUN_ID, 
+                    PRV_LOC_LINK_KEY, 
+                    PRV_FIL_DT, 
+                    PRV_VRSN, 
+                    TMSIS_RUN_ID, 
+                    SUBMTG_STATE_CD, 
+                    SUBMTG_STATE_PRVDR_ID, 
+                    PRVDR_LCTN_ID
+                from
+                    (select 
+                        DA_RUN_ID, 
+                        PRV_LOC_LINK_KEY, 
+                        PRV_FIL_DT, 
+                        PRV_VRSN, 
+                        TMSIS_RUN_ID, 
+                        SUBMTG_STATE_CD, 
+                        SUBMTG_STATE_PRVDR_ID, 
+                        PRVDR_LCTN_ID 
+                    from 
+                        Prov04_Licensing_CNST 
+                    where 
+                        PRVDR_LCTN_ID='000'
+
+				    union all
+
+				    select 
+                        DA_RUN_ID, 
+                        PRV_LOC_LINK_KEY, 
+                        PRV_FIL_DT, 
+                        PRV_VRSN, 
+                        TMSIS_RUN_ID, 
+                        SUBMTG_STATE_CD, 
+                        SUBMTG_STATE_PRVDR_ID, 
+                        PRVDR_LCTN_ID 
+                    from 
+                        Prov05_Identifiers_CNST 
+                    where 
+                        PRVDR_LCTN_ID='000'
+
+				    union all
+
+				    select 
+                        DA_RUN_ID, 
+                        PRV_LOC_LINK_KEY,
+                        PRV_FIL_DT, 
+                        PRV_VRSN, 
+                        TMSIS_RUN_ID, 
+                        SUBMTG_STATE_CD, 
+                        SUBMTG_STATE_PRVDR_ID, 
+                        PRVDR_LCTN_ID 
+                    from 
+                        Prov10_BedType_CNST_tmp 
+                    where 
+                        PRVDR_LCTN_ID='000'
+
+				    except
+
+				    select 
+                        DA_RUN_ID, 
+                        PRV_LOC_LINK_KEY, 
+                        PRV_FIL_DT, 
+                        PRV_VRSN, 
+                        TMSIS_RUN_ID, 
+                        SUBMTG_STATE_CD, 
+                        SUBMTG_STATE_PRVDR_ID, 
+                        PRVDR_LCTN_ID 
+                    from 
+                        Prov03_Location_CNST 
+                    where 
+                        PRVDR_LCTN_ID='000')
+
+                group by 
+                    DA_RUN_ID, 
+                    PRV_LOC_LINK_KEY, 
+                    PRV_FIL_DT, 
+                    PRV_VRSN, 
+                    TMSIS_RUN_ID, 
+                    SUBMTG_STATE_CD, 
+                    SUBMTG_STATE_PRVDR_ID, 
+                    PRVDR_LCTN_ID
+
+                order by 
+                    DA_RUN_ID, 
+                    PRV_LOC_LINK_KEY, 
+                    PRV_FIL_DT,
+                    PRV_VRSN, 
+                    TMSIS_RUN_ID, 
+                    SUBMTG_STATE_CD, 
+                    SUBMTG_STATE_PRVDR_ID,
+                    PRVDR_LCTN_ID
+            """
+        self.prv.append(type(self).__name__, z)
+
+# took out: cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(SUBMTG_STATE_PRVDR_ID, '*')) as varchar(50)) as PRV_LINK_KEY,
+# added: NULL as BED_TYPE_CD
+# added: NULL as BED_CNT
+# added: REC_ADD_TS
+# added: REC_UPDT_TS
+
+
+        z = f"""
+                create or replace temporary view loc__g2 as
+                select
+                    DA_RUN_ID,
+                    PRV_LOC_LINK_KEY, 
+                    PRV_FIL_DT, 
+                    PRV_VRSN, 
+                    TMSIS_RUN_ID, 
+                    SUBMTG_STATE_CD, 
+                    SUBMTG_STATE_PRVDR_ID, 
+                    PRVDR_LCTN_ID,
+                    NULL as BED_TYPE_CD,
+                    NULL as BED_CNT,
+                    to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
+                    current_timestamp() as REC_UPDT_TS
+                from
+                    loc__g
+        """
+        self.prv.append(type(self).__name__, z)
+
+        z = f"""
+                create or replace temporary view Prov10_BedType_CNST as
+                select
+                    *
+                from
+                    Prov10_BedType_CNST_tmp
+
+                union all
+
+                select
+                    *
+                from
+                    loc__g2                
+        """
         self.prv.append(type(self).__name__, z)
 
     # -----------------------------------------------------------------------------
@@ -168,7 +297,6 @@ class PRV10(PRV):
                 FROM
                     Prov10_BedType_CNST
         """
-
         self.prv.append(type(self).__name__, z)
 
 

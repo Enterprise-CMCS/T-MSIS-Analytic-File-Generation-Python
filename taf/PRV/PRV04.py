@@ -47,6 +47,7 @@ class PRV04(PRV):
                   'tms_reporting_period',
                   'record_number',
                   'submitting_state',
+                  'submitting_state as submtg_state_cd',
                   '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
                   '%upper_case(prov_location_id) as prov_location_id',
                   '%upper_case(license_or_accreditation_number) as license_or_accreditation_number',
@@ -56,7 +57,7 @@ class PRV04(PRV):
                   'prov_license_end_date']
 
         # copy 04(Licensing) provider rows
-        whr04 = 'license_type is not null and license_or_accreditation_number is not null'
+        whr04 = 'license_type is not null and upper(license_or_accreditation_number) is not null'
 
         self.copy_activerows('Prov04_Licensing_Latest1',
                              cols04,
@@ -111,20 +112,10 @@ class PRV04(PRV):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        self.process_04_licensing('Prov03_Locations',
+        self.process_04_licensing('Prov03_Locations_g0',
                                   'Prov04_Licensing')
 
-        self.recode_notnull('Prov04_Licensing',
-                            self.srtlistl,
-                            'prv_formats_sm',
-                            'STFIPC',
-                            'submitting_state',
-                            'SUBMTG_STATE_CD',
-                            'Prov04_Licensing_STV',
-                            'C',
-                            2)
-
-        self.recode_lookup('Prov04_Licensing_STV',
+        self.recode_lookup('Prov04_Licensing',
                            self.srtlistl,
                            'prv_formats_sm',
                            'LICCDV',
@@ -137,12 +128,7 @@ class PRV04(PRV):
         z = f"""
             create or replace temporary view Prov04_Licensing_CNST as
             select {self.prv.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**') || '-' || SPCL) as varchar(74))
-                    else
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74))
-                    end as PRV_LOC_LINK_KEY,
+                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74)) as PRV_LOC_LINK_KEY,
                     '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     tms_run_id as TMSIS_RUN_ID,

@@ -52,13 +52,14 @@ class MCP04(MCP):
             "tms_reporting_period",
             "record_number",
             "submitting_state",
+            "submitting_state as submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             "%upper_case(managed_care_service_area_name) as managed_care_service_area_name",
             "%fix_old_dates(managed_care_service_area_eff_date)",
             "%set_end_dt(managed_care_service_area_end_date) as managed_care_service_area_end_date",
         ]
 
-        whr04 = "managed_care_service_area_name is not null"
+        whr04 = "upper(managed_care_service_area_name) is not null"
 
         self.copy_activerows(
             "MC04_Service_Area_Latest1", cols04, whr04, "MC04_Service_Area_Copy"
@@ -115,29 +116,12 @@ class MCP04(MCP):
 
         self.process_04_service_area("MC02_Main_RAW", "MC04_Service_Area")
 
-        self.recode_notnull(
-            "MC04_Service_Area",
-            self.srtlist,
-            "mc_formats_sm",
-            "STFIPC",
-            "submitting_state",
-            "SUBMTG_STATE_CD",
-            "MC04_Service_Area_STV",
-            "C",
-            2,
-        )
-
         # diststyle key distkey(state_plan_id_num)
         z = f"""
                 create or replace temporary view MC04_Service_Area_CNST as
                 select
                     {self.mcp.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*') || '-' || SPCL) as varchar(32))
-                    else
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32))
-                    end as MCP_LINK_KEY,
+                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32)) as MCP_LINK_KEY,
                     '{self.mcp.TAF_FILE_DATE}' as MCP_FIL_DT,
                     '{self.mcp.version}' as MCP_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
@@ -146,7 +130,7 @@ class MCP04(MCP):
                     managed_care_service_area_eff_date as MC_SAREA_EFCTV_DT,
                     managed_care_service_area_end_date as MC_SAREA_END_DT,
                     managed_care_service_area_name as MC_SAREA_NAME
-                from MC04_Service_Area_STV
+                from MC04_Service_Area
                 order by TMSIS_RUN_ID,
                     SUBMTG_STATE_CD,
                     mc_plan_id

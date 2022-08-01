@@ -48,6 +48,7 @@ class MCP02(MCP):
             "tms_run_id",
             "tms_reporting_period",
             "submitting_state",
+            "submitting_state as submtg_state_cd",
             "record_number",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             "managed_care_main_rec_eff_date",
@@ -64,7 +65,7 @@ class MCP02(MCP):
             "managed_care_service_area",
         ]
 
-        whr02 = "state_plan_id_num is not null"
+        whr02 = "upper(state_plan_id_num) is not null"
 
         self.copy_activerows("MC02_Main_Latest1", cols02, whr02, "MC02_Main_Copy")
         # row count
@@ -115,7 +116,7 @@ class MCP02(MCP):
             "mc_formats_sm",
             "STFIPC",
             "submitting_state",
-            "SUBMTG_STATE_CD",
+            "SUBMTG_STATE_rcd",
             "MC02_Main_STV",
             "C",
             2,
@@ -126,7 +127,7 @@ class MCP02(MCP):
             self.srtlist,
             "mc_formats_sm",
             "STFIPN",
-            "SUBMTG_STATE_CD",
+            "SUBMTG_STATE_rcd",
             "State",
             "MC02_Main_ST",
             "C",
@@ -272,12 +273,7 @@ class MCP02(MCP):
                     MC_plan_type_CAT,
                     reimbrsmt_arngmt_CAT,
                     SAREA_STATEWIDE_IND,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*') || '-' || SPCL) as varchar(32))
-                    else
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32))
-                    end as MCP_LINK_KEY
+                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32)) as MCP_LINK_KEY
                 from MC02_Main_PRC
                 order by { ','.join(self.srtlist) }
             """

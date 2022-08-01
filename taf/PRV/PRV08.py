@@ -45,13 +45,14 @@ class PRV08(PRV):
                   'tms_reporting_period',
                   'record_number',
                   'submitting_state',
+                  'submitting_state as submtg_state_cd',
                   '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
                   '%upper_case(submitting_state_prov_id_of_affiliated_entity) as submitting_state_prov_id_of_affiliated_entity',
                   'prov_affiliated_group_eff_date',
                   'prov_affiliated_group_end_date']
 
         # copy 08(Affiliated Groups) provider rows
-        whr08 = 'submitting_state_prov_id_of_affiliated_entity is not null'
+        whr08 = 'upper(submitting_state_prov_id_of_affiliated_entity) is not null'
 
         self.copy_activerows('Prov08_AffGrps_Latest1',
                              cols08,
@@ -104,34 +105,19 @@ class PRV08(PRV):
 
         # add code to validate and recode source variables (when needed), use SAS variable names, add linking variables, and sort records
 
-        self.recode_notnull('Prov08_Groups',
-                            self.srtlist,
-                            'prv_formats_sm',
-                            'STFIPC',
-                            'submitting_state',
-                            'SUBMTG_STATE_CD',
-                            'Prov08_Groups_STV',
-                            'C',
-                            2)
-
         z = f"""
             create or replace temporary view Prov08_Groups_CNST as
             select {self.prv.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || SPCL) as varchar(50))
-                    else
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50))
-                    end as PRV_LINK_KEY,
+                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50)) as PRV_LINK_KEY,
                     '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
                     SUBMTG_STATE_CD,
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
-                    submitting_state_prov_id_of_affiliated_entity as SUBMTG_STATE_AFLTD_PRVDR_ID,
+                    cast (submitting_state_prov_id_of_affiliated_entity as varchar(12)) as SUBMTG_STATE_AFLTD_PRVDR_ID,
                     to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
                     current_timestamp() as REC_UPDT_TS
-                    from Prov08_Groups_STV
+                    from Prov08_Groups
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
             """
         self.prv.append(type(self).__name__, z)

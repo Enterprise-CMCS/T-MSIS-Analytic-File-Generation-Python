@@ -45,6 +45,7 @@ class PRV07(PRV):
                   'tms_reporting_period',
                   'record_number',
                   'submitting_state',
+                  'submitting_state as submtg_state_cd',
                   '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
                   '%zero_pad(prov_medicaid_enrollment_status_code, 2)',
                   'state_plan_enrollment',
@@ -107,17 +108,7 @@ class PRV07(PRV):
 
         # add code to validate and recode source variables (when needed), use SAS variable names, add linking variables, and sort records
 
-        self.recode_notnull('Prov07_Medicaid',
-                            self.srtlist,
-                            'prv_formats_sm',
-                            'STFIPC',
-                            'submitting_state',
-                            'SUBMTG_STATE_CD',
-                            'Prov07_Medicaid_ST',
-                            'C',
-                            2)
-
-        self.recode_lookup('Prov07_Medicaid_ST',
+        self.recode_lookup('Prov07_Medicaid',
                            self.srtlist,
                            'prv_formats_sm',
                            'ENRSTCDV',
@@ -158,7 +149,7 @@ class PRV07(PRV):
 
         z = f"""
             create or replace temporary view Prov07_Medicaid_CNST as
-            select { ','.join(self.srtlist) }, SUBMTG_STATE_CD, SPCL,
+            select { ','.join(self.srtlist) }, SUBMTG_STATE_CD,
                     PRVDR_MDCD_ENRLMT_STUS_CD,
                     STATE_PLAN_ENRLMT_CD,
                     PRVDR_MDCD_ENRLMT_MTHD_CD,
@@ -167,20 +158,16 @@ class PRV07(PRV):
                     prov_medicaid_eff_date as PRVDR_MDCD_EFCTV_DT,
                     prov_medicaid_end_date as PRVDR_MDCD_END_DT,
                     case
-                    when STATE_PLAN_ENRLMT_CD=1 then 1
+                    when STATE_PLAN_ENRLMT_CD=1 or STATE_PLAN_ENRLMT_CD=3 then 1
                     when STATE_PLAN_ENRLMT_CD is null then null
                     else 0
                     end as MDCD_ENRLMT_IND,
                     case
-                    when STATE_PLAN_ENRLMT_CD=2 then 1
+                    when STATE_PLAN_ENRLMT_CD=2 or STATE_PLAN_ENRLMT_CD=3 then 1
                     when STATE_PLAN_ENRLMT_CD is null then null
                     else 0
                     end as CHIP_ENRLMT_IND,
-                    case
-                    when STATE_PLAN_ENRLMT_CD=3 then 1
-                    when STATE_PLAN_ENRLMT_CD is null then null
-                    else 0
-                    end as MDCD_CHIP_ENRLMT_IND,
+                    null as MDCD_CHIP_ENRLMT_IND,
                     case
                     when STATE_PLAN_ENRLMT_CD=4 then 1
                     when STATE_PLAN_ENRLMT_CD is null then null
@@ -205,12 +192,7 @@ class PRV07(PRV):
                     when PRVDR_MDCD_ENRLMT_STUS_CTGRY=4 then 1
                     when PRVDR_MDCD_ENRLMT_STUS_CTGRY is null then null
                     else 0
-                    end as PRVDR_ENRLMT_STUS_TRMNTD_IND,
-                    /* grouping code */
-                    row_number() over (
-                    partition by { ','.join(self.srtlist) }
-                    order by record_number asc
-                    ) as _ndx
+                    end as PRVDR_ENRLMT_STUS_TRMNTD_IND
             from Prov07_Medicaid_MTD
             where PRVDR_MDCD_ENRLMT_STUS_CD is not null
             order by { ','.join(self.srtlist) }
@@ -222,12 +204,7 @@ class PRV07(PRV):
         z = f"""
             create or replace temporary view Prov07_Medicaid_ENRPOP as
             select {self.prv.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || SPCL) as varchar(50))
-                    else
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50))
-                    end as PRV_LINK_KEY,
+                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50)) as PRV_LINK_KEY,
                     '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
@@ -299,14 +276,8 @@ class PRV07(PRV):
                         M.acpt_new_ptnts_ind,
                         M.age_num,
                         coalesce(E.PRVDR_MDCD_ENRLMT_IND, 0) as PRVDR_MDCD_ENRLMT_IND,
-                        case
-                        when E.MDCD_CHIP_ENRLMT_IND=1 then 0
-                        else E.MDCD_ENRLMT_IND
-                        end as MDCD_ENRLMT_IND,
-                        case
-                        when E.MDCD_CHIP_ENRLMT_IND=1 then 0
-                        else E.CHIP_ENRLMT_IND
-                        end as CHIP_ENRLMT_IND,
+                        E.MDCD_ENRLMT_IND,
+                        E.CHIP_ENRLMT_IND,
                         E.MDCD_CHIP_ENRLMT_IND,
                         E.NOT_SP_AFLTD_IND,
                         E.PRVDR_ENRLMT_STUS_ACTV_IND,

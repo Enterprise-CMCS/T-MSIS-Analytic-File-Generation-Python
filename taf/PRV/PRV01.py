@@ -49,12 +49,10 @@ class PRV01(PRV):
         z = f"""
                 create or replace temporary view {outtbl} as
                 select submitting_state,
-                       SPCL,
                        max(tms_run_id) as tms_run_id
                 from Prov01_Header_Copy
-                    left join SPCLlst as S on submitting_state=S.start
                 where concat(submitting_state,tms_run_id) in ({self.prv.get_combined_list()})
-                group by submitting_state, SPCL
+                group by submitting_state
                 order by submitting_state
             """
         self.prv.append(type(self).__name__, z)

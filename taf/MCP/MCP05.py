@@ -52,14 +52,22 @@ class MCP05(MCP):
             "tms_reporting_period",
             "record_number",
             "submitting_state",
+            "submitting_state as submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
-            "%zero_pad(operating_authority, 2)",
+            """case
+                when length(trim(TRAILING FROM operating_authority))<2 and length(trim(TRAILING FROM operating_authority))>0 and operating_authority in ('1','2','3','4','5','6','7','8','9') 
+                    then lpad(trim(TRAILING FROM operating_authority),2,'0')
+                when trim(TRAILING FROM operating_authority) in ('01','02','03','04','05','06','07','08','09') or 
+                    trim(TRAILING FROM operating_authority) in ('10','11','12','13','14','15','16','17','18','19','20','21','22','23')
+                    then trim(TRAILING FROM operating_authority)
+                else null
+            end as operating_authority""",
             "%upper_case(waiver_id) as waiver_id",
             "managed_care_op_authority_eff_date",
             "managed_care_op_authority_end_date",
         ]
 
-        whr05 = "operating_authority is not null or waiver_id is not null"
+        whr05 = "(trim(TRAILING FROM operating_authority) in ('1','2','3','4','5','6','7','8','9') or trim(TRAILING FROM operating_authority) in ('01','02','03','04','05','06','07','08','09') or trim(TRAILING FROM operating_authority) in ('10','11','12','13','14','15','16','17','18','19','20','21','22','23')) or (upper(waiver_id) is not null)"
 
         self.copy_activerows(
             "MC05_Operating_Authority_Latest1",
@@ -154,6 +162,14 @@ class MCP05(MCP):
                     case when OPRTG_AUTHRTY_IND='13' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1915AI_CONC_IND,
                     case when OPRTG_AUTHRTY_IND='14' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1932A_1915I_IND,
                     case when OPRTG_AUTHRTY_IND='15' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1945_HH_IND,
+                    case when OPRTG_AUTHRTY_IND='16' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1915AJ_CONC_IND,
+                    case when OPRTG_AUTHRTY_IND='17' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1932A_1915J_IND,
+                    case when OPRTG_AUTHRTY_IND='18' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1915BJ_CONC_IND,
+                    case when OPRTG_AUTHRTY_IND='19' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1115_1915J_IND,
+                    case when OPRTG_AUTHRTY_IND='20' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1915AK_CONC_IND,
+                    case when OPRTG_AUTHRTY_IND='21' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1932A_1915K_IND,
+                    case when OPRTG_AUTHRTY_IND='22' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1915BK_CONC_IND,
+                    case when OPRTG_AUTHRTY_IND='23' then 1 when OPRTG_AUTHRTY_IND is null then null else 0 end :: smallint as OPRTG_AUTHRTY_1115_1915K_IND,                    
                     OPRTG_AUTHRTY_IND as OPRTG_AUTHRTY,
                     waiver_id as WVR_ID,
                     row_number() over (
@@ -185,7 +201,15 @@ class MCP05(MCP):
                         max(OPRTG_AUTHRTY_1915BI_CONC_IND) as OPRTG_AUTHRTY_1915BI_CONC_IND,
                         max(OPRTG_AUTHRTY_1915AI_CONC_IND) as OPRTG_AUTHRTY_1915AI_CONC_IND,
                         max(OPRTG_AUTHRTY_1932A_1915I_IND) as OPRTG_AUTHRTY_1932A_1915I_IND,
-                        max(OPRTG_AUTHRTY_1945_HH_IND) as OPRTG_AUTHRTY_1945_HH_IND
+                        max(OPRTG_AUTHRTY_1945_HH_IND) as OPRTG_AUTHRTY_1945_HH_IND,
+                        max(OPRTG_AUTHRTY_1915AJ_CONC_IND) as OPRTG_AUTHRTY_1915AJ_CONC_IND,
+                        max(OPRTG_AUTHRTY_1932A_1915J_IND) as OPRTG_AUTHRTY_1932A_1915J_IND,
+                        max(OPRTG_AUTHRTY_1915BJ_CONC_IND) as OPRTG_AUTHRTY_1915BJ_CONC_IND,
+                        max(OPRTG_AUTHRTY_1115_1915J_IND) as OPRTG_AUTHRTY_1115_1915J_IND,
+                        max(OPRTG_AUTHRTY_1915AK_CONC_IND) as OPRTG_AUTHRTY_1915AK_CONC_IND,
+                        max(OPRTG_AUTHRTY_1932A_1915K_IND) as OPRTG_AUTHRTY_1932A_1915K_IND,
+                        max(OPRTG_AUTHRTY_1915BK_CONC_IND) as OPRTG_AUTHRTY_1915BK_CONC_IND,
+                        max(OPRTG_AUTHRTY_1115_1915K_IND) as OPRTG_AUTHRTY_1115_1915K_IND                        
                         { MCP.map_arrayvars(varnm='WVR_ID', N=17, fldtyp='C') }
                         { MCP.map_arrayvars(varnm='OPRTG_AUTHRTY', N=17, fldtyp='C') }
                 from MC05_Operating_Authority2

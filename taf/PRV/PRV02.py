@@ -49,6 +49,7 @@ class PRV02(PRV):
         cols02 = ['tms_run_id',
                   'tms_reporting_period',
                   'submitting_state',
+                  'submitting_state as submtg_state_cd',
                   'record_number',
                   '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
                   'prov_attributes_eff_date',
@@ -69,7 +70,7 @@ class PRV02(PRV):
                   '%fix_old_dates(date_of_death)',
                   'accepting_new_patients_ind']
 
-        whr02 = 'submitting_state_prov_id is not null'
+        whr02 = 'upper(submitting_state_prov_id) is not null'
 
         self.copy_activerows('Prov02_Main_Latest1',
                              cols02,
@@ -128,7 +129,7 @@ class PRV02(PRV):
                             'prv_formats_sm',
                             'STFIPC',
                             'submitting_state',
-                            'SUBMTG_STATE_CD',
+                            'SUBMTG_STATE_rcd',
                             'Prov02_Main_STV',
                             'C',
                              2)
@@ -137,7 +138,7 @@ class PRV02(PRV):
                             self.srtlist,
                            'prv_formats_sm',
                            'STFIPN',
-                           'SUBMTG_STATE_CD',
+                           'SUBMTG_STATE_rcd',
                            'State',
                            'Prov02_Main_ST',
                            'C',
@@ -277,7 +278,7 @@ class PRV02(PRV):
         # compound sortkey (tms_run_id, submitting_state, submitting_state_prov_id) as
         z = f"""
                 create or replace temporary view Prov02_Main_All as
-                select R.SPCL, { self.write_keyprefix(var02nind, 'R')}, { self.write_keyprefix(var02ind, 'T') }
+                select { self.write_keyprefix(var02nind, 'R')}, { self.write_keyprefix(var02ind, 'T') }
                 from Prov02_Main_NP R
                     left join Prov02_Main_GC T
                     on { self.write_equalkeys(self.srtlist,'R', 'T') }
@@ -296,7 +297,11 @@ class PRV02(PRV):
                     SUBMTG_STATE_CD,
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
                     REG_FLAG,
-                    { TAF_Closure.upper_case('prov_doing_business_as_name') } as PRVDR_DBA_NAME,
+                    case
+                      when nullif(trim(TRAILING FROM prov_doing_business_as_name),'')='888888888888888888888888888888888888888888888888888888888888888' then ''
+                      when nullif(trim(TRAILING FROM prov_doing_business_as_name),'')='99999999999999999999999999999999999999999999999999' then ''
+                      else { TAF_Closure.upper_case('prov_doing_business_as_name') } 
+                    end as PRVDR_DBA_NAME,
                     { TAF_Closure.upper_case('prov_legal_name') } as PRVDR_LGL_NAME,
                     { TAF_Closure.upper_case('prov_organization_name') } as PRVDR_ORG_NAME,
                     { TAF_Closure.upper_case('prov_tax_name') } as PRVDR_TAX_NAME,
@@ -317,12 +322,7 @@ class PRV02(PRV):
                       when AGE_NUM > 125 then 125
                       else AGE_NUM
                     end as AGE_NUM,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || SPCL) as varchar(50))
-                    else
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50))
-                    end as PRV_LINK_KEY
+                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50)) as PRV_LINK_KEY
                 from Prov02_Main_All
                 order by { ','.join(self.srtlist) }
             """

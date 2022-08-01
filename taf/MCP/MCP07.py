@@ -53,6 +53,7 @@ class MCP07(MCP):
             "tms_reporting_period",
             "record_number",
             "submitting_state",
+            "submitting_state as submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             "%zero_pad(accreditation_organization, 2)",
             "%fix_old_dates(date_accreditation_achieved)",
@@ -200,6 +201,17 @@ class MCP07(MCP):
             "N",
         )
 
+        self.recode_lookup(
+            "MC07_Accreditation_OTHR",
+            self.srtlist,
+            "mc_formats_sm",
+            "ACRJCAHO",
+            "ACRDTN_ORG",
+            "ACRDTN_JCAHO",
+            "MC07_Accreditation_JCAHO",
+            "N",
+        )        
+
         # diststyle key distkey(state_plan_id_num)
         z = f"""
                 create or replace temporary view MC07_Accreditation_Mapped as
@@ -208,11 +220,12 @@ class MCP07(MCP):
                         max(ACRDTN_URAC) as ACRDTN_URAC,
                         max(ACRDTN_AAHC) as ACRDTN_AAHC,
                         max(ACRDTN_NONE) as ACRDTN_NONE,
-                        max(ACRDTN_OTHR) as ACRDTN_OTHR
+                        max(ACRDTN_OTHR) as ACRDTN_OTHR,
+			            max(ACRDTN_JCAHO) as ACRDTN_JCAHO
                         { MCP.map_arrayvars(varnm='ACRDTN_ORG', N=4, fldtyp='C') }
                         { MCP.map_arrayvars(varnm='ACRDTN_ORG_ACHVMT_DT', N=4, fldtyp='D') }
                         { MCP.map_arrayvars(varnm='ACRDTN_ORG_END_DT', N=4, fldtyp='D') }
-                from MC07_Accreditation_OTHR
+                from MC07_Accreditation_JCAHO
                 group by { ','.join(self.srtlist) }
             """
 
@@ -311,7 +324,16 @@ class MCP07(MCP):
                     A.acrdtn_org_achvmt_dt_03,
                     A.acrdtn_org_end_dt_01,
                     A.acrdtn_org_end_dt_02,
-                    A.acrdtn_org_end_dt_03
+                    A.acrdtn_org_end_dt_03,
+                    O.OPRTG_AUTHRTY_1915AJ_conc_ind,
+                    O.OPRTG_AUTHRTY_1932A_1915J_ind,
+                    O.OPRTG_AUTHRTY_1915BJ_conc_ind,
+                    O.OPRTG_AUTHRTY_1115_1915J_ind,
+                    O.OPRTG_AUTHRTY_1915AK_conc_ind,
+                    O.OPRTG_AUTHRTY_1932A_1915K_ind,
+                    O.OPRTG_AUTHRTY_1915BK_conc_ind,
+                    O.OPRTG_AUTHRTY_1115_1915K_ind,
+                    A.acrdtn_jcaho
                 from MC02_Main_CNST M
                 left join MC05_Operating_Authority_Mapped O
                     on { MCP.write_equalkeys(self, keyvars=self.srtlist, t1='M', t2='O') }
@@ -333,10 +355,112 @@ class MCP07(MCP):
     # -----------------------------------------------------------------------------
     def build(self, runner: MCP_Runner):
 
+        base_col_list = [   
+                            "DA_RUN_ID",
+                            "MCP_LINK_KEY",
+                            "MCP_FIL_DT",
+                            "MCP_VRSN",
+                            "TMSIS_RUN_ID",
+                            "SUBMTG_STATE_CD",
+                            "MC_PLAN_ID",
+                            "MC_CNTRCT_EFCTV_DT",
+                            "MC_CNTRCT_END_DT",
+                            "REG_FLAG",
+                            "MC_NAME",
+                            "MC_PGM_CD",
+                            "MC_PLAN_TYPE_CD",
+                            "REIMBRSMT_ARNGMT_CD",
+                            "MC_PRFT_STUS_CD",
+                            "CBSA_CD",
+                            "BUSNS_PCT",
+                            "MC_SAREA_CD",
+                            "MC_PLAN_TYPE_CAT",
+                            "REIMBRSMT_ARNGMT_CAT",
+                            "SAREA_STATEWIDE_IND",
+                            "OPRTG_AUTHRTY_1115_DEMO_IND",
+                            "OPRTG_AUTHRTY_1915B_IND",
+                            "OPRTG_AUTHRTY_1932A_IND",
+                            "OPRTG_AUTHRTY_1915A_IND",
+                            "OPRTG_AUTHRTY_1915BC_CONC_IND",
+                            "OPRTG_AUTHRTY_1915AC_CONC_IND",
+                            "OPRTG_AUTHRTY_1932A_1915C_IND",
+                            "OPRTG_AUTHRTY_PACE_IND",
+                            "OPRTG_AUTHRTY_1905T_IND",
+                            "OPRTG_AUTHRTY_1937_IND",
+                            "OPRTG_AUTHRTY_1902A70_IND",
+                            "OPRTG_AUTHRTY_1915BI_CONC_IND",
+                            "OPRTG_AUTHRTY_1915AI_CONC_IND",
+                            "OPRTG_AUTHRTY_1932A_1915I_IND",
+                            "OPRTG_AUTHRTY_1945_HH_IND",
+                            "WVR_ID_01",
+                            "WVR_ID_02",
+                            "WVR_ID_03",
+                            "WVR_ID_04",
+                            "WVR_ID_05",
+                            "WVR_ID_06",
+                            "WVR_ID_07",
+                            "WVR_ID_08",
+                            "WVR_ID_09",
+                            "WVR_ID_10",
+                            "WVR_ID_11",
+                            "WVR_ID_12",
+                            "WVR_ID_13",
+                            "WVR_ID_14",
+                            "WVR_ID_15",
+                            "OPRTG_AUTHRTY_01",
+                            "OPRTG_AUTHRTY_02",
+                            "OPRTG_AUTHRTY_03",
+                            "OPRTG_AUTHRTY_04",
+                            "OPRTG_AUTHRTY_05",
+                            "OPRTG_AUTHRTY_06",
+                            "OPRTG_AUTHRTY_07",
+                            "OPRTG_AUTHRTY_08",
+                            "OPRTG_AUTHRTY_09",
+                            "OPRTG_AUTHRTY_10",
+                            "OPRTG_AUTHRTY_11",
+                            "OPRTG_AUTHRTY_12",
+                            "OPRTG_AUTHRTY_13",
+                            "OPRTG_AUTHRTY_14",
+                            "OPRTG_AUTHRTY_15",
+                            "POP_MDCD_MAND_COV_ADLT_IND",
+                            "POP_MDCD_MAND_COV_ABD_IND",
+                            "POP_MDCD_OPTN_COV_ADLT_IND",
+                            "POP_MDCD_OPTN_COV_ABD_IND",
+                            "POP_MDCD_MDCLY_NDY_ADLT_IND",
+                            "POP_MDCD_MDCLY_NDY_ABD_IND",
+                            "POP_CHIP_COV_CHLDRN_IND",
+                            "POP_CHIP_OPTN_CHLDRN_IND",
+                            "POP_CHIP_OPTN_PRGNT_WMN_IND",
+                            "POP_1115_EXPNSN_IND",
+                            "POP_UNK_IND",
+                            "ACRDTN_NCQA",
+                            "ACRDTN_URAC",
+                            "ACRDTN_AAHC",
+                            "ACRDTN_NONE",
+                            "ACRDTN_OTHR",
+                            "ACRDTN_ORG_01",
+                            "ACRDTN_ORG_02",
+                            "ACRDTN_ORG_03",
+                            "ACRDTN_ORG_ACHVMT_DT_01",
+                            "ACRDTN_ORG_ACHVMT_DT_02",
+                            "ACRDTN_ORG_ACHVMT_DT_03",
+                            "ACRDTN_ORG_END_DT_01",
+                            "ACRDTN_ORG_END_DT_02",
+                            "ACRDTN_ORG_END_DT_03"
+                        ]
+                            #"OPRTG_AUTHRTY_1915AJ_CONC_IND",
+                            #"OPRTG_AUTHRTY_1932A_1915J_IND",
+                            #"OPRTG_AUTHRTY_1915BJ_CONC_IND",
+                            #"OPRTG_AUTHRTY_1115_1915J_IND",
+                            #"OPRTG_AUTHRTY_1915AK_CONC_IND",
+                            #"OPRTG_AUTHRTY_1932A_1915K_IND",
+                            #"OPRTG_AUTHRTY_1915BK_CONC_IND",
+                            #"OPRTG_AUTHRTY_1115_1915K_IND",
+                            #"ACRDTN_JCAHO"
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mcp
                 SELECT
-                    *
+                    { ', '.join(base_col_list) }
                    ,to_timestamp('{self.mcp.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                    ,current_timestamp() as REC_UPDT_TS
                 FROM

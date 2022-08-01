@@ -45,6 +45,7 @@ class PRV03(PRV):
                   'tms_reporting_period',
                   'record_number',
                   'submitting_state',
+                  'submitting_state as submtg_state_cd',
                   '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
                   '%upper_case(prov_location_id) as prov_location_id',
                   'prov_addr_type',
@@ -103,6 +104,111 @@ class PRV03(PRV):
         # row count
         # self.prv.countrows(&outtbl, cnt_final PRV03_Final)
 
+        z = f"""
+            create or replace temporary view loc_g as
+            select 
+                M.tms_run_id, 
+                M.submitting_state, 
+                M.submitting_state_prov_id, 
+                '000' as prov_location_id
+            from
+                {maintbl} M
+
+            left join
+                (select
+                    tms_run_id, 
+                    submitting_state, 
+                    submitting_state_prov_id, 
+                    prov_location_id 
+                from 
+                    TMSIS.Prov_Licensing_Info 
+                where 
+                    prov_location_id='000') L
+            on
+                M.tms_run_id=L.tms_run_id and 
+                M.submitting_state=L.submitting_state and 
+                M.submitting_state_prov_id=upper(L.submitting_state_prov_id)
+
+             left join 
+                (select 
+                    tms_run_id, 
+                    submitting_state, 
+                    submitting_state_prov_id, 
+                    prov_location_id 
+                from 
+                    TMSIS.Prov_Identifiers 
+                where 
+                    prov_location_id='000') I 
+			 on 
+                M.tms_run_id=I.tms_run_id and 
+                M.submitting_state=I.submitting_state and 
+                M.submitting_state_prov_id=upper(I.submitting_state_prov_id)
+			 
+             left join 
+                (select 
+                    tms_run_id, 
+                    submitting_state, 
+                    submitting_state_prov_id, 
+                    prov_location_id 
+                from 
+                    TMSIS.Prov_Bed_Type_Info 
+                where 
+                    prov_location_id='000') B 
+			 on 
+                M.tms_run_id=B.tms_run_id and 
+                M.submitting_state=B.submitting_state and 
+                M.submitting_state_prov_id=upper(B.submitting_state_prov_id)
+		
+            where
+                L.prov_location_id='000' or 
+                I.prov_location_id='000' or 
+                B.prov_location_id='000'
+            group by 
+                M.tms_run_id, 
+                M.submitting_state, 
+                M.submitting_state_prov_id
+            order by 
+                M.tms_run_id, 
+                M.submitting_state, 
+                M.submitting_state_prov_id
+        """
+        self.prv.append(type(self).__name__, z)
+
+        z = f"""
+            create or replace temporary view Prov03_Locations_g0 as
+            select 
+                tms_run_id, 
+                submitting_state, 
+                submitting_state_prov_id, 
+                prov_location_id
+            from
+                (select 
+                    tms_run_id, 
+                    submitting_state, 
+                    submitting_state_prov_id, 
+                    prov_location_id 
+                from 
+                    {outtbl}
+
+			    union all
+
+			    select 
+                    * 
+                from   
+                    loc_g)
+            group by 
+                tms_run_id, 
+                submitting_state, 
+                submitting_state_prov_id, 
+                prov_location_id
+            order by 
+                tms_run_id, 
+                submitting_state, 
+                submitting_state_prov_id, 
+                prov_location_id
+        """
+        self.prv.append(type(self).__name__, z)
+
     # ---------------------------------------------------------------------------------
     #
     #
@@ -126,7 +232,7 @@ class PRV03(PRV):
                             'prv_formats_sm',
                             'STFIPC',
                             'submitting_state',
-                            'SUBMTG_STATE_CD',
+                            'SUBMTG_STATE_rcd',
                             'Prov03_Locations_STV',
                             'C',
                             2)
@@ -134,12 +240,7 @@ class PRV03(PRV):
         z = f"""
                 create or replace temporary view Prov03_Locations_link as
                 select *,
-                        case
-                        when SPCL is not null then
-                        cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**') || '-' || SPCL) as varchar(74))
-                        else
-                        cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74))
-                        end as PRV_LOC_LINK_KEY
+                        cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74)) as PRV_LOC_LINK_KEY
                 from Prov03_Locations_STV
                 order by { ','.join(self.srtlistl) }
             """
@@ -213,7 +314,7 @@ class PRV03(PRV):
 
         z = f"""
             create or replace temporary view Prov03_Location_BSM as
-            select { ','.join(self.srtlistl) }, SPCL,
+            select { ','.join(self.srtlistl) },
                         tms_reporting_period,
                         record_number,
                         prov_addr_type,
@@ -228,6 +329,7 @@ class PRV03(PRV):
                         addr_county,
                         addr_border_state_ind,
                         SUBMTG_STATE_CD,
+                        SUBMTG_STATE_rcd,
                         ADR_STATE_CD,
                         ADR_BRDR_STATE_IND,
                         PRV_LOC_LINK_KEY
@@ -239,12 +341,7 @@ class PRV03(PRV):
         z = f"""
             create or replace temporary view Prov03_Location_CNST as
             select {self.prv.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when T.SPCL is not null then
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || T.SUBMTG_STATE_CD || '-' || coalesce(T.submitting_state_prov_id, '*') || '-' || T.SPCL) as varchar(50))
-                    else
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || T.SUBMTG_STATE_CD || '-' || coalesce(T.submitting_state_prov_id, '*')) as varchar(50))
-                    end as PRV_LINK_KEY,
+                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || T.SUBMTG_STATE_CD || '-' || coalesce(T.submitting_state_prov_id, '*')) as varchar(50)) as PRV_LINK_KEY,
                     T.PRV_LOC_LINK_KEY,
                     '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
@@ -264,8 +361,8 @@ class PRV03(PRV):
                     T.addr_county as ADR_CNTY_CD,
                     T.ADR_BRDR_STATE_IND,
                     case
-                    when L.PRVDR_ADR_SRVC_IND=1 and T.SUBMTG_STATE_CD=T.ADR_STATE_CD and T.SUBMTG_STATE_CD is not null and T.ADR_STATE_CD is not null then 0
-                    when L.PRVDR_ADR_SRVC_IND=1 and T.SUBMTG_STATE_CD<>T.ADR_STATE_CD and T.SUBMTG_STATE_CD is not null and T.ADR_STATE_CD is not null then 1
+                    when L.PRVDR_ADR_SRVC_IND=1 and T.SUBMTG_STATE_rcd=T.ADR_STATE_CD then 0
+                    when L.PRVDR_ADR_SRVC_IND=1 and T.SUBMTG_STATE_rcd<>T.ADR_STATE_CD then 1
                     else null
                     end as PRVDR_SRVC_ST_DFRNT_SUBMTG_ST,
                     to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
@@ -277,6 +374,7 @@ class PRV03(PRV):
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID, PRVDR_LCTN_ID
         """
         self.prv.append(type(self).__name__, z)
+
 
     # -----------------------------------------------------------------------------
     #

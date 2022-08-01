@@ -45,6 +45,7 @@ class PRV06(PRV):
                   'tms_reporting_period',
                   'record_number',
                   'submitting_state',
+                  'submitting_state as submtg_state_cd',
                   'upper(submitting_state_prov_id) as submitting_state_prov_id',
                   """case
                       when (prov_classification_type='2' or prov_classification_type='3') and
@@ -59,7 +60,7 @@ class PRV06(PRV):
                   'prov_taxonomy_classification_eff_date',
                   'prov_taxonomy_classification_end_date']
 
-        whr06 = 'prov_classification_type is not null and prov_classification_code is not null'
+        whr06 = 'prov_classification_type is not null and upper(prov_classification_code) is not null'
 
         self.copy_activerows('Prov06_Taxonomy_Latest1',
                              cols06,
@@ -101,6 +102,234 @@ class PRV06(PRV):
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV06_Final)
 
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    
+    def hc_prvdr_sw_pos(self, max_keep):
+        hc_prvdr_sw_pos = []
+        cmma_cnct = ',\n\t\t\t'
+        for i in list(range(1, 15 + 1)):
+            if i <= max_keep:
+                hc_prvdr_sw_pos.append(f"nvl(nppes.hc_prvdr_prmry_txnmy_sw_{i},' ')".format())
+        return cmma_cnct.join(hc_prvdr_sw_pos)
+
+    def hc_prvdr_cd_pos(self, max_keep):
+        hc_prvdr_cd_pos = []
+        cmma_cnct = ',\n\t\t\t'
+        for i in list(range(1, 15 + 1)):
+            if i <= max_keep:
+                hc_prvdr_cd_pos.append(f"nvl(substring(nppes.hc_prvdr_txnmy_cd_{i},10,1),' ')".format())
+        return cmma_cnct.join(hc_prvdr_cd_pos)
+
+    def hc_prvdr_sw_pos_y(self, max_keep):
+        hc_prvdr_sw_pos_y = []
+        new_line = '\n\t\t\t'
+        for i in list(range(1, 15 + 1)):
+            if i <= max_keep:
+                hc_prvdr_sw_pos_y.append(f"when (taxo_switches = 1 and position('Y' in sw_positions)={i}) then nvl(hc_prvdr_txnmy_cd_{i},' ')".format())
+        return new_line.join(hc_prvdr_sw_pos_y)
+
+    def hc_prvdr_sw_pos_x(self, max_keep):
+        hc_prvdr_sw_pos_x = []
+        new_line = '\n\t\t\t'
+        for i in list(range(1, 15 + 1)):
+            if i <= max_keep:
+                hc_prvdr_sw_pos_x.append(f"when (taxo_switches = 0 and taxo_cnt = 1 and position('X' in cd_positions)={i}) then nvl(hc_prvdr_txnmy_cd_{i},' ')".format())
+        return new_line.join(hc_prvdr_sw_pos_x)
+
+    def prmry_NPPES_tax0b(self, max_keep):
+        prmry_NPPES_tax0b = []
+        new_line = '\n\n \t\tUNION ALL \n\t\t\t'
+        for i in list(range(1, 15 + 1)):
+            if i <= max_keep:
+                prmry_NPPES_tax0b.append(f"""
+                    (SELECT
+                        prvdr_npi, 
+                        prvdr_id as prvdr_id_chr,
+                        hc_prvdr_txnmy_cd_{i} as prvdr_clsfctn_cd
+                    FROM
+                        nppes_tax_flags
+                    WHERE
+                        taxo_switches > 1 and 
+                        nvl(hc_prvdr_txnmy_cd_{i},' ') <> ' ' and 
+                        hc_prvdr_prmry_txnmy_sw_{i}='Y')""".format())
+        return new_line.join(prmry_NPPES_tax0b)
+
+
+    def nppes_tax(self, DA_SCHEMA, id_intbl, tax_intbl, tax_outtbl):
+
+        # get NPPES taxonomy codes using NPI from PRV identifier segment
+        z = f"""
+            create or replace temporary view nppes_id1 as
+            select 
+                submtg_state_cd, 
+                submtg_state_cd as submitting_state, 
+                tmsis_run_id as tms_run_id, 
+                submtg_state_prvdr_id as submitting_state_prov_id, 
+                prvdr_id
+            from 
+                {id_intbl}
+            where
+                prvdr_id_type_cd='2'
+            group by
+                submtg_state_cd, 
+                tmsis_run_id, 
+                submtg_state_prvdr_id, 
+                prvdr_id
+            order by
+                prvdr_id
+            """
+        self.prv.append(type(self).__name__, z)
+
+        # create a table with fewer columns for the initial record pull from NPPES table
+
+        z = f"""
+            create or replace temporary view nppes_id2 as
+            select
+                prvdr_id
+            from 
+                nppes_id1
+            group by
+                prvdr_id
+            order by
+                prvdr_id            
+            """ 
+        self.prv.append(type(self).__name__, z)
+
+        # link on NPI in NPPES set flags to identify primary taxonomy codes 
+        # that should be included in the TAF classification segment
+        max_keep = 15
+
+        z = f"""
+            create or replace temporary view nppes_tax_flags_temp as
+            select
+                nppes.*, 
+                t2.prvdr_id,
+                CONCAT({ self.hc_prvdr_sw_pos(max_keep) }) as sw_positions,
+                CONCAT({ self.hc_prvdr_cd_pos(max_keep) }) as cd_positions
+            from
+                nppes_id2 t2
+            left join
+                {DA_SCHEMA}.data_anltcs_prvdr_npi_data_vw nppes
+            on
+                t2.prvdr_id=nppes.prvdr_npi
+            """
+        self.prv.append(type(self).__name__, z)
+
+        z = f"""
+            create or replace temporary view nppes_tax_flags as
+            select
+                *,
+                (length(sw_positions) - coalesce(length(regexp_replace(sw_positions, 'Y', '')), 0)) as taxo_switches,
+                (length(cd_positions) - coalesce(length(regexp_replace(cd_positions, 'X', '')), 0)) as taxo_cnt
+            from
+                nppes_tax_flags_temp
+            """
+        self.prv.append(type(self).__name__, z)       
+
+        z = f"""
+                create or replace temporary view nppes_tax0 as
+                select
+                    distinct prvdr_npi, 
+                    prvdr_id as prvdr_id_chr,
+                    case 
+                        { self.hc_prvdr_sw_pos_y(max_keep) }
+                        { self.hc_prvdr_sw_pos_x(max_keep) }
+                        else null
+                    end as prvdr_clsfctn_cd
+                FROM
+                    nppes_tax_flags
+                WHERE
+                    taxo_switches = 1 or 
+                    (taxo_switches = 0 and taxo_cnt = 1)
+        """
+        self.prv.append(type(self).__name__, z)
+
+        z = f"""
+                create or replace temporary view nppes_tax0b as
+                { self.prmry_NPPES_tax0b(max_keep) }
+        """
+        self.prv.append(type(self).__name__, z)
+
+        z = f"""
+            create or replace temporary view nppes_tax1 as
+            (select
+                prvdr_npi, 
+                prvdr_id_chr, 
+                prvdr_clsfctn_cd
+            from
+                nppes_tax0)
+
+            union
+
+            (select
+                prvdr_npi, 
+                prvdr_id_chr, 
+                prvdr_clsfctn_cd
+            from
+                nppes_tax0b)
+
+            order by 
+                prvdr_npi
+            """
+        self.prv.append(type(self).__name__, z)
+
+        z = f"""
+            create or replace temporary view nppes_tax_final as
+            select 
+                distinct i.tms_run_id, 
+                i.submtg_state_cd, 
+                i.submitting_state, 
+                i.submitting_state_prov_id, 
+                'N' as prvdr_clsfctn_type_cd, 
+                n.prvdr_clsfctn_cd
+            from
+                nppes_id1 i
+            left join
+                NPPES_tax1 n
+            on
+                i.prvdr_id=n.prvdr_id_chr
+            where
+                n.prvdr_npi is not null
+            order by 
+                5
+            """
+        self.prv.append(type(self).__name__, z)
+
+        z = f"""
+            create or replace temporary view {tax_outtbl} as
+            (select 
+                tms_run_id, 
+                submtg_state_cd, 
+                submitting_state, 
+                submitting_state_prov_id, 
+                prvdr_clsfctn_type_cd, 
+                prvdr_clsfctn_cd
+            from 
+                {tax_intbl})
+
+            union
+
+            (select
+                tms_run_id, 
+                submtg_state_cd, 
+                submitting_state, 
+                submitting_state_prov_id, 
+                prvdr_clsfctn_type_cd, 
+                prvdr_clsfctn_cd
+            from
+                nppes_tax_final
+            order by
+                { ','.join(self.srtlist) })
+            """
+        self.prv.append(type(self).__name__, z)
+        
+
     # ---------------------------------------------------------------------------------
     #
     #
@@ -115,17 +344,7 @@ class PRV06(PRV):
         # create the separate linked child table
         # add code to validate and recode source variables (when needed), use SAS variable names, add linking variables, and sort records
 
-        self.recode_notnull('Prov06_Taxonomies',
-                            self.srtlist,
-                            'prv_formats_sm',
-                            'STFIPC',
-                            'submitting_state',
-                            'SUBMTG_STATE_CD',
-                            'Prov06_Taxonomies_STV',
-                            'C',
-                            2)
-
-        self.recode_lookup('Prov06_Taxonomies_STV',
+        self.recode_lookup('Prov06_Taxonomies',
                            self.srtlist,
                            'prv_formats_sm',
                            'CLSSCDV',
@@ -151,7 +370,7 @@ class PRV06(PRV):
         self.prv.append(type(self).__name__, z)
 
         z = f"""
-                create or replace temporary view Prov06_Taxonomies_ALL as
+                create or replace temporary view Prov06_Taxonomies_CCD2 as
                 select B.*,
                         case when B.PRVDR_CLSFCTN_TYPE_CD='1' then B.PRVDR_CLSFCTN_CD_TAX
                             when B.PRVDR_CLSFCTN_TYPE_CD='2' then SPC.label
@@ -165,15 +384,13 @@ class PRV06(PRV):
         """
         self.prv.append(type(self).__name__, z)
 
+
+        self.nppes_tax('taf_python', 'Prov05_Identifiers_CNST', 'Prov06_Taxonomies_CCD2', 'Prov06_Taxonomies_ALL')
+
         z = f"""
                 create or replace temporary view Prov06_Taxonomies_seg as
                 select {self.prv.DA_RUN_ID} as DA_RUN_ID,
-                        case
-                        when SPCL is not null then
-                        cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || SPCL) as varchar(50))
-                        else
-                        cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50))
-                        end as PRV_LINK_KEY,
+                        cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50)) as PRV_LINK_KEY,
                         '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                         '{self.prv.version}' as PRV_VRSN,
                         tms_run_id as TMSIS_RUN_ID,
@@ -183,7 +400,7 @@ class PRV06(PRV):
                         PRVDR_CLSFCTN_CD,
                         to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
                         current_timestamp() as REC_UPDT_TS
-                        from Prov06_Taxonomies_All
+                        from Prov06_Taxonomies_ALL
                         where PRVDR_CLSFCTN_TYPE_CD is not null and PRVDR_CLSFCTN_CD is not null
                 order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
         """
@@ -197,7 +414,7 @@ class PRV06(PRV):
 
         # create the fields to merge with the root/main file
 
-        self.recode_lookup('Prov06_Taxonomies_All',
+        self.recode_lookup('Prov06_Taxonomies_ALL',
                            self.srtlist,
                            'prv_formats_sm',
                            'TAXTYP',
@@ -380,35 +597,30 @@ class PRV06(PRV):
                         else 0
                         end as TRNSPRTN_SRVCS_PRVDR_IND,
                         case
-                        when PRVDR_CLSFCTN_TYPE_CD='1' and PRVDR_CLSFCTN_SME=1 then 1
+                        when (PRVDR_CLSFCTN_TYPE_CD='1' or PRVDR_CLSFCTN_TYPE_CD='N') and PRVDR_CLSFCTN_SME=1 then 1
                         when PRVDR_CLSFCTN_TYPE_CD='2' and PRVDR_CLSFCTN_SME=4 then 1
                         when PRVDR_CLSFCTN_TYPE_CD='4' and PRVDR_CLSFCTN_SME=7 then 1
                         when PRVDR_CLSFCTN_CD='.' or PRVDR_CLSFCTN_CD is null or PRVDR_CLSFCTN_TYPE_CD='.' or PRVDR_CLSFCTN_TYPE_CD is null then null
-                        when PRVDR_CLSFCTN_TYPE_CD<>'1' and PRVDR_CLSFCTN_TYPE_CD<>'2' and PRVDR_CLSFCTN_TYPE_CD<>'4' then null
+                        when PRVDR_CLSFCTN_TYPE_CD<>'1' and PRVDR_CLSFCTN_TYPE_CD<>'N' and PRVDR_CLSFCTN_TYPE_CD<>'2' and PRVDR_CLSFCTN_TYPE_CD<>'4' then null
                         else 0
                         end as SUD_SRVC_PRVDR_IND,
                         case
-                        when PRVDR_CLSFCTN_TYPE_CD='1' and PRVDR_CLSFCTN_SME=2 then 1
+                        when (PRVDR_CLSFCTN_TYPE_CD='1' or PRVDR_CLSFCTN_TYPE_CD='N') and PRVDR_CLSFCTN_SME=2 then 1
                         when PRVDR_CLSFCTN_TYPE_CD='2' and PRVDR_CLSFCTN_SME=5 then 1
                         when PRVDR_CLSFCTN_TYPE_CD='3' and PRVDR_CLSFCTN_MHT=1 then 1
                         when PRVDR_CLSFCTN_TYPE_CD='4' and PRVDR_CLSFCTN_SME=8 then 1
                         when PRVDR_CLSFCTN_CD='.' or PRVDR_CLSFCTN_CD is null or PRVDR_CLSFCTN_TYPE_CD='.' or PRVDR_CLSFCTN_TYPE_CD is null then null
-                        when PRVDR_CLSFCTN_TYPE_CD<>'1' and PRVDR_CLSFCTN_TYPE_CD<>'2' and  PRVDR_CLSFCTN_TYPE_CD<>'3' and PRVDR_CLSFCTN_TYPE_CD<>'4' then null
+                        when PRVDR_CLSFCTN_TYPE_CD<>'1' and PRVDR_CLSFCTN_TYPE_CD<>'N' and PRVDR_CLSFCTN_TYPE_CD<>'2' and  PRVDR_CLSFCTN_TYPE_CD<>'3' and PRVDR_CLSFCTN_TYPE_CD<>'4' then null
                         else 0
                         end as MH_SRVC_PRVDR_IND,
                         case
-                        when PRVDR_CLSFCTN_TYPE_CD='1' and PRVDR_CLSFCTN_SME=3 then 1
+                        when (PRVDR_CLSFCTN_TYPE_CD='1' or PRVDR_CLSFCTN_TYPE_CD='N') and PRVDR_CLSFCTN_SME=3 then 1 
                         when PRVDR_CLSFCTN_TYPE_CD='2' and PRVDR_CLSFCTN_SME=6 then 1
                         when PRVDR_CLSFCTN_TYPE_CD='4' and PRVDR_CLSFCTN_SME=9 then 1
                         when PRVDR_CLSFCTN_CD='.' or PRVDR_CLSFCTN_CD is null or PRVDR_CLSFCTN_TYPE_CD='.' or PRVDR_CLSFCTN_TYPE_CD is null then null
-                        when PRVDR_CLSFCTN_TYPE_CD<>'1' and PRVDR_CLSFCTN_TYPE_CD<>'2' and PRVDR_CLSFCTN_TYPE_CD<>'4' then null
+                        when PRVDR_CLSFCTN_TYPE_CD<>'1' and PRVDR_CLSFCTN_TYPE_CD<>'N' and PRVDR_CLSFCTN_TYPE_CD<>'2' and PRVDR_CLSFCTN_TYPE_CD<>'4' then null
                         else 0
-                        end as EMER_SRVCS_PRVDR_IND,
-                        /* grouping code */
-                        row_number() over (
-                        partition by { ','.join(self.srtlist) }
-                        order by record_number asc
-                        ) as _ndx
+                        end as EMER_SRVCS_PRVDR_IND
                         from Prov06_Taxonomies_MHT
                         where PRVDR_CLSFCTN_TYPE_CD is not null and PRVDR_CLSFCTN_CD is not null
                 order by { ','.join(self.srtlist) }

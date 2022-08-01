@@ -53,6 +53,7 @@ class MCP03(MCP):
             "tms_reporting_period",
             "record_number",
             "submitting_state",
+            "submitting_state as submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             "%upper_case(managed_care_location_id) as managed_care_location_id",
             "%fix_old_dates(managed_care_location_and_contact_info_eff_date)",
@@ -144,18 +145,6 @@ class MCP03(MCP):
             "STFIPV",
             "managed_care_state2",
             "MC_STATE_CD",
-            "MC03_Location_STV1",
-            "C",
-            2,
-        )
-
-        self.recode_notnull(
-            "MC03_Location_STV1",
-            self.srtlist,
-            "mc_formats_sm",
-            "STFIPC",
-            "submitting_state",
-            "SUBMTG_STATE_CD",
             "MC03_Location_STV",
             "C",
             2,
@@ -166,12 +155,7 @@ class MCP03(MCP):
                 create or replace temporary view MC03_Location_CNST as
                 select
                     {self.mcp.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*') || '-' || SPCL) as varchar(32))
-                    else
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32))
-                    end as MCP_LINK_KEY,
+                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32)) as MCP_LINK_KEY,
                     '{self.mcp.TAF_FILE_DATE}' as MCP_FIL_DT,
                     '{self.mcp.version}' as MCP_VRSN,
                     tms_run_id as TMSIS_RUN_ID,

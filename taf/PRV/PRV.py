@@ -84,8 +84,7 @@ class PRV(TAF):
         z = f"""
             create or replace temporary view {outtbl} as
             select
-                T.*,
-                R.SPCL
+                T.*
             from
                 {intbl} T
             inner join {runtbl} R
@@ -116,8 +115,7 @@ class PRV(TAF):
         z = f"""
             create or replace temporary view {outtbl} as
             select
-                { select },
-                SPCL
+                { select }
             from
                 { intbl }
             where
@@ -153,9 +151,11 @@ class PRV(TAF):
                     where
                         tms_is_active = 1 and
                         tms_reporting_period is not null and
-                        tot_rec_cnt > 0
-                        { self.prv.ST_FILTER() }
+                        tot_rec_cnt > 0 and
+                        trim(TRAILING FROM submitting_state) not in ('94','96')
                     )
+                where
+                    1=1 { self.prv.ST_FILTER() }
                 order by
                     tms_run_id,
                     submitting_state

@@ -47,6 +47,7 @@ class PRV05(PRV):
                   'tms_reporting_period',
                   'record_number',
                   'submitting_state',
+                  'submitting_state as submtg_state_cd',
                   '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
                   '%upper_case(prov_location_id) as prov_location_id',
                   '%upper_case(prov_identifier) as prov_identifier',
@@ -56,7 +57,7 @@ class PRV05(PRV):
                   'prov_identifier_end_date']
 
         # copy 05(identifiers) provider rows
-        whr05 = 'prov_identifier_type is not null and prov_identifier is not null'
+        whr05 = 'prov_identifier_type is not null and upper(prov_identifier) is not null'
 
         self.copy_activerows('Prov05_Identifiers_Latest1',
                              cols05,
@@ -111,20 +112,10 @@ class PRV05(PRV):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        self.process_05_identifiers('Prov03_Locations',
+        self.process_05_identifiers('Prov03_Locations_g0',
                                     'Prov05_Identifiers')
 
-        self.recode_notnull('Prov05_Identifiers',
-                            self.srtlistl,
-                            'prv_formats_sm',
-                            'STFIPC',
-                            'submitting_state',
-                            'SUBMTG_STATE_CD',
-                            'Prov05_Identifiers_STV',
-                            'C',
-                            2)
-
-        self.recode_lookup('Prov05_Identifiers_STV',
+        self.recode_lookup('Prov05_Identifiers',
                            self.srtlistl,
                            'prv_formats_sm',
                            'IDCDV',
@@ -137,12 +128,7 @@ class PRV05(PRV):
         z = f"""
             create or replace temporary view Prov05_Identifiers_CNST as
             select {self.prv.DA_RUN_ID} as DA_RUN_ID,
-                    case
-                    when SPCL is not null then
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**') || '-' || SPCL) as varchar(74))
-                    else
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74))
-                    end as PRV_LOC_LINK_KEY,
+                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74)) as PRV_LOC_LINK_KEY,
                     '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
                     '{self.prv.version}' as PRV_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
@@ -150,7 +136,7 @@ class PRV05(PRV):
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
                     prov_location_id as PRVDR_LCTN_ID,
                     PRVDR_ID_TYPE_CD,
-                    prov_identifier as PRVDR_ID,
+                    cast(prov_identifier as varchar(12)) as PRVDR_ID,
                     prov_identifier_issuing_entity_id as PRVDR_ID_ISSG_ENT_ID_TXT,
                     to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
                     current_timestamp() as REC_UPDT_TS
