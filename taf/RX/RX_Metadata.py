@@ -501,7 +501,7 @@ class RX_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
-        "DA_RUN_ID",
+        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
         "RX_LINK_KEY",
         "RX_VRSN",
         "RX_FIL_DT",
@@ -563,14 +563,14 @@ class RX_Metadata:
         "BENE_DDCTBL_AMT",
         "COPAY_WVD_IND",
         "CLL_CNT",
-        "NUM_CLL",
+        "cast(NUM_CLL as bigint) as NUM_CLL",
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "FED_SRVC_CTGRY_CD"
     ]
 
     line_columns = [
-        "DA_RUN_ID",
+        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
         "RX_LINK_KEY",
         "RX_VRSN",
         "RX_FIL_DT",
@@ -589,15 +589,15 @@ class RX_Metadata:
         "SUPLY_DAYS_CNT",
         "NEW_REFL_IND",
         "BRND_GNRC_IND",
-        "DSPNS_FEE_AMT",
+        "cast(DSPNS_FEE_AMT as numeric(13,2)) as DSPNS_FEE_AMT",
         "DRUG_UTLZTN_CD",
-        "DTL_MTRC_DCML_QTY",
+        "cast(DTL_MTRC_DCML_QTY as numeric(12,3)) as DTL_MTRC_DCML_QTY",
         "CMPND_DSG_FORM_CD",
         "REBT_ELGBL_IND",
         "IMNZTN_TYPE_CD",
         "BNFT_TYPE_CD",
-        "ALOWD_SRVC_QTY",
-        "ACTL_SRVC_QTY",
+        "cast(ALOWD_SRVC_QTY as numeric(12,3)) as ALOWD_SRVC_QTY",
+        "cast(ACTL_SRVC_QTY as numeric(12,3)) as ACTL_SRVC_QTY",
         "CMS_64_FED_REIMBRSMT_CTGRY_CD",
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",

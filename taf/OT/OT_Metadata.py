@@ -545,7 +545,7 @@ class OT_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
-        "DA_RUN_ID",
+        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
         "OT_LINK_KEY",
         "OT_VRSN",
         "OT_FIL_DT",
@@ -609,7 +609,7 @@ class OT_Metadata:
         "HH_PRVDR_NPI_NUM",
         "HH_ENT_NAME",
         "RMTNC_NUM",
-        "DAILY_RATE",
+        "cast(DAILY_RATE as decimal(13,2)) as DAILY_RATE",
         "PYMT_LVL_IND",
         "TOT_BILL_AMT",
         "TOT_ALOWD_AMT",
@@ -663,7 +663,7 @@ class OT_Metadata:
         "OCRNC_09_CD_END_DT",
         "OCRNC_10_CD_END_DT",
         "CLL_CNT",
-        "NUM_CLL",
+        "cast(NUM_CLL as bigint) as NUM_CLL",
         "OT_MH_DX_IND",
         "OT_SUD_DX_IND",
         "OT_MH_TXNMY_IND",
@@ -685,7 +685,7 @@ class OT_Metadata:
     #
     # ---------------------------------------------------------------------------------
     line_columns = [
-        "DA_RUN_ID",
+        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
         "OT_LINK_KEY",
         "OT_VRSN",
         "OT_FIL_DT",
@@ -716,8 +716,8 @@ class OT_Metadata:
         "MDCD_FFS_EQUIV_AMT",
         "MDCR_PD_AMT",
         "OTHR_INSRNC_AMT",
-        "ACTL_SRVC_QTY",
-        "ALOWD_SRVC_QTY",
+        "cast(ACTL_SRVC_QTY as numeric(12,3)) as ACTL_SRVC_QTY",
+        "cast(ALOWD_SRVC_QTY as numeric(12,3)) as ALOWD_SRVC_QTY",
         "TOS_CD",
         "BNFT_TYPE_CD",
         "HCBS_SRVC_CD",
@@ -743,12 +743,12 @@ class OT_Metadata:
         "SELF_DRCTN_TYPE_CD",
         "PRE_AUTHRZTN_NUM",
         "UOM_CD",
-        "NDC_QTY",
+        "cast(NDC_QTY as numeric(12,3)) as NDC_QTY",
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "LINE_NUM",
         "PRCDR_CCS_CTGRY_CD",
-        "SRVCNG_PRVDR_NPPES_TXNMY_CD",
+        "SRVCNG_PRVDR_NPPES_TXNMY_CD"
     ]
 
 

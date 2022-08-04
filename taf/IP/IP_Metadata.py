@@ -592,7 +592,7 @@ class IP_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
-        "DA_RUN_ID",
+        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
         "IP_LINK_KEY",
         "IP_VRSN",
         "IP_FIL_DT",
@@ -605,7 +605,7 @@ class IP_Metadata:
         "ADJSTMT_RSN_CD",
         "ADMSN_DT",
         "ADMSN_HR_NUM",
-        "DSCHRG_DT",
+        "cast(DSCHRG_DT as date) as DSCHRG_DT",
         "DSCHRG_HR_NUM",
         "ADJDCTN_DT",
         "MDCD_PD_DT",
@@ -636,7 +636,7 @@ class IP_Metadata:
         "PTNT_CNTL_NUM",
         "HLTH_CARE_ACQRD_COND_CD",
         "PTNT_STUS_CD",
-        "BIRTH_WT_GRMS_QTY",
+        "cast(BIRTH_WT_GRMS_QTY as numeric(12,3)) as BIRTH_WT_GRMS_QTY",
         "ADMTG_DGNS_CD",
         "ADMTG_DGNS_CD_IND",
         "DGNS_1_CD",
@@ -696,10 +696,10 @@ class IP_Metadata:
         "PRCDR_6_CD_DT",
         "PRCDR_6_CD",
         "PRCDR_6_CD_IND",
-        "NCVRD_DAYS_CNT",
+        "cast(NCVRD_DAYS_CNT as bigint) as NCVRD_DAYS_CNT",
         "NCVRD_CHRGS_AMT",
-        "MDCD_CVRD_IP_DAYS_CNT",
-        "OUTLIER_DAYS_CNT",
+        "cast(MDCD_CVRD_IP_DAYS_CNT as bigint) as MDCD_CVRD_IP_DAYS_CNT",
+        "cast(OUTLIER_DAYS_CNT as bigint) as OUTLIER_DAYS_CNT",
         "OUTLIER_CD",
         "ADMTG_PRVDR_NPI_NUM",
         "ADMTG_PRVDR_NUM",
@@ -727,7 +727,7 @@ class IP_Metadata:
         "TP_COPMT_PD_AMT",
         "MDCD_DSH_PD_AMT",
         "DRG_OUTLIER_AMT",
-        "DRG_RLTV_WT_NUM",
+        "cast(DRG_RLTV_WT_NUM as numeric(11,4)) as DRG_RLTV_WT_NUM",
         "MDCR_PD_AMT",
         "TOT_MDCR_DDCTBL_AMT",
         "TOT_MDCR_COINSRNC_AMT",
@@ -768,12 +768,12 @@ class IP_Metadata:
         "OCRNC_10_CD_END_DT",
         "OCRNC_10_CD",
         "SPLIT_CLM_IND",
-        "CLL_CNT",
-        "NUM_CLL",
-        "IP_MH_DX_IND",
-        "IP_SUD_DX_IND",
-        "IP_MH_TXNMY_IND",
-        "IP_SUD_TXNMY_IND",
+        "cast(CLL_CNT as bigint) as CLL_CNT",
+        "cast(NUM_CLL as bigint) as NUM_CLL",
+        "cast(IP_MH_DX_IND as bigint) as IP_MH_DX_IND",
+        "cast(IP_SUD_DX_IND as bigint) as IP_SUD_DX_IND",
+        "cast(IP_MH_TXNMY_IND as bigint) as IP_MH_TXNMY_IND",
+        "cast(IP_SUD_TXNMY_IND as bigint) as IP_SUD_TXNMY_IND",
         "MAJ_DGNSTC_CTGRY",
         "IAP_COND_IND",
         "PRMRY_HIRCHCL_COND",
@@ -793,7 +793,7 @@ class IP_Metadata:
     #
     # ---------------------------------------------------------------------------------
     line_columns = [
-        "DA_RUN_ID",
+        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
         "IP_LINK_KEY",
         "IP_VRSN",
         "IP_FIL_DT",
@@ -816,8 +816,8 @@ class IP_Metadata:
         "SRVC_ENDG_DT",
         "BNFT_TYPE_CD",
         "REV_CD",
-        "ACTL_SRVC_QTY",
-        "ALOWD_SRVC_QTY",
+        "cast(ACTL_SRVC_QTY as numeric(12,3)) as ACTL_SRVC_QTY",
+        "cast(ALOWD_SRVC_QTY as numeric(12,3)) as ALOWD_SRVC_QTY",
         "REV_CHRG_AMT",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_NPI_NUM",
@@ -826,7 +826,7 @@ class IP_Metadata:
         "SRVCNG_PRVDR_SPCLTY_CD",
         "OPRTG_PRVDR_NPI_NUM",
         "PRVDR_FAC_TYPE_CD",
-        "NDC_QTY",
+        "cast(NDC_QTY as numeric(12,3)) as NDC_QTY",
         "HCPCS_RATE",
         "NDC_CD",
         "UOM_CD",
@@ -837,322 +837,6 @@ class IP_Metadata:
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "LINE_NUM"
-    ]
-
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
-    @staticmethod
-    def finalTableOutputHeader():
-
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_IPL
-        z = """
-                insert into taf_python.taf_iph
-                select
-                    DA_RUN_ID
-                   ,IP_LINK_KEY
-                   ,IP_VRSN
-                   ,IP_FIL_DT
-                   ,TMSIS_RUN_ID
-                   ,MSIS_IDENT_NUM
-                   ,SUBMTG_STATE_CD
-                   ,ORGNL_CLM_NUM
-                   ,ADJSTMT_CLM_NUM
-                   ,ADJSTMT_IND
-                   ,ADJSTMT_RSN_CD
-                   ,ADMSN_DT
-                   ,ADMSN_HR_NUM
-                   ,DSCHRG_DT
-                   ,DSCHRG_HR_NUM
-                   ,ADJDCTN_DT
-                   ,MDCD_PD_DT
-                   ,ADMSN_TYPE_CD
-                   ,HOSP_TYPE_CD
-                   ,SECT_1115A_DEMO_IND
-                   ,CLM_TYPE_CD
-                   ,BILL_TYPE_CD
-                   ,PGM_TYPE_CD
-                   ,MC_PLAN_ID
-                   ,ELGBL_LAST_NAME
-                   ,ELGBL_1ST_NAME
-                   ,ELGBL_MDL_INITL_NAME
-                   ,BIRTH_DT
-                   ,WVR_TYPE_CD
-                   ,WVR_ID
-                   ,SRVC_TRKNG_TYPE_CD
-                   ,SRVC_TRKNG_PYMT_AMT
-                   ,OTHR_INSRNC_IND
-                   ,OTHR_TPL_CLCTN_CD
-                   ,FIXD_PYMT_IND
-                   ,FUNDNG_CD
-                   ,FUNDNG_SRC_NON_FED_SHR_CD
-                   ,BRDR_STATE_IND
-                   ,XOVR_IND
-                   ,MDCR_HICN_NUM
-                   ,MDCR_BENE_ID
-                   ,PTNT_CNTL_NUM
-                   ,HLTH_CARE_ACQRD_COND_CD
-                   ,PTNT_STUS_CD
-                   ,BIRTH_WT_GRMS_QTY
-                   ,ADMTG_DGNS_CD
-                   ,ADMTG_DGNS_CD_IND
-                   ,DGNS_1_CD
-                   ,DGNS_1_CD_IND
-                   ,DGNS_POA_1_CD_IND
-                   ,DGNS_2_CD
-                   ,DGNS_2_CD_IND
-                   ,DGNS_POA_2_CD_IND
-                   ,DGNS_3_CD
-                   ,DGNS_3_CD_IND
-                   ,DGNS_POA_3_CD_IND
-                   ,DGNS_4_CD
-                   ,DGNS_4_CD_IND
-                   ,DGNS_POA_4_CD_IND
-                   ,DGNS_5_CD
-                   ,DGNS_5_CD_IND
-                   ,DGNS_POA_5_CD_IND
-                   ,DGNS_6_CD
-                   ,DGNS_6_CD_IND
-                   ,DGNS_POA_6_CD_IND
-                   ,DGNS_7_CD
-                   ,DGNS_7_CD_IND
-                   ,DGNS_POA_7_CD_IND
-                   ,DGNS_8_CD
-                   ,DGNS_8_CD_IND
-                   ,DGNS_POA_8_CD_IND
-                   ,DGNS_9_CD
-                   ,DGNS_9_CD_IND
-                   ,DGNS_POA_9_CD_IND
-                   ,DGNS_10_CD
-                   ,DGNS_10_CD_IND
-                   ,DGNS_POA_10_CD_IND
-                   ,DGNS_11_CD
-                   ,DGNS_11_CD_IND
-                   ,DGNS_POA_11_CD_IND
-                   ,DGNS_12_CD
-                   ,DGNS_12_CD_IND
-                   ,DGNS_POA_12_CD_IND
-                   ,DRG_CD
-                   ,DRG_CD_IND
-                   ,DRG_DESC
-                   ,PRCDR_1_CD_DT
-                   ,PRCDR_1_CD
-                   ,PRCDR_1_CD_IND
-                   ,PRCDR_2_CD_DT
-                   ,PRCDR_2_CD
-                   ,PRCDR_2_CD_IND
-                   ,PRCDR_3_CD_DT
-                   ,PRCDR_3_CD
-                   ,PRCDR_3_CD_IND
-                   ,PRCDR_4_CD_DT
-                   ,PRCDR_4_CD
-                   ,PRCDR_4_CD_IND
-                   ,PRCDR_5_CD_DT
-                   ,PRCDR_5_CD
-                   ,PRCDR_5_CD_IND
-                   ,PRCDR_6_CD_DT
-                   ,PRCDR_6_CD
-                   ,PRCDR_6_CD_IND
-                   ,NCVRD_DAYS_CNT
-                   ,NCVRD_CHRGS_AMT
-                   ,MDCD_CVRD_IP_DAYS_CNT
-                   ,OUTLIER_DAYS_CNT
-                   ,OUTLIER_CD
-                   ,ADMTG_PRVDR_NPI_NUM
-                   ,ADMTG_PRVDR_NUM
-                   ,ADMTG_PRVDR_SPCLTY_CD
-                   ,ADMTG_PRVDR_TXNMY_CD
-                   ,ADMTG_PRVDR_TYPE_CD
-                   ,BLG_PRVDR_NUM
-                   ,BLG_PRVDR_NPI_NUM
-                   ,BLG_PRVDR_TXNMY_CD
-                   ,BLG_PRVDR_TYPE_CD
-                   ,BLG_PRVDR_SPCLTY_CD
-                   ,RFRG_PRVDR_NUM
-                   ,RFRG_PRVDR_NPI_NUM
-                   ,RFRG_PRVDR_TYPE_CD
-                   ,RFRG_PRVDR_SPCLTY_CD
-                   ,PRVDR_LCTN_ID
-                   ,PYMT_LVL_IND
-                   ,TOT_BILL_AMT
-                   ,TOT_ALOWD_AMT
-                   ,TOT_MDCD_PD_AMT
-                   ,TOT_COPAY_AMT
-                   ,TOT_TPL_AMT
-                   ,TOT_OTHR_INSRNC_AMT
-                   ,TP_COINSRNC_PD_AMT
-                   ,TP_COPMT_PD_AMT
-                   ,MDCD_DSH_PD_AMT
-                   ,DRG_OUTLIER_AMT
-                   ,DRG_RLTV_WT_NUM
-                   ,MDCR_PD_AMT
-                   ,TOT_MDCR_DDCTBL_AMT
-                   ,TOT_MDCR_COINSRNC_AMT
-                   ,MDCR_CMBND_DDCTBL_IND
-                   ,MDCR_REIMBRSMT_TYPE_CD
-                   ,BENE_COINSRNC_AMT
-                   ,BENE_COPMT_AMT
-                   ,BENE_DDCTBL_AMT
-                   ,COPAY_WVD_IND
-                   ,OCRNC_01_CD_EFCTV_DT
-                   ,OCRNC_01_CD_END_DT
-                   ,OCRNC_01_CD
-                   ,OCRNC_02_CD_EFCTV_DT
-                   ,OCRNC_02_CD_END_DT
-                   ,OCRNC_02_CD
-                   ,OCRNC_03_CD_EFCTV_DT
-                   ,OCRNC_03_CD_END_DT
-                   ,OCRNC_03_CD
-                   ,OCRNC_04_CD_EFCTV_DT
-                   ,OCRNC_04_CD_END_DT
-                   ,OCRNC_04_CD
-                   ,OCRNC_05_CD_EFCTV_DT
-                   ,OCRNC_05_CD_END_DT
-                   ,OCRNC_05_CD
-                   ,OCRNC_06_CD_EFCTV_DT
-                   ,OCRNC_06_CD_END_DT
-                   ,OCRNC_06_CD
-                   ,OCRNC_07_CD_EFCTV_DT
-                   ,OCRNC_07_CD_END_DT
-                   ,OCRNC_07_CD
-                   ,OCRNC_08_CD_EFCTV_DT
-                   ,OCRNC_08_CD_END_DT
-                   ,OCRNC_08_CD
-                   ,OCRNC_09_CD_EFCTV_DT
-                   ,OCRNC_09_CD_END_DT
-                   ,OCRNC_09_CD
-                   ,OCRNC_10_CD_EFCTV_DT
-                   ,OCRNC_10_CD_END_DT
-                   ,OCRNC_10_CD
-                   ,SPLIT_CLM_IND
-                   ,CLL_CNT
-                   ,NUM_CLL
-                   ,IP_MH_DX_IND
-                   ,IP_SUD_DX_IND
-                   ,IP_MH_TXNMY_IND
-                   ,IP_SUD_TXNMY_IND
-                   ,MAJ_DGNSTC_CTGRY
-                   ,IAP_COND_IND
-                   ,PRMRY_HIRCHCL_COND
-                   ,REC_ADD_TS
-                   ,REC_UPDT_TS
-                   ,SRVC_ENDG_DT_DRVD
-                   ,SRVC_ENDG_DT_CD
-                from IPH
-        """
-
-        return z
-
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
-    @staticmethod
-    def finalTableOutputLine():
-
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_IPL
-        z = """
-                insert into taf_python.taf_ipl
-                select
-                      DA_RUN_ID
-                    , IP_LINK_KEY
-                    , IP_VRSN
-                    , IP_FIL_DT
-                    , TMSIS_RUN_ID
-                    , MSIS_IDENT_NUM
-                    , SUBMTG_STATE_CD
-                    , ORGNL_CLM_NUM
-                    , ADJSTMT_CLM_NUM
-                    , ORGNL_LINE_NUM
-                    , ADJSTMT_LINE_NUM
-                    , ADJDCTN_DT
-                    , LINE_ADJSTMT_IND
-                    , TOS_CD
-                    , IMNZTN_TYPE_CD
-                    , CMS_64_FED_REIMBRSMT_CTGRY_CD
-                    , XIX_SRVC_CTGRY_CD
-                    , XXI_SRVC_CTGRY_CD
-                    , CLL_STUS_CD
-                    , SRVC_BGNNG_DT
-                    , SRVC_ENDG_DT
-                    , BNFT_TYPE_CD
-                    , REV_CD
-                    , ACTL_SRVC_QTY
-                    , ALOWD_SRVC_QTY
-                    , REV_CHRG_AMT
-                    , SRVCNG_PRVDR_NUM
-                    , SRVCNG_PRVDR_NPI_NUM
-                    , SRVCNG_PRVDR_TXNMY_CD
-                    , SRVCNG_PRVDR_TYPE_CD
-                    , SRVCNG_PRVDR_SPCLTY_CD
-                    , OPRTG_PRVDR_NPI_NUM
-                    , PRVDR_FAC_TYPE_CD
-                    , NDC_QTY
-                    , HCPCS_RATE
-                    , NDC_CD
-                    , UOM_CD
-                    , ALOWD_AMT
-                    , MDCD_PD_AMT
-                    , OTHR_INSRNC_AMT
-                    , MDCD_FFS_EQUIV_AMT
-                    , LINE_NUM
-                from ipl
-        """
-
-        return z
-
-    # ---------------------------------------------------------------------------------
-    #
-    #   INSERT INTO &DA_SCHEMA..TAF_&FL.L
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    output_columns = [
-        "da_run_id",
-        "ip_link_key",
-        "ip_vrsn",
-        "ip_fil_dt",
-        "tmsis_run_id",
-        "msis_ident_num",
-        "submtg_state_cd",
-        "orgnl_clm_num",
-        "adjstmt_clm_num",
-        "orgnl_line_num",
-        "adjstmt_line_num",
-        "adjdctn_dt",
-        "line_adjstmt_ind",
-        "tos_cd",
-        "imnztn_type_cd",
-        "cms_64_fed_reimbrsmt_ctgry_cd",
-        "xix_srvc_ctgry_cd",
-        "xxi_srvc_ctgry_cd",
-        "cll_stus_cd",
-        "srvc_bgnng_dt",
-        "srvc_endg_dt",
-        "bnft_type_cd",
-        "rev_cd",
-        "actl_srvc_qty",
-        "alowd_srvc_qty",
-        "rev_chrg_amt",
-        "srvcng_prvdr_num",
-        "srvcng_prvdr_npi_num",
-        "srvcng_prvdr_txnmy_cd",
-        "srvcng_prvdr_type_cd",
-        "srvcng_prvdr_spclty_cd",
-        "oprtg_prvdr_npi_num",
-        "prvdr_fac_type_cd",
-        "ndc_qty",
-        "hcpcs_rate",
-        "ndc_cd",
-        "uom_cd",
-        "alowd_amt",
-        "mdcd_pd_amt",
-        "othr_insrnc_amt",
-        "mdcd_ffs_equiv_amt",
-        "line_num",
     ]
 
 
