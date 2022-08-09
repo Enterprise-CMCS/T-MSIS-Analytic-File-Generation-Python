@@ -193,8 +193,14 @@ class TAF_Claims():
                 { self.analysis_date(fl, analysis_date) }
 
             from
-                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
+        """
 
+        if (_2x_segment.casefold() == 'tmsis_clh_rec_ip'):
+            z += "tmsis.tmsis_test_view2 A"
+        else:
+            z += f"TAF_PYTHON.{_2x_segment}_TEMP_TAF A"
+
+        z += f"""
             where
                 ( {self.where_analysis_date(fl, analysis_date, self.rep_yr, self.rep_mo) } )
                 and
