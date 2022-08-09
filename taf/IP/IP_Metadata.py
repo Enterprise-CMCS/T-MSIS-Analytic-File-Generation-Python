@@ -118,6 +118,7 @@ class IP_Metadata:
         "DGNS_9_CD": TAF_Closure.compress_dots,
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "PLAN_ID_NUM": plan_id_num,
+        "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND
     }
 
     # ---------------------------------------------------------------------------------
