@@ -76,7 +76,8 @@ class OT_Metadata:
                 else null
             end as SRVC_ENDG_DT_DRVD_H,
             case
-                when {alias}.{colname} is not null then '1'
+                when {alias}.{colname} is not null then '2'
+                when {alias}.{colname} is null and {alias}.SRVC_BGNNG_DT is not null then '3'
                 else null
             end as SRVC_ENDG_DT_CD_H,
             coalesce({alias}.{colname}, '01JAN1960') as {colname}
@@ -109,6 +110,8 @@ class OT_Metadata:
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "SRVC_ENDG_DT": dates_of_service,
+        "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
     }
 
     # ---------------------------------------------------------------------------------

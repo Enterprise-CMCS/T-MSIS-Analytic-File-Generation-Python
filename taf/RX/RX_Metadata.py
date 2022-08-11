@@ -118,6 +118,8 @@ class RX_Metadata:
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "PLAN_ID_NUM": plan_id_num,
+        "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
     }
 
     # ---------------------------------------------------------------------------------
@@ -380,8 +382,6 @@ class RX_Metadata:
         "HLTH_CARE_ACQRD_COND_CD",
         "HOSP_TYPE_CD",
         "IMNZTN_TYPE_CD",
-        "XIX_SRVC_CTGRY_CD",
-        "XXI_SRVC_CTGRY_CD",
         "MDCR_BENE_ID",
         "MDCR_CMBND_DDCTBL_IND",
         "MDCR_HICN_NUM",

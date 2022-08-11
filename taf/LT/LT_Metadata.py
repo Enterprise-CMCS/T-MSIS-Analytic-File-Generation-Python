@@ -98,6 +98,8 @@ class LT_Metadata:
         "DGNS_3_CD": TAF_Closure.compress_dots,
         "DGNS_4_CD": TAF_Closure.compress_dots,
         "DGNS_5_CD": TAF_Closure.compress_dots,
+        "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
     }
 
     # ---------------------------------------------------------------------------------
@@ -521,8 +523,8 @@ class LT_Metadata:
         "HH_PRVDR_IND",
         "HH_PRVDR_NPI_NUM",
         "HLTH_CARE_ACQRD_COND_CD",
-        "lpad(trim(XIX_SRVC_CTGRY_CD",
-        "lpad(trim(XXI_SRVC_CTGRY_CD",
+        "XIX_SRVC_CTGRY_CD",
+        "XXI_SRVC_CTGRY_CD",
         "MDCR_BENE_ID",
         "MDCR_CMBND_DDCTBL_IND",
         "MDCR_HICN_NUM",
