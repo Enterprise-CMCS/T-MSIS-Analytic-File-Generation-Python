@@ -36,7 +36,7 @@ class ELG00016(ELG):
             select
                 submtg_state_cd,
                 msis_ident_num,
-                CRTFD_AMRCN_INDN_ALSKN_NTV_IND,
+                AMRCN_INDN_ALSKA_NTV_IND,
 
                 row_number() over (partition by submtg_state_cd,
                                         msis_ident_num
@@ -46,9 +46,9 @@ class ELG00016(ELG):
                                         {self.eff_date} desc,
                                         {self.end_date} desc,
                                         REC_NUM desc,
-                                        CRTFD_AMRCN_INDN_ALSKN_NTV_IND) as keeper
+                                        AMRCN_INDN_ALSKA_NTV_IND) as keeper
                 from {self.tab_no}
-                where CRTFD_AMRCN_INDN_ALSKN_NTV_IND is not null
+                where AMRCN_INDN_ALSKA_NTV_IND is not null
                 """
         self.bsf.append(type(self).__name__, z)
 
@@ -84,7 +84,8 @@ class ELG00016(ELG):
             max(case when nullif(trim(RACE_CD),'') is null then null when trim(RACE_CD) ='011' then 1 else 0 end) as UNKNOWN_ASIAN_FLG ,
             max(case when nullif(trim(RACE_CD),'') is null then null when trim(RACE_CD) ='001' then 1 else 0 end) as WHITE_FLG ,
             max(case when nullif(trim(RACE_CD),'') is null then null when trim(RACE_CD) ='002' then 1 else 0 end) as BLACK_AFRICAN_AMERICAN_FLG ,
-            max(case when nullif(trim(RACE_CD),'') is null then null when trim(RACE_CD) ='003' then 1 else 0 end) as AIAN_FLG
+            max(case when nullif(trim(RACE_CD),'') is null then null when trim(RACE_CD) ='003' then 1 else 0 end) as AIAN_FLG ,
+            max(case when nullif(trim(RACE_CD),'') is null then null when trim(RACE_CD) ='018' then 1 else 0 end) as OTHER_OTHER_FLG
 
                 from {self.tab_no}
                 group by submtg_state_cd, msis_ident_num
@@ -96,7 +97,7 @@ class ELG00016(ELG):
 
             select
                 t1.*,
-                t2.CRTFD_AMRCN_INDN_ALSKN_NTV_IND,
+                t2.AMRCN_INDN_ALSKA_NTV_IND,
 
                 case when
                 (coalesce(ASIAN_INDIAN_FLG,0)+ coalesce(CHINESE_FLG,0)+

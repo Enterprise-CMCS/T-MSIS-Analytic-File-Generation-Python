@@ -31,19 +31,6 @@ class BSF_Metadata:
 
         return new_line_comma.join(columns)
 
-    # ---------------------------------------------------------------------------------
-    # FIXME: GNDR_CODE as GNDR_CD
-    #        PRMRY_LANG_CODE as OTHR_LANG_HOME_CD
-    #        CARE_LVL_STUS_CODE as CARE_LVL_STUS_CD
-    #        MASBOE as MASBOE_CD
-    #        LOCK_IN_FLAG as LCKIN_FLAG
-    #        MFP_QLFYD_INSTN_CODE as MFP_QLFYD_INSTN_CD
-    #        MFP_QLFYD_RSDNC_CODE as MFP_QLFYD_RSDNC_CD
-    #        MFP_PRTCPTN_ENDD_RSN_CODE as MFP_PRTCPTN_ENDD_RSN_CD
-    #        MFP_RINSTLZD_RSN_CODE as MFP_RINSTLZD_RSN_CD
-    #
-    #        https://databricks-val-data.macbisdw.cmscloud.local/#notebook/405772/command/405776
-    # ---------------------------------------------------------------------------------
     @staticmethod
     def finalFormatter():
 
@@ -273,6 +260,7 @@ class BSF_Metadata:
                     when t16.GLOBAL_ASIAN=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 3
                     when t16.AIAN_FLG = 1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 4
                     when t16.GLOBAL_ISLANDER=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 5
+                    when t16.OTHER_OTHER_FLG=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 8
                     when t15.HISPANIC_ETHNICITY_FLG=0 then null
                     else null end as RACE_ETHNICITY_FLAG,
 
@@ -307,6 +295,7 @@ class BSF_Metadata:
                     when t16.SAMOAN_FLG=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 15
                     when t16.OTHER_PAC_ISLANDER_FLG=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 16
                     when t16.UNK_PAC_ISLANDER_FLG=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 17
+                    when t16.OTHER_OTHER_FLG=1 and COALESCE(t15.HISPANIC_ETHNICITY_FLG,0)=0 then 21
                     when t15.HISPANIC_ETHNICITY_FLG = 0 then null
                     else null end as RACE_ETHNCTY_EXP_FLAG,
 
@@ -353,9 +342,9 @@ class BSF_Metadata:
         return z
 
     # ---------------------------------------------------------------------------------
-    # TODO: we need to think of a better solution here
-    # this is needed because we select on a wildcard so rename is not consistently
-    # applied
+    #
+    #
+    #
     #
     # ---------------------------------------------------------------------------------
     @staticmethod
@@ -464,9 +453,9 @@ class BSF_Metadata:
                         t1.IMGRTN_STUS_5_YR_BAR_END_DT,
                         t1.PRMRY_LANG_CODE as OTHR_LANG_HOME_CD,
                         t1.PRMRY_LANG_FLAG,
-                        t1.PRMRY_LANG_ENGLSH_PRFCNCY_CD,
+                        t1.ENGLSH_PRFCNCY_CD,
                         t1.HSEHLD_SIZE_CD,
-                        t1.CRTFD_AMRCN_INDN_ALSKN_NTV_IND,
+                        t1.AMRCN_INDN_ALSKA_NTV_IND,
                         t1.ETHNCTY_CD,
                         t1.ELGBL_LINE_1_ADR_HOME,
                         t1.ELGBL_LINE_2_ADR_HOME,
@@ -633,13 +622,17 @@ class BSF_Metadata:
                         t1.RACE_ETHNICITY_FLAG as RACE_ETHNCTY_FLAG,
                         t1.RACE_ETHNCTY_EXP_FLAG,
                         t1.HISPANIC_ETHNICITY_FLAG as HSPNC_ETHNCTY_FLAG,
+                        from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS,
+                        from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS,
                         t1.ELGBL_ID_ADDTNL,
                         t1.ELGBL_ID_ADDTNL_ENT_ID,
                         t1.ELGBL_ID_ADDTNL_RSN_CHG,
                         t1.ELGBL_ID_MSIS_XWALK,
                         t1.ELGBL_ID_MSIS_XWALK_ENT_ID,
                         t1.ELGBL_ID_MSIS_XWALK_RSN_CHG,
-                        t1.ELGBLTY_CHG_RSN_CD
+                        t1.ELGBLTY_CHG_RSN_CD,
+                        t1.ELGBL_AFTR_EOM_IND
+
                     from
                         bsf_step1 as t1
                 )
@@ -964,7 +957,6 @@ class BSF_Metadata:
     #
     # ---------------------------------------------------------------------------------
     cleanser = {
-        'SUBMTG_STATE_CD': cleanSubmittingStateCd,
         'SSN_NUM': cleanSSN,
         'PRMRY_LANG_CD': cleanPrimaryLangCd,
         'DSBLTY_TYPE_CD': cleanDisabilityTypeCd,
@@ -980,7 +972,8 @@ class BSF_Metadata:
     # ---------------------------------------------------------------------------------
     absent = [
         'PRGNT_IND',
-        'PRGNCY_FLAG'
+        'PRGNCY_FLAG',
+        '_1115A_PRTCPNT_FLAG'
     ]
 
     # ---------------------------------------------------------------------------------
@@ -1085,7 +1078,7 @@ class BSF_Metadata:
         'BIRTH_CNCPTN_IND',
         'CARE_LVL_STUS_CD',
         'CHIP_CD',
-        'CRTFD_AMRCN_INDN_ALSKN_NTV_IND',
+        'AMRCN_INDN_ALSKA_NTV_IND',
         'CTZNSHP_IND',
         'CTZNSHP_VRFCTN_IND',
         'DUAL_ELGBL_CD',
@@ -1136,7 +1129,7 @@ class BSF_Metadata:
         'MSIS_CASE_NUM',
         'OTHR_LANG_HOME_CD',
         'PRMRY_ELGBLTY_GRP_IND',
-        'PRMRY_LANG_ENGLSH_PRFCNCY_CD',
+        'ENGLSH_PRFCNCY_CD',
         'RSTRCTD_BNFTS_CD',
         'SECT_1115A_DEMO_IND',
         'SSDI_IND',
@@ -1207,7 +1200,7 @@ class BSF_Metadata:
             'IMGRTN_STUS_5_YR_BAR_END_DT',
             'IMGRTN_VRFCTN_IND',
             'PRMRY_LANG_CD',
-            'PRMRY_LANG_ENGLSH_PRFCNCY_CD',
+            'ENGLSH_PRFCNCY_CD',
             'HSEHLD_SIZE_CD',
             'PRGNT_IND',
             'MDCR_HICN_NUM',
@@ -1299,7 +1292,7 @@ class BSF_Metadata:
         ],
 
         'ELG00016': [
-            'CRTFD_AMRCN_INDN_ALSKN_NTV_IND'
+            'AMRCN_INDN_ALSKA_NTV_IND'
         ],
 
         'ELG00017': [],
@@ -1409,7 +1402,7 @@ class BSF_Metadata:
             'IMGRTN_STUS_5_YR_BAR_END_DT',
             'IMGRTN_VRFCTN_IND',
             'PRMRY_LANG_CD',
-            'PRMRY_LANG_ENGLSH_PRFCNCY_CD',
+            'ENGLSH_PRFCNCY_CD',
             'HSEHLD_SIZE_CD',
             'PRGNT_IND',
             'MDCR_HICN_NUM',
@@ -1591,7 +1584,7 @@ class BSF_Metadata:
             'RACE_DCLRTN_EFCTV_DT',
             'RACE_DCLRTN_END_DT',
             'RACE_OTHR_TXT',
-            'CRTFD_AMRCN_INDN_ALSKN_NTV_IND'
+            'AMRCN_INDN_ALSKA_NTV_IND'
         ],
 
         'ELG00017': [
@@ -1686,7 +1679,7 @@ class BSF_Metadata:
             ['1', '2', '3', '8'],
         'IMGRTN_VRFCTN_IND':
             ['0', '1'],
-        'PRMRY_LANG_ENGLSH_PRFCNCY_CD':
+        'ENGLSH_PRFCNCY_CD':
             ['0', '1', '2', '3'],
         'HSEHLD_SIZE_CD':
             ['01', '02', '03', '04', '05', '06', '07', '08'],
@@ -1766,6 +1759,8 @@ class BSF_Metadata:
             ['0', '1'],
         'CRTFD_AMRCN_INDN_ALSKN_NTV_IND':
             ['0', '1', '2'],
+        'AMRCN_INDN_ALSKA_NTV_IND':
+            ['0', '1', '2'],
     }
 
     # ---------------------------------------------------------------------------------
@@ -1812,7 +1807,7 @@ class BSF_Metadata:
     #
     # ---------------------------------------------------------------------------------
     output_columns = [
-        'DA_RUN_ID',
+        'cast(DA_RUN_ID as integer) AS DA_RUN_ID',
         'BSF_FIL_DT',
         'BSF_VRSN',
         'MSIS_IDENT_NUM',
@@ -1891,17 +1886,11 @@ class BSF_Metadata:
         'CHIP_ENRLMT_EFF_DT_16',
         'CHIP_ENRLMT_END_DT_16',
         'ELGBL_1ST_NAME',
-        'ELGBL_ID_ADDTNL',
-        'ELGBL_ID_ADDTNL_ENT_ID',
-        'ELGBL_ID_ADDTNL_RSN_CHG',
-        'ELGBL_ID_MSIS_XWALK',
-        'ELGBL_ID_MSIS_XWALK_ENT_ID',
-        'ELGBL_ID_MSIS_XWALK_RSN_CHG',
         'ELGBL_LAST_NAME',
         'ELGBL_MDL_INITL_NAME',
-        'BIRTH_DT',
+        'cast(BIRTH_DT as date) as BIRTH_DT',
         'DEATH_DT',
-        'AGE_NUM',
+        'cast(AGE_NUM as integer) as AGE_NUM',
         'AGE_GRP_FLAG',
         'DCSD_FLAG',
         'GNDR_CD',
@@ -1912,14 +1901,14 @@ class BSF_Metadata:
         'CTZNSHP_VRFCTN_IND',
         'IMGRTN_STUS_CD',
         'IMGRTN_VRFCTN_IND',
-        'IMGRTN_STUS_5_YR_BAR_END_DT',
+        'cast(IMGRTN_STUS_5_YR_BAR_END_DT as DATE) as IMGRTN_STUS_5_YR_BAR_END_DT',
         'OTHR_LANG_HOME_CD',
         'PRMRY_LANG_FLAG',
-        'PRMRY_LANG_ENGLSH_PRFCNCY_CD',
+        'ENGLSH_PRFCNCY_CD as PRMRY_LANG_ENGLSH_PRFCNCY_CD',
         'HSEHLD_SIZE_CD',
-        'PRGNT_IND',
-        'PRGNCY_FLAG',
-        'CRTFD_AMRCN_INDN_ALSKN_NTV_IND',
+        'cast(typeof(NULL) as string) as PRGNT_IND',
+        'cast(typeof(NULL) as integer) as PRGNCY_FLAG',
+        'AMRCN_INDN_ALSKA_NTV_IND as CRTFD_AMRCN_INDN_ALSKN_NTV_IND',
         'ETHNCTY_CD',
         'ELGBL_LINE_1_ADR_HOME',
         'ELGBL_LINE_2_ADR_HOME',
@@ -1959,7 +1948,6 @@ class BSF_Metadata:
         'ELGBL_ENTIR_MO_IND',
         'ELGBL_LAST_DAY_OF_MO_IND',
         'CHIP_CD',
-        'ELGBLTY_CHG_RSN_CD',
         'ELGBLTY_GRP_CD',
         'PRMRY_ELGBLTY_GRP_IND',
         'ELGBLTY_GRP_CTGRY_FLAG',
@@ -2044,7 +2032,7 @@ class BSF_Metadata:
         '_1932A_SPO_FLAG',
         '_1915A_SPO_FLAG',
         '_1937_ABP_SPO_FLAG',
-        '_1115A_PRTCPNT_FLAG',
+        'cast(_1115A_PRTCPNT_FLAG as integer) as _1115A_PRTCPNT_FLAG,'
         'WVR_ID1',
         'WVR_TYPE_CD1',
         'WVR_ID2',
@@ -2086,7 +2074,17 @@ class BSF_Metadata:
         'AIAN_FLAG',
         'RACE_ETHNICITY_FLAG',
         'RACE_ETHNCTY_EXP_FLAG',
-        'HISPANIC_ETHNICITY_FLAG'
+        'HISPANIC_ETHNICITY_FLAG',
+        'REC_ADD_TS',
+        'REC_UPDT_TS',
+        'ELGBL_ID_ADDTNL',
+        'ELGBL_ID_ADDTNL_ENT_ID',
+        'ELGBL_ID_ADDTNL_RSN_CHG',
+        'ELGBL_ID_MSIS_XWALK',
+        'ELGBL_ID_MSIS_XWALK_ENT_ID',
+        'ELGBL_ID_MSIS_XWALK_RSN_CHG',
+        'ELGBLTY_CHG_RSN_CD',
+        'ELGBL_AFTR_EOM_IND'
     ]
 
 # -----------------------------------------------------------------------------

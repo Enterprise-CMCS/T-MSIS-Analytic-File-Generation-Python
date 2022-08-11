@@ -295,27 +295,50 @@ class ELG00021(ELG):
         z = f"""
             create or replace temporary view {self.tab_no}_v as
 
-            select distinct
-                e21.submtg_state_cd
-                ,e21.msis_ident_num
-                ,e21.tmsis_run_id
-                ,e21.enrlmt_type_cd
-                ,greatest(case when (e02.death_date <= to_date({self.eff_date}))
-                        or (e02.death_date is not null and to_date({self.eff_date}) is null) then e02.death_date
-                    else to_date('{self.eff_date}') end, to_date('{self.bsf.st_dt}')) as {self.eff_date}
-                ,least(case when (e02.death_date <= to_date({self.end_date}))
-                        or (e02.death_date is not null and {self.end_date} is null) then e02.death_date
-                    when {self.end_date} is null then to_date('9999-12-31') else {self.end_date} end, to_date('{self.bsf.RPT_PRD}')) as {self.end_date}
-            from {self.tab_no}_step3 e21
-            left join ELG00002_{self.bsf.BSF_FILE_DATE}_uniq e02
-            on e21.submtg_state_cd = e02.submtg_state_cd
-            and e21.msis_ident_num = e02.msis_ident_num
-            where e21.msis_ident_num is not null
-                -- Filter out records where the death_date is before the start of the month
-                -- This is separate from process enrollment because it includes UNK enrollment types
-                and ( least(to_date('{self.bsf.st_dt}'), nvl(death_date, nvl(to_date({self.end_date}),to_date('9999-12-31'))) ) >= to_date('{self.bsf.st_dt}') )
-                -- Also remove any records where the effective date is after their death date
-                and ( {self.eff_date} <= least(death_date,to_date('9999-12-31')) )
+            select sub.submtg_state_cd
+                ,sub.msis_ident_num
+                ,sub.tmsis_run_id
+                ,sub.enrlmt_type_cd
+                ,sub.{self.eff_date}
+                ,sub.{self.end_date}
+                ,max(sub.elgbl_aftr_eom_ind) as elgbl_aftr_eom_ind
+
+            from
+            (
+                select sub_inner.*
+                    ,case when ((sub_inner.{self.end_date}_temp > to_date('{self.bsf.RPT_PRD}')) or (sub_inner.{self.end_date}_temp is null))
+                        then 1 else 0
+                        end as elgbl_aftr_eom_ind
+                    ,least(sub_inner.{self.end_date}_temp, to_date('{self.bsf.RPT_PRD}')) as {self.end_date}
+                from
+                (
+
+                    select distinct
+                        e21.submtg_state_cd
+                        ,e21.msis_ident_num
+                        ,e21.tmsis_run_id
+                        ,e21.enrlmt_type_cd
+                        ,greatest(case when (e02.death_date <= to_date({self.eff_date}))
+                                or (e02.death_date is not null and to_date({self.eff_date}) is null) then e02.death_date
+                            else to_date({self.eff_date}) end, to_date('{self.bsf.st_dt}')) as {self.eff_date}
+                        ,case when ((e02.death_date <= to_date({self.end_date}))
+                                or (e02.death_date is not null and {self.end_date} is null)) then e02.death_date
+                            when {self.end_date} is null then to_date('9999-12-31') else {self.end_date} end as {self.end_date}_temp
+                    from {self.tab_no}_step3 e21
+                    left join ELG00002_{self.bsf.BSF_FILE_DATE}_uniq e02
+                    on e21.submtg_state_cd = e02.submtg_state_cd
+                    and e21.msis_ident_num = e02.msis_ident_num
+                    where e21.msis_ident_num is not null
+                        -- Filter out records where the death_date is before the start of the month
+                        -- This is separate from process enrollment because it includes UNK enrollment types
+                        and ( least(to_date('{self.bsf.st_dt}'), nvl(death_date, nvl(to_date({self.end_date}),to_date('9999-12-31'))) ) >= to_date('{self.bsf.st_dt}') )
+                        -- Also remove any records where the effective date is after their death date
+                        and ( {self.eff_date} <= least(death_date,to_date('9999-12-31')) )
+                ) sub_inner
+            ) sub
+
+            group by sub.submtg_state_cd, sub.msis_ident_num, sub.tmsis_run_id,
+				 sub.enrlmt_type_cd, sub.{self.eff_date}, sub.{self.end_date}
             """
         self.bsf.append(type(self).__name__, z)
 
@@ -330,6 +353,7 @@ class ELG00021(ELG):
                 b.submtg_state_cd
                 ,b.msis_ident_num
                 ,max(b.tmsis_run_id) as tmsis_run_id
+                ,max(b.elgbl_aftr_eom_ind) as elgbl_aftr_eom_ind_temp
             """
 
         for d in range(1, monthrange(self.bsf.reporting_period.year, self.bsf.reporting_period.month)[1] + 1):
@@ -409,6 +433,11 @@ class ELG00021(ELG):
                     when c.CHIP_ENR  = 1 then 2
                     else null end as ENROLLMENT_TYPE_FLAG,
 
+                case when (((m.MDCD_ENR != 1) or (m.MDCD_ENR is null)) and ((c.CHIP_ENR != 1) or (c.CHIP_ENR is null))) then null
+                    when greatest(m.ELIG_LAST_DAY,c.ELIG_LAST_DAY,0) = 0 then 0
+                    else ELGBL_AFTR_EOM_IND_TEMP
+                    end as ELGBL_AFTR_EOM_IND,
+
                 --  Single Enroll if only one spell across Medicaid and CHIP and no unknown
                 case when b.bucket_c=1 or
                         (MDCD_ENR=1 and CHIP_ENR=1) or
@@ -450,6 +479,8 @@ class ELG00021(ELG):
                       when ST_ABBREV in('CO','MT','ND','SD','UT','WY')           then '08'
                       when ST_ABBREV in('AZ','CA','HI','NV','AS','GU','MP')      then '09'
                       when ST_ABBREV in('AK','ID','OR','WA')                     then '10'
+                      when c.submtg_state_cd = '97' 							 then '03'
+                      when c.submtg_state_cd in ('93','94')                      then '08'
                       else '11' end as REGION
                 from {self.tab_no}_combined c
 

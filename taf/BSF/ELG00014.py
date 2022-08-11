@@ -53,11 +53,7 @@ class ELG00014(ELG):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        ENRLD_MC_PLAN_TYPE_CODE = f"""
-                case  when length(trim(enrld_mc_plan_type_cd))=1
-                    and trim(enrld_mc_plan_type_cd) <> ''
-                    then lpad(enrld_mc_plan_type_cd,2,'0') else enrld_mc_plan_type_cd end
-            """
+        ENRLD_MC_PLAN_TYPE_CODE = "lpad(trim(enrld_mc_plan_type_cd),2,'0')"
 
         mc_plan = f"""
             case when trim(mc_plan_id)  in ('0','00','000','0000','00000','000000','0000000',

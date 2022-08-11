@@ -91,7 +91,7 @@ class ELG00003(ELG):
         sort_key = """coalesce(mrtl_stus_cd,'xx') || coalesce(cast(ssn_num as char(10)),'xx') || coalesce(incm_cd,'xx') ||
                       coalesce(vet_ind,'xx') || coalesce(ctznshp_ind,'xx') || coalesce(imgrtn_stus_cd,'xx') ||
                       coalesce(upper(prmry_lang_cd),'xx') || coalesce(hsehld_size_cd,'xx') || coalesce(mdcr_hicn_num,'xx') ||
-                      coalesce(chip_cd,'xx') || coalesce(prmry_lang_englsh_prfcncy_cd,'xx')
+                      coalesce(chip_cd,'xx') || coalesce(ENGLSH_PRFCNCY_CD,'xx')
                     """
 
         self.MultiIds(BSF_Metadata.encodePrimaryLanguage(), sort_key, '', '', '_v')

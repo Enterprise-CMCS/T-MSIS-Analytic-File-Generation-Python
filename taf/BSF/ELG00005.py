@@ -34,21 +34,16 @@ class ELG00005(ELG):
     def create(self):
 
         ELGBLTY_GRP_CODE = """
-            case when length(trim(ELGBLTY_GRP_CD))=1 and ELGBLTY_GRP_CD <> '.'
-            then lpad(trim(ELGBLTY_GRP_CD),2,'0')
-            else trim(ELGBLTY_GRP_CD) end """
+            lpad(trim(ELGBLTY_GRP_CD),2,'0')"""
 
         DUAL_ELGBL_CODE = """
-            case when length(trim(DUAL_ELGBL_CD))=1 and DUAL_ELGBL_CD <> '.'
-            then lpad(trim(DUAL_ELGBL_CD),2,'0')
-            else trim(DUAL_ELGBL_CD) end """
+            lpad(trim(DUAL_ELGBL_CD),2,'0')"""
 
         created_vars = f"""
             {ELGBLTY_GRP_CODE} as ELGBLTY_GRP_CODE,
             {DUAL_ELGBL_CODE} as DUAL_ELGBL_CODE,
 
-            case when LENGTH(trim(CARE_LVL_STUS_CD))<3 and CARE_LVL_STUS_CD <> '.' then lpad(CARE_LVL_STUS_CD,3,'00')
-                else CARE_LVL_STUS_CD end as CARE_LVL_STUS_CODE,
+            lpad(trim(CARE_LVL_STUS_CD),3,'0')  as CARE_LVL_STUS_CODE,
 
             case
                 when ({DUAL_ELGBL_CODE}) in ('02','04','08')      then 1
@@ -127,7 +122,9 @@ class ELG00005(ELG):
             coalesce(trim(ssi_state_splmt_stus_cd),'x') || coalesce(trim(ssi_stus_cd),'x')  ||
             coalesce(trim(state_spec_elgblty_fctr_txt),'x')  || coalesce(trim(birth_cncptn_ind),'x')  ||
             coalesce(trim(mas_cd),'x')  || coalesce(trim(rstrctd_bnfts_cd),'x')  ||
-            coalesce(trim(tanf_cash_cd),'x')  || coalesce(trim(prmry_elgblty_grp_ind),'x')"""
+            coalesce(trim(tanf_cash_cd),'x')  || coalesce(trim(prmry_elgblty_grp_ind),'x')  ||
+            coalesce(trim(elgblty_chg_rsn_cd),'x')
+            """
 
         self.MultiIds(created_vars, sort_key, "PRMRY_ELGBLTY_GRP_IND='1'")
 

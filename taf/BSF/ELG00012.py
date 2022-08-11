@@ -56,8 +56,7 @@ class ELG00012(ELG):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        WVR_TYPE_CD = """cast(case when length(trim(WVR_TYPE_CD))=1
-                         and WVR_TYPE_CD <> '' then lpad(WVR_TYPE_CD,2,'0') else WVR_TYPE_CD end as char(2))"""
+        WVR_TYPE_CD = "lpad(trim(WVR_TYPE_CD),2,'0')"
 
         z = f"""
             create or replace temporary view {self.tab_no}_step1 as

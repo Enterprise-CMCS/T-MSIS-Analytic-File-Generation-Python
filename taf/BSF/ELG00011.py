@@ -31,8 +31,7 @@ class ELG00011(ELG):
     def create(self):
 
         STATE_PLAN_OPTN_TYPE_CODE = """
-            case when STATE_PLAN_OPTN_TYPE_CD <> '.' and length(STATE_PLAN_OPTN_TYPE_CD)= 1
-            then lpad(STATE_PLAN_OPTN_TYPE_CD,2,'0') else STATE_PLAN_OPTN_TYPE_CD end"""
+            lpad(trim(STATE_PLAN_OPTN_TYPE_CD),2,'0')"""
 
         z = f"""
             create or replace temporary view {self.tab_no}_{self.bsf.BSF_FILE_DATE}_uniq as
