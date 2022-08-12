@@ -1,6 +1,7 @@
 import logging
 
 from datetime import datetime
+from taf.TAF_Metadata import TAF_Metadata
 
 
 # -------------------------------------------------------------------------------------
@@ -28,6 +29,9 @@ class TAF_Runner():
         self.version = '0A'
 
         self.initialize_logger(self.now)
+
+        # state submission type
+        TAF_Metadata.getFormatsForValidationAndRecode()
 
         # FIXME: this should be monotonic or something more crafty
         self.DA_RUN_ID = datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')

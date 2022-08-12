@@ -1,3 +1,5 @@
+from pyspark.sql import SparkSession
+
 # ---------------------------------------------------------------------------------
 #
 #
@@ -5,6 +7,46 @@
 #
 # ---------------------------------------------------------------------------------
 class TAF_Metadata:
+    # -------------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # -------------------------------------------------------------------------------------
+    @staticmethod
+    def getFormatsForValidationAndRecode():
+        from pyspark.sql.types import StructType, StructField, StringType, DateType
+        from pyspark.sql.functions import col, to_date
+
+        spark = SparkSession.getActiveSession()
+
+        subData = [
+            ("35", "ELG", "CSO", "2018-04-01", "9999-12-31"),
+            ("35", "TPL", "CSO", "2018-04-01", "9999-12-31"),
+        ]
+
+        subSchema = StructType(
+            [
+                StructField("submtg_state_cd", StringType(), True),
+                StructField("fil_type", StringType(), True),
+                StructField("submsn_type", StringType(), True),
+                StructField("submsn_eff_dt_string", StringType(), True),
+                StructField("submsn_end_dt_string", StringType(), True),
+            ]
+        )
+
+        if spark is not None:
+            subDF = (
+                spark.createDataFrame(data=subData, schema=subSchema)
+                .withColumn(
+                    "submsn_eff_dt", to_date(col("submsn_eff_dt_string"), "yyyy-MM-dd")
+                )
+                .withColumn(
+                    "submsn_end_dt", to_date(col("submsn_end_dt_string"), "yyyy-MM-dd")
+                )
+            )
+
+        subDF.createOrReplaceTempView("state_submsn_type")
 
     # ---------------------------------------------------------------------------------
     #
