@@ -961,7 +961,7 @@ class TAF_Grouper:
                          cast(prvdr_npi as varchar(10)) as prvdr_npi
 
                         ,case when selected_txnmy_cdx is null then null
-                            else substring(array_join(selected_txnmy_cdx,''),3,10)
+                            else substring(array_join(selected_txnmy_cdx,''),1,10)
                             end as selected_txnmy_cd
 
                 from nppes_npi_step2

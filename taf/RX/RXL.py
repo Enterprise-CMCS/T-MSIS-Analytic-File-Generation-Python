@@ -67,9 +67,9 @@ class RXL:
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD',2, cond1='01',cond2='02',cond3='03',cond4='04') }
 
                 ,case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
-                    else typeof(null) end as XIX_SRVC_CTGRY_CD
+                    else NULL end as XIX_SRVC_CTGRY_CD
                 ,case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD
-                    else typeof(NULL) end as XXI_SRVC_CTGRY_CD
+                    else NULL end as XXI_SRVC_CTGRY_CD
 
                 , { TAF_Closure.var_set_type1('CLL_STUS_CD') }
                 , { TAF_Closure.var_set_type6('bill_amt', cond1='9999999999.99', cond2='999999.99', cond3='999999', cond4='888888888.88') }
@@ -110,7 +110,7 @@ class RXL:
     def build(self, runner: RX_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_rxl
+                CREATE TABLE {runner.DA_SCHEMA}.taf_rxl_test_srvcs AS
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.line_columns) }
                 FROM RXL

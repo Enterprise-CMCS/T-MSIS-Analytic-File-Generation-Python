@@ -77,9 +77,9 @@ class OTL:
                 , { TAF_Closure.var_set_type4('TOOTH_SRFC_CD', 'YES', cond1='B', cond2='D', cond3='F', cond4='I', cond5='L', cond6='M', cond7='O') }
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01', cond2='02', cond3='03', cond4='04') }
                 , case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
-                else typeof(null) end as XIX_SRVC_CTGRY_CD
+                else NULL end as XIX_SRVC_CTGRY_CD
                 , case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD
-                    else typeof(null) end as XXI_SRVC_CTGRY_CD
+                    else NULL end as XXI_SRVC_CTGRY_CD
                 , { TAF_Closure.var_set_type1('STATE_NOTN_TXT') }
                 , { TAF_Closure.var_set_fills('NDC_CD', cond1='0', cond2='8', cond3='9', cond4='#', spaces=True) }
                 , { TAF_Closure.var_set_type1('PRCDR_2_MDFR_CD', lpad=2) }
@@ -116,7 +116,7 @@ class OTL:
     def build(self, runner: OT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_otl
+                INSERT INTO {runner.DA_SCHEMA}.taf_otl_test_srvcs
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.line_columns) }
                 FROM OTL

@@ -48,8 +48,8 @@ class LTL:
                     else  { TAF_Closure.var_set_type5('IMNZTN_TYPE_CD', lpad=2, lowerbound=0, upperbound='29', multiple_condition=True) }
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01',  cond2='02', cond3='03', cond4='04') }
 
-                , case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD else null end as XIX_SRVC_CTGRY_CD
-                , case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD else null end as XXI_SRVC_CTGRY_CD
+                , case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD else NULL end as XIX_SRVC_CTGRY_CD
+                , case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD else NULL end as XXI_SRVC_CTGRY_CD
 
                 , { TAF_Closure.var_set_type1('CLL_STUS_CD') }
 
@@ -108,7 +108,7 @@ class LTL:
     def build(self, runner: LT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_ltl
+                CREATE TABLE {runner.DA_SCHEMA}.taf_ltl_test_srvcs AS
                 SELECT
                     { LT_Metadata.finalFormatter(LT_Metadata.line_columns) }
                 FROM LTL

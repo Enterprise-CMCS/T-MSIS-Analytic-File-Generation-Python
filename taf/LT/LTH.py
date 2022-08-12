@@ -203,7 +203,7 @@ class LTH:
     def build(self, runner: LT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_lth
+                CREATE TABLE {runner.DA_SCHEMA}.taf_lth_test_srvcs AS
                 SELECT
                     { LT_Metadata.finalFormatter(LT_Metadata.header_columns) }
                 FROM (

@@ -121,7 +121,7 @@ class RXH:
     def build(self, runner: RX_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_rxh
+                CREATE TABLE {runner.DA_SCHEMA}.taf_rxh_test_srvcs AS
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
                 FROM (

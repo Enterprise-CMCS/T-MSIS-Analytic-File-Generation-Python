@@ -189,7 +189,7 @@ class OTH:
     def build(self, runner: OT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_oth
+                INSERT INTO {runner.DA_SCHEMA}.taf_oth_test_srvcs
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
                 FROM (
