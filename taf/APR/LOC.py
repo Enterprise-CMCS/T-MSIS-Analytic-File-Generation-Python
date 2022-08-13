@@ -56,35 +56,37 @@ class LOC(APR):
 
         # Insert into permanent table
 
+        basecols = [ 'PRVDR_LCTN_ID'
+                    ,'PRVDR_ADR_BLG_IND'
+                    ,'PRVDR_ADR_PRCTC_IND'
+                    ,'PRVDR_ADR_SRVC_IND'
+                    ,'ADR_LINE_1_TXT'
+                    ,'ADR_LINE_2_TXT'
+                    ,'ADR_LINE_3_TXT'
+                    ,'ADR_CITY_NAME'
+                    ,'ADR_STATE_CD'
+                    ,'ADR_ZIP_CD'
+                    ,'ADR_CNTY_CD'
+                    ,'ADR_BRDR_STATE_IND'
+                    ,'PRVDR_SRVC_ST_DFRNT_SUBMTG_ST'
+                    ,'PRVDR_LCTN_FLAG_01'
+                    ,'PRVDR_LCTN_FLAG_02'
+                    ,'PRVDR_LCTN_FLAG_03'
+                    ,'PRVDR_LCTN_FLAG_04'
+                    ,'PRVDR_LCTN_FLAG_05'
+                    ,'PRVDR_LCTN_FLAG_06'
+                    ,'PRVDR_LCTN_FLAG_07'
+                    ,'PRVDR_LCTN_FLAG_08'
+                    ,'PRVDR_LCTN_FLAG_09'
+                    ,'PRVDR_LCTN_FLAG_10'
+                    ,'PRVDR_LCTN_FLAG_11'
+                    ,'PRVDR_LCTN_FLAG_12']
+
         z = f"""
                 INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_LCTN
                 SELECT
                     {self.table_id_cols(loctype=1)}
-                    ,PRVDR_LCTN_ID
-                    ,PRVDR_ADR_BLG_IND
-                    ,PRVDR_ADR_PRCTC_IND
-                    ,PRVDR_ADR_SRVC_IND
-                    ,ADR_LINE_1_TXT
-                    ,ADR_LINE_2_TXT
-                    ,ADR_LINE_3_TXT
-                    ,ADR_CITY_NAME
-                    ,ADR_STATE_CD
-                    ,ADR_ZIP_CD
-                    ,ADR_CNTY_CD
-                    ,ADR_BRDR_STATE_IND
-                    ,PRVDR_SRVC_ST_DFRNT_SUBMTG_ST
-                    ,PRVDR_LCTN_FLAG_01
-                    ,PRVDR_LCTN_FLAG_02
-                    ,PRVDR_LCTN_FLAG_03
-                    ,PRVDR_LCTN_FLAG_04
-                    ,PRVDR_LCTN_FLAG_05
-                    ,PRVDR_LCTN_FLAG_06
-                    ,PRVDR_LCTN_FLAG_07
-                    ,PRVDR_LCTN_FLAG_08
-                    ,PRVDR_LCTN_FLAG_09
-                    ,PRVDR_LCTN_FLAG_10
-                    ,PRVDR_LCTN_FLAG_11
-                    ,PRVDR_LCTN_FLAG_12
+                    ,{ ', '.join(basecols) }
                     ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                     ,current_timestamp() as REC_UPDT_TS
                 FROM lctn_pr_{self.year}"""

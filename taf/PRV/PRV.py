@@ -180,11 +180,11 @@ class PRV(TAF):
             from
                 {intbl} T
 
-            -- left join
-            --     data_anltcs_dm_prod.state_submsn_type s
-            --     on
-            --         on T.submitting_state = s.submtg_state_cd
-            --         and upper(s.fil_type) = 'PRV'
+            left join
+                state_submsn_type s
+            on
+                T.submitting_state = s.submtg_state_cd
+                and upper(s.fil_type) = 'PRV'
 
             where
                 (
@@ -193,15 +193,14 @@ class PRV(TAF):
                         T.{dtvar_end} >= to_date('{self.prv.st_dt}')
                         or T.{dtvar_end} is NULL
                         )
-                )
 
-                -- and (
-                --     (
-                --         upper(coalesce(s.submsn_type, 'X')) <> 'CSO'
-                --         and a.TMSIS_RPTG_PRD >= to_date('{self.prv.st_dt}')
-                --     )
-                --     or (upper(coalesce(s.submsn_type, 'X')) = 'CSO')
-                -- )
+                 and (
+                    (
+                         upper(coalesce(s.submsn_type, 'X')) <> 'CSO'
+                         and T.tms_reporting_period >= to_date('{self.prv.st_dt}')
+                     )
+                     or (upper(coalesce(s.submsn_type, 'X')) = 'CSO')
+                 ))
 
             order by { self.write_keyprefix(keyvars, 'T') }
             """

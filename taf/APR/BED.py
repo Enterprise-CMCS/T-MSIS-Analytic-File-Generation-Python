@@ -46,25 +46,27 @@ class BED(APR):
 
         # Insert into permanent table
 
+        basecols = [ 'PRVDR_LCTN_ID'
+                    ,'BED_TYPE_CD'
+                    ,'BED_CNT'
+                    ,'PRVDR_BED_FLAG_01'
+                    ,'PRVDR_BED_FLAG_02'
+                    ,'PRVDR_BED_FLAG_03'
+                    ,'PRVDR_BED_FLAG_04'
+                    ,'PRVDR_BED_FLAG_05'
+                    ,'PRVDR_BED_FLAG_06'
+                    ,'PRVDR_BED_FLAG_07'
+                    ,'PRVDR_BED_FLAG_08'
+                    ,'PRVDR_BED_FLAG_09'
+                    ,'PRVDR_BED_FLAG_10'
+                    ,'PRVDR_BED_FLAG_11'
+                    ,'PRVDR_BED_FLAG_12']        
+
         z = f"""
             INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BED
             SELECT
                 {self.table_id_cols(loctype=2)}
-                ,PRVDR_LCTN_ID
-                ,BED_TYPE_CD
-                ,BED_CNT
-                ,PRVDR_BED_FLAG_01
-                ,PRVDR_BED_FLAG_02
-                ,PRVDR_BED_FLAG_03
-                ,PRVDR_BED_FLAG_04
-                ,PRVDR_BED_FLAG_05
-                ,PRVDR_BED_FLAG_06
-                ,PRVDR_BED_FLAG_07
-                ,PRVDR_BED_FLAG_08
-                ,PRVDR_BED_FLAG_09
-                ,PRVDR_BED_FLAG_10
-                ,PRVDR_BED_FLAG_11
-                ,PRVDR_BED_FLAG_12
+                ,{ ', '.join(basecols) }
                 ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM bed_pr_{self.year}"""

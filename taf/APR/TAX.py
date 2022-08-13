@@ -47,24 +47,26 @@ class TAX(APR):
 
         # Insert into permanent table
 
+        basecols = [ 'PRVDR_CLSFCTN_TYPE_CD'
+                    ,'PRVDR_CLSFCTN_CD'
+                    ,'PRVDR_TXNMY_FLAG_01'
+                    ,'PRVDR_TXNMY_FLAG_02'
+                    ,'PRVDR_TXNMY_FLAG_03'
+                    ,'PRVDR_TXNMY_FLAG_04'
+                    ,'PRVDR_TXNMY_FLAG_05'
+                    ,'PRVDR_TXNMY_FLAG_06'
+                    ,'PRVDR_TXNMY_FLAG_07'
+                    ,'PRVDR_TXNMY_FLAG_08'
+                    ,'PRVDR_TXNMY_FLAG_09'
+                    ,'PRVDR_TXNMY_FLAG_10'
+                    ,'PRVDR_TXNMY_FLAG_11'
+                    ,'PRVDR_TXNMY_FLAG_12']        
+
         z = f"""
             INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_TXNMY
             SELECT
                 {self.table_id_cols()}
-                ,PRVDR_CLSFCTN_TYPE_CD
-                ,PRVDR_CLSFCTN_CD
-                ,PRVDR_TXNMY_FLAG_01
-                ,PRVDR_TXNMY_FLAG_02
-                ,PRVDR_TXNMY_FLAG_03
-                ,PRVDR_TXNMY_FLAG_04
-                ,PRVDR_TXNMY_FLAG_05
-                ,PRVDR_TXNMY_FLAG_06
-                ,PRVDR_TXNMY_FLAG_07
-                ,PRVDR_TXNMY_FLAG_08
-                ,PRVDR_TXNMY_FLAG_09
-                ,PRVDR_TXNMY_FLAG_10
-                ,PRVDR_TXNMY_FLAG_11
-                ,PRVDR_TXNMY_FLAG_12
+                ,{ ', '.join(basecols) }
                 ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM txnmy_pr_{self.year}"""

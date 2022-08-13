@@ -124,7 +124,7 @@ class PRV10(PRV):
                            1)
 
         z = f"""
-            create or replace temporary view Prov10_BedType_CNST_tmp as
+            create or replace temporary view Prov10_BedType_CNST as
                 select {self.prv.DA_RUN_ID} as DA_RUN_ID,
                     cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74)) as PRV_LOC_LINK_KEY,
                     '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
@@ -198,7 +198,7 @@ class PRV10(PRV):
                         SUBMTG_STATE_PRVDR_ID, 
                         PRVDR_LCTN_ID 
                     from 
-                        Prov10_BedType_CNST_tmp 
+                        Prov10_BedType_CNST 
                     where 
                         PRVDR_LCTN_ID='000'
 
@@ -240,17 +240,15 @@ class PRV10(PRV):
             """
         self.prv.append(type(self).__name__, z)
 
-# took out: cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(SUBMTG_STATE_PRVDR_ID, '*')) as varchar(50)) as PRV_LINK_KEY,
-# added: NULL as BED_TYPE_CD
-# added: NULL as BED_CNT
+
 # added: REC_ADD_TS
 # added: REC_UPDT_TS
-
 
         z = f"""
                 create or replace temporary view loc__g2 as
                 select
                     DA_RUN_ID,
+                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(SUBMTG_STATE_PRVDR_ID, '*')) as varchar(50)) as PRV_LINK_KEY,
                     PRV_LOC_LINK_KEY, 
                     PRV_FIL_DT, 
                     PRV_VRSN, 
@@ -258,28 +256,22 @@ class PRV10(PRV):
                     SUBMTG_STATE_CD, 
                     SUBMTG_STATE_PRVDR_ID, 
                     PRVDR_LCTN_ID,
-                    NULL as BED_TYPE_CD,
-                    NULL as BED_CNT,
+                    NULL AS PRVDR_ADR_BLG_IND,
+                    NULL AS PRVDR_ADR_PRCTC_IND,
+                    NULL AS PRVDR_ADR_SRVC_IND,
+                    NULL AS ADR_LINE_1_TXT,
+                    NULL AS ADR_LINE_2_TXT,
+                    NULL AS ADR_LINE_3_TXT,
+                    NULL AS ADR_CITY_NAME,
+                    NULL AS ADR_STATE_CD,
+                    NULL AS ADR_ZIP_CD,
+                    NULL AS ADR_CNTY_CD,
+                    NULL AS ADR_BRDR_STATE_IND,
+                    NULL AS PRVDR_SRVC_ST_DFRNT_SUBMTG_ST,
                     to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
                     current_timestamp() as REC_UPDT_TS
                 from
                     loc__g
-        """
-        self.prv.append(type(self).__name__, z)
-
-        z = f"""
-                create or replace temporary view Prov10_BedType_CNST as
-                select
-                    *
-                from
-                    Prov10_BedType_CNST_tmp
-
-                union all
-
-                select
-                    *
-                from
-                    loc__g2                
         """
         self.prv.append(type(self).__name__, z)
 
@@ -298,6 +290,15 @@ class PRV10(PRV):
                     Prov10_BedType_CNST
         """
         self.prv.append(type(self).__name__, z)
+
+        z = f"""
+                INSERT INTO {runner.DA_SCHEMA}.taf_prv_loc
+                SELECT
+                    *
+                FROM
+                    loc__g2
+        """
+        self.prv.append(type(self).__name__, z)        
 
 
 # -----------------------------------------------------------------------------

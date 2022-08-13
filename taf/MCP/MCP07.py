@@ -446,17 +446,18 @@ class MCP07(MCP):
                             "ACRDTN_ORG_ACHVMT_DT_03",
                             "ACRDTN_ORG_END_DT_01",
                             "ACRDTN_ORG_END_DT_02",
-                            "ACRDTN_ORG_END_DT_03"
+                            "ACRDTN_ORG_END_DT_03",
+                            "OPRTG_AUTHRTY_1915AJ_CONC_IND",
+                            "OPRTG_AUTHRTY_1932A_1915J_IND",
+                            "OPRTG_AUTHRTY_1915BJ_CONC_IND",
+                            "OPRTG_AUTHRTY_1115_1915J_IND",
+                            "OPRTG_AUTHRTY_1915AK_CONC_IND",
+                            "OPRTG_AUTHRTY_1932A_1915K_IND",
+                            "OPRTG_AUTHRTY_1915BK_CONC_IND",
+                            "OPRTG_AUTHRTY_1115_1915K_IND",
+                            "ACRDTN_JCAHO"
                         ]
-                            #"OPRTG_AUTHRTY_1915AJ_CONC_IND",
-                            #"OPRTG_AUTHRTY_1932A_1915J_IND",
-                            #"OPRTG_AUTHRTY_1915BJ_CONC_IND",
-                            #"OPRTG_AUTHRTY_1115_1915J_IND",
-                            #"OPRTG_AUTHRTY_1915AK_CONC_IND",
-                            #"OPRTG_AUTHRTY_1932A_1915K_IND",
-                            #"OPRTG_AUTHRTY_1915BK_CONC_IND",
-                            #"OPRTG_AUTHRTY_1115_1915K_IND",
-                            #"ACRDTN_JCAHO"
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mcp
                 SELECT

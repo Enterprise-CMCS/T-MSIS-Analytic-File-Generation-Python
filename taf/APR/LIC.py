@@ -49,26 +49,28 @@ class LIC(APR):
 
         # Insert into permanent table
 
+        basecols = [ 'PRVDR_LCTN_ID'
+                    ,'LCNS_TYPE_CD'
+                    ,'LCNS_OR_ACRDTN_NUM'
+                    ,'LCNS_ISSG_ENT_ID_TXT'
+                    ,'PRVDR_LCNS_FLAG_01'
+                    ,'PRVDR_LCNS_FLAG_02'
+                    ,'PRVDR_LCNS_FLAG_03'
+                    ,'PRVDR_LCNS_FLAG_04'
+                    ,'PRVDR_LCNS_FLAG_05'
+                    ,'PRVDR_LCNS_FLAG_06'
+                    ,'PRVDR_LCNS_FLAG_07'
+                    ,'PRVDR_LCNS_FLAG_08'
+                    ,'PRVDR_LCNS_FLAG_09'
+                    ,'PRVDR_LCNS_FLAG_10'
+                    ,'PRVDR_LCNS_FLAG_11'
+                    ,'PRVDR_LCNS_FLAG_12']
+
         z = f"""
             INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_LCNS
             SELECT
                 {self.table_id_cols(loctype=2)}
-                ,PRVDR_LCTN_ID
-                ,LCNS_TYPE_CD
-                ,LCNS_OR_ACRDTN_NUM
-                ,LCNS_ISSG_ENT_ID_TXT
-                ,PRVDR_LCNS_FLAG_01
-                ,PRVDR_LCNS_FLAG_02
-                ,PRVDR_LCNS_FLAG_03
-                ,PRVDR_LCNS_FLAG_04
-                ,PRVDR_LCNS_FLAG_05
-                ,PRVDR_LCNS_FLAG_06
-                ,PRVDR_LCNS_FLAG_07
-                ,PRVDR_LCNS_FLAG_08
-                ,PRVDR_LCNS_FLAG_09
-                ,PRVDR_LCNS_FLAG_10
-                ,PRVDR_LCNS_FLAG_11
-                ,PRVDR_LCNS_FLAG_12
+                ,{ ', '.join(basecols) }
                 ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM lcns_pr_{self.year}"""

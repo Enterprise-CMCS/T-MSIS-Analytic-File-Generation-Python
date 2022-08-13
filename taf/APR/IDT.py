@@ -35,13 +35,22 @@ class IDT(APR):
 
         z = f"""
             create or replace temporary view npi_main as
-            select b.submtg_state_cd, b.submtg_state_prvdr_id, b.prvdr_id, substring(a.prv_fil_dt,5,2) as month
-                ,case
-                when right(b.prv_loc_link_key,5)='-CHIP' then 'CHIP'
-                when right(b.prv_loc_link_key,4)='-TPA' then 'TPA' else ' ' end as splmtl_submsn_type
-                from max_run_id_prv_{self.year} a inner join {self.apr.DA_SCHEMA}.taf_PRV_IDT b on
-                a.submtg_state_cd = b.submtg_state_cd and a.prv_fil_dt = b.prv_fil_dt and a.da_run_id = b.da_run_id
-            where b.prvdr_id_type_cd='2' and b.prvdr_id is not null
+            select 
+                b.submtg_state_cd, 
+                b.submtg_state_prvdr_id, 
+                b.prvdr_id, 
+                substring(a.prv_fil_dt,5,2) as month
+            from 
+                max_run_id_prv_{self.year} a 
+            inner join 
+                {self.apr.DA_SCHEMA}.taf_PRV_IDT b 
+            on
+                a.submtg_state_cd = b.submtg_state_cd and 
+                a.prv_fil_dt = b.prv_fil_dt and 
+                a.da_run_id = b.da_run_id
+            where 
+                b.prvdr_id_type_cd='2' and 
+                b.prvdr_id is not null
         """
         self.apr.append(type(self).__name__, z)
 
@@ -51,19 +60,45 @@ class IDT(APR):
 
         z = f"""
             create or replace temporary view npi_all as
-            select a.submtg_state_cd, a.submtg_state_prvdr_id, a.splmtl_submsn_type, a.maxmo, a.prvdr_id as prvdr_npi, b.prvdr_npi_cnt,
-                /* grouping code */
+            select 
+                a.submtg_state_cd, 
+                a.submtg_state_prvdr_id, 
+                a.maxmo, 
+                a.prvdr_id as prvdr_npi, 
+                b.prvdr_npi_cnt,
+            /* grouping code */
                 row_number() over (
-                partition by a.submtg_state_cd, a.submtg_state_prvdr_id, a.splmtl_submsn_type
-                order by a.maxmo desc, a.prvdr_id desc
-                ) as _ndx
-            from (select submtg_state_cd, submtg_state_prvdr_id, splmtl_submsn_type, prvdr_id, max(month) as maxmo
-                from npi_main group by submtg_state_cd, submtg_state_prvdr_id, splmtl_submsn_type, prvdr_id) as a
+                    partition by 
+                        a.submtg_state_cd, 
+                        a.submtg_state_prvdr_id
+                    order by 
+                        a.maxmo desc, 
+                        a.prvdr_id desc
+                        ) as _ndx
+            from (select 
+                    submtg_state_cd, 
+                    submtg_state_prvdr_id, 
+                    prvdr_id, 
+                    max(month) as maxmo
+                from 
+                    npi_main 
+                group by 
+                    submtg_state_cd, 
+                    submtg_state_prvdr_id, 
+                    prvdr_id) as a
             left join
-                (select submtg_state_cd, submtg_state_prvdr_id, splmtl_submsn_type, count(distinct(prvdr_id)) as prvdr_npi_cnt
-                from npi_main group by submtg_state_cd, submtg_state_prvdr_id, splmtl_submsn_type) as b
-            on a.submtg_state_cd=b.submtg_state_cd and a.submtg_state_prvdr_id=b.submtg_state_prvdr_id and
-            a.splmtl_submsn_type=b.splmtl_submsn_type
+                (select 
+                    submtg_state_cd, 
+                    submtg_state_prvdr_id, 
+                    count(distinct(prvdr_id)) as prvdr_npi_cnt
+                from 
+                    npi_main 
+                group by 
+                    submtg_state_cd, 
+                    submtg_state_prvdr_id) as b
+            on 
+                a.submtg_state_cd=b.submtg_state_cd and 
+                a.submtg_state_prvdr_id=b.submtg_state_prvdr_id
         """
         self.apr.append(type(self).__name__, z)
 
@@ -71,10 +106,17 @@ class IDT(APR):
 
         z = f"""
             create or replace temporary view npi_final as
-            select submtg_state_cd, submtg_state_prvdr_id, splmtl_submsn_type, prvdr_npi_cnt
+            select 
+                submtg_state_cd, 
+                submtg_state_prvdr_id, 
+                prvdr_npi_cnt
                 { APR.map_arrayvars(varnm='prvdr_npi', N=3) }
-            from npi_all
-            group by submtg_state_cd, submtg_state_prvdr_id, splmtl_submsn_type, prvdr_npi_cnt
+            from 
+                npi_all
+            group by 
+                submtg_state_cd, 
+                submtg_state_prvdr_id, 
+                prvdr_npi_cnt
         """
         self.apr.append(type(self).__name__, z)
 
@@ -99,26 +141,28 @@ class IDT(APR):
 
         # Insert into permanent table
 
+        basecols = [ 'PRVDR_LCTN_ID'
+                    ,'PRVDR_ID_TYPE_CD'
+                    ,'PRVDR_ID'
+                    ,'PRVDR_ID_ISSG_ENT_ID_TXT'
+                    ,'PRVDR_ID_FLAG_01'
+                    ,'PRVDR_ID_FLAG_02'
+                    ,'PRVDR_ID_FLAG_03'
+                    ,'PRVDR_ID_FLAG_04'
+                    ,'PRVDR_ID_FLAG_05'
+                    ,'PRVDR_ID_FLAG_06'
+                    ,'PRVDR_ID_FLAG_07'
+                    ,'PRVDR_ID_FLAG_08'
+                    ,'PRVDR_ID_FLAG_09'
+                    ,'PRVDR_ID_FLAG_10'
+                    ,'PRVDR_ID_FLAG_11'
+                    ,'PRVDR_ID_FLAG_12']
+
         z = f"""
             INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_ID
             SELECT
                 {self.table_id_cols(loctype=2)}
-                ,PRVDR_LCTN_ID
-                ,PRVDR_ID_TYPE_CD
-                ,PRVDR_ID
-                ,PRVDR_ID_ISSG_ENT_ID_TXT
-                ,PRVDR_ID_FLAG_01
-                ,PRVDR_ID_FLAG_02
-                ,PRVDR_ID_FLAG_03
-                ,PRVDR_ID_FLAG_04
-                ,PRVDR_ID_FLAG_05
-                ,PRVDR_ID_FLAG_06
-                ,PRVDR_ID_FLAG_07
-                ,PRVDR_ID_FLAG_08
-                ,PRVDR_ID_FLAG_09
-                ,PRVDR_ID_FLAG_10
-                ,PRVDR_ID_FLAG_11
-                ,PRVDR_ID_FLAG_12
+                ,{ ', '.join(basecols) }
                 ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM id_pr_{self.year}"""

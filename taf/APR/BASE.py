@@ -52,6 +52,7 @@ class BASE(APR):
             f"""{ TAF_Closure.monthly_array(self, incol='DEATH_DT') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='AGE_NUM') }""",
             f"""{ APR.nonmiss_month(self,'FAC_GRP_INDVDL_CD') }""",
+            f"""{ APR.ind_nonmiss_month(self,'ind_any_MN') }""",
             "%last_best(OWNRSHP_CD)",
             "%last_best(OWNRSHP_CAT)",
             "%last_best(PRVDR_PRFT_STUS_CD)",
@@ -102,13 +103,13 @@ class BASE(APR):
             "%any_month(SUBMTG_STATE_PRVDR_ID,PRVDR_FLAG,IS NOT NULL)"]
 
         outercols = [
-            f"""{ APR.assign_nonmiss_month(self,'PRVDR_1ST_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_1ST_NAME') }""",
-            f"""{ APR.assign_nonmiss_month(self,'PRVDR_MDL_INITL_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_MDL_INITL_NAME') }""",
-            f"""{ APR.assign_nonmiss_month(self,'PRVDR_LAST_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_LAST_NAME') }""",
-            f"""{ APR.assign_nonmiss_month(self,'GNDR_CD','FAC_GRP_INDVDL_CD_MN','GNDR_CD') }""",
-            f"""{ APR.assign_nonmiss_month(self,'BIRTH_DT','FAC_GRP_INDVDL_CD_MN','BIRTH_DT') }""",
-            f"""{ APR.assign_nonmiss_month(self,'DEATH_DT','FAC_GRP_INDVDL_CD_MN','DEATH_DT') }""",
-            f"""{ APR.assign_nonmiss_month(self,'AGE_NUM','FAC_GRP_INDVDL_CD_MN','AGE_NUM') }"""]
+            f"""{ APR.assign_nonmiss_month(self,'PRVDR_1ST_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_1ST_NAME','ind_any_MN','PRVDR_1ST_NAME') }""",
+            f"""{ APR.assign_nonmiss_month(self,'PRVDR_MDL_INITL_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_MDL_INITL_NAME','ind_any_MN','PRVDR_MDL_INITL_NAME') }""",
+            f"""{ APR.assign_nonmiss_month(self,'PRVDR_LAST_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_LAST_NAME','ind_any_MN','PRVDR_LAST_NAME') }""",
+            f"""{ APR.assign_nonmiss_month(self,'GNDR_CD','FAC_GRP_INDVDL_CD_MN','GNDR_CD','ind_any_MN','GNDR_CD') }""",
+            f"""{ APR.assign_nonmiss_month(self,'BIRTH_DT','FAC_GRP_INDVDL_CD_MN','BIRTH_DT','ind_any_MN','BIRTH_DT') }""",
+            f"""{ APR.assign_nonmiss_month(self,'DEATH_DT','FAC_GRP_INDVDL_CD_MN','DEATH_DT','ind_any_MN','DEATH_DT') }""",
+            f"""{ APR.assign_nonmiss_month(self,'AGE_NUM','FAC_GRP_INDVDL_CD_MN','AGE_NUM','ind_any_MN','AGE_NUM') }"""]
 
         subcols_ = map(TAF_Closure.parse, subcols)
         outercols_ = map(TAF_Closure.parse, outercols)
@@ -133,25 +134,25 @@ class BASE(APR):
 
             from base_pr_{self.year} a
             left join
-                LCTN_SPLMTL_{self.year} b on a.SUBMTG_STATE_CD = b.SUBMTG_STATE_CD and a.splmtl_submsn_type=b.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = b.SUBMTG_STATE_PRVDR_ID
+                LCTN_SPLMTL_{self.year} b on a.SUBMTG_STATE_CD = b.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = b.SUBMTG_STATE_PRVDR_ID
             left join
-                LCNS_SPLMTL_{self.year} c on a.SUBMTG_STATE_CD = c.SUBMTG_STATE_CD and a.splmtl_submsn_type=c.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = c.SUBMTG_STATE_PRVDR_ID
+                LCNS_SPLMTL_{self.year} c on a.SUBMTG_STATE_CD = c.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = c.SUBMTG_STATE_PRVDR_ID
             left join
-                ID_SPLMTL_{self.year} d on a.SUBMTG_STATE_CD = d.SUBMTG_STATE_CD and a.splmtl_submsn_type=d.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = d.SUBMTG_STATE_PRVDR_ID
+                ID_SPLMTL_{self.year} d on a.SUBMTG_STATE_CD = d.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = d.SUBMTG_STATE_PRVDR_ID
             left join
-                npi_final d2 on a.SUBMTG_STATE_CD = d2.SUBMTG_STATE_CD and a.splmtl_submsn_type=d2.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = d2.SUBMTG_STATE_PRVDR_ID
+                npi_final d2 on a.SUBMTG_STATE_CD = d2.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = d2.SUBMTG_STATE_PRVDR_ID
             left join
-                GRP_SPLMTL_{self.year} e on a.SUBMTG_STATE_CD = e.SUBMTG_STATE_CD and a.splmtl_submsn_type=e.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = e.SUBMTG_STATE_PRVDR_ID
+                GRP_SPLMTL_{self.year} e on a.SUBMTG_STATE_CD = e.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = e.SUBMTG_STATE_PRVDR_ID
             left join
-                PGM_SPLMTL_{self.year} f on a.SUBMTG_STATE_CD = f.SUBMTG_STATE_CD and a.splmtl_submsn_type=f.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = f.SUBMTG_STATE_PRVDR_ID
+                PGM_SPLMTL_{self.year} f on a.SUBMTG_STATE_CD = f.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = f.SUBMTG_STATE_PRVDR_ID
             left join
-                TXNMY_SPLMTL_{self.year} g on a.SUBMTG_STATE_CD = g.SUBMTG_STATE_CD and a.splmtl_submsn_type=g.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = g.SUBMTG_STATE_PRVDR_ID
+                TXNMY_SPLMTL_{self.year} g on a.SUBMTG_STATE_CD = g.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = g.SUBMTG_STATE_PRVDR_ID
             left join
-                ENRLMT_SPLMTL_{self.year} h on a.SUBMTG_STATE_CD = h.SUBMTG_STATE_CD and a.splmtl_submsn_type=h.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = h.SUBMTG_STATE_PRVDR_ID
+                ENRLMT_SPLMTL_{self.year} h on a.SUBMTG_STATE_CD = h.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = h.SUBMTG_STATE_PRVDR_ID
             left join
-                BED_SPLMTL_{self.year} i on a.SUBMTG_STATE_CD = i.SUBMTG_STATE_CD and a.splmtl_submsn_type=i.splmtl_submsn_type and a.SUBMTG_STATE_PRVDR_ID = i.SUBMTG_STATE_PRVDR_ID
+                BED_SPLMTL_{self.year} i on a.SUBMTG_STATE_CD = i.SUBMTG_STATE_CD and a.SUBMTG_STATE_PRVDR_ID = i.SUBMTG_STATE_PRVDR_ID
 
-            order by SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID, splmtl_submsn_type
+            order by SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
         """
         self.apr.append(type(self).__name__, z)
 

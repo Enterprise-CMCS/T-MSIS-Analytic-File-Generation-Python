@@ -44,23 +44,25 @@ class GRP(APR):
 
         # Insert into permanent table
 
+        basecols = [ 'SUBMTG_STATE_AFLTD_PRVDR_ID'
+                    ,'PRVDR_GRP_FLAG_01'
+                    ,'PRVDR_GRP_FLAG_02'
+                    ,'PRVDR_GRP_FLAG_03'
+                    ,'PRVDR_GRP_FLAG_04'
+                    ,'PRVDR_GRP_FLAG_05'
+                    ,'PRVDR_GRP_FLAG_06'
+                    ,'PRVDR_GRP_FLAG_07'
+                    ,'PRVDR_GRP_FLAG_08'
+                    ,'PRVDR_GRP_FLAG_09'
+                    ,'PRVDR_GRP_FLAG_10'
+                    ,'PRVDR_GRP_FLAG_11'
+                    ,'PRVDR_GRP_FLAG_12']
+
         z = f"""
             INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_GRP
             SELECT
                 {self.table_id_cols()}
-                ,SUBMTG_STATE_AFLTD_PRVDR_ID
-                ,PRVDR_GRP_FLAG_01
-                ,PRVDR_GRP_FLAG_02
-                ,PRVDR_GRP_FLAG_03
-                ,PRVDR_GRP_FLAG_04
-                ,PRVDR_GRP_FLAG_05
-                ,PRVDR_GRP_FLAG_06
-                ,PRVDR_GRP_FLAG_07
-                ,PRVDR_GRP_FLAG_08
-                ,PRVDR_GRP_FLAG_09
-                ,PRVDR_GRP_FLAG_10
-                ,PRVDR_GRP_FLAG_11
-                ,PRVDR_GRP_FLAG_12
+                ,{ ', '.join(basecols) }
                 ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM grp_pr_{self.year}"""

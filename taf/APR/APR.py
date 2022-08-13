@@ -148,10 +148,11 @@ class APR(TAF):
             select a.{file}_fil_dt
                 ,b.submtg_state_cd
                 ,max(b.da_run_id) as da_run_id
+                ,b.fil_cret_dt
 
             from job_cntl_parms_both_{file}_{inyear} a
                 inner join
-                (select da_run_id, incldd_state_cd as submtg_state_cd
+                (select da_run_id, incldd_state_cd as submtg_state_cd, fil_cret_dt
                 from {self.apr.DA_SCHEMA}.efts_fil_meta where incldd_state_cd != 'Missing' ) b
 
             on a.da_run_id = b.da_run_id
@@ -165,6 +166,7 @@ class APR(TAF):
         z += f"""
             group by a.{file}_fil_dt
                     ,b.submtg_state_cd
+                    ,b.fil_cret_dt
         """
         self.apr.append(type(self).__name__, z)
 
@@ -175,9 +177,12 @@ class APR(TAF):
             insert into {self.apr.DA_SCHEMA}.TAF_ANN_{self.st_fil_type}_INP_SRC
             select
                 {self.apr.DA_RUN_ID} as ANN_DA_RUN_ID,
+                'apr' as ann_fil_type,
                 SUBMTG_STATE_CD,
-                {file}_FIL_DT,
-                DA_RUN_ID as SRC_DA_RUN_ID
+                lower('{file}') as src_fil_type,
+                {file}_FIL_DT as src_fil_dt,
+                DA_RUN_ID as SRC_DA_RUN_ID,
+			    fil_cret_dt as src_fil_creat_dt
 
             from max_run_id_{file}_{inyear}
         """
@@ -197,6 +202,8 @@ class APR(TAF):
         else:
             file = 'PRV'
 
+        file='PRV'
+
         if self.fileseg.casefold() == 'bsp':
             fileseg = 'PRV'
         else:
@@ -204,30 +211,21 @@ class APR(TAF):
 
         # Create the backbone of unique state/msis_id to then left join each month back to
         fseg = f"""
-            (select a.submtg_state_cd,
+            (select 
+                a.submtg_state_cd,
                 b.{self.main_id},
-                b.splmtl_submsn_type,
                 count(a.submtg_state_cd) as nmonths
-
-                from max_run_id_{file}_{inyear} a
-                inner join
-                (select *
-                        ,case
-                            when right({file}_link_key,5)='-CHIP' then 'CHIP'
-                            when right({file}_link_key,4)='-TPA' then 'TPA'
-                            else ' '
-                        end as splmtl_submsn_type
-
-                    from {self.apr.DA_SCHEMA}.taf_{fileseg}
-                ) as b
-
-                on a.submtg_state_cd = b.submtg_state_cd and
+            from 
+                max_run_id_{file}_{inyear} a
+            inner join 
+                {self.apr.DA_SCHEMA}.taf_{fileseg} as b
+            on 
+                a.submtg_state_cd = b.submtg_state_cd and
                 a.{file}_fil_dt = b.{file}_fil_dt and
                 a.da_run_id = b.da_run_id
-
-                group by a.submtg_state_cd,
-                    b.{self.main_id},
-                    b.splmtl_submsn_type
+            group by 
+                a.submtg_state_cd,
+                b.{self.main_id}
             ) as fseg
             """
 
@@ -243,26 +241,22 @@ class APR(TAF):
                 left join
 
                     (select b.*
-                            ,case
-                                when right(b.{file}_link_key,5)='-CHIP' then 'CHIP'
-                                when right(b.{file}_link_key,4)='-TPA' then 'TPA'
-                                else ' '
-                            end as splmtl_submsn_type
                     from
                         max_run_id_{file}_{inyear} a
-                        inner join
+                    inner join
                         {self.apr.DA_SCHEMA}.taf_{fileseg} b
+                    on 
+                        a.submtg_state_cd = b.submtg_state_cd and
+                        a.{file}_fil_dt = b.{file}_fil_dt and
+                        a.da_run_id = b.da_run_id
 
-                    on a.submtg_state_cd = b.submtg_state_cd and
-                       a.{file}_fil_dt = b.{file}_fil_dt and
-                       a.da_run_id = b.da_run_id
-
-                    where substring(a.{file}_fil_dt,5,2)='{mm}'
+                    where 
+                        substring(a.{file}_fil_dt,5,2)='{mm}'
                     ) as m{mm}
 
-                    on fseg.submtg_state_cd=m{mm}.submtg_state_cd and
-                        fseg.{self.main_id}=m{mm}.{self.main_id} and
-                        fseg.splmtl_submsn_type=m{mm}.splmtl_submsn_type
+                on 
+                    fseg.submtg_state_cd=m{mm}.submtg_state_cd and
+                    fseg.{self.main_id}=m{mm}.{self.main_id}
             """
             result.append(z.format())
 
@@ -294,19 +288,23 @@ class APR(TAF):
         else:
             b = f"{self.apr.DA_SCHEMA}.taf_{self.fileseg}"
 
+        if filet == 'PRV':
+            b = f"{self.apr.DA_SCHEMA}.taf_{filet}_{self.fileseg}"
+        else:
+            b = f"{self.apr.DA_SCHEMA}.taf_{self.fileseg}"            
+
         # Create file that includes state/id/submission type and other data elements for all records in the year for this segment
         z = f"""
-                select  b.*
-                        ,case
-                            { splmtl_submsn_type }
-                            end as splmtl_submsn_type
+                select  
+                    b.*
                 from
                     max_run_id_{filet}_{self.year} a
                 inner join
                     {b} b
-                     on a.submtg_state_cd = b.submtg_state_cd and
-                        a.{filet}_fil_dt = b.{filet}_fil_dt and
-                        a.da_run_id = b.da_run_id
+                on 
+                    a.submtg_state_cd = b.submtg_state_cd and
+                    a.{filet}_fil_dt = b.{filet}_fil_dt and
+                    a.da_run_id = b.da_run_id
 
         """
         return z.format()
@@ -338,7 +336,6 @@ class APR(TAF):
                 from (
                     select fseg.submtg_state_cd
                         ,fseg.{self.main_id}
-                        ,fseg.splmtl_submsn_type
                         ,{subcols}
                          {subcols2}
                          {subcols3}
@@ -353,8 +350,7 @@ class APR(TAF):
                     ) sub
 
             order by submtg_state_cd,
-                    {self.main_id},
-                    splmtl_submsn_type
+                    {self.main_id}
 
         """
         self.apr.append(type(self).__name__, z)
@@ -373,7 +369,7 @@ class APR(TAF):
 
         z = f"""
              create or replace temporary view temp_rollup_{fileseg} as
-             select SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) },
+             select SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) },
                     sum(case when (substring({dtfile}_fil_dt,5,2)='01') then 1 else 0 end) as _01,
                     sum(case when (substring({dtfile}_fil_dt,5,2)='02') then 1 else 0 end) as _02,
                     sum(case when (substring({dtfile}_fil_dt,5,2)='03') then 1 else 0 end) as _03,
@@ -387,14 +383,14 @@ class APR(TAF):
                     sum(case when (substring({dtfile}_fil_dt,5,2)='11') then 1 else 0 end) as _11,
                     sum(case when (substring({dtfile}_fil_dt,5,2)='12') then 1 else 0 end) as _12
              from ( { self.all_monthly_segments(filet=dtfile) } )
-             group by SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) }
-             order by SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) }
+             group by SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) }
+             order by SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) }
           """
         self.apr.append(type(self).__name__, z)
 
         z = f"""
              create or replace temporary view {outtbl} as
-             select SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) },
+             select SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) },
                     case when (_01>0) then 1 else 0 end as {mnths}_01,
                     case when (_02>0) then 1 else 0 end as {mnths}_02,
                     case when (_03>0) then 1 else 0 end as {mnths}_03,
@@ -408,7 +404,7 @@ class APR(TAF):
                     case when (_11>0) then 1 else 0 end as {mnths}_11,
                     case when (_12>0) then 1 else 0 end as {mnths}_12
              from temp_rollup_{fileseg}
-             order by SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) }
+             order by SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) }
           """
         self.apr.append(type(self).__name__, z)
 
@@ -508,7 +504,7 @@ class APR(TAF):
     #
     #
     # ---------------------------------------------------------------------------------
-    def nonmiss_month(self, incol, outcol='', var_type='D'):
+    def nonmiss_month(self, incol, outcol=''):
 
         if outcol == '':
             outcol = incol + '_MN'
@@ -516,13 +512,37 @@ class APR(TAF):
         cases = []
         for m in self.monthsb:
 
-            z = f"""m{m}.{incol} is not null"""
-            if var_type != 'D':
-                z += f"""and m{m}.{incol} not in ('',' ') then '{m}'"""
+            z = f"""m{m}.{incol} is not null """
+            z += f"""and m{m}.{incol} not in ('',' ') then '{m}'"""
 
             cases.append(z)
 
-        return f"""case when {' or '.join(cases)} then 1 else '00' end as {outcol}"""
+        return f"""case when {' when '.join(cases)} else '00' end as {outcol}"""
+
+
+    # ---------------------------------------------------------------------------------
+    #
+    #   Macro ind_nonmiss_month to loop through individual provider variables
+    #   from month 12 to 1 and identify the month with the first non-missing value
+    #   for any of those variables. This will then be used to get those variables 
+    #   from that month if needed. The month = 00 if NO non-missing month.
+    #
+    # ---------------------------------------------------------------------------------
+    def ind_nonmiss_month(self, outcol):
+
+        cases = []
+        for m in self.monthsb:
+            cases.append(f"when (m{m}.PRVDR_1ST_NAME is not null and m{m}.PRVDR_1ST_NAME not in ('',' ')) or ")
+            cases.append(f"     (m{m}.PRVDR_MDL_INITL_NAME is not null and m{m}.PRVDR_MDL_INITL_NAME not in ('',' ')) or ")
+            cases.append(f"     (m{m}.PRVDR_LAST_NAME is not null and m{m}.PRVDR_LAST_NAME not in ('',' ')) or ")
+            cases.append(f"     (m{m}.GNDR_CD is not null and m{m}.GNDR_CD not in ('',' ')) or ")
+            cases.append(f"     (m{m}.BIRTH_DT is not null) or ")
+            cases.append(f"     (m{m}.DEATH_DT is not null) or ")
+            cases.append(f"     (m{m}.AGE_NUM is not null) then '{m}'")
+
+        return f"case {' '.join(cases)} else '00' end as {outcol}"
+
+
 
     # ---------------------------------------------------------------------------------
     #
@@ -561,18 +581,21 @@ class APR(TAF):
     def create_splmlt(self, segname, segfile):
 
         # distkey({self.main_id})
-        # sortkey(submtg_state_cd,{self.main_id},splmtl_submsn_type) as
+        # sortkey(submtg_state_cd,{self.main_id}) as
         z = f"""
             create or replace temporary view {segname}_SPLMTL_{self.year} as
 
-            select submtg_state_cd
+            select 
+                submtg_state_cd
                 ,{self.main_id}
-                ,splmtl_submsn_type
                 ,count(submtg_state_cd) as {segname}_SPLMTL_CT
 
-            from {segfile}
+            from 
+                {segfile}
 
-            group by submtg_state_cd,{self.main_id},splmtl_submsn_type
+            group by 
+                submtg_state_cd,
+                {self.main_id}
         """
         self.apr.append(type(self).__name__, z)
 
@@ -590,51 +613,26 @@ class APR(TAF):
 
         cols.append(f"{self.apr.DA_RUN_ID} as DA_RUN_ID")
 
-        if self.fil_typ == 'PL':
+        if loctype == 0 or loctype == 1:
 
-            cols.append(f"""case
-            when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
+            cols.append(f"""
             cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
-                    SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(32))
-            else
+                    SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(56)) as {self.fil_typ}_LINK_KEY
+                    """)
+
+            if loctype == 1:
+
+                cols.append(f"""
+                cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
+                        SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || coalesce(PRVDR_LCTN_ID, '**')) as varchar(74)) as {self.fil_typ}_LOC_LINK_KEY
+                        """)
+
+        elif loctype == 2:
+
+            cols.append(f"""
             cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
-                    SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(32))
-            end as {self.fil_typ}_LINK_KEY""")
-
-        else:
-
-            if loctype == 0 or loctype == 1:
-
-                cols.append(f"""case
-                when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-                cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
-                        SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(56))
-                else
-                cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
-                        SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(56))
-                end as {self.fil_typ}_LINK_KEY""")
-
-                if loctype == 1:
-
-                    cols.append(f"""case
-                    when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-                    cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
-                            SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
-                    else
-                    cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
-                            SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
-                    end as {self.fil_typ}_LOC_LINK_KEY""")
-
-            elif loctype == 2:
-
-                cols.append(f"""case
-                when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-                cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
-                        SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
-                else
-                cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
-                        SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
-                end as {self.fil_typ}_LOC_LINK_KEY""")
+                    SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || coalesce(PRVDR_LCTN_ID, '**')) as varchar(74)) as {self.fil_typ}_LOC_LINK_KEY
+                    """)
 
         cols.append(f"""'{self.year}' as {self.fil_typ}_FIL_DT""")
         cols.append(f"""'{self.apr.version}' as {self.fil_typ}_VRSN""")
