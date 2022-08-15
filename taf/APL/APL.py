@@ -171,10 +171,13 @@ class APL(TAF):
         z = f"""
             insert into {self.apl.DA_SCHEMA}.TAF_ANN_{self.st_fil_type}_INP_SRC
             select
-                {self.apl.DA_RUN_ID} as ANN_DA_RUN_ID,
-                SUBMTG_STATE_CD,
-                {file}_FIL_DT,
-                DA_RUN_ID as SRC_DA_RUN_ID
+                {self.apl.DA_RUN_ID} as ann_da_run_id,
+                'apl' as ann_fil_type,
+                submtg_state_cd,
+                '{file.lower()}' as src_fil_type,
+                {file}_fil_dt as src_fil_dt,
+                da_run_id as src_da_run_id,
+                fil_cret_dt as src_fil_creat_dt
 
             from max_run_id_{file}_{inyear}
         """
@@ -191,37 +194,38 @@ class APL(TAF):
 
         # %if &fil_typ.=PL %then %let file=MCP; %else %let file=PRV;
 
-        if self.fil_typ.casefold() == "pl":
-            file = "MCP"
-        else:
-            file = "PRV"
+        # if self.fil_typ.casefold() == "pl":
+        #     file = "MCP"
+        # else:
+        #     file = "PRV"
+        file = "MCP"
 
         # Create the backbone of unique state/msis_id to then left join each month back to
         fseg = f"""
             (select a.submtg_state_cd,
                 b.{self.main_id},
-                b.splmtl_submsn_type,
+									 
                 count(a.submtg_state_cd) as nmonths
 
                 from max_run_id_{file}_{inyear} a
                 inner join
-                (select *
-                        ,case
-                            when right({file}_link_key,5)='-CHIP' then 'CHIP'
-                            when right({file}_link_key,4)='-TPA' then 'TPA'
-                            else ' '
-                        end as splmtl_submsn_type
+                {self.apl.DA_SCHEMA}.taf_{fileseg} b
+							 
+																			 
+																		   
+									
+												 
 
-                    from {self.apl.DA_SCHEMA}.taf_{fileseg}
-                ) as b
+														   
+					  
 
                 on a.submtg_state_cd = b.submtg_state_cd and
                 a.{file}_fil_dt = b.{file}_fil_dt and
                 a.da_run_id = b.da_run_id
 
                 group by a.submtg_state_cd,
-                    b.{self.main_id},
-                    b.splmtl_submsn_type
+                    b.{self.main_id}
+
             ) as fseg
             """
 
@@ -237,11 +241,11 @@ class APL(TAF):
                 left join
 
                     (select b.*
-                            ,case
-                                when right(b.{file}_link_key,5)='-CHIP' then 'CHIP'
-                                when right(b.{file}_link_key,4)='-TPA' then 'TPA'
-                                else ' '
-                            end as splmtl_submsn_type
+								 
+																				   
+																				 
+										
+													 
                     from
                         max_run_id_{file}_{inyear} a
                         inner join
@@ -255,8 +259,8 @@ class APL(TAF):
                     ) as m{mm}
 
                     on fseg.submtg_state_cd=m{mm}.submtg_state_cd and
-                        fseg.{self.main_id}=m{mm}.{self.main_id} and
-                        fseg.splmtl_submsn_type=m{mm}.splmtl_submsn_type
+                        fseg.{self.main_id}=m{mm}.{self.main_id}
+
             """
             result.append(z.format())
 
@@ -300,9 +304,9 @@ class APL(TAF):
         # Create file that includes state/id/submission type and other data elements for all records in the year for this segment
         z = f"""
                 select  b.*
-                        ,case
-                            { splmtl_submsn_type }
-                            end as splmtl_submsn_type
+							 
+												  
+													 
                 from
                     max_run_id_{filet}_{self.year} a
                 inner join
@@ -347,7 +351,7 @@ class APL(TAF):
     ):
 
         # distkey({self.main_id})
-        # sortkey(submtg_state_cd,{self.main_id},splmtl_submsn_type) as
+        # sortkey(submtg_state_cd,{self.main_id}) as
 
         _outercols = outercols
         _subcols = subcols
@@ -392,7 +396,7 @@ class APL(TAF):
                 from (
                     select fseg.submtg_state_cd
                         ,fseg.{self.main_id}
-                        ,fseg.splmtl_submsn_type
+
                          {_subcols}
                          {_subcols2}
                          {_subcols3}
@@ -407,8 +411,8 @@ class APL(TAF):
                     ) sub
 
             order by submtg_state_cd,
-                    {self.main_id},
-                    splmtl_submsn_type
+                    {self.main_id}
+
 
         """
         self.apl.append(type(self).__name__, z)
@@ -427,7 +431,7 @@ class APL(TAF):
 
         z = f"""
              create or replace temporary view temp_rollup_{fileseg} as
-             select SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) },
+             select SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) },
                     sum(case when (substring({dtfile}_fil_dt,5,2)='01') then 1 else 0 end) as _01,
                     sum(case when (substring({dtfile}_fil_dt,5,2)='02') then 1 else 0 end) as _02,
                     sum(case when (substring({dtfile}_fil_dt,5,2)='03') then 1 else 0 end) as _03,
@@ -441,14 +445,14 @@ class APL(TAF):
                     sum(case when (substring({dtfile}_fil_dt,5,2)='11') then 1 else 0 end) as _11,
                     sum(case when (substring({dtfile}_fil_dt,5,2)='12') then 1 else 0 end) as _12
              from ( { self.all_monthly_segments(filet=dtfile, files=fileseg) } )
-             group by SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) }
-             order by SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) }
+             group by SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) }
+             order by SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) }
           """
         self.apl.append(type(self).__name__, z)
 
         z = f"""
              create or replace temporary view {outtbl} as
-             select SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) },
+             select SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) },
                     case when (_01>0) then 1 else 0 end as {mnths}_01,
                     case when (_02>0) then 1 else 0 end as {mnths}_02,
                     case when (_03>0) then 1 else 0 end as {mnths}_03,
@@ -462,7 +466,7 @@ class APL(TAF):
                     case when (_11>0) then 1 else 0 end as {mnths}_11,
                     case when (_12>0) then 1 else 0 end as {mnths}_12
              from temp_rollup_{fileseg}
-             order by SUBMTG_STATE_CD, {self.main_id}, splmtl_submsn_type, { ', '.join(collist) }
+             order by SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) }
           """
         self.apl.append(type(self).__name__, z)
 
@@ -619,18 +623,18 @@ class APL(TAF):
     def create_splmlt(self, segname, segfile):
 
         # distkey({self.main_id})
-        # sortkey(submtg_state_cd,{self.main_id},splmtl_submsn_type) as
+        # sortkey(submtg_state_cd,{self.main_id}) as
         z = f"""
             create or replace temporary view {segname}_SPLMTL_{self.year} as
 
             select submtg_state_cd
                 ,{self.main_id}
-                ,splmtl_submsn_type
+								   
                 ,count(submtg_state_cd) as {segname}_SPLMTL_CT
 
             from {segfile}
 
-            group by submtg_state_cd,{self.main_id},splmtl_submsn_type
+            group by submtg_state_cd,{self.main_id}
         """
         self.apl.append(type(self).__name__, z)
 
@@ -647,60 +651,63 @@ class APL(TAF):
         cols = []
 
         cols.append(f"{self.apl.DA_RUN_ID} as DA_RUN_ID")
+        cols.append(f"""cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+                     SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(32)) as {self.fil_typ}_LINK_KEY """)
 
-        if self.fil_typ == "PL":
 
-            cols.append(
-                f"""case
-            when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-            cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-                    SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(32))
-            else
-            cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-                    SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(32))
-            end as {self.fil_typ}_LINK_KEY"""
-            )
+        # if self.fil_typ == "PL":
 
-        else:
+        #     cols.append(
+        #         f"""case
+        #     when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
+        #     cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #             SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(32))
+        #     else
+        #     cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #             SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(32))
+        #     end as {self.fil_typ}_LINK_KEY"""
+        #     )
 
-            if loctype == 0 or loctype == 1:
+        # else:
 
-                cols.append(
-                    f"""case
-                when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-                cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-                        SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(56))
-                else
-                cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-                        SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(56))
-                end as {self.fil_typ}_LINK_KEY"""
-                )
+        #     if loctype == 0 or loctype == 1:
 
-                if loctype == 1:
+        #         cols.append(
+        #             f"""case
+        #         when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
+        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(56))
+        #         else
+        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #                 SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(56))
+        #         end as {self.fil_typ}_LINK_KEY"""
+        #         )
 
-                    cols.append(
-                        f"""case
-                    when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-                    cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-                            SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
-                    else
-                    cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-                            SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
-                    end as {self.fil_typ}_LOC_LINK_KEY"""
-                    )
+        #         if loctype == 1:
 
-            elif loctype == 2:
+        #             cols.append(
+        #                 f"""case
+        #             when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
+        #             cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #                     SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
+        #             else
+        #             cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #                     SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
+        #             end as {self.fil_typ}_LOC_LINK_KEY"""
+        #             )
 
-                cols.append(
-                    f"""case
-                when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-                cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-                        SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
-                else
-                cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-                        SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
-                end as {self.fil_typ}_LOC_LINK_KEY"""
-                )
+        #     elif loctype == 2:
+
+        #         cols.append(
+        #             f"""case
+        #         when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
+        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
+        #         else
+        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
+        #         end as {self.fil_typ}_LOC_LINK_KEY"""
+        #         )
 
         cols.append(f"""'{self.year}' as {self.fil_typ}_FIL_DT""")
         cols.append(f"""'{self.apl.version}' as {self.fil_typ}_VRSN""")
@@ -909,4 +916,4 @@ class APL(TAF):
 #   CC0 or use of the Work.
 
 # For more information, please see
-# <http://creativecommons.org/publicdomain/zero/1.0/>elg00005
+# <http://creativecommons.org/publicdomain/zero/1.0/>

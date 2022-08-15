@@ -99,6 +99,14 @@ class BASE(APL):
             "SAREA_SPLMTL",
             "ENRLMT_SPLMTL",
             "OPRTG_AUTHRTY_SPLMTL",
+            "OPRTG_AUTHRTY_1915AJ_CONC_IND",
+            "OPRTG_AUTHRTY_1932A_1915J_IND",
+            "OPRTG_AUTHRTY_1915BJ_CONC_IND",
+            "OPRTG_AUTHRTY_1115_1915J_IND",
+            "OPRTG_AUTHRTY_1915AK_CONC_IND",
+            "OPRTG_AUTHRTY_1932A_1915K_IND",
+            "OPRTG_AUTHRTY_1915BK_CONC_IND",
+            "OPRTG_AUTHRTY_1115_1915K_IND",
         ]
 
     # ---------------------------------------------------------------------------------
@@ -139,6 +147,14 @@ class BASE(APL):
             "%ever_year(OPRTG_AUTHRTY_1915AI_CONC_IND)",
             "%ever_year(OPRTG_AUTHRTY_1932A_1915I_IND)",
             "%ever_year(OPRTG_AUTHRTY_1945_HH_IND)",
+            "%ever_year(OPRTG_AUTHRTY_1915AJ_CONC_IND)",
+            "%ever_year(OPRTG_AUTHRTY_1932A_1915J_IND)",
+            "%ever_year(OPRTG_AUTHRTY_1915BJ_CONC_IND)",
+            "%ever_year(OPRTG_AUTHRTY_1115_1915J_IND)",
+            "%ever_year(OPRTG_AUTHRTY_1915AK_CONC_IND)",
+            "%ever_year(OPRTG_AUTHRTY_1932A_1915K_IND)",
+            "%ever_year(OPRTG_AUTHRTY_1915BK_CONC_IND)",
+            "%ever_year(OPRTG_AUTHRTY_1115_1915K_IND)",           
             "%ever_year(POP_MDCD_MAND_COV_ADLT_IND)",
             "%ever_year(POP_MDCD_MAND_COV_ABD_IND)",
             "%ever_year(POP_MDCD_OPTN_COV_ADLT_IND)",
@@ -223,7 +239,7 @@ class BASE(APL):
                 z += f"""
                     SELECT SUBMTG_STATE_CD
                            ,MC_PLAN_ID
-                           ,splmtl_submsn_type
+											  
                            ,ACRDTN_ORG_{aa}_{mm} as ACRDTN_ORG
                            ,ACRDTN_ORG_ACHVMT_DT_{aa}_{mm} as ACRDTN_ORG_ACHVMT_DT
                            ,ACRDTN_ORG_END_DT_{aa}_{mm} as ACRDTN_ORG_END_DT
@@ -242,13 +258,13 @@ class BASE(APL):
         # diststyle key distkey(MC_PLAN_ID) as
         z = f"""
             create or replace temporary view Accreditation1 as
-            select SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type,
+            select SUBMTG_STATE_CD, MC_PLAN_ID,
                     ACRDTN_ORG,
                     ACRDTN_ORG_ACHVMT_DT,
                     ACRDTN_ORG_END_DT
             from Accreditation0
-            group by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, ACRDTN_ORG, ACRDTN_ORG_ACHVMT_DT, ACRDTN_ORG_END_DT
-            order by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, ACRDTN_ORG, ACRDTN_ORG_ACHVMT_DT, ACRDTN_ORG_END_DT
+            group by SUBMTG_STATE_CD, MC_PLAN_ID, ACRDTN_ORG, ACRDTN_ORG_ACHVMT_DT, ACRDTN_ORG_END_DT
+            order by SUBMTG_STATE_CD, MC_PLAN_ID, ACRDTN_ORG, ACRDTN_ORG_ACHVMT_DT, ACRDTN_ORG_END_DT
             """
         self.apl.append(type(self).__name__, z)
 
@@ -258,16 +274,16 @@ class BASE(APL):
         # diststyle key distkey(MC_PLAN_ID) as
         z = f"""
             create or replace temporary view Accreditation2 as
-            select SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type,
+            select SUBMTG_STATE_CD, MC_PLAN_ID,
                 ACRDTN_ORG,
                 ACRDTN_ORG_ACHVMT_DT,
                 ACRDTN_ORG_END_DT,
                 row_number() over (
-                partition by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type
+                partition by SUBMTG_STATE_CD, MC_PLAN_ID
                 order by ACRDTN_ORG, ACRDTN_ORG_ACHVMT_DT, ACRDTN_ORG_END_DT
                 ) as _ndx
             from Accreditation1
-            order by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, ACRDTN_ORG, ACRDTN_ORG_ACHVMT_DT, ACRDTN_ORG_END_DT
+            order by SUBMTG_STATE_CD, MC_PLAN_ID, ACRDTN_ORG, ACRDTN_ORG_ACHVMT_DT, ACRDTN_ORG_END_DT
             """
         self.apl.append(type(self).__name__, z)
 
@@ -276,12 +292,12 @@ class BASE(APL):
         # diststyle key distkey(MC_PLAN_ID) as
         z = f"""
             create or replace temporary view Accreditation_Array as
-            select SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type
+            select SUBMTG_STATE_CD, MC_PLAN_ID
                     { APL.map_arrayvars(varnm='ACRDTN_ORG', N=6) }
                     { APL.map_arrayvars(varnm='ACRDTN_ORG_ACHVMT_DT', N=6) }
                     { APL.map_arrayvars(varnm='ACRDTN_ORG_END_DT', N=6) }
             from Accreditation2
-            group by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type
+            group by SUBMTG_STATE_CD, MC_PLAN_ID
             """
         self.apl.append(type(self).__name__, z)
 
@@ -309,7 +325,7 @@ class BASE(APL):
                 create or replace temporary view cntrct_vert_month_{mm} AS
                 select SUBMTG_STATE_CD
                      , MC_PLAN_ID
-                     , splmtl_submsn_type
+										 
                      , MC_EFF_DT
                      , MC_CNTRCT_END_DT
                      , MC_CNTRCT_EFCTV_DT_{mm} AS mc_mnth_eff_dt
@@ -339,7 +355,7 @@ class BASE(APL):
             z = f"""
                 create or replace temporary view srtd as
                 select
-                    SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type,
+                    SUBMTG_STATE_CD, MC_PLAN_ID,
                     MC_EFF_DT, MC_CNTRCT_END_DT,
                     mc_mnth_eff_dt, mc_mnth_end_dt,
                     case (
@@ -348,13 +364,13 @@ class BASE(APL):
 
             for m in range(1, 12):
                 mm = "{:02d}".format(m)
-                z += f"""lag(mc_mnth_eff_dt,{mm}) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type order by mc_mnth_end_dt desc, mc_mnth_eff_dt desc)
+                z += f"""lag(mc_mnth_eff_dt,{mm}) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt desc, mc_mnth_eff_dt desc)
                      """
                 if m < 11:
                     z += f""" , """
 
             z += f"""
-                                    ) <= (lag(mc_mnth_end_dt) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type order by mc_mnth_end_dt, mc_mnth_eff_dt))  + 1
+                                    ) <= (lag(mc_mnth_end_dt) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt, mc_mnth_eff_dt))  + 1
                             )
                     when true then 'C'
                     when false then 'A'
@@ -366,7 +382,7 @@ class BASE(APL):
 
             for m in range(1, 12):
                 mm = "{:02d}".format(m)
-                z += f"""lag(mc_mnth_eff_dt,{mm}) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type order by mc_mnth_end_dt desc, mc_mnth_eff_dt desc)
+                z += f"""lag(mc_mnth_eff_dt,{mm}) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt desc, mc_mnth_eff_dt desc)
                      """
                 if m < 11:
                     z += f""" , """
@@ -375,17 +391,17 @@ class BASE(APL):
                                 )
                         as new_beginning
                 from cntrct_vert_month
-                group by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, MC_EFF_DT, MC_CNTRCT_END_DT, mc_mnth_eff_dt, mc_mnth_end_dt
-                order by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, mc_mnth_end_dt desc
+                group by SUBMTG_STATE_CD, MC_PLAN_ID, MC_EFF_DT, MC_CNTRCT_END_DT, mc_mnth_eff_dt, mc_mnth_end_dt
+                order by SUBMTG_STATE_CD, MC_PLAN_ID, mc_mnth_end_dt desc
                 """
             self.apl.append(type(self).__name__, z)
 
         z = f"""
             create or replace temporary view selected_cntrct_dt as
-                    select SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, MC_EFF_DT, MC_CNTRCT_END_DT, cont_rank, new_beginning
-                    from (select SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, MC_EFF_DT, MC_CNTRCT_END_DT, cont_rank, new_beginning,
-                            row_number() over (partition by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type order by MC_EFF_DT, MC_CNTRCT_END_DT, cont_rank, mc_mnth_end_dt desc, mc_mnth_eff_dt desc, new_beginning) as cntrct_dt_rank
-                            from srtd order by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, cont_rank
+                    select SUBMTG_STATE_CD, MC_PLAN_ID, MC_EFF_DT, MC_CNTRCT_END_DT, cont_rank, new_beginning
+                    from (select SUBMTG_STATE_CD, MC_PLAN_ID, MC_EFF_DT, MC_CNTRCT_END_DT, cont_rank, new_beginning,
+                            row_number() over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by MC_EFF_DT, MC_CNTRCT_END_DT, cont_rank, mc_mnth_end_dt desc, mc_mnth_eff_dt desc, new_beginning) as cntrct_dt_rank
+                            from srtd order by SUBMTG_STATE_CD, MC_PLAN_ID, cont_rank
                     )
                     where cntrct_dt_rank = 1
             """
@@ -397,6 +413,7 @@ class BASE(APL):
         # sortkey(SUBMTG_STATE_CD,MC_PLAN_ID,splmtl_submsn_type) as
         z = f"""
             create or replace temporary view base_{self.year} as
+
                     select a.*
                         ,case
                             when (a.MC_EFF_DT is null or a.MC_CNTRCT_END_DT is null) or (b.new_beginning is null and (a.MC_EFF_DT > a.MC_CNTRCT_END_DT)) then a.MC_EFF_DT
@@ -420,11 +437,11 @@ class BASE(APL):
                         ,ACRDTN_ORG_END_DT_05
                     from base_pl_{self.year} a
                         left join
-                        Accreditation_Array c on a.SUBMTG_STATE_CD = c.SUBMTG_STATE_CD and a.MC_PLAN_ID = c.MC_PLAN_ID and a.splmtl_submsn_type=c.splmtl_submsn_type
+                        Accreditation_Array c on a.SUBMTG_STATE_CD = c.SUBMTG_STATE_CD and a.MC_PLAN_ID = c.MC_PLAN_ID
                         left join
-                        (select SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, cont_rank, new_beginning
+                        (select SUBMTG_STATE_CD, MC_PLAN_ID, cont_rank, new_beginning
                             from selected_cntrct_dt) b
-                            on a.SUBMTG_STATE_CD = b.SUBMTG_STATE_CD and a.MC_PLAN_ID = b.MC_PLAN_ID and a.splmtl_submsn_type=b.splmtl_submsn_type
+                            on a.SUBMTG_STATE_CD = b.SUBMTG_STATE_CD and a.MC_PLAN_ID = b.MC_PLAN_ID
             """
         self.apl.append(type(self).__name__, z)
 
@@ -434,6 +451,7 @@ class BASE(APL):
         # sortkey(SUBMTG_STATE_CD,MC_PLAN_ID,splmtl_submsn_type) as
         z = f"""
             create or replace temporary view base_{self.year}_final as
+
                     select a.*
                         ,case when b.LCTN_SPLMTL_CT>0 then 1 else 0 end as LCTN_SPLMTL
                         ,case when c.SAREA_SPLMTL_CT>0 then 1 else 0 end as SAREA_SPLMTL
@@ -442,15 +460,15 @@ class BASE(APL):
 
                     from base_{self.year} a
                         left join
-                        LCTN_SPLMTL_{self.year} b on a.SUBMTG_STATE_CD = b.SUBMTG_STATE_CD and a.splmtl_submsn_type=b.splmtl_submsn_type and a.MC_PLAN_ID = b.MC_PLAN_ID
+                        LCTN_SPLMTL_{self.year} b on a.SUBMTG_STATE_CD = b.SUBMTG_STATE_CD and a.MC_PLAN_ID = b.MC_PLAN_ID
                         left join
-                        SAREA_SPLMTL_{self.year} c on a.SUBMTG_STATE_CD = c.SUBMTG_STATE_CD and a.splmtl_submsn_type=c.splmtl_submsn_type and a.MC_PLAN_ID = c.MC_PLAN_ID
+                        SAREA_SPLMTL_{self.year} c on a.SUBMTG_STATE_CD = c.SUBMTG_STATE_CD and a.MC_PLAN_ID = c.MC_PLAN_ID
                         left join
-                        ENRLMT_SPLMTL_{self.year} d on a.SUBMTG_STATE_CD = d.SUBMTG_STATE_CD and a.splmtl_submsn_type=d.splmtl_submsn_type and a.MC_PLAN_ID = d.MC_PLAN_ID
+                        ENRLMT_SPLMTL_{self.year} d on a.SUBMTG_STATE_CD = d.SUBMTG_STATE_CD and a.MC_PLAN_ID = d.MC_PLAN_ID
                         left join
-                        OPRTG_AUTHRTY_SPLMTL_{self.year} e on a.SUBMTG_STATE_CD = e.SUBMTG_STATE_CD and a.splmtl_submsn_type=e.splmtl_submsn_type and a.MC_PLAN_ID = e.MC_PLAN_ID
+                        OPRTG_AUTHRTY_SPLMTL_{self.year} e on a.SUBMTG_STATE_CD = e.SUBMTG_STATE_CD and a.MC_PLAN_ID = e.MC_PLAN_ID
 
-                        order by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type
+                        order by SUBMTG_STATE_CD, MC_PLAN_ID
             """
         self.apl.append(type(self).__name__, z)
 
@@ -467,7 +485,7 @@ class BASE(APL):
             SELECT
                  {self.table_id_cols()}
                 ,{",".join(self.basecols)}
-                ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,timestamp_seconds({self.apl.DA_RUN_ID}) as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM base_{self.year}_final
             """

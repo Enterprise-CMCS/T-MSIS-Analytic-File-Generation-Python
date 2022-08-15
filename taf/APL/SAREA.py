@@ -25,6 +25,21 @@ class SAREA(APL):
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "SAREA"
+        self.basecols = [
+			"MC_SAREA_NAME",
+			"MC_SAREA_LCTN_FLAG_01",
+			"MC_SAREA_LCTN_FLAG_02",
+			"MC_SAREA_LCTN_FLAG_03",
+			"MC_SAREA_LCTN_FLAG_04",
+			"MC_SAREA_LCTN_FLAG_05",
+			"MC_SAREA_LCTN_FLAG_06",
+			"MC_SAREA_LCTN_FLAG_07",
+			"MC_SAREA_LCTN_FLAG_08",
+			"MC_SAREA_LCTN_FLAG_09",
+			"MC_SAREA_LCTN_FLAG_10",
+			"MC_SAREA_LCTN_FLAG_11",
+			"MC_SAREA_LCTN_FLAG_12"
+        ]
 
     # ---------------------------------------------------------------------------------
     #
@@ -59,26 +74,37 @@ class SAREA(APL):
     # ---------------------------------------------------------------------------------
     def build(self):
         # insert into permanent table
+        # z = f"""
+        #     INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_SAREA
+        #     SELECT
+        #          {self.table_id_cols()}
+        #         ,MC_SAREA_NAME
+        #         ,MC_SAREA_LCTN_FLAG_01
+        #         ,MC_SAREA_LCTN_FLAG_02
+        #         ,MC_SAREA_LCTN_FLAG_03
+        #         ,MC_SAREA_LCTN_FLAG_04
+        #         ,MC_SAREA_LCTN_FLAG_05
+        #         ,MC_SAREA_LCTN_FLAG_06
+        #         ,MC_SAREA_LCTN_FLAG_07
+        #         ,MC_SAREA_LCTN_FLAG_08
+        #         ,MC_SAREA_LCTN_FLAG_09
+        #         ,MC_SAREA_LCTN_FLAG_10
+        #         ,MC_SAREA_LCTN_FLAG_11
+        #         ,MC_SAREA_LCTN_FLAG_12
+        #         ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+        #         ,current_timestamp() as REC_UPDT_TS
+        #     from sarea_pl_{self.year}"""
+
         z = f"""
             INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_SAREA
             SELECT
                  {self.table_id_cols()}
-                ,MC_SAREA_NAME
-                ,MC_SAREA_LCTN_FLAG_01
-                ,MC_SAREA_LCTN_FLAG_02
-                ,MC_SAREA_LCTN_FLAG_03
-                ,MC_SAREA_LCTN_FLAG_04
-                ,MC_SAREA_LCTN_FLAG_05
-                ,MC_SAREA_LCTN_FLAG_06
-                ,MC_SAREA_LCTN_FLAG_07
-                ,MC_SAREA_LCTN_FLAG_08
-                ,MC_SAREA_LCTN_FLAG_09
-                ,MC_SAREA_LCTN_FLAG_10
-                ,MC_SAREA_LCTN_FLAG_11
-                ,MC_SAREA_LCTN_FLAG_12
+                ,{",".join(self.basecols)}
                 ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
-            from sarea_pl_{self.year}"""
+            FROM sarea_pl_{self.year}
+            """            
+
         self.apl.append(type(self).__name__, z)
 
 

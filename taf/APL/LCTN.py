@@ -25,7 +25,28 @@ class LCTN(APL):
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "LCTN"
-
+        self.basecols = [
+		    "MC_LCTN_ID",
+			"MC_LINE_1_ADR",
+			"MC_LINE_2_ADR",
+			"MC_LINE_3_ADR",
+			"MC_CITY_NAME",
+			"MC_STATE_CD",
+			"MC_ZIP_CD",
+			"MC_CNTY_CD",
+			"MC_LCTN_FLAG_01",
+			"MC_LCTN_FLAG_02",
+			"MC_LCTN_FLAG_03",
+			"MC_LCTN_FLAG_04",
+			"MC_LCTN_FLAG_05",
+			"MC_LCTN_FLAG_06",
+			"MC_LCTN_FLAG_07",
+			"MC_LCTN_FLAG_08",
+			"MC_LCTN_FLAG_09",
+			"MC_LCTN_FLAG_10",
+			"MC_LCTN_FLAG_11",
+			"MC_LCTN_FLAG_12",
+        ]
     # ---------------------------------------------------------------------------------
     #
     #
@@ -68,33 +89,43 @@ class LCTN(APL):
     # ---------------------------------------------------------------------------------
     def build(self):
         # insert into permanent table
+        # z = f"""
+            # INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_LCTN
+            # SELECT
+            #      {self.table_id_cols()}
+            #     ,MC_LCTN_ID
+            #     ,MC_LINE_1_ADR
+            #     ,MC_LINE_2_ADR
+            #     ,MC_LINE_3_ADR
+            #     ,MC_CITY_NAME
+            #     ,MC_STATE_CD
+            #     ,MC_ZIP_CD
+            #     ,MC_CNTY_CD
+            #     ,MC_LCTN_FLAG_01
+            #     ,MC_LCTN_FLAG_02
+            #     ,MC_LCTN_FLAG_03
+            #     ,MC_LCTN_FLAG_04
+            #     ,MC_LCTN_FLAG_05
+            #     ,MC_LCTN_FLAG_06
+            #     ,MC_LCTN_FLAG_07
+            #     ,MC_LCTN_FLAG_08
+            #     ,MC_LCTN_FLAG_09
+            #     ,MC_LCTN_FLAG_10
+            #     ,MC_LCTN_FLAG_11
+            #     ,MC_LCTN_FLAG_12
+            #     ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+            #     ,current_timestamp() as REC_UPDT_TS
+            # from lctn_pl_{self.year}"""
+
         z = f"""
             INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_LCTN
             SELECT
                  {self.table_id_cols()}
-                ,MC_LCTN_ID
-                ,MC_LINE_1_ADR
-                ,MC_LINE_2_ADR
-                ,MC_LINE_3_ADR
-                ,MC_CITY_NAME
-                ,MC_STATE_CD
-                ,MC_ZIP_CD
-                ,MC_CNTY_CD
-                ,MC_LCTN_FLAG_01
-                ,MC_LCTN_FLAG_02
-                ,MC_LCTN_FLAG_03
-                ,MC_LCTN_FLAG_04
-                ,MC_LCTN_FLAG_05
-                ,MC_LCTN_FLAG_06
-                ,MC_LCTN_FLAG_07
-                ,MC_LCTN_FLAG_08
-                ,MC_LCTN_FLAG_09
-                ,MC_LCTN_FLAG_10
-                ,MC_LCTN_FLAG_11
-                ,MC_LCTN_FLAG_12
+                ,{",".join(self.basecols)}
                 ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
-            from lctn_pl_{self.year}"""
+            FROM lctn_pl_{self.year}
+            """            
         self.apl.append(type(self).__name__, z)
 
 

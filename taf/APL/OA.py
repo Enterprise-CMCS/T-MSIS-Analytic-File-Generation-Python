@@ -26,6 +26,22 @@ class OA(APL):
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "OPRTG_AUTHRTY"
+        self.basecols = [
+			    "WVR_ID",
+			    "OPRTG_AUTHRTY",
+			    "OPRTG_AUTHRTY_FLAG_01",
+			    "OPRTG_AUTHRTY_FLAG_02",
+			    "OPRTG_AUTHRTY_FLAG_03",
+			    "OPRTG_AUTHRTY_FLAG_04",
+			    "OPRTG_AUTHRTY_FLAG_05",
+			    "OPRTG_AUTHRTY_FLAG_06",
+			    "OPRTG_AUTHRTY_FLAG_07",
+			    "OPRTG_AUTHRTY_FLAG_08",
+			    "OPRTG_AUTHRTY_FLAG_09",
+			    "OPRTG_AUTHRTY_FLAG_10",
+			    "OPRTG_AUTHRTY_FLAG_11",
+			    "OPRTG_AUTHRTY_FLAG_12",
+        ]
 
     # ---------------------------------------------------------------------------------
     #
@@ -97,7 +113,6 @@ class OA(APL):
                 z += f"""
                      SELECT SUBMTG_STATE_CD
                         ,MC_PLAN_ID
-                        ,SPLMTL_SUBMSN_TYPE
                         ,WVR_ID_{aa}_{mm} AS WVR_ID
                         ,OPRTG_AUTHRTY_{aa}_{mm} AS OPRTG_AUTHRTY
                         ,CASE
@@ -149,7 +164,7 @@ class OA(APL):
         # diststyle key distkey(MC_PLAN_ID)
         z = """
             CREATE OR REPLACE TEMPORARY VIEW OpAuth1 AS
-            select SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, WVR_ID, OPRTG_AUTHRTY
+            select SUBMTG_STATE_CD, MC_PLAN_ID, WVR_ID, OPRTG_AUTHRTY
                         ,max(coalesce(OPRTG_AUTHRTY_FLAG_01,0)) as OPRTG_AUTHRTY_FLAG_01
                         ,max(coalesce(OPRTG_AUTHRTY_FLAG_02,0)) as OPRTG_AUTHRTY_FLAG_02
                         ,max(coalesce(OPRTG_AUTHRTY_FLAG_03,0)) as OPRTG_AUTHRTY_FLAG_03
@@ -163,8 +178,8 @@ class OA(APL):
                         ,max(coalesce(OPRTG_AUTHRTY_FLAG_11,0)) as OPRTG_AUTHRTY_FLAG_11
                         ,max(coalesce(OPRTG_AUTHRTY_FLAG_12,0)) as OPRTG_AUTHRTY_FLAG_12
             from OpAuth0
-            group by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, WVR_ID, OPRTG_AUTHRTY
-            order by SUBMTG_STATE_CD, MC_PLAN_ID, splmtl_submsn_type, WVR_ID, OPRTG_AUTHRTY"""
+            group by SUBMTG_STATE_CD, MC_PLAN_ID, WVR_ID, OPRTG_AUTHRTY
+            order by SUBMTG_STATE_CD, MC_PLAN_ID, WVR_ID, OPRTG_AUTHRTY"""
         self.apl.append(type(self).__name__, z)
 
         # create temp table with just OPRTG_AUTHRTY_SPLMTL to join to base
@@ -178,28 +193,41 @@ class OA(APL):
     # ---------------------------------------------------------------------------------
     def build(self):
         # insert into permanent table
+        # z = f"""
+        #     INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_OA
+        #     SELECT
+        #          {self.table_id_cols()}
+        #         ,WVR_ID
+        #         ,OPRTG_AUTHRTY
+        #         ,OPRTG_AUTHRTY_FLAG_01
+        #         ,OPRTG_AUTHRTY_FLAG_02
+        #         ,OPRTG_AUTHRTY_FLAG_03
+        #         ,OPRTG_AUTHRTY_FLAG_04
+        #         ,OPRTG_AUTHRTY_FLAG_05
+        #         ,OPRTG_AUTHRTY_FLAG_06
+        #         ,OPRTG_AUTHRTY_FLAG_07
+        #         ,OPRTG_AUTHRTY_FLAG_08
+        #         ,OPRTG_AUTHRTY_FLAG_09
+        #         ,OPRTG_AUTHRTY_FLAG_10
+        #         ,OPRTG_AUTHRTY_FLAG_11
+        #         ,OPRTG_AUTHRTY_FLAG_12
+        #         ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+        #         ,current_timestamp() as REC_UPDT_TS
+        #     from OpAuth1
+        #     """
+
         z = f"""
             INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_OA
             SELECT
                  {self.table_id_cols()}
-                ,WVR_ID
-                ,OPRTG_AUTHRTY
-                ,OPRTG_AUTHRTY_FLAG_01
-                ,OPRTG_AUTHRTY_FLAG_02
-                ,OPRTG_AUTHRTY_FLAG_03
-                ,OPRTG_AUTHRTY_FLAG_04
-                ,OPRTG_AUTHRTY_FLAG_05
-                ,OPRTG_AUTHRTY_FLAG_06
-                ,OPRTG_AUTHRTY_FLAG_07
-                ,OPRTG_AUTHRTY_FLAG_08
-                ,OPRTG_AUTHRTY_FLAG_09
-                ,OPRTG_AUTHRTY_FLAG_10
-                ,OPRTG_AUTHRTY_FLAG_11
-                ,OPRTG_AUTHRTY_FLAG_12
+                ,{",".join(self.basecols)}
                 ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
-            from OpAuth1
+            FROM OpAuth1
             """
+
+
+
         self.apl.append(type(self).__name__, z)
 
 
