@@ -604,7 +604,7 @@ class DE(TAF):
             FROM (
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
                     ,da_run_id
-                FROM {self.de.DA_SCHEMA}.job_cntl_parms
+                FROM {self.de.DA_SCHEMA_DC}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
@@ -649,7 +649,7 @@ class DE(TAF):
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
                     ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{2})') AS submtg_state_cd
                     ,da_run_id
-                FROM {self.de.DA_SCHEMA}.job_cntl_parms
+                FROM {self.de.DA_SCHEMA_DC}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
@@ -739,7 +739,7 @@ class DE(TAF):
             INNER JOIN (
                 SELECT da_run_id
                     ,incldd_state_cd AS submtg_state_cd
-                FROM {self.de.DA_SCHEMA}.efts_fil_meta
+                FROM {self.de.DA_SCHEMA_DC}.efts_fil_meta
                 WHERE incldd_state_cd != 'Missing'
                 ) b ON a.da_run_id = b.da_run_id
         """
@@ -780,7 +780,7 @@ class DE(TAF):
                       'ENRLMT_EFCTV_CY_DT',
                       'ENRLMT_END_CY_DT'
                      ]
-        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{DE0002.tbl_abrv}
+        z = f"""insert into taf_python.taf_ann_de_{DE0002.tbl_abrv}
                 select
                     {DE.table_id_cols_pre(self, suffix="", extra_cols=extra_cols)}
                     {DE.table_id_cols_sfx(self)}
@@ -790,7 +790,7 @@ class DE(TAF):
         self.de.append(type(self).__name__, z)
 
     def drop_table(self, tblname):
-        z = f"""drop table {self.de.DA_SCHEMA}.{tblname}"""
+        z = f"""drop table {self.de.DA_SCHEMA_DC}.{tblname}"""
         self.de.append(type(self).__name__, z)
 
     # Macro create_pyears to create a list of all prior years (from current year minus 1 to 2014).

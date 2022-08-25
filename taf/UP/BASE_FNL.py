@@ -79,6 +79,12 @@ class BASE_FNL(UP):
                      ,c.{ind1}_{ind2}_MC_PCCM_PD
                      ,c.{ind1}_{ind2}_MC_PVT_INS_PD
                      ,c.{ind1}_{ind2}_MC_PHP_PD
+                     ,coalesce(c.{ind1}_{ind2}_MDCR_CLM, 0) AS {ind1}_{ind2}_MDCR_CLM
+                     ,c.{ind1}_{ind2}_MDCR_PD
+                     ,coalesce(c.{ind1}_{ind2}_OTHR_CLM, 0) AS {ind1}_{ind2}_OTHR_CLM
+                     ,c.{ind1}_{ind2}_OTHR_PD
+                     ,coalesce(c.{ind1}_{ind2}_HH_CLM, 0) AS {ind1}_{ind2}_HH_CLM
+                     ,c.{ind1}_{ind2}_HH_PD                                         
                 """
 
         for hcbsval in self.hcbsvals:
@@ -154,172 +160,10 @@ class BASE_FNL(UP):
 
     def build(self, runner: UP_Runner):
         z = f"""
-            INSERT INTO {runner.DA_SCHEMA}.TAF_ANN_UP_BASE
-            SELECT { self.table_id_cols() }
-                ,AGE_NUM
-                ,GNDR_CD
-                ,RACE_ETHNCTY_EXP_FLAG
-                ,ELGBLTY_GRP_CD_LTST
-                ,MASBOE_CD_LTST
-                ,ELGBLTY_NONCHIP_MDCD_MOS
-                ,ELGBLTY_MCHIP_MOS
-                ,ELGBLTY_SCHIP_MOS
-                ,CHIP_CD_LTST
-                ,DUAL_ELGBL_EVR
-                ,DUAL_ELGBL_CD_LTST
-                ,RCPNT_IND
-                ,MISG_ELGBLTY_FLAG
-                ,DLVRY_IND
-                ,SECT_1115A_DEMO_IND_ANY
-                ,HCBS_1915I_CLM_FLAG
-                ,HCBS_1915J_CLM_FLAG
-                ,HCBS_1915K_CLM_FLAG
-                ,HCBS_1915C_CLM_FLAG
-                ,HCBS_1115_CLM_FLAG
-                ,HCBS_OTHR_ACUTE_CARE_CLM_FLAG
-                ,HCBS_OTHR_LT_CARE_CLM_FLAG
-                ,IP_MH_DX_IND_ANY
-                ,IP_MH_TXNMY_IND_ANY
-                ,IP_FFS_MH_CLM
-                ,IP_MC_MH_CLM
-                ,IP_FFS_MH_PD
-                ,IP_SUD_DX_IND_ANY
-                ,IP_SUD_TXNMY_IND_ANY
-                ,IP_FFS_SUD_CLM
-                ,IP_MC_SUD_CLM
-                ,IP_FFS_SUD_PD
-                ,LT_MH_DX_IND_ANY
-                ,LT_MH_TXNMY_IND_ANY
-                ,LT_FFS_MH_CLM
-                ,LT_MC_MH_CLM
-                ,LT_FFS_MH_PD
-                ,LT_SUD_DX_IND_ANY
-                ,LT_SUD_TXNMY_IND_ANY
-                ,LT_FFS_SUD_CLM
-                ,LT_MC_SUD_CLM
-                ,LT_FFS_SUD_PD
-                ,OT_MH_DX_IND_ANY
-                ,OT_MH_TXNMY_IND_ANY
-                ,OT_FFS_MH_CLM
-                ,OT_MC_MH_CLM
-                ,OT_FFS_MH_PD
-                ,OT_SUD_DX_IND_ANY
-                ,OT_SUD_TXNMY_IND_ANY
-                ,OT_FFS_SUD_CLM
-                ,OT_MC_SUD_CLM
-                ,OT_FFS_SUD_PD
-                ,MDCD_RCPNT_NON_XOVR_FFS_FLAG
-                ,MDCD_NON_XOVR_FFS_IP_STAYS
-                ,MDCD_NON_XOVR_FFS_IP_DAYS
-                ,MDCD_NON_XOVR_FFS_LT_DAYS
-                ,MDCD_NON_XOVR_FFS_OT_CLM
-                ,MDCD_NON_XOVR_FFS_RX_CLM
-                ,MDCD_RCPNT_NON_XOVR_MC_FLAG
-                ,MDCD_NON_XOVR_MC_IP_STAYS
-                ,MDCD_NON_XOVR_MC_IP_DAYS
-                ,MDCD_NON_XOVR_MC_LT_DAYS
-                ,MDCD_NON_XOVR_MC_OT_CLM
-                ,MDCD_NON_XOVR_MC_RX_CLM
-                ,TOT_MDCD_NON_XOVR_PD
-                ,MDCD_NON_XOVR_PD
-                ,MDCD_NON_XOVR_FFS_EQUIV_AMT
-                ,TOT_MDCD_NON_XOVR_FFS_IP_PD
-                ,TOT_MDCD_NON_XOVR_FFS_LT_PD
-                ,TOT_MDCD_NON_XOVR_FFS_OT_PD
-                ,TOT_MDCD_NON_XOVR_FFS_RX_PD
-                ,MDCD_NON_XOVR_MC_CMPRHNSV_CLM
-                ,MDCD_NON_XOVR_MC_PCCM_CLM
-                ,MDCD_NON_XOVR_MC_PVT_INS_CLM
-                ,MDCD_NON_XOVR_MC_PHP_CLM
-                ,MDCD_NON_XOVR_MC_CMPRHNSV_PD
-                ,MDCD_NON_XOVR_MC_PCCM_PD
-                ,MDCD_NON_XOVR_MC_PVT_INS_PD
-                ,MDCD_NON_XOVR_MC_PHP_PD
-                ,MDCD_NON_XOVR_SPLMTL_CLM
-                ,TOT_MDCD_NON_XOVR_SPLMTL_PD
-                ,SCHIP_RCPNT_NON_XOVR_FFS_FLAG
-                ,SCHIP_NON_XOVR_FFS_IP_STAYS
-                ,SCHIP_NON_XOVR_FFS_IP_DAYS
-                ,SCHIP_NON_XOVR_FFS_LT_DAYS
-                ,SCHIP_NON_XOVR_FFS_OT_CLM
-                ,SCHIP_NON_XOVR_FFS_RX_CLM
-                ,SCHIP_RCPNT_NON_XOVR_MC_FLAG
-                ,SCHIP_NON_XOVR_MC_IP_STAYS
-                ,SCHIP_NON_XOVR_MC_IP_DAYS
-                ,SCHIP_NON_XOVR_MC_LT_DAYS
-                ,SCHIP_NON_XOVR_MC_OT_CLM
-                ,SCHIP_NON_XOVR_MC_RX_CLM
-                ,TOT_SCHIP_NON_XOVR_PD
-                ,SCHIP_NON_XOVR_PD
-                ,SCHIP_NON_XOVR_FFS_EQUIV_AMT
-                ,TOT_SCHIP_NON_XOVR_FFS_IP_PD
-                ,TOT_SCHIP_NON_XOVR_FFS_LT_PD
-                ,TOT_SCHIP_NON_XOVR_FFS_OT_PD
-                ,TOT_SCHIP_NON_XOVR_FFS_RX_PD
-                ,SCHIP_NON_XOVR_MC_CMPRHNSV_CLM
-                ,SCHIP_NON_XOVR_MC_PCCM_CLM
-                ,SCHIP_NON_XOVR_MC_PVT_INS_CLM
-                ,SCHIP_NON_XOVR_MC_PHP_CLM
-                ,SCHIP_NON_XOVR_MC_CMPRHNSV_PD
-                ,SCHIP_NON_XOVR_MC_PCCM_PD
-                ,SCHIP_NON_XOVR_MC_PVT_INS_PD
-                ,SCHIP_NON_XOVR_MC_PHP_PD
-                ,SCHIP_NON_XOVR_SPLMTL_CLM
-                ,TOT_SCHIP_NON_XOVR_SPLMTL_PD
-                ,MDCD_RCPNT_XOVR_FFS_FLAG
-                ,MDCD_XOVR_FFS_IP_STAYS
-                ,MDCD_XOVR_FFS_IP_DAYS
-                ,MDCD_XOVR_FFS_LT_DAYS
-                ,MDCD_XOVR_FFS_OT_CLM
-                ,MDCD_XOVR_FFS_RX_CLM
-                ,MDCD_RCPNT_XOVR_MC_FLAG
-                ,MDCD_XOVR_MC_IP_STAYS
-                ,MDCD_XOVR_MC_IP_DAYS
-                ,MDCD_XOVR_MC_LT_DAYS
-                ,MDCD_XOVR_MC_OT_CLM
-                ,MDCD_XOVR_MC_RX_CLM
-                ,TOT_MDCD_XOVR_PD
-                ,MDCD_XOVR_PD
-                ,MDCD_XOVR_FFS_EQUIV_AMT
-                ,TOT_MDCD_XOVR_FFS_IP_PD
-                ,TOT_MDCD_XOVR_FFS_LT_PD
-                ,TOT_MDCD_XOVR_FFS_OT_PD
-                ,TOT_MDCD_XOVR_FFS_RX_PD
-                ,MDCD_XOVR_MC_CMPRHNSV_CLM
-                ,MDCD_XOVR_MC_PCCM_CLM
-                ,MDCD_XOVR_MC_PVT_INS_CLM
-                ,MDCD_XOVR_MC_PHP_CLM
-                ,MDCD_XOVR_MC_CMPRHNSV_PD
-                ,MDCD_XOVR_MC_PCCM_PD
-                ,MDCD_XOVR_MC_PVT_INS_PD
-                ,MDCD_XOVR_MC_PHP_PD
-                ,SCHIP_RCPNT_XOVR_FFS_FLAG
-                ,SCHIP_XOVR_FFS_IP_STAYS
-                ,SCHIP_XOVR_FFS_IP_DAYS
-                ,SCHIP_XOVR_FFS_LT_DAYS
-                ,SCHIP_XOVR_FFS_OT_CLM
-                ,SCHIP_XOVR_FFS_RX_CLM
-                ,SCHIP_RCPNT_XOVR_MC_FLAG
-                ,SCHIP_XOVR_MC_IP_STAYS
-                ,SCHIP_XOVR_MC_IP_DAYS
-                ,SCHIP_XOVR_MC_LT_DAYS
-                ,SCHIP_XOVR_MC_OT_CLM
-                ,SCHIP_XOVR_MC_RX_CLM
-                ,TOT_SCHIP_XOVR_PD
-                ,SCHIP_XOVR_PD
-                ,SCHIP_XOVR_FFS_EQUIV_AMT
-                ,TOT_SCHIP_XOVR_FFS_IP_PD
-                ,TOT_SCHIP_XOVR_FFS_LT_PD
-                ,TOT_SCHIP_XOVR_FFS_OT_PD
-                ,TOT_SCHIP_XOVR_FFS_RX_PD
-                ,SCHIP_XOVR_MC_CMPRHNSV_CLM
-                ,SCHIP_XOVR_MC_PCCM_CLM
-                ,SCHIP_XOVR_MC_PVT_INS_CLM
-                ,SCHIP_XOVR_MC_PHP_CLM
-                ,SCHIP_XOVR_MC_CMPRHNSV_PD
-                ,SCHIP_XOVR_MC_PCCM_PD
-                ,SCHIP_XOVR_MC_PVT_INS_PD
-                ,SCHIP_XOVR_MC_PHP_PD
+            INSERT INTO {runner.DA_SCHEMA_DC}.TAF_ANN_UP_BASE
+            SELECT 
+                     { self.table_id_cols() }
+                    ,{",".join(self.basecols)}
             FROM base_fnl_{self.year}
         """
         self.up.append(type(self).__name__, z)

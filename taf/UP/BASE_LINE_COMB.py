@@ -58,6 +58,12 @@ class BASE_LINE_COMB(UP):
                      ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MC_PCCM_PD") }
                      ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MC_PVT_INS_PD") }
                      ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MC_PHP_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MDCR_CLM") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_MDCR_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_OTHR_CLM") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_OTHR_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_HH_CLM") }
+                     ,{ TAF_Closure.sumrecs(incol=f"{ind1}_{ind2}_HH_PD") }
                 """
 
         # Take max of HCBS indicators (note were hard-coded to 0 for all files except OT,

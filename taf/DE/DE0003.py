@@ -59,12 +59,29 @@ class DE0003(DE):
                                          {DE.last_best(self, 'ELGBL_MDL_INITL_NAME')}
                             """)
 
+    def create_hist_adr(self, tblname, inyear):
+        z = f"""create or replace temporary view {tblname}_{inyear} as
+                select
+                    b.*
+                from  
+                    max_run_id_de_{inyear} a
+                inner join
+                    {self.de.DA_SCHEMA}.taf_ann_de_cntct_dtls b
+                on 
+                    a.submtg_state_cd = b.submtg_state_cd and
+                    a.da_run_id = b.da_run_id
+                order by 
+                    submtg_state_cd,
+                    msis_ident_num
+            """
+        self.de.append(type(self).__name__, z)
+
     def create_CNTCT_DTLS(self):
         if self.de.GETPRIOR == 1:
             cnt = 0
             if self.de.GETPRIOR == 1:
                 for pyear in range(1, self.de.PYEARS + 1):
-                    self.address_phone(pyear)
+                    self.create_hist_adr(tblname="address_phone", inyear=pyear)
 
             # Join current and prior year(s) and first, identify year pulled for latest non-null value of ELGBL_LINE_1_ADR.
             # Use that year to then take value for all cols
@@ -131,7 +148,7 @@ class DE0003(DE):
                 """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA_DC}.taf_ann_de_{self.tbl_suffix}
                 select
                     {DE.table_id_cols_pre(self)}
                     ,ELGBL_1ST_NAME

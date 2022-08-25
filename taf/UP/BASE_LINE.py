@@ -99,6 +99,12 @@ class BASE_LINE(UP):
                          ,{ TAF_Closure.sum_paid(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="= '120'",paidcol="mdcd_pd_amt",outcol=f"{ind1}_{ind2}_MC_PCCM_PD") }
                          ,{ TAF_Closure.sum_paid(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="= '121'",paidcol="mdcd_pd_amt",outcol=f"{ind1}_{ind2}_MC_PVT_INS_PD") }
                          ,{ TAF_Closure.sum_paid(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="= '122'",paidcol="mdcd_pd_amt",outcol=f"{ind1}_{ind2}_MC_PHP_PD") }
+                         ,{ TAF_Closure.any_rec(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="= '138'",outcol=f"{ind1}_{ind2}_HH_CLM") }
+                         ,{ TAF_Closure.any_rec(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="in ('139','140','141','142')",outcol=f"{ind1}_{ind2}_MDCR_CLM") }
+                         ,{ TAF_Closure.any_rec(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="= '143'",outcol=f"{ind1}_{ind2}_OTHR_CLM") }
+                         ,{ TAF_Closure.sum_paid(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="= '138'",paidcol="mdcd_pd_amt",outcol=f"{ind1}_{ind2}_HH_PD") }
+                         ,{ TAF_Closure.sum_paid(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="in ('139','140','141','142')",paidcol="mdcd_pd_amt",outcol=f"{ind1}_{ind2}_MDCR_PD") }
+                         ,{ TAF_Closure.sum_paid(condcol1=f"{ind1}",condcol2=f"{ind2}",condcol3="clm_type_cd", cond3=f"= '{capval}'",condcol4="tos_cd", cond4="= '143'",paidcol="mdcd_pd_amt",outcol=f"{ind1}_{ind2}_OTHR_PD") }                                                  
                     """
             z += f"""
                  FROM {file}l_{self.year}

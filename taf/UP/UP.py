@@ -77,6 +77,172 @@ class UP(TAF):
         )
         UP.pullclaims(self, "RX")
 
+        self.basecols = ["AGE_NUM"
+                        ,"GNDR_CD"
+                        ,"RACE_ETHNCTY_EXP_FLAG"
+                        ,"ELGBLTY_GRP_CD_LTST"
+                        ,"MASBOE_CD_LTST"
+                        ,"ELGBLTY_NONCHIP_MDCD_MOS" 
+                        ,"ELGBLTY_MCHIP_MOS"
+                        ,"ELGBLTY_SCHIP_MOS"
+                        ,"CHIP_CD_LTST"
+                        ,"DUAL_ELGBL_EVR"
+                        ,"DUAL_ELGBL_CD_LTST"
+                        ,"RCPNT_IND"
+                        ,"MISG_ELGBLTY_FLAG"
+                        ,"DLVRY_IND"
+                        ,"SECT_1115A_DEMO_IND_ANY"
+                        ,"HCBS_1915I_CLM_FLAG"
+                        ,"HCBS_1915J_CLM_FLAG"
+                        ,"HCBS_1915K_CLM_FLAG"
+                        ,"HCBS_1915C_CLM_FLAG"
+                        ,"HCBS_1115_CLM_FLAG"
+                        ,"HCBS_OTHR_ACUTE_CARE_CLM_FLAG"
+                        ,"HCBS_OTHR_LT_CARE_CLM_FLAG"
+                        ,"IP_MH_DX_IND_ANY"
+                        ,"IP_MH_TXNMY_IND_ANY"
+                        ,"IP_FFS_MH_CLM"
+                        ,"IP_MC_MH_CLM"
+                        ,"IP_FFS_MH_PD"
+                        ,"IP_SUD_DX_IND_ANY"
+                        ,"IP_SUD_TXNMY_IND_ANY"
+                        ,"IP_FFS_SUD_CLM"
+                        ,"IP_MC_SUD_CLM"
+                        ,"IP_FFS_SUD_PD"
+                        ,"LT_MH_DX_IND_ANY"
+                        ,"LT_MH_TXNMY_IND_ANY"
+                        ,"LT_FFS_MH_CLM"
+                        ,"LT_MC_MH_CLM"
+                        ,"LT_FFS_MH_PD"
+                        ,"LT_SUD_DX_IND_ANY"
+                        ,"LT_SUD_TXNMY_IND_ANY"
+                        ,"LT_FFS_SUD_CLM"
+                        ,"LT_MC_SUD_CLM"
+                        ,"LT_FFS_SUD_PD"
+                        ,"OT_MH_DX_IND_ANY"
+                        ,"OT_MH_TXNMY_IND_ANY"
+                        ,"OT_FFS_MH_CLM"
+                        ,"OT_MC_MH_CLM"
+                        ,"OT_FFS_MH_PD"
+                        ,"OT_SUD_DX_IND_ANY"
+                        ,"OT_SUD_TXNMY_IND_ANY"
+                        ,"OT_FFS_SUD_CLM"
+                        ,"OT_MC_SUD_CLM"
+                        ,"OT_FFS_SUD_PD"
+                        ,"MDCD_RCPNT_NON_XOVR_FFS_FLAG"
+                        ,"MDCD_NON_XOVR_FFS_IP_STAYS"
+                        ,"MDCD_NON_XOVR_FFS_IP_DAYS"
+                        ,"MDCD_NON_XOVR_FFS_LT_DAYS"
+                        ,"MDCD_NON_XOVR_FFS_OT_CLM"
+                        ,"MDCD_NON_XOVR_FFS_RX_CLM"
+                        ,"MDCD_RCPNT_NON_XOVR_MC_FLAG"
+                        ,"MDCD_NON_XOVR_MC_IP_STAYS"
+                        ,"MDCD_NON_XOVR_MC_IP_DAYS"
+                        ,"MDCD_NON_XOVR_MC_LT_DAYS" 
+                        ,"MDCD_NON_XOVR_MC_OT_CLM"
+                        ,"MDCD_NON_XOVR_MC_RX_CLM"
+                        ,"TOT_MDCD_NON_XOVR_PD"
+                        ,"MDCD_NON_XOVR_PD"
+                        ,"MDCD_NON_XOVR_FFS_EQUIV_AMT"
+                        ,"TOT_MDCD_NON_XOVR_FFS_IP_PD"
+                        ,"TOT_MDCD_NON_XOVR_FFS_LT_PD"
+                        ,"TOT_MDCD_NON_XOVR_FFS_OT_PD"
+                        ,"TOT_MDCD_NON_XOVR_FFS_RX_PD"
+                        ,"MDCD_NON_XOVR_MC_CMPRHNSV_CLM"
+                        ,"MDCD_NON_XOVR_MC_PCCM_CLM"
+                        ,"MDCD_NON_XOVR_MC_PVT_INS_CLM"
+                        ,"MDCD_NON_XOVR_MC_PHP_CLM"
+                        ,"MDCD_NON_XOVR_MC_CMPRHNSV_PD"
+                        ,"MDCD_NON_XOVR_MC_PCCM_PD"
+                        ,"MDCD_NON_XOVR_MC_PVT_INS_PD"
+                        ,"MDCD_NON_XOVR_MC_PHP_PD"
+                        ,"MDCD_NON_XOVR_SPLMTL_CLM"
+                        ,"TOT_MDCD_NON_XOVR_SPLMTL_PD"
+                        ,"SCHIP_RCPNT_NON_XOVR_FFS_FLAG"
+                        ,"SCHIP_NON_XOVR_FFS_IP_STAYS"
+                        ,"SCHIP_NON_XOVR_FFS_IP_DAYS"
+                        ,"SCHIP_NON_XOVR_FFS_LT_DAYS"
+                        ,"SCHIP_NON_XOVR_FFS_OT_CLM"
+                        ,"SCHIP_NON_XOVR_FFS_RX_CLM"
+                        ,"SCHIP_RCPNT_NON_XOVR_MC_FLAG"
+                        ,"SCHIP_NON_XOVR_MC_IP_STAYS"
+                        ,"SCHIP_NON_XOVR_MC_IP_DAYS"
+                        ,"SCHIP_NON_XOVR_MC_LT_DAYS"
+                        ,"SCHIP_NON_XOVR_MC_OT_CLM"
+                        ,"SCHIP_NON_XOVR_MC_RX_CLM"
+                        ,"TOT_SCHIP_NON_XOVR_PD"
+                        ,"SCHIP_NON_XOVR_PD"
+                        ,"SCHIP_NON_XOVR_FFS_EQUIV_AMT"
+                        ,"TOT_SCHIP_NON_XOVR_FFS_IP_PD"
+                        ,"TOT_SCHIP_NON_XOVR_FFS_LT_PD"
+                        ,"TOT_SCHIP_NON_XOVR_FFS_OT_PD"
+                        ,"TOT_SCHIP_NON_XOVR_FFS_RX_PD"
+                        ,"SCHIP_NON_XOVR_MC_CMPRHNSV_CLM"
+                        ,"SCHIP_NON_XOVR_MC_PCCM_CLM"
+                        ,"SCHIP_NON_XOVR_MC_PVT_INS_CLM"
+                        ,"SCHIP_NON_XOVR_MC_PHP_CLM"
+                        ,"SCHIP_NON_XOVR_MC_CMPRHNSV_PD"
+                        ,"SCHIP_NON_XOVR_MC_PCCM_PD"
+                        ,"SCHIP_NON_XOVR_MC_PVT_INS_PD"
+                        ,"SCHIP_NON_XOVR_MC_PHP_PD"
+                        ,"SCHIP_NON_XOVR_SPLMTL_CLM"
+                        ,"TOT_SCHIP_NON_XOVR_SPLMTL_PD"
+                        ,"MDCD_RCPNT_XOVR_FFS_FLAG"
+                        ,"MDCD_XOVR_FFS_IP_STAYS"
+                        ,"MDCD_XOVR_FFS_IP_DAYS"
+                        ,"MDCD_XOVR_FFS_LT_DAYS"
+                        ,"MDCD_XOVR_FFS_OT_CLM"
+                        ,"MDCD_XOVR_FFS_RX_CLM"
+                        ,"MDCD_RCPNT_XOVR_MC_FLAG"
+                        ,"MDCD_XOVR_MC_IP_STAYS"
+                        ,"MDCD_XOVR_MC_IP_DAYS"
+                        ,"MDCD_XOVR_MC_LT_DAYS"
+                        ,"MDCD_XOVR_MC_OT_CLM"
+                        ,"MDCD_XOVR_MC_RX_CLM"
+                        ,"TOT_MDCD_XOVR_PD"
+                        ,"MDCD_XOVR_PD"
+                        ,"MDCD_XOVR_FFS_EQUIV_AMT"
+                        ,"TOT_MDCD_XOVR_FFS_IP_PD"
+                        ,"TOT_MDCD_XOVR_FFS_LT_PD"
+                        ,"TOT_MDCD_XOVR_FFS_OT_PD"
+                        ,"TOT_MDCD_XOVR_FFS_RX_PD"
+                        ,"MDCD_XOVR_MC_CMPRHNSV_CLM"
+                        ,"MDCD_XOVR_MC_PCCM_CLM"
+                        ,"MDCD_XOVR_MC_PVT_INS_CLM"
+                        ,"MDCD_XOVR_MC_PHP_CLM"
+                        ,"MDCD_XOVR_MC_CMPRHNSV_PD"
+                        ,"MDCD_XOVR_MC_PCCM_PD"
+                        ,"MDCD_XOVR_MC_PVT_INS_PD"
+                        ,"MDCD_XOVR_MC_PHP_PD"
+                        ,"SCHIP_RCPNT_XOVR_FFS_FLAG"
+                        ,"SCHIP_XOVR_FFS_IP_STAYS"
+                        ,"SCHIP_XOVR_FFS_IP_DAYS"
+                        ,"SCHIP_XOVR_FFS_LT_DAYS"
+                        ,"SCHIP_XOVR_FFS_OT_CLM"
+                        ,"SCHIP_XOVR_FFS_RX_CLM"
+                        ,"SCHIP_RCPNT_XOVR_MC_FLAG"
+                        ,"SCHIP_XOVR_MC_IP_STAYS"
+                        ,"SCHIP_XOVR_MC_IP_DAYS"
+                        ,"SCHIP_XOVR_MC_LT_DAYS"
+                        ,"SCHIP_XOVR_MC_OT_CLM"
+                        ,"SCHIP_XOVR_MC_RX_CLM"
+                        ,"TOT_SCHIP_XOVR_PD"
+                        ,"SCHIP_XOVR_PD"
+                        ,"SCHIP_XOVR_FFS_EQUIV_AMT"
+                        ,"TOT_SCHIP_XOVR_FFS_IP_PD"
+                        ,"TOT_SCHIP_XOVR_FFS_LT_PD"
+                        ,"TOT_SCHIP_XOVR_FFS_OT_PD"
+                        ,"TOT_SCHIP_XOVR_FFS_RX_PD"
+                        ,"SCHIP_XOVR_MC_CMPRHNSV_CLM"
+                        ,"SCHIP_XOVR_MC_PCCM_CLM"
+                        ,"SCHIP_XOVR_MC_PVT_INS_CLM"
+                        ,"SCHIP_XOVR_MC_PHP_CLM"
+                        ,"SCHIP_XOVR_MC_CMPRHNSV_PD"
+                        ,"SCHIP_XOVR_MC_PCCM_PD"
+                        ,"SCHIP_XOVR_MC_PVT_INS_PD"
+                        ,"SCHIP_XOVR_MC_PHP_PD"
+                        ]
+
     # ---------------------------------------------------------------------------------
     #
     #
@@ -109,7 +275,7 @@ class UP(TAF):
             FROM (
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
                     ,da_run_id
-                FROM {self.up.DA_SCHEMA}.job_cntl_parms
+                FROM {self.up.DA_SCHEMA_DC}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
@@ -154,7 +320,7 @@ class UP(TAF):
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
                     ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{2})') AS submtg_state_cd
                     ,da_run_id
-                FROM {self.up.DA_SCHEMA}.job_cntl_parms
+                FROM {self.up.DA_SCHEMA_DC}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
@@ -240,11 +406,13 @@ class UP(TAF):
         z += f"""
                 ,b.submtg_state_cd
                 ,max(b.da_run_id) AS da_run_id
+                ,b.fil_cret_dt
             FROM job_cntl_parms_both_{file}_{inyear} a
             INNER JOIN (
                 SELECT da_run_id
                     ,incldd_state_cd AS submtg_state_cd
-                FROM {self.up.DA_SCHEMA}.efts_fil_meta
+                    ,fil_cret_dt
+                FROM {self.up.DA_SCHEMA_DC}.efts_fil_meta
                 WHERE incldd_state_cd != 'Missing'
                 ) b ON a.da_run_id = b.da_run_id
         """
@@ -255,6 +423,7 @@ class UP(TAF):
         z += f"""
             GROUP BY a.{file}_fil_dt
                 ,b.submtg_state_cd
+                ,b.fil_cret_dt
         """
         self.up.append(type(self).__name__, z)
 
@@ -262,11 +431,15 @@ class UP(TAF):
         # that go into each annual UP file
 
         z = f"""
-            INSERT INTO {self.up.DA_SCHEMA}.TAF_ANN_UP_INP_SRC
-            SELECT {self.up.DA_RUN_ID} AS ANN_DA_RUN_ID
+            INSERT INTO {self.up.DA_SCHEMA_DC}.TAF_ANN_INP_SRC
+            SELECT 
+                 {self.up.DA_RUN_ID} AS ANN_DA_RUN_ID
+                ,'aup' as ann_fil_type
                 ,SUBMTG_STATE_CD
-                ,{file}_FIL_DT
+                ,lower('{file}') as src_fil_type
+                ,{file}_FIL_DT as src_fil_dt
                 ,DA_RUN_ID AS SRC_DA_RUN_ID
+                ,fil_cret_dt as src_fil_creat_dt
             FROM max_run_id_{file}_{inyear}
         """
         self.up.append(type(self).__name__, z)
@@ -591,6 +764,12 @@ class UP(TAF):
                 cols.append(f"""{ind1}_{ind2}_MC_PCCM_PD""")
                 cols.append(f"""{ind1}_{ind2}_MC_PVT_INS_PD""")
                 cols.append(f"""{ind1}_{ind2}_MC_PHP_PD""")
+                cols.append(f"""{ind1}_{ind2}_MDCR_CLM""")
+                cols.append(f"""{ind1}_{ind2}_MDCR_PD""")
+                cols.append(f"""{ind1}_{ind2}_OTHR_CLM""")
+                cols.append(f"""{ind1}_{ind2}_OTHR_PD""")
+                cols.append(f"""{ind1}_{ind2}_HH_CLM""")
+                cols.append(f"""{ind1}_{ind2}_HH_PD""")
 
         return ",".join(cols)
 

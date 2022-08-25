@@ -214,6 +214,19 @@ class DE0001BASE(DE):
             ,MISG_ENRLMT_TYPE_IND_11
             ,MISG_ENRLMT_TYPE_IND_12
             ,MISG_ELGBLTY_DATA_IND
+            ,ELGBLTY_CHG_RSN_CD_01
+			,ELGBLTY_CHG_RSN_CD_02
+			,ELGBLTY_CHG_RSN_CD_03
+			,ELGBLTY_CHG_RSN_CD_04
+			,ELGBLTY_CHG_RSN_CD_05
+			,ELGBLTY_CHG_RSN_CD_06
+			,ELGBLTY_CHG_RSN_CD_07
+			,ELGBLTY_CHG_RSN_CD_08
+			,ELGBLTY_CHG_RSN_CD_09
+			,ELGBLTY_CHG_RSN_CD_10
+			,ELGBLTY_CHG_RSN_CD_11
+			,ELGBLTY_CHG_RSN_CD_12
+			,ELGBL_AFTR_EOY_IND
         """
         return z
 
@@ -274,6 +287,11 @@ class DE0001BASE(DE):
             {DE.last_best(self, incol='TPL_INSRNC_CVRG_IND')}
             {DE.last_best(self, incol='TPL_OTHR_CVRG_IND')}
             {DE.misg_enrlm_type()}
+            {DE.last_best(self, incol='AGE_NUM',outcol='AGE_NUM_TEMP')}
+            {DE.last_best(self, incol='AGE_GRP_FLAG',outcol=' AGE_GRP_FLAG_TEMP')}
+            {DE.last_best(self, incol='ELGBL_AFTR_EOM_IND',outcol='ELGBL_AFTR_EOM_TEMP')}
+            {DE.nonmiss_month(self, incol='msis_ident_num',outcol='BSF_RECORD')}
+            ,{TAF_Closure.monthly_array(self, incol='ELGBLTY_CHG_RSN_CD')}
             """
 
         s2 = f"""{DE.mc_type_rank(self, smonth=3, emonth=4)}"""
@@ -305,8 +323,7 @@ class DE0001BASE(DE):
                 {DE.last_best(self, incol='BIRTH_DT')}
                 {DE.last_best(self, incol='DEATH_DT')}
                 {DE.last_best(self, incol='DCSD_FLAG')}
-                {DE.last_best(self, incol='AGE_NUM')}
-                {DE.last_best(self, incol='AGE_GRP_FLAG')}
+
                 {DE.last_best(self, incol='GNDR_CD')}
                 {DE.last_best(self, incol='MRTL_STUS_CD')}
                 {DE.last_best(self, incol='INCM_CD')}
@@ -345,11 +362,115 @@ class DE0001BASE(DE):
         )
     pass
 
+
+    def create_hist_demo(self, tblname, inyear):
+        z = f"""create or replace temporary view {tblname}_{inyear} as
+                select
+                    c.*
+                    ,d.ELGBL_LINE_1_ADR
+                from (
+                    select   b.submtg_state_cd
+                            ,b.msis_ident_num
+                            ,b.de_fil_dt
+                            ,b.da_run_id
+                            ,b.de_link_key
+                            ,ssn_num
+                            ,birth_dt
+                            ,death_dt
+                            ,dcsd_flag
+
+                            ,gndr_cd
+                            ,mrtl_stus_cd
+                            ,incm_cd
+                            ,vet_ind
+                            ,ctznshp_ind
+                            ,imgrtn_stus_5_yr_bar_end_dt
+                            ,othr_lang_home_cd
+                            ,prmry_lang_flag
+                            ,prmry_lang_englsh_prfcncy_cd
+                            ,hsehld_size_cd
+                            ,crtfd_amrcn_indn_alskn_ntv_ind
+                            ,ethncty_cd
+                            ,race_ethncty_flag
+                            ,race_ethncty_exp_flag
+                            ,elgbl_zip_cd
+                            ,elgbl_cnty_cd
+                            ,elgbl_state_cd
+                            ,msis_case_num
+                            ,mdcr_bene_id
+                            ,mdcr_hicn_num		          
+                    from  
+                        max_run_id_de_{inyear} a
+                    inner join
+                        {self.de.DA_SCHEMA}.taf_ann_de_base b
+				    on 
+                        a.submtg_state_cd = b.submtg_state_cd and
+				        a.da_run_id = b.da_run_id
+				    where 
+                        b.misg_elgblty_data_ind = 0
+				    order by 
+                        submtg_state_cd,
+				        msis_ident_num       
+			        ) as c
+			    left join 
+                    {self.de.DA_SCHEMA}.taf_ann_de_cntct_dtls as d 
+                on 
+                    c.de_link_key = d.de_link_key
+            """
+        self.de.append(type(self).__name__, z)
+
+    def gen_bsf_last_dt(self, tot_month, in_year):
+        gen_bsf_last_dt = []
+        new_line = '\n\t\t\t'
+        for i in list(range(1, 12 + 1)):
+            if i <= tot_month:
+                if i <= 9:
+                    gen_bsf_last_dt.append(f"when BSF_RECORD = '0{i}' then last_day('{in_year}-0{i}-01')".format())
+                else:
+                    gen_bsf_last_dt.append(f"when BSF_RECORD = '{i}' then last_day('{in_year}-{i}-01')".format())
+        return new_line.join(gen_bsf_last_dt)
+
+    def age_date_calculate(self, inyear):
+        z = f"""case { self.gen_bsf_last_dt(tot_month=12, in_year=inyear) }
+                end as BSF_LAST_DT,
+
+                case when AGE_NUM_TEMP is not null then AGE_NUM_TEMP 
+			        when BIRTH_DT is not null then
+					case when DEATH_DT is not null then floor(datediff(BIRTH_DT, DEATH_DT) /365.25)
+                         when BSF_RECORD is not null then floor(datediff(BIRTH_DT, BSF_LAST_DT) /365.25)
+                    end
+                else null 
+                end as AGE_NUM_RAW, 
+
+                case when AGE_NUM_RAW < -1 then null 
+			         when AGE_NUM_RAW > 125 then 125 
+		        else AGE_NUM_RAW 
+                end as AGE_NUM,
+
+                case when AGE_NUM between -1 and 0 then 1 
+                     when AGE_NUM between 1 and 5 then 2
+                     when AGE_NUM between 6 and 14 then 3
+                     when AGE_NUM between 15 and 18 then 4
+                     when AGE_NUM between 19 and 20 then 5
+                     when AGE_NUM between 21 and 44 then 6
+                     when AGE_NUM between 45 and 64 then 7
+                     when AGE_NUM between 65 and 74 then 8
+                     when AGE_NUM between 75 and 84 then 9
+                     when AGE_NUM between 85 and 125 then 10
+                else null 
+                end as AGE_GRP_FLAG,
+
+                case when BSF_RECORD = '12' then ELGBL_AFTR_EOM_TEMP
+                else 0 
+                end as ELGBL_AFTR_EOY_IND
+            """
+        self.de.append(type(self).__name__, z)
+
     def create_base(self, tblname):
         cnt = 0
         if self.de.GETPRIOR == 1:
             for pyear in range(1, self.de.PYEARS + 1):
-                self.demographics(pyear)
+                self.create_hist_demo(tblname="base_demo", inyear=pyear)
 
                 # Now join the above tables together to use prior years if current year is missing, keeping demographics only.
                 # For address information, identify year pulled for latest non-null value of ELGBL_LINE_1_ADR.
@@ -364,8 +485,7 @@ class DE0001BASE(DE):
                     {DE.last_best(self, 'BIRTH_DT',prior=1)}
                     {DE.last_best(self, 'DEATH_DT',prior=1)}
                     {DE.last_best(self, 'DCSD_FLAG',prior=1)}
-                    {DE.last_best(self, 'AGE_NUM',prior=1)}
-                    {DE.last_best(self, 'AGE_GRP_FLAG',prior=1)}
+
                     {DE.last_best(self, 'GNDR_CD',prior=1)}
                     {DE.last_best(self, 'MRTL_STUS_CD',prior=1)}
                     {DE.last_best(self, 'INCM_CD',prior=1)}
@@ -423,8 +543,8 @@ class DE0001BASE(DE):
                     b.BIRTH_DT,
                     b.DEATH_DT,
                     b.DCSD_FLAG,
-                    b.AGE_NUM,
-                    b.AGE_GRP_FLAG,
+                    {self.age_date_calculate(inyear=self.de.YEAR)},
+
                     b.GNDR_CD,
                     b.MRTL_STUS_CD,
                     b.INCM_CD,
@@ -587,7 +707,7 @@ class DE0001BASE(DE):
             """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{tblname}
+        z = f"""insert into {self.de.DA_SCHEMA_DC}.taf_ann_de_{tblname}
             (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
             select
                 {DE.table_id_cols_pre(self, suffix='_comb')}

@@ -54,7 +54,7 @@ class DE0007(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA_DC}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
                     {DE.table_id_cols_pre(self)}

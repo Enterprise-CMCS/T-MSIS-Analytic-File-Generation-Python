@@ -35,7 +35,8 @@ class TAF_Runner():
 
         # FIXME: this should be monotonic or something more crafty
         self.DA_RUN_ID = datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')
-        self.DA_SCHEMA = 'taf_python'
+        self.DA_SCHEMA = 'taf' # For using data from Redshift for testing DE and up
+        self.DA_SCHEMA_DC = 'taf_python'
 
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
 
