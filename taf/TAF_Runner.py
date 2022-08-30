@@ -248,6 +248,192 @@ class TAF_Runner():
                 group by submtg_state_cd
         """
 
+# ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def job_control_rd(self, da_run_id: int, file_type: str):
+
+        return f"""
+                CREATE TABLE JOB_CD_LOOKUP AS
+                SELECT
+                    {da_run_id}
+                   ,schld_ordr_num
+                   ,job_parms_txt
+                   ,taf_cd_spec_vrsn_name
+                FROM {self.DA_SCHEMA}.job_cntl_parms
+                WHERE schld_ordr_num = (
+                    SELECT MIN(schld_ordr_num)
+                    FROM {self.DA_SCHEMA}.job_cntl_parms
+                    WHERE sucsfl_ind IS NULL
+                    AND fil_type = {file_type}
+                )
+        """
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def job_control_updt(self, da_run_id: int):
+
+        return f"""
+                UPDATE {self.DA_SCHEMA}.job_cntl_parms
+                SET job_strt_ts = CONVERT_TIMEZONE('EDT', GETDATE())
+                WHERE da_run_id = {da_run_id}
+        """
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def job_control_updt2(self, da_run_id: int):
+
+        return f"""
+                UPDATE {self.DA_SCHEMA}.job_cntl_parms
+                SET job_end_ts = CONVERT_TIMEZONE('EDT', GETDATE()),
+                sucsfl_ind = 1
+                WHERE da_run_id = {da_run_id}
+        """
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def get_cnt(self, table_name: str, da_run_id: int):
+
+        return f"""
+                CREATE OR REPLACE TEMPORARY VIEW record_count AS
+                SELECT count(tmsis_run_id) AS row_cnt
+                FROM {self.DA_SCHEMA}.{table_name}
+                WHERE da_run_id = {da_run_id}
+        """
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def create_meta_info(
+        self,
+        table_name: str,
+        da_run_id: int,
+        fil_4th_node: str,
+    ):
+
+        return f"""
+                INSERT INTO {self.DA_SCHEMA}.job_otpt_meta
+                SELECT {da_run_id} AS da_run_id
+                    ,'TABLE' AS otpt_type
+                    ,'{table_name}' AS otpt_name
+                    ,'{self.DA_SCHEMA}' AS otpt_lctn_txt
+                    ,row_count AS rec_cnt
+                    ,'{fil_4th_node}' AS fil_4th_node_txt
+                FROM record_count
+        """
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def create_eftsmeta_info(
+        self,
+        da_run_id: int,
+        table_name: str,
+        pgm_name: str,
+        step_name: str,
+        object_name: str,
+        audt_count: int,
+    ):
+
+        return f"""
+                INSERT INTO {self.DA_SCHEMA}.efts_fil_meta (
+                    da_run_id
+                    ,fil_4th_node_txt
+                    ,otpt_name
+                    ,rptg_prd
+                    ,itrtn_num
+                    ,tot_rec_cnt
+                    ,fil_cret_dt
+                    ,incldd_state_cd
+                    ,rec_cnt_by_state_cd
+                    ,fil_dt
+                    ,taf_cd_spec_vrsn_name
+                    )
+                SELECT t1.da_run_id
+                    ,t2.fil_4th_node_txt
+                    ,t2.otpt_name
+                    ,to_char(cast(substring(t1.job_parms_txt, 1, 10) AS DATE), 'Month,YYYY') AS rptg_prd
+                    ,substring(t1.taf_cd_spec_vrsn_name, 2, 2) AS itrtn_num
+                    ,t2.rec_cnt AS tot_rec_cnt
+                    ,to_char(DATE (t2.rec_add_ts), 'MM/DD/YYYY') AS fil_cret_dt
+                    ,coalesce(t3.submtg_state_cd, 'Missing') AS incldd_state_cd
+                    ,t3.audt_cnt_val AS rec_cnt_by_state_cd
+                    ,{self.TAF_FILE_DATE} AS fil_dt
+                    ,t1.taf_cd_spec_vrsn_name
+                FROM {self.DA_SCHEMA}.job_cntl_parms as t1
+                    ,{self.DA_SCHEMA}.job_otpt_meta as t2
+                    ,{self.DA_SCHEMA}.pgm_audt_cnts as t3
+                    ,{self.DA_SCHEMA}.pgm_audt_cnt_lkp as t4
+                WHERE t1.da_run_id = {da_run_id}
+                    AND t1.da_run_id = t2.da_run_id
+                    AND t2.da_run_id = t3.da_run_id
+                    AND t2.otpt_name = '{table_name}'
+                    AND t3.pgm_audt_cnt_id = t4.pgm_audt_cnt_id
+                    AND t1.sucsfl_ind = True
+                    AND t4.pgm_name = '{pgm_name}'
+                    AND t4.step_name = '{step_name}'
+                    AND t4.obj_name = '{object_name}'
+                    AND t4.audt_cnt_of = '{audt_count}'
+        """
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def final_control_info(self, da_run_id: int):
+
+        return f"""
+                CREATE TABLE FINAL_CONTROL_INFO AS
+                SELECT A.DA_RUN_ID
+                    ,JOB_STRT_TS
+                    ,JOB_END_TS
+                    ,CAST(OTPT_NAME AS CHAR(100)) AS OTPTNAME
+                    ,CAST(OTPT_LCTN_TXT AS CHAR(100)) AS OTPTLCTNTXT
+                    ,REC_CNT
+                FROM {self.DA_SCHEMA}.JOB_CNTL_PARMS as A
+                    ,{self.DA_SCHEMA}.JOB_OTPT_META as B
+                WHERE A.DA_RUN_ID = B.DA_RUN_ID
+                    AND A.DA_RUN_ID = {da_run_id}
+        """
+
+    # ---------------------------------------------------------------------------------
+    #
+    #
+    #
+    #
+    # ---------------------------------------------------------------------------------
+    def file_contents(self, table_name: str, da_run_id: int):
+
+        return f"""
+                SELECT *
+                FROM {self.DA_SCHEMA}.{table_name}
+                WHERE da_run_id = {da_run_id}
+                LIMIT 1
+        """
+
     # ---------------------------------------------------------------------------------
     #
     #
