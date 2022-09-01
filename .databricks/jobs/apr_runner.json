@@ -16,7 +16,7 @@
         "spot_bid_price_percent": 100,
         "ebs_volume_count": 0
       },
-      "node_type_id": "i3.2xlarge",
+      "node_type_id": "i3.16xlarge",
       "driver_node_type_id": "i3.4xlarge",
       "custom_tags": {
         "ResourceClass": "Serverless",
@@ -43,13 +43,13 @@
         }
       ],
       "autoscale": {
-        "min_workers": 6,
-        "max_workers": 40
+        "min_workers": 20,
+        "max_workers": 160
       }
     },
     "libraries": [
       {
-        "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+        "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-7.1.16-py3-none-any.whl"
       }
     ],
     "email_notifications": {},

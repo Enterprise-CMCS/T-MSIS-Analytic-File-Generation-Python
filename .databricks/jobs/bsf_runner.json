@@ -49,7 +49,7 @@
     },
     "libraries": [
       {
-        "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+        "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-7.1.16-py3-none-any.whl"
       }
     ],
     "email_notifications": {},
