@@ -85,8 +85,8 @@ class RXL:
                 , { TAF_Closure.var_set_type1('RSN_SRVC_CD',upper=True) }
                 , { TAF_Closure.var_set_type1('PROF_SRVC_CD',upper=True) }
                 , { TAF_Closure.var_set_type1('RSLT_SRVC_CD',upper=True) }
-                , from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS
-                , from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS
+                , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                , typeof(NULL) as REC_UPDT_TS
                 ,RN as LINE_NUM
 
             from (

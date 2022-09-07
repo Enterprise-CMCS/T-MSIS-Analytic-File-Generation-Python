@@ -83,8 +83,8 @@ class LTL:
                 , { TAF_Closure.var_set_type6('MDCD_FFS_EQUIV_AMT', cond1='888888888.88', cond2='88888888888.80', cond3='999999.99') }
                 , { TAF_Closure.var_set_type6('TPL_AMT', cond1='888888888.88', cond2='88888888888.80', cond3='999999.99') }
 
-                , from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS
-                , from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS
+                , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                , typeof(NULL) as REC_UPDT_TS
 
                 ,RN as LINE_NUM
             FROM (

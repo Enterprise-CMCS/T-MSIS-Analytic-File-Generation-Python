@@ -243,8 +243,8 @@ class IPH:
                 , cast(nullif(IAP_CONDITION_IND, IAP_CONDITION_IND) as char(6)) as IAP_COND_IND
                 , cast(nullif(PRIMARY_HIERARCHICAL_CONDITION, PRIMARY_HIERARCHICAL_CONDITION) as char(9)) as PRMRY_HIRCHCL_COND
 
-                , from_utc_timestamp(current_date(), 'EST') as REC_ADD_TS
-                , from_utc_timestamp(current_date(), 'EST') as REC_UPDT_TS
+                , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                , typeof(NULL) as REC_UPDT_TS
 
                 , { TAF_Closure.fix_old_dates('SRVC_ENDG_DT_DRVD')}
 	            , { TAF_Closure.var_set_type2('SRVC_ENDG_DT_CD',0,cond1='1',cond2='2',cond3='3',cond4='4',cond5='5') }
