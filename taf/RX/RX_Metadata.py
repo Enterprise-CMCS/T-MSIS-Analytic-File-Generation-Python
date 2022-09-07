@@ -219,7 +219,7 @@ class RX_Metadata:
             "ORGNL_LINE_NUM",
             "ADJSTMT_LINE_NUM",
             "SUPLY_DAYS_CNT",
-            "DSPNS_FEE_SBMTD",
+            "DSPNS_FEE_AMT",
             "DRUG_UTLZTN_CD",
             "DTL_MTRC_DCML_QTY",
             "IMNZTN_TYPE_CD",
