@@ -86,6 +86,7 @@ class TAF_Runner():
         print('RPT_PRD:\t' + str(self.RPT_PRD))
         print('FILE_DT_END:\t' + str(self.FILE_DT_END))
         print('DA_SCHEMA:\t' + str(self.DA_SCHEMA))
+        print('DA_SCHEMA_DC:\t' + str(self.DA_SCHEMA_DC))
         print('COMBINED_LIST:\t' + str(self.combined_list))
 
     # -----------------------------------------------------------------------------
@@ -281,7 +282,7 @@ class TAF_Runner():
     def job_control_updt(self, da_run_id: int):
 
         return f"""
-                UPDATE {self.DA_SCHEMA}.job_cntl_parms
+                UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
                 SET job_strt_ts = CONVERT_TIMEZONE('EDT', GETDATE())
                 WHERE da_run_id = {da_run_id}
         """
@@ -295,7 +296,7 @@ class TAF_Runner():
     def job_control_updt2(self, da_run_id: int):
 
         return f"""
-                UPDATE {self.DA_SCHEMA}.job_cntl_parms
+                UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
                 SET job_end_ts = CONVERT_TIMEZONE('EDT', GETDATE()),
                 sucsfl_ind = 1
                 WHERE da_run_id = {da_run_id}
@@ -330,11 +331,11 @@ class TAF_Runner():
     ):
 
         return f"""
-                INSERT INTO {self.DA_SCHEMA}.job_otpt_meta
+                INSERT INTO {self.DA_SCHEMA_DC}.job_otpt_meta
                 SELECT {da_run_id} AS da_run_id
                     ,'TABLE' AS otpt_type
                     ,'{table_name}' AS otpt_name
-                    ,'{self.DA_SCHEMA}' AS otpt_lctn_txt
+                    ,'{self.DA_SCHEMA_DC}' AS otpt_lctn_txt
                     ,row_count AS rec_cnt
                     ,'{fil_4th_node}' AS fil_4th_node_txt
                 FROM record_count

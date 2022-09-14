@@ -99,7 +99,7 @@ class RXH:
                 , cll_cnt
                 , num_cll
                 ,to_timestamp('{runner.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
-                ,current_timestamp() as REC_UPDT_TS
+                ,cast(NULL as timestamp) as REC_UPDT_TS
             from (
                 select
                     *,
@@ -121,7 +121,7 @@ class RXH:
     def build(self, runner: RX_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_rxh
+                INSERT INTO {runner.DA_SCHEMA_DC}.taf_rxh
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
                 FROM (

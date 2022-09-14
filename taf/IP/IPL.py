@@ -81,7 +81,7 @@ class IPL:
                 , { TAF_Closure.var_set_type6('MDCD_FFS_EQUIV_AMT',cond1=888888888.88, cond2=88888888888.80, cond3=999999.99) }
 
                 , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                , typeof(NULL) as REC_UPDT_TS
+                , cast(NULL as timestamp) as REC_UPDT_TS
 
                 ,RN as LINE_NUM
 
@@ -106,7 +106,7 @@ class IPL:
     def build(self, runner: IP_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_ipl
+                INSERT INTO {runner.DA_SCHEMA_DC}.taf_ipl
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.line_columns) }
                 FROM IPL

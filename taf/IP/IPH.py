@@ -244,7 +244,7 @@ class IPH:
                 , cast(nullif(PRIMARY_HIERARCHICAL_CONDITION, PRIMARY_HIERARCHICAL_CONDITION) as char(9)) as PRMRY_HIRCHCL_COND
 
                 , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                , typeof(NULL) as REC_UPDT_TS
+                , cast(NULL as timestamp) as REC_UPDT_TS
 
                 , { TAF_Closure.fix_old_dates('SRVC_ENDG_DT_DRVD')}
 	            , { TAF_Closure.var_set_type2('SRVC_ENDG_DT_CD',0,cond1='1',cond2='2',cond3='3',cond4='4',cond5='5') }
@@ -272,7 +272,7 @@ class IPH:
     def build(self, runner: IP_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_iph
+                INSERT INTO {runner.DA_SCHEMA_DC}.taf_iph
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
                 FROM (

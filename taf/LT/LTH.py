@@ -178,7 +178,7 @@ class LTH:
                 ,nullif(IAP_CONDITION_IND, IAP_CONDITION_IND) as IAP_COND_IND
                 ,nullif(PRIMARY_HIERARCHICAL_CONDITION, PRIMARY_HIERARCHICAL_CONDITION) as PRMRY_HIRCHCL_COND
                 ,to_timestamp('{runner.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
-                ,current_timestamp() as REC_UPDT_TS
+                ,cast(NULL as timestamp) as REC_UPDT_TS
                 ,{ TAF_Closure.var_set_taxo('BLG_PRVDR_NPPES_TXNMY_CD',cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X',
                                                 cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 ,DGNS_1_CCSR_DFLT_CTGRY_CD
@@ -203,7 +203,7 @@ class LTH:
     def build(self, runner: LT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_lth
+                INSERT INTO {runner.DA_SCHEMA_DC}.taf_lth
                 SELECT
                     { LT_Metadata.finalFormatter(LT_Metadata.header_columns) }
                 FROM (

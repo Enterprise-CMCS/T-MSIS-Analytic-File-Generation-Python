@@ -91,7 +91,7 @@ class OTL:
                 , { TAF_Closure.var_set_type4('UOM_CD', 'YES', cond1='F2', cond2='ML', cond3='GR', cond4='UN', cond5='ME') }
                 , { TAF_Closure.var_set_type6('NDC_QTY', cond1='999999', cond2='999999.998', cond3='888888.000', cond4='888888.880', cond5='88888.888', cond6='888888.888') }
                 , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                , typeof(NULL) as REC_UPDT_TS
+                , cast(NULL as timestamp) as REC_UPDT_TS
                 , RN as LINE_NUM
                 , PRCDR_CCS_CTGRY_CD
                 , SRVCNG_PRVDR_NPPES_TXNMY_CD
@@ -116,7 +116,7 @@ class OTL:
     def build(self, runner: OT_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_otl_test_srvcs
+                INSERT INTO {runner.DA_SCHEMA_DC}.taf_otl_test_srvcs
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.line_columns) }
                 FROM OTL

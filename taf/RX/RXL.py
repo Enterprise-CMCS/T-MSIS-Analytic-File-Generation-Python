@@ -86,7 +86,7 @@ class RXL:
                 , { TAF_Closure.var_set_type1('PROF_SRVC_CD',upper=True) }
                 , { TAF_Closure.var_set_type1('RSLT_SRVC_CD',upper=True) }
                 , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                , typeof(NULL) as REC_UPDT_TS
+                , cast(NULL as timestamp) as REC_UPDT_TS
                 ,RN as LINE_NUM
 
             from (
@@ -110,7 +110,7 @@ class RXL:
     def build(self, runner: RX_Runner):
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_rxl
+                INSERT INTO {runner.DA_SCHEMA_DC}.taf_rxl
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.line_columns) }
                 FROM RXL
