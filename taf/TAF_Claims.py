@@ -184,7 +184,6 @@ class TAF_Claims():
         #  HEADER_?
         #
         # -----------------------------------------------------------------------------
-        # FIXME: change base table or view when TMSIS changes are made
         z = f"""
             create or replace temporary view HEADER_{fl} as
 
@@ -193,12 +192,8 @@ class TAF_Claims():
                 { self.analysis_date(fl, analysis_date) }
 
             from
+                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
         """
-
-        if (_2x_segment.casefold() == 'tmsis_clh_rec_ip'):
-            z += "tmsis.tmsis_test_view2 A"
-        else:
-            z += f"TAF_PYTHON.{_2x_segment}_TEMP_TAF A"
 
         z += f"""
             where
