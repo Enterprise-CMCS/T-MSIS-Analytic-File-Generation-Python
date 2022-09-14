@@ -856,12 +856,12 @@ class TAF_Grouper:
 
         # ------------------------------------------------------------------------------
 
-        for i in range(1, 15):
+        for i in range(1, 16):
             z += f"""
                     case when hc_prvdr_txnmy_cd_{i} is not null and
                             hc_prvdr_txnmy_cd_{i} <> ' ' then {i} else null end as taxo{i}
             """
-            if i < 14:
+            if i < 15:
                 z += ","
 
         z += f"""
@@ -915,7 +915,7 @@ class TAF_Grouper:
             """
 
         z += f"""
-                 taxo14)-1,1)
+                 taxo15)-1,1)
                         else null
                     end as selected_txnmy_cdx
         """
@@ -925,7 +925,7 @@ class TAF_Grouper:
                  ,hc_prvdr_txnmy_cd_{i}
             """
 
-        for i in range(1, 15):
+        for i in range(1, 16):
             z += f"""
                  ,taxo{i}
             """
