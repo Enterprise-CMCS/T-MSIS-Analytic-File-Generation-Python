@@ -833,7 +833,8 @@ class BSF_Metadata:
     def cleanImmigrationStatusCd(alias):
         return f"""case
             when {alias}.IMGRTN_STUS_CD = '8' then '0'
-            else {alias}.IMGRTN_STUS_CD end as IMGRTN_STUS_CD
+            when upper(trim({alias}.IMGRTN_STUS_CD)) in ('0', '1','2','3') then upper(trim({alias}.IMGRTN_STUS_CD))
+            else null end as IMGRTN_STUS_CD
         """
 
     # ---------------------------------------------------------------------------------
