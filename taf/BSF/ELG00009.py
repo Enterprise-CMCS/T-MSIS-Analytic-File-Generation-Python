@@ -131,7 +131,7 @@ class ELG00009(ELG):
         # select max_keep into :max_keep
         # from (select * from connection to tmsis_passthrough
         #       (select max(keeper) as max_keep from {self.tab_no}_step2))
-        max_keep = 2
+        max_keep = 3
 
         z = f"""
             create or replace temporary view {self.tab_no}_{self.bsf.BSF_FILE_DATE}_uniq as
