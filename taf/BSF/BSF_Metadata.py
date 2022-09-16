@@ -22,7 +22,7 @@ class BSF_Metadata:
         columns = BSF_Metadata.columns.get(segment_id).copy()
 
         for i, item in enumerate(columns):
-            if item in BSF_Metadata.cleanser.keys():
+            if item in BSF_Metadata.cleanser.keys() and item.casefold() != 'imgrtn_stus_cd':
                 columns[i] = BSF_Metadata.cleanser.copy().get(item)(alias)
             elif item in BSF_Metadata.validator.keys():
                 columns[i] = BSF_Metadata.maskInvalidValues(item, alias)
@@ -623,7 +623,7 @@ class BSF_Metadata:
                         t1.RACE_ETHNCTY_EXP_FLAG,
                         t1.HISPANIC_ETHNICITY_FLAG as HSPNC_ETHNCTY_FLAG,
                         from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                        typeof(NULL) as REC_UPDT_TS,
+                        cast(NULL as timestamp) as REC_UPDT_TS,
                         t1.ELGBL_ID_ADDTNL,
                         t1.ELGBL_ID_ADDTNL_ENT_ID,
                         t1.ELGBL_ID_ADDTNL_RSN_CHG,
@@ -833,8 +833,7 @@ class BSF_Metadata:
     def cleanImmigrationStatusCd(alias):
         return f"""case
             when {alias}.IMGRTN_STUS_CD = '8' then '0'
-            when upper(trim({alias}.IMGRTN_STUS_CD)) in ('0', '1','2','3') then upper(trim({alias}.IMGRTN_STUS_CD))
-            else null end as IMGRTN_STUS_CD
+            else upper(nullif(trim({alias}.IMGRTN_STUS_CD),'')) end as IMGRTN_STUS_CD
         """
 
     # ---------------------------------------------------------------------------------
@@ -1676,10 +1675,10 @@ class BSF_Metadata:
             ['0', '1', '2'],
         'CTZNSHP_VRFCTN_IND':
             ['0', '1'],
-        'IMGRTN_STUS_CD':
-            ['1', '2', '3', '8'],
         'IMGRTN_VRFCTN_IND':
             ['0', '1'],
+        'IMGRTN_STUS_CD':
+            ['1', '2', '3', '8'],
         'ENGLSH_PRFCNCY_CD':
             ['0', '1', '2', '3'],
         'HSEHLD_SIZE_CD':
