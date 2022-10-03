@@ -1,0 +1,883 @@
+{
+  "name": "taf-conversion-stack",
+  "resources": [
+    {
+      "id": "taf-apl-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/apl_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/APL Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-apr-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/apr_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/APR Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-bsf-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/bsf_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/BSF Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-de-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/de_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/DE Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-ip-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/ip_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/IP Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-lt-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/lt_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/LT Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-mcp-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/mcp_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/MCP Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-ot-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/ot_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/OT Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-prv-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/prv_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/PRV Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-rx-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/rx_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/RX Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-up-runner-workspace-notebook",
+      "service": "workspace",
+      "properties": {
+        "source_path": ".databricks/notebooks/up_runner.ipynb",
+        "path": "/SAS TAF Conversion/Runners/UP Runner",
+        "object_type": "NOTEBOOK"
+      }
+    },
+    {
+      "id": "taf-conversion-dbfs-library",
+      "service": "dbfs",
+      "properties": {
+        "source_path": ".databricks/dist/taf-1.0.0-py3-none-any.whl",
+        "path": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl",
+        "is_dir": false
+      }
+    },
+    {
+      "id": "taf-apl-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Annual Managed Care Plans",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "APL"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-annual-managed-care-plans",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/APL Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-apr-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Annual Provider Information",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "APR"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-annual-provider-information",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/APR Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-bsf-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Beneficiary Summary",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "BSF"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-beneficiary-summary",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/BSF Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_ID": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-de-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Annual Demographic and Eligibility",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "DE"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-annual-demographic-and-eligibility",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/DE Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-ip-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Inpatient Claims",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "IP"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-ip-claims",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/IP Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-lt-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Long-Term Care Claims",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "LT"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-lt-claims",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/LT Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_ID": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-mcp-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Managed Care Plans",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "MCP"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-managed-care-plans",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/MCP Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-ot-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Outpatient Claims",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "OT"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-ot-claims",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/OT Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-prv-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Provider Information",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "PRV"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-provider-information",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/PRV Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-rx-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Pharmacy Claims",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "RX"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-rx-claims",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/RX Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    },
+    {
+      "id": "taf-up-runner-job",
+      "service": "jobs",
+      "properties": {
+        "name": "TAF Runner - Annual Use and Payment",
+        "new_cluster": {
+          "spark_version": "9.1.x-scala2.12",
+          "spark_conf": {
+            "spark.databricks.repl.allowedLanguages": "python,sql",
+            "spark.databricks.acl.dfAclsEnabled": "true",
+            "spark.databricks.cluster.profile": "serverless",
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
+          },
+          "aws_attributes": {
+            "zone_id": "us-east-1a",
+            "first_on_demand": 0,
+            "availability": "ON_DEMAND",
+            "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+            "spot_bid_price_percent": 100,
+            "ebs_volume_count": 0
+          },
+          "node_type_id": "i3.2xlarge",
+          "driver_node_type_id": "i3.4xlarge",
+          "custom_tags": {
+            "ResourceClass": "Serverless",
+            "stack": "val",
+            "layer": "app",
+            "business": "AREMAC",
+            "business_function": "TMSIS:SAS:TAF_CONV",
+            "file_type": "UP"
+          },
+          "cluster_log_conf": {
+            "s3": {
+              "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-annual-use-and-payment",
+              "region": "us-east-1",
+              "enable_encryption": true,
+              "canned_acl": "bucket-owner-full-control"
+            }
+          },
+          "enable_elastic_disk": false,
+          "init_scripts": [
+            {
+              "dbfs": {
+                "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
+              }
+            }
+          ],
+          "autoscale": {
+            "min_workers": 6,
+            "max_workers": 40
+          }
+        },
+        "libraries": [
+          {
+            "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-1.0.0-py3-none-any.whl"
+          }
+        ],
+        "email_notifications": {},
+        "timeout_seconds": 14400,
+        "notebook_task": {
+          "notebook_path": "/SAS TAF Conversion/Runners/UP Runner",
+          "base_parameters": {
+            "reporting_period": "",
+            "state_code": "",
+            "run_id": ""
+          }
+        },
+        "max_concurrent_runs": 1
+      }
+    }
+  ]
+}

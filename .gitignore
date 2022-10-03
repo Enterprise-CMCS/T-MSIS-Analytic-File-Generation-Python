@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+taf/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -127,3 +128,23 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# VS Code project settings
+.vscode/
+
+# User specified files
+data/
+doc/
+original_code/
+sas/
+test/redshift/
+test/sql/
+test/uat
+
+.flake8
+deploy.bat
+deploy-val.bat
+README_SAS.md
+technical_documentation.md
+test/unit_testing/DE/test.py
+notes.md
