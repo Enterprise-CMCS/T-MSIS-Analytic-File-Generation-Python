@@ -24,7 +24,11 @@ class BASE_LT(UP):
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, up: UP_Runner):
-        super().__init__(up)
+        UP.__init__(self, up)
+        self.up = up
+
+    #def __init__(self, up: UP_Runner):
+        #super().__init__(up)
 
     # ---------------------------------------------------------------------------------
     #
@@ -117,6 +121,8 @@ class BASE_LT(UP):
                      FROM ltl_2021
                      GROUP BY lt_link_key
                      ) b
+                on a.lt_link_key = b.lt_link_key 
+                where a.clm_type_cd in ('1','A','3','C')
                  ) c
         """
         self.up.append(type(self).__name__, z)

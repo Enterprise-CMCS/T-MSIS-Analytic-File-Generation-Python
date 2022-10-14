@@ -8,11 +8,14 @@ class DE0009(DE):
     tbl_suffix: str = "dsblty"
 
     def __init__(self, runner: DE_Runner):
-        # TODO: Review this
         DE.__init__(self, runner)
+        self.de = runner
+
+    #def __init__(self, de: DE_Runner):
+        #super().__init__(de)
 
     def create(self):
-        super().create()
+        #super().create()
         self.create_temp()
         self.create_dsblty_suppl_table()
 
@@ -38,14 +41,14 @@ class DE0009(DE):
                 ,{TAF_Closure.monthly_array(self, 'DFCLTY_ERRANDS_ALN_DSBL_FLAG',outcol='DFCLTY_ERNDS_ALN_DSBL_FLAG')}
                 ,{TAF_Closure.ever_year(incol='LCKIN_FLAG', outcol='LCKIN_FLAG')}
                 {DE.last_best(self, 'LCKIN_PRVDR_NUM1')}
-                {DE.nonmiss_month(self, 'LCKIN_PRVDR_NUM1')}
+                {DE.nonmiss_month2(self, 'LCKIN_PRVDR_NUM1',var_type=" ")}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD1')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_NUM2')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD2')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_NUM3')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD3')}
                 {DE.last_best(self, 'LTSS_PRVDR_NUM1')}
-                {DE.nonmiss_month(self, 'LTSS_PRVDR_NUM1')}
+                {DE.nonmiss_month2(self, 'LTSS_PRVDR_NUM1',var_type=" ")}
                 ,{TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD1')}
                 {DE.last_best(self, 'LTSS_LVL_CARE_CD1', outcol='LTSS_LVL_CARE_CD1_LTST')}
                 ,{TAF_Closure.monthly_array(self, 'LTSS_PRVDR_NUM2')}
@@ -75,8 +78,8 @@ class DE0009(DE):
                 ,{DE.ever_year(self, 'BIRTH_CNCPTN_IND')}
                 ,{DE.ever_year(self, 'TPL_INSRNC_CVRG_IND')}
                 ,{DE.ever_year(self, 'TPL_OTHR_CVRG_IND')}
-                ,{DE.ever_year(self, 'SSI_STATE_SPLMT_STUS_CD', usenulls=1, nullcond='000', condition='is not null')}
-                ,{DE.ever_year(self, 'SSI_STUS_CD', usenulls=1, nullcond='000',condition='is not null')}
+                ,{DE.ever_year(self, 'SSI_STATE_SPLMT_STUS_CD', usenulls=1, nullcond="'000'", condition='is not null')}
+                ,{DE.ever_year(self, 'SSI_STUS_CD', usenulls=1, nullcond="'000'",condition='is not null')}
                 ,{DE.ever_year(self, 'TANF_CASH_CD', condition="='2'")}
             """
 

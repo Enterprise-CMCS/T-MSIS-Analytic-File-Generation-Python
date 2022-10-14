@@ -53,8 +53,8 @@ class MCP02(MCP):
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             "managed_care_main_rec_eff_date",
             "managed_care_main_rec_end_date",
-            "%fix_old_dates(managed_care_contract_eff_date),"
-            "%set_end_dt(managed_care_contract_end_date) as MC_CNTRCT_END_DT",
+            "%fix_old_dates(managed_care_contract_eff_date)",
+            "case when managed_care_contract_eff_date is not null and managed_care_contract_end_date is null then to_date('9999-12-31') when to_date('1600-01-01') > managed_care_contract_end_date then to_date('1599-12-31') else managed_care_contract_end_date end as MC_CNTRCT_END_DT",
             "managed_care_name",
             "managed_care_program",
             "managed_care_plan_type",

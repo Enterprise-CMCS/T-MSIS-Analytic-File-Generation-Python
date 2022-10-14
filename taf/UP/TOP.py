@@ -23,7 +23,11 @@ class TOP(UP):
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, up: UP_Runner):
-        super().__init__(up)
+        UP.__init__(self, up)
+        self.up = up
+
+    #def __init__(self, up: UP_Runner):
+        #super().__init__(up)
 
     # ---------------------------------------------------------------------------------
     #
@@ -100,6 +104,8 @@ class TOP(UP):
                 ,CLM_TYPE_CD
                 ,CLM_TOT
                 ,SUM_TOT_MDCD_PD
+                ,current_timestamp() as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
             FROM top_fnl_{self.year}
         """
         self.up.append(type(self).__name__, z)

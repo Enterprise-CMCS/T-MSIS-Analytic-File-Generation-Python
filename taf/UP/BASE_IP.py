@@ -24,7 +24,11 @@ class BASE_IP(UP):
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, up: UP_Runner):
-        super().__init__(up)
+        UP.__init__(self, up)
+        self.up = up
+
+    #def __init__(self, up: UP_Runner):
+        #super().__init__(up)
 
     # ---------------------------------------------------------------------------------
     #
@@ -465,9 +469,9 @@ class BASE_IP(UP):
             else:
                 smonth = 1
 
-            for m in range(1, 13):
+            for m in range(smonth, 13):
                 mm = "{:02d}".format(m)
-                lday = monthrange(self.year, m)[1]
+                lday = monthrange(ipyear, m)[1]
 
                 for d in range(1, lday + 1):
                     dd = "{:02d}".format(d)
@@ -475,10 +479,10 @@ class BASE_IP(UP):
                     num += 1
 
                     z += f"""
-                         ,case when stay_admsn_dt <= to_date('{ipyear}-{mm}-{dd}') and
+                            ,case when stay_admsn_dt <= to_date('{ipyear}-{mm}-{dd}') and
                                     stay_dschrg_dt >= to_date('{ipyear}-{mm}-{dd}')
-                             then 1 else 0
-                             end as day{num}
+                                then 1 else 0
+                                end as day{num}
                     """
 
                     alldays = num

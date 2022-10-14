@@ -8,6 +8,10 @@ class DE(TAF):
         self.de = runner
         self.main_id = runner.main_id
 
+    #def __init__(self, de: DE_Runner):
+        #self.de = de
+        #self.main_id = de.main_id
+
     # ---------------------------------------------------------------------------------
     #
     #
@@ -15,15 +19,18 @@ class DE(TAF):
     #
     # ---------------------------------------------------------------------------------
     def create(self):
-        self.create_pyears()
-        self.max_run_id(file="DE", inyear=self.de.YEAR)
-        self.max_run_id(file="BSF", inyear=self.de.YEAR)
-        self.max_run_id(file="IP", inyear=self.de.YEAR)
-        self.max_run_id(file="IP", inyear=self.de.PYEAR)
-        self.max_run_id(file="IP", inyear=self.de.FYEAR)
-        self.max_run_id(file="LT", inyear=self.de.YEAR)
-        self.max_run_id(file="OT", inyear=self.de.YEAR)
-        self.max_run_id(file="RX", inyear=self.de.YEAR)
+        DE.create_pyears(self)
+        if self.de.GETPRIOR == 1:
+            for pyear in self.de.PYEARS:
+                DE.max_run_id(self, file="DE", inyear=pyear)
+        DE.max_run_id(self, file="DE", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="BSF", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="IP", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="IP", inyear=self.de.PYEAR)
+        DE.max_run_id(self, file="IP", inyear=self.de.FYEAR)
+        DE.max_run_id(self, file="LT", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="OT", inyear=self.de.YEAR)
+        DE.max_run_id(self, file="RX", inyear=self.de.YEAR)
         pass
 
     # ---------------------------------------------------------------------------------
@@ -118,7 +125,7 @@ class DE(TAF):
 
     def mc_type_rank(self, smonth: int, emonth: int):
         priorities = ["01", "04", "05", "06", "15", "07", "14", "17", "08", "09", "10",
-                      "11", "12", "13", "18", "16", "02", "03", "60", "70", "80", "99"]
+                      "11", "12", "13", "19", "18", "16", "02", "03", "60", "70", "80", "20", "99"]
 
         z = ""
 
@@ -174,6 +181,24 @@ class DE(TAF):
 
         return f""",case when {' or '.join(cases)} then 1 else '00' end as {outcol}"""
 
+    def nonmiss_month2(self, incol, outcol="", var_type="D"):
+
+        if outcol == "":
+            outcol = incol + "_MN"
+
+        cases = []
+        for m in range(12, 0, -1):
+            if m < 10:
+                m = str(m).zfill(2)
+
+            z = f""" m{m}.{incol} is not null """
+            if var_type != "D":
+                z += f""" and m{m}.{incol} not in ('',' ') then '{m}' """
+
+            cases.append(z)
+
+        return f""",case when {' when '.join(cases)} else '00' end as {outcol}"""
+
     def assign_nonmiss_month(self, outcol, monthval1, incol1, monthval2='', incol2=''):
 
         cases = []
@@ -182,17 +207,17 @@ class DE(TAF):
                 m = str(m).zfill(2)
             cases.append(f" when {monthval1}='{m}' then {incol1}_{m}")
 
-            if monthval2 != '':
-                for m in range(12, 0, -1):
-                    if m < 10:
-                        m = str(m).zfill(2)
-                    cases.append(f" when {monthval2}='{m}' then {incol2}_{m}")
+        if monthval2 != '':
+            for m in range(12, 0, -1):
+                if m < 10:
+                    m = str(m).zfill(2)
+                cases.append(f" when {monthval2}='{m}' then {incol2}_{m}")
 
         return f",case {' '.join(cases)} else null end as {outcol}"
 
     def address_flag(self):
-        z = """,case when ELGBL_LINE_1_ADR_MAIL_MN != '00' and ELGBL_LINE_1_ADR_HOME_MN = '00' then 1
-                    when ELGBL_LINE_1_ADR_HOME_MN != '00' then 0
+        z = """,case when ELGBL_LINE_1_ADR_MAIL_MN != '00' and ELGBL_LINE_1_ADR_HOME_MN = '00' then '1'
+                    when ELGBL_LINE_1_ADR_HOME_MN != '00' then '0'
                 else null
                 end as ELGBL_ADR_MAIL_FLAG
             """
@@ -200,10 +225,10 @@ class DE(TAF):
 
     def address_same_year(self, incol):
         cnt = 0
-        z = f""",case when yearpull = {self.de.YEAR} then c.{incol}"""
+        z = f""",case when one.yearpull = {self.de.YEAR} then c.{incol}"""
         for pyear in self.de.PYEARS:
             cnt += 1
-            z += f""" when yearpull = {pyear} then p{cnt}.{incol}"""
+            z += f""" when one.yearpull = {pyear} then p{cnt}.{incol}"""
 
         z += f""" else null
                 end as {incol}"""
@@ -223,7 +248,7 @@ class DE(TAF):
                 a.da_run_id = b.da_run_id
 
             where msis_ident_num is not null and
-                    substring(msis_ident_num,1,1) != ''
+                    substring(msis_ident_num,1,1) != '&'
             """
         return z
 
@@ -283,8 +308,8 @@ class DE(TAF):
                 if truncfirst == 1:
                     z += f"""
                         ,case when m{m}.{incol}{snum} is not null and
-                            datediff(m{m}.{incol}{snum},to_date('01 {m} {self.de.YEAR}','dd m yyyy')) >= 1
-                        then to_date('01 {m} {self.de.YEAR}','dd m yyyy')
+                            datediff(m{m}.{incol}{snum},to_date('01 {m} {self.de.YEAR}','dd MM yyyy')) <= -1
+                        then to_date('01 {m} {self.de.YEAR}','dd MM yyyy')
                         else m{m}.{incol}{snum}
                         end as {outcol}{snum}_{m}
                         """
@@ -294,8 +319,8 @@ class DE(TAF):
                 if truncfirst == 0:
                     z += f"""
                         ,case when m{m}.{incol}{snum} is not null and
-                            datediff(m{m}.{incol}{snum},to_date('{lday} {m} {self.de.YEAR}','dd m yyyy')) <= -1
-                        then to_date('{lday} {m} {self.de.YEAR}','dd m yyyy')
+                            datediff(m{m}.{incol}{snum},to_date('{lday} {m} {self.de.YEAR}','dd MM yyyy')) >= 1
+                        then to_date('{lday} {m} {self.de.YEAR}','dd MM yyyy')
                         else m{m}.{incol}{snum}
                         end as {outcol}{snum}_{m}
                         """
@@ -343,6 +368,8 @@ class DE(TAF):
                 {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'16'", outcol='DEASE_MGMT_MC_PLAN', smonth=_smonth, emonth=_emonth)}
                 {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'17'", outcol='PACE_MC_PLAN', smonth=_smonth, emonth=_emonth)}
                 {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'18'", outcol='PHRMCY_PAHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'19'", outcol='LTSS_PIHP_MC_PLAN', smonth=_smonth, emonth=_emonth)}
+                {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'20'", outcol='OTHR_MC_PLAN', smonth=_smonth, emonth=_emonth)}
                 {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'60'", outcol='ACNTBL_MC_PLAN', smonth=_smonth, emonth=_emonth)}
                 {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'70'", outcol='HM_HOME_MC_PLAN', smonth=_smonth, emonth=_emonth)}
                 {DE.mc_waiv_slots(self, 'MC_PLAN_TYPE_CD', values="'80'", outcol='IC_DUALS_MC_PLAN', smonth=_smonth, emonth=_emonth)}"""
@@ -484,7 +511,7 @@ class DE(TAF):
         if prior == 1:
             z += f"""
                     ,coalesce(c.{incol} """
-            for p in self.de.PYEARS:
+            for p in range(1, len(self.de.PYEARS)+1):
                 z += f"""
                     ,p{p}.{incol}
                 """
@@ -498,6 +525,8 @@ class DE(TAF):
         for m in range(1, 13):
             if m < 10:
                 mm = str(m).zfill(2)
+            else:
+                mm = m
             for s in range(1, self.de.NWAIVSLOTS + 1):
                 z += f"""
                     m{mm}.WVR_ID{s} is not null or
@@ -610,24 +639,6 @@ class DE(TAF):
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
         """
 
-        if inyear == self.de.PYEAR:
-            z += """
-                    AND substring(job_parms_txt, 6, 2) IN (
-                            '10'
-                            ,'11'
-                            ,'12'
-                            )
-            """
-
-        if inyear == self.de.FYEAR:
-            z += """
-                    AND substring(job_parms_txt, 6, 2) IN (
-                        '01'
-                        ,'02'
-                        ,'03'
-                        )
-            """
-
         z += f"""
                     AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\s+', ' ')) = 0
                 )
@@ -654,24 +665,6 @@ class DE(TAF):
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
         """
-
-        if inyear == self.de.PYEAR:
-            z += """
-                 AND substring(job_parms_txt, 6, 2) IN (
-                            '10'
-                            ,'11'
-                            ,'12'
-                            )
-            """
-
-        if inyear == self.de.FYEAR:
-            z += """
-                 AND substring(job_parms_txt, 6, 2) IN (
-                        '01'
-                        ,'02'
-                        ,'03'
-                        )
-            """
 
         z += f"""
                     AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\s+', ' ')) > 0
@@ -798,7 +791,7 @@ class DE(TAF):
     def create_pyears(self):
         pyears = []
 
-        for py in range(2014, self.de.YEAR):
+        for py in range(self.de.YEAR-1, self.de.YEAR-3,-1):
             pyears.append(py)
 
         self.de.PYEARS.extend(pyears)

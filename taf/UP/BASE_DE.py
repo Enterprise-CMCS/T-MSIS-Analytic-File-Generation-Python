@@ -22,10 +22,15 @@ class BASE_DE(UP):
     #
     #
     # ---------------------------------------------------------------------------------
-    def __init__(self, up: UP_Runner):
-        super().__init__(up)
+    def __init__(self, runner: UP_Runner):
+        UP.__init__(self, runner)
+        self.up = runner
 
-        self.chipmos = ["nonchip_mdcd", "mchip", "schip"]
+    #def __init__(self, up: UP_Runner):
+        #super().__init__(up)
+
+        self.chipmos_char = ["nonchip_mdcd", "mchip", "schip"]
+        self.chipmos_num = ["1", "2", "3"]
 
     # ---------------------------------------------------------------------------------
     #
@@ -34,6 +39,7 @@ class BASE_DE(UP):
     #
     # ---------------------------------------------------------------------------------
     def create(self):
+        super().create()
 
         # distkey(msis_ident_num)
         # sortkey(submtg_state_cd,msis_ident_num)
@@ -43,9 +49,9 @@ class BASE_DE(UP):
         """
 
         # Sum the monthly indicators for each of the three needed CHIP_CD values
-        for c in self.chipmos:
-            z += f""",chip_cd_01_{c} + chip_cd_02_{c} + chip_cd_03_{c} + chip_cd_04_{c} + chip_cd_05_{c} + chip_cd_06_{c} +
-                     chip_cd_07_{c} + chip_cd_08_{c} + chip_cd_09_{c} + chip_cd_10_{c} + chip_cd_11_{c} + chip_cd_12_{c}
+        for n, c in zip(self.chipmos_num, self.chipmos_char):
+            z += f""",chip_cd_01_{n} + chip_cd_02_{n} + chip_cd_03_{n} + chip_cd_04_{n} + chip_cd_05_{n} + chip_cd_06_{n} +
+                     chip_cd_07_{n} + chip_cd_08_{n} + chip_cd_09_{n} + chip_cd_10_{n} + chip_cd_11_{n} + chip_cd_12_{n}
                      as elgblty_{c}_mos
             """
 
@@ -63,10 +69,10 @@ class BASE_DE(UP):
 
         # Create monthly indicators for each of the three needed CHIP_CD values
         # loop over the three CHIPMOS values above that correspond to output monthly count var names
-        for c in self.chipmos:
+        for n in self.chipmos_num:
             for m in range(1, 13):
                 mm = "{:02d}".format(m)
-                z += f""",CASE WHEN chip_cd_{mm} = '{c}' THEN 1 ELSE 0 END as chip_cd_{mm}_{c}"""
+                z += f""",CASE WHEN chip_cd_{mm} = '{n}' THEN 1 ELSE 0 END as chip_cd_{mm}_{n}"""
 
         # Loop over all values of DUAL_ELGBL_CD, and if any is non-null/00, set dual_elgbl_evr = 1 */
         z += f""",CASE WHEN"""

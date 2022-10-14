@@ -14,6 +14,10 @@ class DE0001BASE(DE):
         self.create_temp()
         self.demographics(self.de.YEAR)
         self.create_base("base")
+        # Drop temporary table from DE0002
+        self.drop_table("numbers")
+        # Drop temporary table from DE0006
+        self.drop_table("numbers_two")
 
     # define base columns here
     def basecols(self):
@@ -290,7 +294,7 @@ class DE0001BASE(DE):
             {DE.last_best(self, incol='AGE_NUM',outcol='AGE_NUM_TEMP')}
             {DE.last_best(self, incol='AGE_GRP_FLAG',outcol=' AGE_GRP_FLAG_TEMP')}
             {DE.last_best(self, incol='ELGBL_AFTR_EOM_IND',outcol='ELGBL_AFTR_EOM_TEMP')}
-            {DE.nonmiss_month(self, incol='msis_ident_num',outcol='BSF_RECORD')}
+            {DE.nonmiss_month2(self, incol='msis_ident_num',outcol='BSF_RECORD',var_type=" ")}
             ,{TAF_Closure.monthly_array(self, incol='ELGBLTY_CHG_RSN_CD')}
             """
 
@@ -347,8 +351,8 @@ class DE0001BASE(DE):
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_ZIP_CD_MAIL')}
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_MAIL')}
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_MAIL')}
-                {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_HOME')}
-                {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_MAIL')}
+                {DE.nonmiss_month2(self, 'ELGBL_LINE_1_ADR_HOME',var_type=" ")}
+                {DE.nonmiss_month2(self, 'ELGBL_LINE_1_ADR_MAIL',var_type=" ")}
 
                 {DE.last_best(self,incol='MSIS_CASE_NUM')}
                 {DE.last_best(self,incol='MDCR_BENE_ID')}
@@ -378,7 +382,8 @@ class DE0001BASE(DE):
                             ,birth_dt
                             ,death_dt
                             ,dcsd_flag
-
+                            ,age_num
+                            ,age_grp_flag
                             ,gndr_cd
                             ,mrtl_stus_cd
                             ,incm_cd
@@ -433,50 +438,24 @@ class DE0001BASE(DE):
     def age_date_calculate(self, inyear):
         z = f"""case { self.gen_bsf_last_dt(tot_month=12, in_year=inyear) }
                 end as BSF_LAST_DT,
-
-                case when AGE_NUM_TEMP is not null then AGE_NUM_TEMP 
-			        when BIRTH_DT is not null then
-					case when DEATH_DT is not null then floor(datediff(BIRTH_DT, DEATH_DT) /365.25)
-                         when BSF_RECORD is not null then floor(datediff(BIRTH_DT, BSF_LAST_DT) /365.25)
-                    end
-                else null 
-                end as AGE_NUM_RAW, 
-
-                case when AGE_NUM_RAW < -1 then null 
-			         when AGE_NUM_RAW > 125 then 125 
-		        else AGE_NUM_RAW 
-                end as AGE_NUM,
-
-                case when AGE_NUM between -1 and 0 then 1 
-                     when AGE_NUM between 1 and 5 then 2
-                     when AGE_NUM between 6 and 14 then 3
-                     when AGE_NUM between 15 and 18 then 4
-                     when AGE_NUM between 19 and 20 then 5
-                     when AGE_NUM between 21 and 44 then 6
-                     when AGE_NUM between 45 and 64 then 7
-                     when AGE_NUM between 65 and 74 then 8
-                     when AGE_NUM between 75 and 84 then 9
-                     when AGE_NUM between 85 and 125 then 10
-                else null 
-                end as AGE_GRP_FLAG,
-
                 case when BSF_RECORD = '12' then ELGBL_AFTR_EOM_TEMP
                 else 0 
                 end as ELGBL_AFTR_EOY_IND
             """
-        self.de.append(type(self).__name__, z)
+        return z
 
     def create_base(self, tblname):
-        cnt = 0
         if self.de.GETPRIOR == 1:
-            for pyear in range(1, self.de.PYEARS + 1):
+            cnt = 0
+            #for pyear in range(1, self.de.PYEARS + 1):
+            for pyear in self.de.PYEARS:
                 self.create_hist_demo(tblname="base_demo", inyear=pyear)
 
                 # Now join the above tables together to use prior years if current year is missing, keeping demographics only.
                 # For address information, identify year pulled for latest non-null value of ELGBL_LINE_1_ADR.
                 # Use that year to then take value for all cols
 
-                z = f"""create or replace temporary view base_demo_{self.de.YEAR}_out as
+            z = f"""create or replace temporary view base_demo_{self.de.YEAR}_out1 as
                 select
                      c.msis_ident_num
                     ,c.submtg_state_cd
@@ -502,42 +481,61 @@ class DE0001BASE(DE):
                     {DE.last_best(self, 'RACE_ETHNCTY_FLAG',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_EXP_FLAG',prior=1)}
 
-                    ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""
+                    ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""+' '
 
-                for pyear in range(1, self.de.PYEARS + 1):
-                    cnt += 1
-                    z += f"""when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear}"""
+                #for pyear in range(1, self.de.PYEARS + 1):
+            for pyear in self.de.PYEARS:
+                cnt += 1
+                z += f"""when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear}"""+' '
 
-                z += f"""else null
+            z += f"""else null
                       end as yearpull
-
-                    {DE.address_same_year('ELGBL_ZIP_CD')}
-                    {DE.address_same_year('ELGBL_CNTY_CD')}
-                    {DE.address_same_year('ELGBL_STATE_CD')}
 
                     {DE.last_best(self, 'MSIS_CASE_NUM',prior=1)}
                     {DE.last_best(self, 'MDCR_BENE_ID',prior=1)}
                     {DE.last_best(self, 'MDCR_HICN_NUM',prior=1)}
 
-                    from base_demo_{self.de.YEAR} c"""
+                    from base_demo_{self.de.YEAR} c"""+' '
+            cnt = 0
+            for pyear in self.de.PYEARS:
+                cnt += 1
+                #for pyear in range(1, self.de.PYEARS + 1):
+                z += f"""
+                    left join
+                    base_demo_{pyear} p{cnt}
 
-                for pyear in range(1, self.de.PYEARS + 1):
-                    cnt += 1
-                    z += f"""
-                        left join
-                        base_demo_{pyear} p{cnt}
-
-                        on c.submtg_state_cd = p{cnt}.submtg_state_cd and
-                            c.msis_ident_num = p{cnt}.msis_ident_num"""
+                    on c.submtg_state_cd = p{cnt}.submtg_state_cd and
+                        c.msis_ident_num = p{cnt}.msis_ident_num"""
 
             # Now if we do NOT have prior year data, simply rename base_demo_YR to base_demo_out
+            self.de.append(type(self).__name__, z)
+
+            z = f"""create or replace temporary view base_demo_{self.de.YEAR}_out as
+                    select one.*
+                    {DE.address_same_year(self,'ELGBL_ZIP_CD')}
+                    {DE.address_same_year(self,'ELGBL_CNTY_CD')}
+                    {DE.address_same_year(self,'ELGBL_STATE_CD')}
+                    from base_demo_{self.de.YEAR} c
+                        left join base_demo_{self.de.YEAR}_out1 one
+                        on c.submtg_state_cd = one.submtg_state_cd and
+                            c.msis_ident_num = one.msis_ident_num
+                """+' '
+            cnt = 0
+            for pyear in self.de.PYEARS:
+                cnt += 1
+                z += f"""left join
+                    base_demo_{pyear} p{cnt}
+
+                on c.submtg_state_cd = p{cnt}.submtg_state_cd and
+                    c.msis_ident_num = p{cnt}.msis_ident_num
+                """
             self.de.append(type(self).__name__, z)
 
         if self.de.GETPRIOR == 0:
             z = f"""alter view base_demo_{self.de.YEAR} rename to base_demo_{self.de.YEAR}_out"""
             self.de.append(type(self).__name__, z)
 
-        z = f"""create or replace temporary view base_{self.de.YEAR} as
+        z = f"""create or replace temporary view base_{self.de.YEAR}_temp as
                 select a.*,
                     b.SSN_NUM as SSN_NUM_TEMP,
                     b.BIRTH_DT,
@@ -575,6 +573,47 @@ class DE0001BASE(DE):
 
                 on a.submtg_state_cd = b.submtg_state_cd and
                     a.msis_ident_num = b.msis_ident_num
+            """
+        self.de.append(type(self).__name__, z)
+
+        z = f"""create or replace temporary view base_{self.de.YEAR}_temp1 as
+                select *,
+                    case when AGE_NUM_TEMP is not null then AGE_NUM_TEMP 
+                        when BIRTH_DT is not null then
+                        case when DEATH_DT is not null then floor(datediff(DEATH_DT, BIRTH_DT) /365.25)
+                            when BSF_RECORD is not null then floor(datediff(BSF_LAST_DT, BIRTH_DT) /365.25)
+                        end
+                    else null 
+                    end as AGE_NUM_RAW
+                from base_{self.de.YEAR}_temp
+            """
+        self.de.append(type(self).__name__, z)        
+
+        z = f"""create or replace temporary view base_{self.de.YEAR}_temp2 as
+                select *,
+                    case when AGE_NUM_RAW < -1 then null 
+                        when AGE_NUM_RAW > 125 then 125 
+                    else AGE_NUM_RAW 
+                    end as AGE_NUM
+                from base_{self.de.YEAR}_temp1
+            """
+        self.de.append(type(self).__name__, z)
+
+        z = f"""create or replace temporary view base_{self.de.YEAR} as
+                select *,
+                    case when AGE_NUM between -1 and 0 then 1 
+                        when AGE_NUM between 1 and 5 then 2
+                        when AGE_NUM between 6 and 14 then 3
+                        when AGE_NUM between 15 and 18 then 4
+                        when AGE_NUM between 19 and 20 then 5
+                        when AGE_NUM between 21 and 44 then 6
+                        when AGE_NUM between 45 and 64 then 7
+                        when AGE_NUM between 65 and 74 then 8
+                        when AGE_NUM between 75 and 84 then 9
+                        when AGE_NUM between 85 and 125 then 10
+                    else null 
+                    end as AGE_GRP_FLAG
+                from base_{self.de.YEAR}_temp2
             """
         self.de.append(type(self).__name__, z)
 
@@ -710,9 +749,16 @@ class DE0001BASE(DE):
         z = f"""insert into {self.de.DA_SCHEMA_DC}.taf_ann_de_{tblname}
             (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
             select
-                {DE.table_id_cols_pre(self, suffix='_comb')}
+                cast ({self.de.DA_RUN_ID} || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
+                SUBMTG_STATE_CD_comb || '-' || MSIS_IDENT_NUM_comb as varchar(40)) as DE_LINK_KEY
+                ,'{self.de.YEAR}' as DE_FIL_DT
+                ,'{self.de.VERSION}' as ANN_DE_VRSN
+                ,MSIS_IDENT_NUM_comb
                 {self.basecols()}
-                {DE.table_id_cols_sfx(self)}
+                ,current_timestamp() as REC_ADD_TS
+                ,current_timestamp() as REC_UPDT_TS
+                ,{self.de.DA_RUN_ID} as DA_RUN_ID
+                ,SUBMTG_STATE_CD_comb
 
             from base_{self.de.YEAR}_final
             """

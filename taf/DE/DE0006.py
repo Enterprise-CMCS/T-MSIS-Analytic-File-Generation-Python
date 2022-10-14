@@ -9,9 +9,13 @@ class DE0006(DE):
 
     def __init__(self, runner: DE_Runner):
         DE.__init__(self, runner)
+        self.de = runner
+
+    #def __init__(self, de: DE_Runner):
+        #super().__init__(de)
 
     def create(self):
-        super().create()
+        #super().create()
         self.create_temp()
         self.create_wvr_suppl_table()
 
@@ -48,25 +52,33 @@ class DE0006(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create table if not exists {self.de.DA_SCHEMA_DC}.numbers
+        z = f"""create table if not exists {self.de.DA_SCHEMA_DC}.numbers_two
                 (slot int, month string)
                 using parquet"""
         self.de.append(type(self).__name__, z)
 
         z = f"""
-                insert into {self.de.DA_SCHEMA_DC}.numbers
+                insert into {self.de.DA_SCHEMA_DC}.numbers_two
                 values
             """
         for waiv in range(1, self.de.NWAIVSLOTS + 1):
             for m in range(1, 13):
                 mm = str(m)
                 if len(mm) == 1:
-                    mm.zfill(2)
+                    mm="0"+mm
 
                 z += f"""({waiv},'{mm}')"""
                 if waiv < self.de.NWAIVSLOTS or m < 12:
                     z += ","
+        self.de.append(type(self).__name__, z)
 
+        z = f"""CONVERT TO DELTA taf_python.numbers_two"""
+        self.de.append(type(self).__name__, z)
+
+        z = f"""OPTIMIZE taf_python.numbers_two ZORDER BY (slot, month)"""
+        self.de.append(type(self).__name__, z)
+
+        z = f"""VACUUM taf_python.numbers_two"""
         self.de.append(type(self).__name__, z)
 
         z = """create or replace temporary view waiver_long as
@@ -104,8 +116,8 @@ class DE0006(DE):
                 m = str(m).zfill(2)
                 z += f""",a.WVR_TYPE_CD{waiv}_{m}"""
                 z += f""",case when a.WVR_TYPE_CD{waiv}_{m} is not null
-                            and (a.WVR_TYPE_CD{waiv}_{m} >= '06' and a.WVR_TYPE_CD{waiv}_{m} <= '20')
-                            or (WVR_TYPE_CD{waiv}_{m}='33')  then 1
+                            and ((a.WVR_TYPE_CD{waiv}_{m} >= '06' and a.WVR_TYPE_CD{waiv}_{m} <= '20')
+                            or (WVR_TYPE_CD{waiv}_{m}='33'))  then 1
                         when a.WVR_TYPE_CD{waiv}_{m} is not null
                             and (a.WVR_TYPE_CD{waiv}_{m} = '01'
                             or (a.WVR_TYPE_CD{waiv}_{m} >= '22' and a.WVR_TYPE_CD{waiv}_{m} <= 30)) then 2
@@ -117,7 +129,7 @@ class DE0006(DE):
 
                 from waiver_{self.de.YEAR} a
                     join
-                    {self.de.DA_SCHEMA_DC}.numbers b
+                    {self.de.DA_SCHEMA_DC}.numbers_two b
                     on true) sub ) sub2
 
                 where WAIVER_CAT > 0
@@ -148,17 +160,17 @@ class DE0006(DE):
                     from
 
                 (select *
-                        ,first_value( WVR_TYPE_CD ) over (partition by submtg_state_cd
+                        ,first_value( WVR_TYPE_CD, true ) over (partition by submtg_state_cd
                                                                         ,msis_ident_num
                                                                         ,month
                                                                         ,WAIVER_CAT) as FIRST_WVR_TYPE_CD
 
-                            ,last_value( WVR_TYPE_CD ) over (partition by submtg_state_cd
+                            ,last_value( WVR_TYPE_CD, true ) over (partition by submtg_state_cd
                                                                         ,msis_ident_num
                                                                         ,month
                                                                         ,WAIVER_CAT) as LAST_WVR_TYPE_CD
                     from waiver_long
-                    where WVR_TYPE_CD is not null
+                    --where WVR_TYPE_CD is not null
                 ) as num """
 
         self.de.append(type(self).__name__, z)
@@ -203,7 +215,7 @@ class DE0006(DE):
                     ,max(_1915C_WVR_TYPE) as _1915C_WVR_TYPE
                     ,max(_1115_WVR_TYPE) as _1115_WVR_TYPE
             from waiver_counts
-            where month=('{m}')
+            where month='{m}'
 
             group by submtg_state_cd
                     ,msis_ident_num) as m{m}

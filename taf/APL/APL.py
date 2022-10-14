@@ -570,7 +570,7 @@ class APL(TAF):
     #
     #
     # ---------------------------------------------------------------------------------
-    def nonmiss_month(self, incol, outcol="", var_type="D"):
+    def nonmiss_month(self, incol, outcol=""):
 
         if outcol == "":
             outcol = incol + "_MN"
@@ -578,13 +578,10 @@ class APL(TAF):
         cases = []
         for m in self.monthsb:
 
-            z = f"""m{m}.{incol} is not null"""
-            if var_type != "D":
-                z += f"""and m{m}.{incol} not in ('',' ') then '{m}'"""
-
+            z = f"""m{m}.{incol} is not null then '{m}'"""
             cases.append(z)
 
-        return f"""case when {' or '.join(cases)} then 1 else '00' end as {outcol}"""
+        return f"""case when {' when '.join(cases)} else '00' end as {outcol}"""
 
     # ---------------------------------------------------------------------------------
     #

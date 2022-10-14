@@ -24,7 +24,11 @@ class BASE_DELIV(UP):
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, up: UP_Runner):
-        super().__init__(up)
+        UP.__init__(self, up)
+        self.up = up
+
+    #def __init__(self, up: UP_Runner):
+        #super().__init__(up)
 
         UP_Metadata.getDeliveryCodes()
 
