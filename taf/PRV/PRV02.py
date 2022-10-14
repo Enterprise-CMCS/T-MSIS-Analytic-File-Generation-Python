@@ -224,7 +224,7 @@ class PRV02(PRV):
                     else floor( (datediff(to_date('{self.prv.RPT_PRD}'), date_of_birth))/365.25 )
                     end as AGE_NUM,
                 case
-                    when date_of_death = to_date('{self.prv.RPT_PRD}') then null else date_of_death
+                    when date_of_death > to_date('{self.prv.RPT_PRD}') then null else date_of_death
                     end as DEATH_DT
             from
                 Prov02_Main_NP

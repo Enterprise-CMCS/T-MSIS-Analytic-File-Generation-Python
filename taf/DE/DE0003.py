@@ -10,10 +10,14 @@ class DE0003(DE):
     tblname: str = "address_phone"
 
     def __init__(self, runner: DE_Runner):
-        DE.__init__(DE, runner)
+        DE.__init__(self, runner)
+        self.de = runner
+
+    #def __init__(self, de: DE_Runner):
+        #super().__init__(de)
 
     def create(self):
-        super().create()
+        #super().create()
         self.create_temp()
         self.address_phone(runyear=self.de.YEAR)
         self.create_CNTCT_DTLS()
@@ -37,8 +41,8 @@ class DE0003(DE):
                                          ,{TAF_Closure.monthly_array(self, 'ELGBL_CNTY_CD_MAIL')}
                                          ,{TAF_Closure.monthly_array(self, 'ELGBL_STATE_CD_MAIL')}
                                          {DE.last_best(self, 'ELGBL_PHNE_NUM_HOME')}
-                                         {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_HOME')}
-                                         {DE.nonmiss_month(self, 'ELGBL_LINE_1_ADR_MAIL')}
+                                         {DE.nonmiss_month2(self, 'ELGBL_LINE_1_ADR_HOME',var_type=" ")}
+                                         {DE.nonmiss_month2(self, 'ELGBL_LINE_1_ADR_MAIL',var_type=" ")}
                                      """,
                              outercols=f"""{DE.address_flag(self)}
                                            {DE.assign_nonmiss_month(self, 'ELGBL_LINE_1_ADR', 'ELGBL_LINE_1_ADR_HOME_MN', 'ELGBL_LINE_1_ADR_HOME', monthval2='ELGBL_LINE_1_ADR_MAIL_MN', incol2='ELGBL_LINE_1_ADR_MAIL')}
@@ -79,40 +83,62 @@ class DE0003(DE):
     def create_CNTCT_DTLS(self):
         if self.de.GETPRIOR == 1:
             cnt = 0
-            if self.de.GETPRIOR == 1:
-                for pyear in range(1, self.de.PYEARS + 1):
-                    self.create_hist_adr(tblname="address_phone", inyear=pyear)
+            #if self.de.GETPRIOR == 1:
+                #for pyear in range(1, self.de.PYEARS + 1):
+            for pyear in self.de.PYEARS:
+                self.create_hist_adr(tblname="address_phone", inyear=pyear)
 
             # Join current and prior year(s) and first, identify year pulled for latest non-null value of ELGBL_LINE_1_ADR.
             # Use that year to then take value for all cols
 
-            z = f"""create or replace temporary view address_phone_{self.de.YEAR}_out as
+            z = f"""create or replace temporary view address_phone_{self.de.YEAR}_out1 as
                     select c.submtg_state_cd,
                         c.msis_ident_num
 
-            {DE.last_best(self, 'ELGBL_LINE_1_ADR', prior=1)}
-            ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""
-            for pyear in range(1, self.de.PYEARS + 1):
+                    {DE.last_best(self, 'ELGBL_LINE_1_ADR', prior=1)}
+            ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR} """+' '
+            #for pyear in range(1, self.de.PYEARS + 1):
+            for pyear in self.de.PYEARS:
                 cnt += 1
-                z += f"""when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear}"""
-            z += f"""else null
+                z += f""" when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear} """+' '
+            z += f""" else null
                     end as yearpull
-
-                {DE.address_same_year('ELGBL_ADR_MAIL_FLAG')}
-                {DE.address_same_year('ELGBL_LINE_2_ADR')}
-                {DE.address_same_year('ELGBL_LINE_3_ADR')}
-                {DE.address_same_year('ELGBL_CITY_NAME')}
-                {DE.address_same_year('ELGBL_ZIP_CD')}
-                {DE.address_same_year('ELGBL_CNTY_CD')}
-                {DE.address_same_year('ELGBL_STATE_CD')}
 
                 {DE.last_best(self, 'ELGBL_PHNE_NUM_HOME', prior=1)}
 
-                from address_phone_{self.de.YEAR} c"""
+                from address_phone_{self.de.YEAR} c"""+' '
             cnt = 0
-            for pyear in range(1, self.de.PYEARS + 1):
-                f"""left join
-                    address_phone_{self.de.YEAR} p{cnt}
+            #for pyear in range(1, self.de.PYEARS + 1):
+            for pyear in self.de.PYEARS:
+                cnt += 1
+                z += f"""left join
+                    address_phone_{pyear} p{cnt}
+
+                on c.submtg_state_cd = p{cnt}.submtg_state_cd and
+                    c.msis_ident_num = p{cnt}.msis_ident_num
+                """
+            self.de.append(type(self).__name__, z)
+
+
+            z = f"""create or replace temporary view address_phone_{self.de.YEAR}_out as
+                    select one.*
+                        {DE.address_same_year(self,'ELGBL_ADR_MAIL_FLAG')}
+                        {DE.address_same_year(self,'ELGBL_LINE_2_ADR')}
+                        {DE.address_same_year(self,'ELGBL_LINE_3_ADR')}
+                        {DE.address_same_year(self,'ELGBL_CITY_NAME')}
+                        {DE.address_same_year(self,'ELGBL_ZIP_CD')}
+                        {DE.address_same_year(self,'ELGBL_CNTY_CD')}
+                        {DE.address_same_year(self,'ELGBL_STATE_CD')}
+                        from address_phone_{self.de.YEAR} c
+                        left join address_phone_{self.de.YEAR}_out1 one
+                        on c.submtg_state_cd = one.submtg_state_cd and
+                            c.msis_ident_num = one.msis_ident_num
+                """+' '
+            cnt = 0
+            for pyear in self.de.PYEARS:
+                cnt += 1
+                z += f"""left join
+                    address_phone_{pyear} p{cnt}
 
                 on c.submtg_state_cd = p{cnt}.submtg_state_cd and
                     c.msis_ident_num = p{cnt}.msis_ident_num

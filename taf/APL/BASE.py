@@ -349,52 +349,50 @@ class BASE(APL):
 
         self.apl.append(type(self).__name__, z)
 
-        for m in range(1, 13):
+
+        z = f"""
+            create or replace temporary view srtd as
+            select
+                SUBMTG_STATE_CD, MC_PLAN_ID,
+                MC_EFF_DT, MC_CNTRCT_END_DT,
+                mc_mnth_eff_dt, mc_mnth_end_dt,
+                case (
+                        least	(mc_mnth_eff_dt,
+            """
+
+        for m in range(1, 12):
             mm = "{:02d}".format(m)
+            z += f"""lag(mc_mnth_eff_dt,{mm}) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt desc, mc_mnth_eff_dt desc)
+                    """
+            if m < 11:
+                z += f""" , """
 
-            z = f"""
-                create or replace temporary view srtd as
-                select
-                    SUBMTG_STATE_CD, MC_PLAN_ID,
-                    MC_EFF_DT, MC_CNTRCT_END_DT,
-                    mc_mnth_eff_dt, mc_mnth_end_dt,
-                    case (
-                            least	(mc_mnth_eff_dt,
-                """
+        z += f"""
+                                ) <= (lag(mc_mnth_end_dt) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt, mc_mnth_eff_dt))  + 1
+                        )
+                when true then 'C'
+                when false then 'A'
+                else 'B'
+                end
+                    as cont_rank,
+                least	(mc_mnth_eff_dt,
+            """
 
-            for m in range(1, 12):
-                mm = "{:02d}".format(m)
-                z += f"""lag(mc_mnth_eff_dt,{mm}) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt desc, mc_mnth_eff_dt desc)
-                     """
-                if m < 11:
-                    z += f""" , """
+        for m in range(1, 12):
+            mm = "{:02d}".format(m)
+            z += f"""lag(mc_mnth_eff_dt,{mm}) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt desc, mc_mnth_eff_dt desc)
+                    """
+            if m < 11:
+                z += f""" , """
 
-            z += f"""
-                                    ) <= (lag(mc_mnth_end_dt) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt, mc_mnth_eff_dt))  + 1
+        z += f"""
                             )
-                    when true then 'C'
-                    when false then 'A'
-                    else 'B'
-                    end
-                        as cont_rank,
-                    least	(mc_mnth_eff_dt,
-                """
-
-            for m in range(1, 12):
-                mm = "{:02d}".format(m)
-                z += f"""lag(mc_mnth_eff_dt,{mm}) over (partition by SUBMTG_STATE_CD, MC_PLAN_ID order by mc_mnth_end_dt desc, mc_mnth_eff_dt desc)
-                     """
-                if m < 11:
-                    z += f""" , """
-
-            z += f"""
-                                )
-                        as new_beginning
-                from cntrct_vert_month
-                group by SUBMTG_STATE_CD, MC_PLAN_ID, MC_EFF_DT, MC_CNTRCT_END_DT, mc_mnth_eff_dt, mc_mnth_end_dt
-                order by SUBMTG_STATE_CD, MC_PLAN_ID, mc_mnth_end_dt desc
-                """
-            self.apl.append(type(self).__name__, z)
+                    as new_beginning
+            from cntrct_vert_month
+            group by SUBMTG_STATE_CD, MC_PLAN_ID, MC_EFF_DT, MC_CNTRCT_END_DT, mc_mnth_eff_dt, mc_mnth_end_dt
+            order by SUBMTG_STATE_CD, MC_PLAN_ID, mc_mnth_end_dt desc
+            """
+        self.apl.append(type(self).__name__, z)
 
         z = f"""
             create or replace temporary view selected_cntrct_dt as

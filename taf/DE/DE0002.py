@@ -10,6 +10,9 @@ class DE0002(DE):
         DE.__init__(self, runner)
         self.de = runner
 
+    #def __init__(self, de: DE_Runner):
+        #super().__init__(de)
+
     def create(self):
         super().create()
         self.numbers()
@@ -19,9 +22,6 @@ class DE0002(DE):
         self.eligibility_dates('CHIP', 2)
         # Call this here to create the dates_out table to instert into
         self.create_dates_out_root()
-
-        # Drop temporary table
-        self.drop_table("numbers")
 
     def create_temp(self, tname):
         s = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_EFF_DT_', outcol="", nslots=16, truncfirst=1)
@@ -35,8 +35,7 @@ class DE0002(DE):
     def numbers(self):
         z = f"""create table if not exists {self.de.DA_SCHEMA_DC}.numbers
                 (slot int, month string)
-                using CSV"""
-
+                using parquet"""
         self.de.append(type(self).__name__, z)
 
         z = f"""insert into {self.de.DA_SCHEMA_DC}.numbers
@@ -45,10 +44,19 @@ class DE0002(DE):
             for m in range(1, 13):
                 mm = str(m)
                 if len(mm) == 1:
-                    mm.zfill(2)
+                    mm="0"+mm
                 z += f"""({s}, '{mm}')"""
                 if s < 16 or m < 12:
                     z += ","
+        self.de.append(type(self).__name__, z)
+
+        z = f"""CONVERT TO DELTA taf_python.numbers"""
+        self.de.append(type(self).__name__, z)
+
+        z = f"""OPTIMIZE taf_python.numbers ZORDER BY (slot, month)"""
+        self.de.append(type(self).__name__, z)
+
+        z = f"""VACUUM taf_python.numbers"""
         self.de.append(type(self).__name__, z)
 
     def eligibility_dates(self, dtype, dval):
@@ -126,8 +134,8 @@ class DE0002(DE):
                         t1.msis_ident_num = t2.msis_ident_num and
                         t1.dateId <> t2.dateId
 
-                where datediff(t1.{dtype}_ENRLMT_EFF_DT,t2.{dtype}_ENRLMT_EFF_DT) <= 0 and
-                    datediff(t1.{dtype}_ENRLMT_END_DT,t2.{dtype}_ENRLMT_END_DT) >= 0"""
+                where datediff(t1.{dtype}_ENRLMT_EFF_DT,t2.{dtype}_ENRLMT_EFF_DT) >= 0 and
+                    datediff(t1.{dtype}_ENRLMT_END_DT,t2.{dtype}_ENRLMT_END_DT) <= 0"""
 
         self.de.append(type(self).__name__, z)
 
@@ -215,11 +223,11 @@ class DE0002(DE):
                 lday = "28"
 
             z += f""",case
-                        when datediff({dtype}_ENRLMT_EFF_DT,to_date('{lday} {mm} {self.de.YEAR}','dd mm yyyy')) >= 1 and
-                             datediff({dtype}_ENRLMT_END_DT,to_date('01 {mm} {self.de.YEAR}','dd mm yyyy')) <= -1
+                        when datediff({dtype}_ENRLMT_EFF_DT,to_date('{lday} {mm} {self.de.YEAR}','dd MM yyyy')) <= 0 and
+                             datediff({dtype}_ENRLMT_END_DT,to_date('01 {mm} {self.de.YEAR}','dd MM yyyy')) >= 0
                         then
-                            datediff(greatest({dtype}_ENRLMT_EFF_DT,to_date('01 {mm} {self.de.YEAR}','dd mm yyyy')),
-                            least({dtype}_ENRLMT_END_DT,to_date('{lday} {mm} {self.de.YEAR}','dd mm yyyy'))) + 1
+                            datediff(least({dtype}_ENRLMT_END_DT,to_date('{lday} {mm} {self.de.YEAR}','dd MM yyyy')),
+                            greatest({dtype}_ENRLMT_EFF_DT,to_date('01 {mm} {self.de.YEAR}','dd MM yyyy'))) + 1
 
                         else 0
                         end as {dtype}_ENRLMT_DAYS_{mm}

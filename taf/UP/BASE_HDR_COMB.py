@@ -24,7 +24,11 @@ class BASE_HDR_COMB(UP):
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, up: UP_Runner):
-        super().__init__(up)
+        UP.__init__(self, up)
+        self.up = up
+
+    #def __init__(self, up: UP_Runner):
+        #super().__init__(up)
 
     # ---------------------------------------------------------------------------------
     #
@@ -87,20 +91,20 @@ class BASE_HDR_COMB(UP):
                     ,{ TAF_Closure.getmax(incol=f"{file}_ffs_sud_pd") }
                 """
 
-                # loop over MDCD/SCHIP and NON_XOVR/XOVR
-                for ind1 in self.inds1:
-                    for ind2 in self.inds2:
-                        z += f"""
-                             ,{ TAF_Closure.getmax(incol=f"TOT_{ind1}_{ind2}_FFS_{file}_PD") }
-                        """
+            # loop over MDCD/SCHIP and NON_XOVR/XOVR
+            for ind1 in self.inds1:
+                for ind2 in self.inds2:
+                    z += f"""
+                            ,{ TAF_Closure.getmax(incol=f"TOT_{ind1}_{ind2}_FFS_{file}_PD") }
+                    """
 
-                        # Only count claims for OT and RX - IP and LT will be counted when rolling up to
-                        # visits/days
-                        if file.casefold() in ("ot", "rx"):
-                            z += f"""
-                                 ,{ TAF_Closure.getmax(incol=f"{ind1}_{ind2}_FFS_{file}_CLM") }
-                                 ,{ TAF_Closure.getmax(incol=f"{ind1}_{ind2}_MC_{file}_CLM") }
-                            """
+                    # Only count claims for OT and RX - IP and LT will be counted when rolling up to
+                    # visits/days
+                    if file.casefold() in ("ot", "rx"):
+                        z += f"""
+                                ,{ TAF_Closure.getmax(incol=f"{ind1}_{ind2}_FFS_{file}_CLM") }
+                                ,{ TAF_Closure.getmax(incol=f"{ind1}_{ind2}_MC_{file}_CLM") }
+                        """
 
         z += f"""
              FROM (

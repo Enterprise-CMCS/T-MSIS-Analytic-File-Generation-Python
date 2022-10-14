@@ -9,9 +9,13 @@ class DE0008(DE):
 
     def __init__(self, runner: DE_Runner):
         DE.__init__(self, runner)
+        self.de = runner
+
+    #def __init__(self, de: DE_Runner):
+        #super().__init__(de)
 
     def create(self):
-        super().create()
+        #super().create()
         self.create_temp()
         self.create_mfp_suppl_table()
 
