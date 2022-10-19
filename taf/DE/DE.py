@@ -728,10 +728,12 @@ class DE(TAF):
         z += f"""
                 ,b.submtg_state_cd
                 ,max(b.da_run_id) AS da_run_id
+                ,max(b.fil_cret_dt) AS fil_cret_dt
             FROM job_cntl_parms_both_{file}_{inyear} a
             INNER JOIN (
                 SELECT da_run_id
                     ,incldd_state_cd AS submtg_state_cd
+                    ,fil_cret_dt
                 FROM {self.de.DA_SCHEMA_DC}.efts_fil_meta
                 WHERE incldd_state_cd != 'Missing'
                 ) b ON a.da_run_id = b.da_run_id
