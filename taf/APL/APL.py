@@ -143,7 +143,7 @@ class APL(TAF):
                 SELECT a.{file}_fil_dt
                     ,b.submtg_state_cd
                     ,max(b.da_run_id) AS da_run_id
-                    ,b.fil_cret_dt
+                    ,max(b.fil_cret_dt) AS fil_cret_dt
                 FROM job_cntl_parms_both_{file}_{inyear} a
                 INNER JOIN (
                     SELECT da_run_id
@@ -161,7 +161,6 @@ class APL(TAF):
                     ) b ON a.da_run_id = b.da_run_id
                 GROUP BY a.{file}_fil_dt
                     ,b.submtg_state_cd
-                    ,b.fil_cret_dt
         """
         self.apl.append(type(self).__name__, z)
 

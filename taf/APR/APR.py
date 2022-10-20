@@ -148,7 +148,7 @@ class APR(TAF):
             select a.{file}_fil_dt
                 ,b.submtg_state_cd
                 ,max(b.da_run_id) as da_run_id
-                ,b.fil_cret_dt
+                ,max(b.fil_cret_dt) as fil_cret_dt
 
             from job_cntl_parms_both_{file}_{inyear} a
                 inner join
@@ -166,7 +166,6 @@ class APR(TAF):
         z += f"""
             group by a.{file}_fil_dt
                     ,b.submtg_state_cd
-                    ,b.fil_cret_dt
         """
         self.apr.append(type(self).__name__, z)
 
