@@ -467,6 +467,7 @@ class OT_Metadata:
         "OTHR_TPL_CLCTN_CD",
         "PGM_TYPE_CD",
         "PLAN_ID_NUM",
+        "PRCDR_CD",
         "PRE_AUTHRZTN_NUM",
         "PRSCRBNG_PRVDR_NPI_NUM",
         "PRVDR_FAC_TYPE_CD",

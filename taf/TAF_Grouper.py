@@ -1654,7 +1654,7 @@ class TAF_Grouper:
                                 other_pmpm =0 and
                                 dsh_flag =0  and
                                 clm_type_cd in ('5','E','Y') and
-                            ( { TAF_Closure.misslogic("msis_ident_num","len(trim(msis_ident_num))") } )
+                            ( ( { TAF_Closure.misslogic("msis_ident_num","len(trim(msis_ident_num))") } )
         """
 
         if filetyp.casefold() in ("lt", "ip"):
@@ -1674,7 +1674,7 @@ class TAF_Grouper:
             """
 
         z += f"""
-                        then 1 else 0 end as supp_clms
+                        ) then 1 else 0 end as supp_clms
 
                         ,row_number() over (partition by submtg_state_cd,
              """
@@ -1933,8 +1933,8 @@ class TAF_Grouper:
             """
         if filetyp.casefold() == "othr_toc":
             z += f"""
-                            ,b.code_cat as prcdr_ccs_cat
-                            ,c.code_cat as hcpcs_ccs_cat
+                            ,trim(b.code_cat) as prcdr_ccs_cat
+                            ,trim(c.code_cat) as hcpcs_ccs_cat
 
                             ,case when  not_fin_clm=1 and
                                         (all_null_rev_cd=0 or
@@ -1985,8 +1985,8 @@ class TAF_Grouper:
                                 then 1 else 0 end as dental_lne_clms
 
                             ,case when not_fin_clm=1 and
-                                        (b.code_cat ='Transprt' or
-                                        c.code_cat ='Transprt')
+                                        (trim(b.code_cat) ='Transprt' or
+                                        trim(c.code_cat) ='Transprt')
                                 then 1 else 0 end as trnsprt_lne_clms
 
                             ,case when not_fin_clm=1 and
@@ -2002,19 +2002,19 @@ class TAF_Grouper:
 
 
                             ,case when not_fin_clm=1 and
-                                        (b.code_cat ='Lab' or
-                                        c.code_cat ='Lab' )
+                                        (trim(b.code_cat) ='Lab' or
+                                        trim(c.code_cat) ='Lab' )
                                 then 1 else 0 end as Lab_lne_clms
 
                             ,case when not_fin_clm=1 and
-                                        (b.code_cat ='Rad' or
-                                        c.code_cat ='Rad' )
+                                        (trim(b.code_cat) ='Rad' or
+                                        trim(c.code_cat) ='Rad' )
                                 then 1 else 0 end as Rad_lne_clms
 
 
                             ,case when not_fin_clm=1 and
-                                    (b.code_cat ='DME' or
-                                        c.code_cat ='DME' )
+                                    (trim(b.code_cat) ='DME' or
+                                        trim(c.code_cat) ='DME' )
                                 then 1 else 0 end as DME_lne_clms
             """
 
