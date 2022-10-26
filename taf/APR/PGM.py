@@ -16,22 +16,18 @@ from taf.APR.APR_Runner import APR_Runner
 # ---------------------------------------------------------------------------------
 class PGM(APR):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Generate the annual PR segment for affialiated programs
+
+    Note:   This program aggregates unique values across the CY year for variables in collist.
+            It creates _SPLMTL flag for base.
+            Then inserts affiliated programs records into the permanent TAF table.
+    """
+
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'PGM'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         # Create affiliated programs segment. Select records and select or create data elements

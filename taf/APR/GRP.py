@@ -16,12 +16,13 @@ from taf.APR.APR_Runner import APR_Runner
 # ---------------------------------------------------------------------------------
 class GRP(APR):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Generate the annual PR segment for affiliated groups
+
+    Note:   This program aggregates unique values across the CY year for variables in collist.
+            It creates _SPLMTL flag for base.
+            Then inserts affiliated groups records into the permanent TAF table.
+    """
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'GRP'
@@ -34,6 +35,8 @@ class GRP(APR):
     # ---------------------------------------------------------------------------------
     def create(self):
 
+        # Create affiliated groups segment. Select records and select or create data elements
+        
         collist_s = ['SUBMTG_STATE_AFLTD_PRVDR_ID']
 
         self.annual_segment(fileseg='GRP', dtfile='PRV', collist=collist_s, mnths='PRVDR_GRP_FLAG', outtbl="grp_pr_" + str(self.year))

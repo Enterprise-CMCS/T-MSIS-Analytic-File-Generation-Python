@@ -10,12 +10,9 @@ from taf.TAF import TAF
 # ---------------------------------------------------------------------------------
 class APR(TAF):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Generate the PL TAF using the monthly MCP TAF tables
+    """
     def __init__(self, apr: APR_Runner):
 
         self.apr = apr
@@ -29,18 +26,17 @@ class APR(TAF):
 
         APR.max_run_id(self, 'PRV', '', self.apr.reporting_period.year)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro create_segment, which will be called for each of the segments to run the respective
-    #    create macro, which includes output to the permanent table. This macro will then get the count
-    #    of records in that table, and output to the metadata table. (Note macro CREATE_META_INFO is in
-    #    AWS_Shared_Macros)
-    #    Macro parms:
-    #      -tblname=name of the output permanent table name (after TAF_ANN_{fil_typ}_)
-    #      -FIL_4TH_NODE=abbreviated name of the table to go into the metadata table
-    #
-    # ---------------------------------------------------------------------------------
+   
     def create(self, tblname, FIL_4TH_NODE):
+        """
+        Function create_segment, which will be called for each of the segments to run the respective
+        create macro, which includes output to the permanent table. This macro will then get the count
+        of records in that table, and output to the metadata table. (Note macro CREATE_META_INFO is in
+        AWS_Shared_Macros)
+        Function parms:
+            -tblname=name of the output permanent table name (after TAF_ANN_{fil_typ}_)
+            -FIL_4TH_NODE=abbreviated name of the table to go into the metadata table
+        """
 
         # %create_{tblname};
 
@@ -54,13 +50,19 @@ class APR(TAF):
         # %create_efts_metadata;
         pass
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def max_run_id(self, file: str, tbl: str, inyear):
+        
+        """
+        Macro max_run_id to get the highest da_run_id for the given state for input monthly TAF. This
+        table will then be merged back to the monthly TAF to pull all records for that state, month, and da_run_id.
+        It is also inserted into the metadata table to keep a record of the state/month DA_RUN_IDs that make up 
+        each annual run.
+        To get the max run ID, must go to the job control table and get the latest national run, and then also
+        get the latest state-specific run. Determine the later by state and month and then pull those IDs.
+
+        Macro parms:
+            inyear=input year, set to the current year
+        """
 
         filel = file.lower()
         if tbl == '':
@@ -187,14 +189,13 @@ class APR(TAF):
         """
         self.apr.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro join_monthly to join the max da_run_ids for the given state/month back to the monthly TAF and
-    #    then join each month by submtg_state_cd and main_id (plan or provider). Note this table will be pulled into the subquery in the
-    #    creation of each base and supplemental segment.
-    #
-    # ---------------------------------------------------------------------------------
+
     def join_monthly(self, fileseg, fil_typ, inyear, main_id):
+        """
+        Function join_monthly to join the max da_run_ids for the given state/month back to the monthly TAF and
+        then join each month by submtg_state_cd and main_id (plan or provider). Note this table will be pulled into the subquery in the
+        creation of each base and supplemental segment.
+        """
 
         if fil_typ == 'PL':
             file = 'MCP'
@@ -261,13 +262,12 @@ class APR(TAF):
 
         return "\n    ".join(result)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #   Macro all_monthly_segment(intbl=, filet=) to join the records with max da_run_ids for the given state/month back to the monthly TAF and
-    #   select all records for the target year (plan or provider). Note: this table will be the source for creation of annual supplemental segments.
-    #
-    # ---------------------------------------------------------------------------------
+    
     def all_monthly_segments(self, filet):
+        """
+        Macro all_monthly_segment(intbl=, filet=) to join the records with max da_run_ids for the given state/month back to the monthly TAF and
+        select all records for the target year (plan or provider). Note: this table will be the source for creation of annual supplemental segments.
+        """
 
         if self.fileseg.casefold() in ('bed', 'lic', 'idt'):
             splmtl_submsn_type = f"""
@@ -308,23 +308,21 @@ class APR(TAF):
         """
         return z.format()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #    Macro create_temp_table to create each main table. For each table, there are columns we must get from the raw data in
-    #    the subquery, and then columns we must get from the outer query that pulls from the subquery.
-    #    Macro parms:
-    # 	 fileseg: MCP options MCP/MCL/MCS/MCE - for OA a different method is used since no monthly supplimental file exists
-    # 			  PRV options PRV/PRV_LOC/PRV_GRP/PRV_PGM/PRV_TAX/PRV_ENR/PRV_LIC/PRV_IDT/PRV_BED
-    #    	tblname=table name
-    #    	subcols=creation statements for all columns that must be pulled from the raw data in the subquery
-    #    	outercols=creation statements for all columns that must be pulled from the subquery
-    #       subcols2 - subcols8=additional subcols when needing to loop over MC and waiver slots, because cannot
-    #                         loop over all slots within one macro var or will exceed text limit of 65534 chars
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create_temp_table(self, fileseg, tblname, inyear, subcols, outercols='', subcols2='', subcols3='', subcols4='', subcols5='', subcols6='', subcols7='', subcols8=''):
+
+        """
+        Macro create_temp_table to create each main table. For each table, there are columns we must get from the raw data in
+        the subquery, and then columns we must get from the outer query that pulls from the subquery.
+
+        Macro parms:
+        fileseg: MCP options MCP/MCL/MCS/MCE - for OA a different method is used since no monthly supplimental file exists
+                PRV options PRV/PRV_LOC/PRV_GRP/PRV_PGM/PRV_TAX/PRV_ENR/PRV_LIC/PRV_IDT/PRV_BED
+        tblname=table name
+        subcols=creation statements for all columns that must be pulled from the raw data in the subquery
+        outercols=creation statements for all columns that must be pulled from the subquery
+        subcols2 - subcols8=additional subcols when needing to loop over MC and waiver slots, because cannot
+                            loop over all slots within one macro var or will exceed text limit of 65534 chars
+        """
 
         # distkey({self.main_id})
         # sortkey(submtg_state_cd,{self.main_id},splmtl_submsn_type) as
@@ -354,17 +352,15 @@ class APR(TAF):
         """
         self.apr.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #   fileseg - identifies which file segment is being created
-    #   dtfile - XXX part of XXX_FIL_DT file date field with YYYYMM values
-    #   collist - macro variable with unique file grouping vars (separated by commas)
-    #   mnths - base name for the monthly flag fields
-    #   outtbl - name of the output table
-    #
-    #
-    # ---------------------------------------------------------------------------------
+
     def annual_segment(self, fileseg, dtfile, collist, mnths, outtbl):
+        """
+        fileseg - identifies which file segment is being created
+        dtfile - XXX part of XXX_FIL_DT file date field with YYYYMM values
+        collist - macro variable with unique file grouping vars (separated by commas)
+        mnths - base name for the monthly flag fields
+        outtbl - name of the output table
+        """
 
         z = f"""
              create or replace temporary view temp_rollup_{fileseg} as
@@ -407,17 +403,17 @@ class APR(TAF):
           """
         self.apr.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #      Macro any_col to look across a list of columns (non-monthly) to determine if ANY meet a given
-    #      condition. The default condition is = 1.
-    #      Macro parms:
-    #         incols=input columns
-    #         outcol=name of column to be output
-    #         condition=monthly condition to be evaulated, where default is = 1
-    #
-    # ---------------------------------------------------------------------------------
     def any_col(incols, outcol, condition='=1'):
+        
+        """
+        Macro any_col to look across a list of columns (non-monthly) to determine if ANY meet a given
+        condition. The default condition is = 1.
+
+        Macro parms:
+        incols=input columns
+        outcol=name of column to be output 
+        condition=monthly condition to be evaulated, where default is = 1
+        """
 
         cases = []
         for col in incols.split():
@@ -425,18 +421,19 @@ class APR(TAF):
 
         return f"case when {' or '.join(cases)} then 1 else 0 end as {outcol}"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro sum_months to take a SUM over all the input months.
-    # 	 Macro parms:
-    #       incol=input monthly column which will be summed (with _MO suffix for each month)
-    #       raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
-    #           in an earlier subquery and will therefore have the _MO suffixes, where default = 0
-    #       outcol=output column with summation, where the default is the incol name with the _MONTHS suffix
-    #
-    #
-    # ---------------------------------------------------------------------------------
+ 
     def sum_months(incol, raw=0, outcol=''):
+
+        """
+        Macro sum_months to take a SUM over all the input months.
+
+        Macro parms:
+        incol=input monthly column which will be summed (with _MO suffix for each month)
+        raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
+            in an earlier subquery and will therefore have the _MO suffixes, where default = 0
+        outcol=output column with summation, where the default is the incol name with the _MONTHS suffix
+        """
+
 
         if outcol == '':
             outcol = incol + '_MOS'
@@ -459,13 +456,10 @@ class APR(TAF):
 
         return f"{z} as {outcol}"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def monthly_array_ind_raw(incol, outcol=''):
+        """
+        TODO:  Update docstring
+        """
 
         if outcol == '':
             outcol = incol
@@ -477,13 +471,11 @@ class APR(TAF):
 
         return ' '.join(cases)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def map_arrayvars(varnm='', N=1):
+        """
+        TODO:  Update docstring
+        """
+
 
         vars = []
         for I_ in range(1, N):
@@ -492,18 +484,17 @@ class APR(TAF):
 
         return ' '.join(vars)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro nonmiss_month to loop through given variable from month 12 to 1 and identify the month with
-    #    the first non-missing value. This will then be used to pull additional columns that should be paired
-    #    with that month. The month = 00 if NO non-missing month.
-    #    Macro parms:
-    #    	incol=input monthly column
-    #    	outcol=output column with month number, where the default is the incol name with the _MN (month number) suffix
-    #
-    #
-    # ---------------------------------------------------------------------------------
+
     def nonmiss_month(self, incol, outcol=''):
+        """
+        Macro nonmiss_month to loop through given variable from month 12 to 1 and identify the month with
+        the first non-missing value. This will then be used to pull additional columns that should be paired
+        with that month. The month = 00 if NO non-missing month.
+
+        Macro parms:
+        incol=input monthly column
+        outcol=output column with month number, where the default is the incol name with the _MN (month number) suffix
+        """
 
         if outcol == '':
             outcol = incol + '_MN'
@@ -518,16 +509,14 @@ class APR(TAF):
 
         return f"""case when {' when '.join(cases)} else '00' end as {outcol}"""
 
-
-    # ---------------------------------------------------------------------------------
-    #
-    #   Macro ind_nonmiss_month to loop through individual provider variables
-    #   from month 12 to 1 and identify the month with the first non-missing value
-    #   for any of those variables. This will then be used to get those variables 
-    #   from that month if needed. The month = 00 if NO non-missing month.
-    #
-    # ---------------------------------------------------------------------------------
     def ind_nonmiss_month(self, outcol):
+
+        """
+        Macro ind_nonmiss_month to loop through individual provider variables
+        from month 12 to 1 and identify the month with the first non-missing value
+        for any of those variables. This will then be used to get those variables 
+        from that month if needed. The month = 00 if NO non-missing month.
+        """
 
         cases = []
         for m in self.monthsb:
@@ -541,25 +530,24 @@ class APR(TAF):
 
         return f"case {' '.join(cases)} else '00' end as {outcol}"
 
-
-
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro assign_nonmiss_month looks at the values for the monthly variables assigned in nonmiss_month,
-    #    and pulls multiple variables for that month based on the assigned month from nonmiss_month. Note
-    #    this can be based on 1 or 2 monthly assignments from nonmiss_month, where the first is evaluated and
-    #    if a month is never assigned to that variable, the second will be evaluated. This happens for HOME and
-    #    MAIL address. Note that nonmiss_month must be run in the subquery before assign_nonmiss_month is run in
-    #    the outer query.
-    #    Macro parms:
-    #    	outcol=column to assign based on the month captured in nonmiss_month
-    #    	monthval1=monthly value to evaluate captured in nonmiss_month
-    #    	incol1=input column to assign if monthval1 is met
-    #    	monthval2=optional monthly value to evaluate captured in nonmiss_month, IF monthval1=00
-    #    	incol2=optional input column to assign if monthval2 is met
-    #
-    # ---------------------------------------------------------------------------------
     def assign_nonmiss_month(self, outcol, monthval1, incol1, monthval2='', incol2=''):
+
+        """
+        Macro assign_nonmiss_month looks at the values for the monthly variables assigned in nonmiss_month,
+        and pulls multiple variables for that month based on the assigned month from nonmiss_month. Note
+        this can be based on 1 or 2 monthly assignments from nonmiss_month, where the first is evaluated and
+        if a month is never assigned to that variable, the second will be evaluated. This happens for HOME and
+        MAIL address. Note that nonmiss_month must be run in the subquery before assign_nonmiss_month is run in
+        the outer query.
+
+        Macro parms:
+            outcol=column to assign based on the month captured in nonmiss_month,
+            monthval1=monthly value to evaluate captured in nonmiss_month,
+            incol1=input column to assign if monthval1 is met,
+            monthval2=optional monthly value to evaluate captured in nonmiss_month, IF monthval1=00,
+            incol2=optional input column to assign if monthval2 is met
+
+        """
 
         cases = []
         for m in self.monthsb:
@@ -571,13 +559,10 @@ class APR(TAF):
 
         return f"case {' '.join(cases)} else null end as {outcol}"
 
-    # ---------------------------------------------------------------------------------
-    #
-    # create or replace temporary view <segment name>._SPLMTL to join to base
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create_splmlt(self, segname, segfile):
+        """
+        Create or replace temporary view <segment name>._SPLMTL to join to base
+        """
 
         # distkey({self.main_id})
         # sortkey(submtg_state_cd,{self.main_id}) as
@@ -598,15 +583,13 @@ class APR(TAF):
         """
         self.apr.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro table_id_cols to add the 6 cols that are the same across all tables into the final insert select
-    #    statement (DA_RUN_ID, {fil_typ}_LINK_KEY, {fil_typ}_FIL_DT, ANN_{fil_typ}_VRSN, SUBMTG_STATE_CD, &main_id)
-    #    link key includes supplimental state submission code for 'CHIP' or 'TPA' from the monthly TAF link key.
-    #    fil_typ - so this can be used for more than one TAF file type
-    #
-    # ---------------------------------------------------------------------------------
     def table_id_cols(self, loctype=0):
+        """
+        Macro table_id_cols to add the 6 cols that are the same across all tables into the final insert select
+        statement (DA_RUN_ID, {fil_typ}_LINK_KEY, {fil_typ}_FIL_DT, ANN_{fil_typ}_VRSN, SUBMTG_STATE_CD, &main_id)
+        link key includes supplimental state submission code for 'CHIP' or 'TPA' from the monthly TAF link key.
+        fil_typ - so this can be used for more than one TAF file type
+        """
 
         cols = []
 
@@ -640,14 +623,11 @@ class APR(TAF):
 
         return ','.join(cols.copy())
 
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro get_ann_cnt to get the count of the given table and put the count into a macro var
-    #    Macro parms: tblname=perm table name
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def get_ann_count(self, tblname):
+        """
+        Macro get_ann_cnt to get the count of the given table and put the count into a macro var
+        Macro parms: tblname=perm table name
+        """
 
         z = f"""
             (select count(submtg_state_cd) as row_cnt
@@ -657,14 +637,11 @@ class APR(TAF):
         """
         self.apr.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro create_efts_metadata to get the count of the given table by state and insert into the EFT
-    #    metadata table. Will be called in the get_segment macro.
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create_efts_metadata(self, tblname):
+        """
+        Macro create_efts_metadata to get the count of the given table by state and insert into the EFT
+        metadata table. Will be called in the get_segment macro.
+        """
 
         #  Create state counts and insert into metadata table
 

@@ -16,26 +16,21 @@ from taf.APR.APR_Runner import APR_Runner
 # ---------------------------------------------------------------------------------
 class ENR(APR):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Generate the annual PR segment for enrollment
+
+    Note:   This program aggregates unique values across the CY year for variables in collist.
+            It creates _SPLMTL flag for base.
+            Then inserts enrollment records into the permanent TAF table
+    """
+
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'ENR'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         # Create enrollment segment. Select records and select or create data elements
-
         collist_e = ['PRVDR_MDCD_EFCTV_DT',
                      'PRVDR_MDCD_END_DT',
                      'PRVDR_MDCD_ENRLMT_STUS_CD',
@@ -45,11 +40,9 @@ class ENR(APR):
                      'PRVDR_MDCD_ENRLMT_STUS_CTGRY']
 
         self.annual_segment(fileseg='ENR', dtfile='PRV', collist=collist_e, mnths='PRVDR_ENRLMT_FLAG', outtbl="enrlmt_pr_" + str(self.year))
-
         # Create temp table with just ENRLMT_SPLMTL to join to base
 
         self.create_splmlt(segname='ENRLMT', segfile="enrlmt_pr_" + str(self.year))
-
         # Insert into permanent table
 
         basecols = [ 'PRVDR_MDCD_EFCTV_DT'

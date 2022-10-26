@@ -16,22 +16,18 @@ from taf.APR.APR_Runner import APR_Runner
 # ---------------------------------------------------------------------------------
 class LIC(APR):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Generate the annual PR segment for license
+
+    Note:   This program aggregates unique values across the CY year for variables in collist.
+            It creates _SPLMTL flag for base.
+            Then inserts license records into the permanent TAF table. 
+    """
+    
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'LIC'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         # Create license segment. Select records and select or create data elements

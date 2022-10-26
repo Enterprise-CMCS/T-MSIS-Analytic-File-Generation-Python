@@ -16,12 +16,17 @@ from taf.APR.APR_Runner import APR_Runner
 # ---------------------------------------------------------------------------------
 class IDT(APR):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Generate the annual PR segment for identifiers
+
+    Note:   This program aggregates unique values across the CY year for variables in collist.
+            It creates _SPLMTL flag for base.
+            Then inserts identifiers records into the permanent TAF table.
+            A separate table with NPI information is also created which has one record per 
+            provider(submtg_state_cd, submtg_state_prvdr_id)and is used 
+            to linking prvdr_npi_01 prvdr_npi_02 prvdr_npi_cnt back to the PR base segment.
+    """
+
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'IDT'
@@ -127,6 +132,8 @@ class IDT(APR):
     #
     # ---------------------------------------------------------------------------------
     def create(self):
+
+        # Create identifiers segment. Select records and select or create data elements
 
         collist_s = ['PRVDR_LCTN_ID',
                      'PRVDR_ID_TYPE_CD',

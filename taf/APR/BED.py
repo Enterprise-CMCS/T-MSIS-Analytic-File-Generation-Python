@@ -16,22 +16,18 @@ from taf.APR.APR_Runner import APR_Runner
 # ---------------------------------------------------------------------------------
 class BED(APR):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description: Generate the annual PRR segment for bed type
+
+    Note:   This program aggregates unique values across the CY year for variables in collist.  
+            It creates _SPLMTL flag for base.
+            Then inserts bed type records into the permanent TAF table
+    """
+
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'BED'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         # Create bed type segment. Select records and select or create data elements
