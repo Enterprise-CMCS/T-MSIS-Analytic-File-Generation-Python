@@ -9,31 +9,19 @@ from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class MCP07(MCP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Selection macros for the T-MSIS MC segments
+    """
+     
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_07_accreditation(self, runtbl, outtbl):
-
+        """
+        000-07 Accreditation segment
+        """
+         
         # screen out all but the latest run id
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
@@ -107,14 +95,11 @@ class MCP07(MCP):
         # row count
         self.count_rows(outtbl, "cnt_final", "MC07_Final")
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         self.process_07_accreditation("MC02_Main_RAW", "MC07_Accreditation")
 
         self.recode_lookup(
@@ -348,13 +333,11 @@ class MCP07(MCP):
 
         self.mcp.append(type(self).__name__, z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: MCP_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         base_col_list = [   
                             "DA_RUN_ID",
                             "MCP_LINK_KEY",

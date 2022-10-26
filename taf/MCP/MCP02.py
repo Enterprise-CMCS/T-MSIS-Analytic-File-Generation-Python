@@ -9,31 +9,19 @@ from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class MCP02(MCP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Selection macros for the T-MSIS provider segments
+    """
+     
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_02_mcmain(self, runtbl, outtbl):
-
+        """
+        000-02 main segment
+        """
+         
         # screen out all but the latest run id
         runlist = ["tms_run_id", "submitting_state"]
 
@@ -100,14 +88,11 @@ class MCP02(MCP):
         # row count
         self.count_rows(outtbl, "cnt_final", "MC02_Final")
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         self.process_02_mcmain("MC01_Header", "MC02_Main_RAW")
 
         self.recode_notnull(

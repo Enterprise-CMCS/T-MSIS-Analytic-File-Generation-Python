@@ -8,34 +8,21 @@ from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.MCP.MCP_Metadata import MCP_Metadata
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class MCP01(MCP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Selection macros for the T-MSIS provider segments
+    """
+     
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
         MCP_Metadata.getFormatsForValidationAndRecode()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_01_header(self, outtbl):
-
+        """
+        000-01 header segment
+        """
+         
         cols01 = ["tms_run_id", "submitting_state"]
 
         # copy provider header table
@@ -61,14 +48,11 @@ class MCP01(MCP):
 
         # self.mcp.countrows(outtbl, 'cnt_latest', 'MC01_Latest')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         self.process_01_header("MC01_Header")
 
 
