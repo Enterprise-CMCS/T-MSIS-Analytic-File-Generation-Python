@@ -8,26 +8,20 @@ from taf.TAF_Runner import TAF_Runner
 #
 # -------------------------------------------------------------------------------------
 class PRV_Runner(TAF_Runner):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         super().__init__(reporting_period, state_code, run_id)
 
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def AWS_MAXID_pull_non_claim(self, TMSIS_SCHEMA, table, hdrtable):
-
-        # /* applies cutover date while identifying max run id of last successful T-MSIS load by state - results stored in combined_list */
-        # /* hdrtable already has the header records selected for tms_is_active=1 and tms_reporting_period is not null and tot_rec_cnt > 0 and ST_FILTER  */
+        """
+        Applies cutover date while identifying max run id of last successful T-MSIS load by state - results stored in combined_list.
+        hdrtable already has the header records selected for tms_is_active=1 and tms_reporting_period is not null and tot_rec_cnt > 0 and ST_FILTER.
+        """
 
         # %global RUN_IDS STATE_IDS combined_list;
 
@@ -77,21 +71,13 @@ class PRV_Runner(TAF_Runner):
         # %put state_ids = &state_ids;
         # %put combined_list = &combined_list;
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def ST_FILTER(self):
+        """
+        TODO:  Update docstring
+        """
+         
         return "and trim(submitting_state) not in ('94','96')"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def init(self):
         from taf.PRV.PRV01 import PRV01
         from taf.PRV.PRV02 import PRV02

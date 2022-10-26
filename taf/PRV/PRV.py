@@ -1,39 +1,27 @@
 from taf.PRV.PRV_Runner import PRV_Runner
 from taf.TAF import TAF
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV(TAF):
-
+    """
+    Description:  Collection of macros used by the PRV TAF build.
+    """
+     
     srtlist = ['tms_run_id', 'submitting_state', 'submitting_state_prov_id']
     srtlistl = ['tms_run_id',
                 'submitting_state',
                 'submitting_state_prov_id',
                 'prov_location_id']
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, prv: PRV_Runner):
 
         self.prv = prv
         self.st_fil_type = 'PRV'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def set_end_dt(self, enddt):
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
             case
                 when to_date('{enddt}') is null then to_date('9999-12-31')
@@ -43,13 +31,11 @@ class PRV(TAF):
             """
         return z.format(enddt)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def zero_pad(self, var_cd, var_len):
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
             case
                 when length(trim({var_cd})) < {var_len} and length(trim({var_cd})) > 0 and {var_cd} is not null
@@ -59,14 +45,11 @@ class PRV(TAF):
             """
         return z.format(var_cd, var_len)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def screen_runid(self, intbl, runtbl, runvars, outtbl, runtyp='C'):
-
+        """
+        TODO:  Update docstring
+        """
+         
         if runtyp == 'M':
             on = f"on { self.write_equalkeys(runvars, 'T', 'R') }"
         elif runtyp == 'L':
@@ -95,13 +78,11 @@ class PRV(TAF):
 
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def copy_activerows(self, intbl, collist, whr, outtbl):
+        """
+        TODO:  Update docstring
+        """
+         
         from taf.TAF_Closure import TAF_Closure
 
         if whr != '':
@@ -128,15 +109,12 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     # def copy_activerows_nts(self, intbl, collist, whr, outtbl):
     def copy_activerows_nts(self, intbl, collist, outtbl):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # diststyle even compound sortkey(tms_run_id, submitting_state)
         z = f"""
                 create or replace temporary view {outtbl} as
@@ -162,13 +140,10 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def screen_dates(self, intbl, keyvars, dtvar_beg, dtvar_end, outtbl):
+        """
+        TODO:  Update docstring
+        """
 
         # diststyle key
         # distkey(submitting_state_prov_id)
@@ -206,14 +181,11 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def remove_duprecs(self, intbl, grpvars, dtvar_beg, dtvar_end, ordvar, outtbl):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # limit data to the latest available reporting periods
         # distkey(submitting_state_prov_id)
         z = f"""
@@ -250,14 +222,11 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def count_rows(self, intbl, cntvar, outds):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
             create or replace temporary view {outds} as
             select
@@ -269,14 +238,11 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def recode_lookup(self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen=None):
-
+        """
+        TODO:  Update docstring
+        """
+         
         if fldtyp == 'C':
             select = f"T.*, cast(F.label as varchar({fldlen})) as {newvar}"
         else:
@@ -299,14 +265,11 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def recode_notnull(self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen):
-
+        """
+        TODO:  Update docstring
+        """
+         
         if fldtyp == 'C':
             # :: varchar({fldlen}) as {newvar}"
             case = f"case when F.label is null then T.{srcvar} else F.label end as {newvar}"
@@ -331,26 +294,20 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def write_equalkeys(self, keyvars, t1, t2):
-
+        """
+        TODO:  Update docstring
+        """
+         
         klist = map(lambda x: f"{t1}.{x} = {t2}.{x}", keyvars)
         keylist = list(klist)
         return ' and '.join(str(k) for k in keylist)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def write_keyprefix(self, keyvars, prefix):
-
+        """
+        TODO:  Update docstring
+        """
+         
         klist = map(lambda x: f"{prefix}.{x}", keyvars)
         keylist = list(klist)
         # return ', '.join(str(k) for k in keylist)

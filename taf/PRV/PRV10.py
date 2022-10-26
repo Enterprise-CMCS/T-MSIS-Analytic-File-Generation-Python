@@ -2,32 +2,19 @@ from taf.PRV import PRV_Runner
 
 from taf.PRV.PRV import PRV
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV10(PRV):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  selection macros for the T-MSIS provider segments
+    """
+     
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_10_beds(self, loctbl, outtbl):
-
+        """
+        000-10 bed type segment
+        """
+         
         # screen out all but the latest(selected) run id - provider id - location id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -99,14 +86,11 @@ class PRV10(PRV):
                             'bed_type_code',
                             outtbl)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV10_Final)
 
@@ -275,13 +259,11 @@ class PRV10(PRV):
         """
         self.prv.append(type(self).__name__, z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: PRV_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_bed
                 SELECT

@@ -3,31 +3,19 @@ from taf.PRV import PRV_Runner
 from taf.PRV.PRV import PRV
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV08(PRV):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  selection macros for the T-MSIS provider segments
+    """
+     
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_08_groups(self, maintbl, outtbl):
-
+        """
+        000-08 affiliated groups segment
+        """
+         
         # screen out all but the latest(selected) run id - provider id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -92,14 +80,11 @@ class PRV08(PRV):
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV08_Final)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         self.process_08_groups('Prov02_Main',
                                'Prov08_Groups')
 
@@ -122,13 +107,11 @@ class PRV08(PRV):
             """
         self.prv.append(type(self).__name__, z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: PRV_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_grp
                 SELECT

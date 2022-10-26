@@ -9,32 +9,20 @@ from taf.PRV.PRV import PRV
 from taf.PRV.PRV_Metadata import PRV_Metadata
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV01(PRV):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  selection macros for the T-MSIS provider segments
+    """
+     
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
         PRV_Metadata.getFormatsForValidationAndRecode()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_01_header(self, outtbl):
+        """
+        000-01 header segment
+        """
 
         cols01 = ['tms_run_id', 'submitting_state']
 
@@ -59,14 +47,11 @@ class PRV01(PRV):
 
         # self.prv.countrows(outtbl, 'cnt_latest', 'PRV01_Latest')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         self.process_01_header('Prov01_Header')
 
 
