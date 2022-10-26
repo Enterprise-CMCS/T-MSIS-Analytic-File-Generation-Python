@@ -5,22 +5,20 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class IP(TAF):
+    """
+    Program contains macros that massage data from various segments in T-MSIS.					*/
+    THIS PROGRAM DOES NOT STAND ALONE.                                                      	*/
+    LT_Build.sas - pull program for LT build
+    """
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def __init__(self, runner: IP_Runner):
         super().__init__(runner)
         self.st_fil_type = "IP"
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
+        """
+        Pull line item records for header records linked with claims family table dataset.
+        """
 
         # Create a temporary line file
         # FIXME: change base table or view when TMSIS changes are made

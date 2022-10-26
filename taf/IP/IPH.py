@@ -13,14 +13,14 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class IPH:
+    """
+    TODO:  Update docstring
+    """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self, runner: IP_Runner):
+        """
+        TODO:  Update docstring
+        """
 
         z = f"""
             create or replace temporary view IPH as
@@ -264,12 +264,10 @@ class IPH:
         """
         runner.append("IP", z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: IP_Runner):
+        """
+        TODO:  Update docstring
+        """
 
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_iph

@@ -3,29 +3,18 @@ from taf.TAF_Grouper import TAF_Grouper
 from taf.TAF_Runner import TAF_Runner
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class IP_Runner(TAF_Runner):
+    """
+    TODO:  Update docstring
+    """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         super().__init__(reporting_period, state_code, run_id)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def init(self):
+        """
+        TODO:  Update docstring
+        """
 
         from taf.IP.IP import IP
         from taf.IP.IPH import IPH
