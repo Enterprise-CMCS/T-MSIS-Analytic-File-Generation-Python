@@ -10,14 +10,16 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class OTH:
+    """
+    Description:    Program contains macros that massage data from various segments in T-MSIS					
+                    THIS PROGRAM DOES NOT STAND ALONE.                                                      	
+                    OT_build.sas - pull program for OT build
+    """
 
-    # --------------------------------------------------------------------------------- }
-    #
-    #
-    #
-    #
-    # --------------------------------------------------------------------------------- }
     def create(self, runner: OT_Runner):
+        """
+        TODO:  Update docstring
+        """
 
         # ORDER VARIABLES AND UPCASE', LEFT PAD WITH ZEROS AND RESET COALESCE VALUES HEADER FILE }
 
@@ -181,13 +183,11 @@ class OTH:
 
         runner.append("OTHR_TOC", z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: OT_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_oth_test_srvcs
                 SELECT

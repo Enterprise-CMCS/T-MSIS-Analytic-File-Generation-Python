@@ -11,14 +11,17 @@ from taf.TAF_Metadata import TAF_Metadata
 
 
 class OTL:
-
-    # --------------------------------------------------------------------------------- }
-    #
-    #
-    #
-    #
-    # --------------------------------------------------------------------------------- }
+    """
+    Description:    Program contains macros that massage data from various segments in T-MSIS					
+                    THIS PROGRAM DOES NOT STAND ALONE.                                                      	
+                    OT_build.sas - pull program for OT build
+    """
+     
     def create(self, runner: OT_Runner):
+        """
+        TODO:  Update docstring
+        """
+         
 
         z = f"""
             create or replace temporary view OTL as
@@ -108,13 +111,11 @@ class OTL:
 
         runner.append("OTHR_TOC", z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: OT_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_otl_test_srvcs
                 SELECT

@@ -10,22 +10,17 @@ from taf.TAF_Runner import TAF_Runner
 #
 # -------------------------------------------------------------------------------------
 class OT_Runner(TAF_Runner):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         super().__init__(reporting_period, state_code, run_id)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def init(self):
+        """
+        TODO:  Update docstring
+        """
 
         from taf.OT.OT import OT
         from taf.OT.OTH import OTH
