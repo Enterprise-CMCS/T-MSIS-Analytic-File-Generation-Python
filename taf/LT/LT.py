@@ -5,23 +5,21 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class LT(TAF):
-
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
+    """
+    Description:    Program contains macros that massage data from various segments in T-MSIS					*/
+                    THIS PROGRAM DOES NOT STAND ALONE.                                                      	*/
+                    LT_Build.sas - pull program for LT build
+    """
+    
     def __init__(self, runner: LT_Runner):
         super().__init__(runner)
         self.st_fil_type = "LT"
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
-
+        """
+        Pull line item records for header records linked with claims family table dataset.
+        """
+         
         # Subset line file and attach row numbers to all records belonging to an ICN set.  Fix PA & IA
         # FIXME: change base table or view when TMSIS changes are made
         z = f"""

@@ -9,23 +9,18 @@ from taf.TAF_Runner import TAF_Runner
 #
 # -------------------------------------------------------------------------------------
 class LT_Runner(TAF_Runner):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         super().__init__(reporting_period, state_code, run_id)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def init(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         from taf.LT.LT import LT
         from taf.LT.LTH import LTH
         from taf.LT.LTL import LTL

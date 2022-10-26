@@ -10,13 +10,12 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class LTH:
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:    Program contains macros that massage data from various segments in T-MSIS					*/
+                    THIS PROGRAM DOES NOT STAND ALONE.                                                      	*/
+                    LT_Build.sas - pull program for LT build
+    """
+     
     def create(self, runner: LT_Runner):
 
         z = f"""
@@ -195,13 +194,11 @@ class LTH:
 
         runner.append("LT", z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: LT_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_lth
                 SELECT

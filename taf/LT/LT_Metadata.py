@@ -8,14 +8,14 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class LT_Metadata:
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+    
     def selectDataElements(segment_id: str, alias: str):
+        """
+        TODO:  Update docstring
+        """
 
         new_line_comma = "\n\t\t\t,"
 
@@ -49,13 +49,10 @@ class LT_Metadata:
 
         return new_line_comma.join(columns)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def finalFormatter(output_columns):
+        """
+        TODO:  Update docstring
+        """
 
         new_line_comma = "\n\t\t\t,"
 
@@ -63,13 +60,11 @@ class LT_Metadata:
 
         return new_line_comma.join(columns)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def dates_of_service(colname: str, alias: str):
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
             case
                 when {alias}.{colname} is not null then {alias}.{colname}
@@ -82,12 +77,6 @@ class LT_Metadata:
             coalesce({alias}.{colname}, '01JAN1960') as {colname}
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     cleanser = {
         "ADJDCTN_DT": TAF_Closure.coalesce_date,
         "ADJSTMT_CLM_NUM": TAF_Closure.coalesce_tilda,
@@ -102,20 +91,8 @@ class LT_Metadata:
         "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     validator = {}
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     columns = {
         "CLT00001": [
             "TMSIS_RUN_ID",

@@ -11,13 +11,12 @@ from taf.TAF_Metadata import TAF_Metadata
 
 
 class LTL:
-
-    # --------------------------------------------------------------------------------- }
-    #
-    #
-    #
-    #
-    # --------------------------------------------------------------------------------- }
+    """
+    Description:    Program contains macros that massage data from various segments in T-MSIS					*/
+                    THIS PROGRAM DOES NOT STAND ALONE.                                                      	*/
+                    LT_Build.sas - pull program for LT build
+    """
+     
     def create(self, runner: LT_Runner):
 
         z = f"""
@@ -100,13 +99,11 @@ class LTL:
 
         runner.append("LT", z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: LT_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_ltl
                 SELECT
