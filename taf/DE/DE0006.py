@@ -4,6 +4,19 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0006(DE):
+    """
+    Description:  Generate the annual BSF segment 006: Waiver
+
+    Notes:  This program arrays out all waiver slots for every month. Also, it creates counts of
+            enrolled months for each type of waiver (based on a given type in ANY of the monthly slots
+            for each month). To create _1915C_WVR_TYPE and _1115_WVR_TYPE (latest 1915C and 1115
+            waivers), must take waivers from wide to long to look across months, and then join
+            back to the main table.
+            It then inserts this temp table into the permanent table and deletes the temp table.
+            It also creates the flag WAIVER_SPLMTL which = 1 if ANY ID or type in the year is
+            non-null, which will be kept in a temp table to be joined to the base segment.
+    """
+
     tblname: str = "waiver"
     tbl_suffix: str = "wvr"
 
@@ -20,6 +33,13 @@ class DE0006(DE):
         self.create_wvr_suppl_table()
 
     def create_temp(self):
+        """
+        Create monthly indicators for each type of Waiver to then sum 
+        in the outer query. Note this will run for months 1-3 (which is the
+        text limit of the macro var), and then the other months will run in 
+        below additional subcol macro vars.
+        """
+
         s = f"""{DE.run_waiv_slots(self, 1, 3)}
                 ,{TAF_Closure.monthly_array(self, 'WVR_ID', nslots=self.de.NWAIVSLOTS)}
                 ,{TAF_Closure.monthly_array(self, 'WVR_TYPE_CD', nslots=self.de.NWAIVSLOTS)}
@@ -43,6 +63,10 @@ class DE0006(DE):
         return
 
     def create_wvr_suppl_table(self):
+        """
+        Main function to generate the annual BSF segment 006: Waiver.
+        """
+
         z = f"""create or replace temporary view WAIVER_SPLMTL_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num

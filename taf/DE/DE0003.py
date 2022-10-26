@@ -6,6 +6,10 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0003(DE):
+    """
+    Description:  Generate the annual DE segment 003: Address/Phone
+    """
+
     tbl_suffix: str = "cntct_dtls"
     tblname: str = "address_phone"
 
@@ -17,12 +21,20 @@ class DE0003(DE):
         #super().__init__(de)
 
     def create(self):
+        """
+        TODO:  Update docstring for create()
+        """
+
         #super().create()
         self.create_temp()
         self.address_phone(runyear=self.de.YEAR)
         self.create_CNTCT_DTLS()
 
     def address_phone(self, runyear):
+        """
+        Pull in address and phone, for which we DO look to prior year. 
+        """
+
         DE.create_temp_table(self,
                              tblname=self.tblname,
                              inyear=runyear,
@@ -55,6 +67,11 @@ class DE0003(DE):
                                         """)
 
     def create_temp(self):
+        """
+        Create the name part of the segment, pulling in only those elements for which we do 
+        NOT look to the prior year.
+        """
+
         DE.create_temp_table(self,
                              tblname='name',
                              inyear=self.de.YEAR,
@@ -64,6 +81,10 @@ class DE0003(DE):
                             """)
 
     def create_hist_adr(self, tblname, inyear):
+        """
+        TODO:  Update docstring for create_hist_adr()
+        """
+
         z = f"""create or replace temporary view {tblname}_{inyear} as
                 select
                     b.*
@@ -81,6 +102,9 @@ class DE0003(DE):
         self.de.append(type(self).__name__, z)
 
     def create_CNTCT_DTLS(self):
+        """
+        Main function to generate the annual DE segment 003: Address/Phone
+        """
         if self.de.GETPRIOR == 1:
             cnt = 0
             #if self.de.GETPRIOR == 1:

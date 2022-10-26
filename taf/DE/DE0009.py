@@ -4,6 +4,16 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0009(DE):
+    """
+    Description:  Generate the annual DE segment 009: Disability & Need
+
+    Notes:  This program reads in all columns related to: HCBS, LTSS, LCKIN, and other needs.
+            It creates four _SPLMTL flags based on these cols: HCBS_COND_SPLMTL, LTSS_SPLMTL, LCKIN_SPLMTL,
+            and OTHER_NEEDS_SPLMTL. These columns are kept in a temp table to join to the base
+            table, and then the rest of the columns are inserted into the permanent table, subset
+            to any of the four flags = 1
+    """
+
     table_name: str = "disability_need"
     tbl_suffix: str = "dsblty"
 
@@ -20,6 +30,9 @@ class DE0009(DE):
         self.create_dsblty_suppl_table()
 
     def create_temp(self):
+        """
+        TODO:  Update docstring
+        """
 
         # Must use month of latest non-missing LCKIN_PRVDR_NUM1 to pull all three NUMs
         # and TYPES (so must array to then pull in outer query)
@@ -129,6 +142,10 @@ class DE0009(DE):
         return
 
     def create_dsblty_suppl_table(self):
+        """
+        Main function to generate the annual DE segment 009: Disability & Need
+        """
+
         z = f"""create or replace temporary view DIS_NEED_SPLMTLS_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num
