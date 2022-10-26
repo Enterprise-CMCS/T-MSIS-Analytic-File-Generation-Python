@@ -341,9 +341,9 @@ class APL(TAF):
         subcols8=""):
 
         """
-        /* Macro create_temp_table to create each main table. For each table, there are columns we must get from the raw data in
+        Function create_temp_table to create each main table. For each table, there are columns we must get from the raw data in
         the subquery, and then columns we must get from the outer query that pulls from the subquery.
-        Macro parms:
+        Function parms:
             fileseg: MCP options MCP/MCL/MCS/MCE - for OA a different method is used since no monthly supplimental file exists
             tblname=table name
             subcols=creation statements for all columns that must be pulled from the raw data in the subquery
@@ -517,10 +517,10 @@ class APL(TAF):
 
         """
         Function sum_months to take a SUM over all the input months.
-            Macro parms:
-            incol=input monthly column which will be summed (with _MO suffix for each month)
-            raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
-                in an earlier subquery and will therefore have the _MO suffixes, where default = 0
+        Macro parms:
+        incol=input monthly column which will be summed (with _MO suffix for each month)
+        raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
+            in an earlier subquery and will therefore have the _MO suffixes, where default = 0
             outcol=output column with summation, where the default is the incol name with the _MONTHS suffix
         """
 
@@ -573,17 +573,6 @@ class APL(TAF):
 
         return " ".join(vars)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #    Macro nonmiss_month to loop through given variable from month 12 to 1 and identify the month with
-    #    the first non-missing value. This will then be used to pull additional columns that should be paired
-    #    with that month. The month = 00 if NO non-missing month.
-    #    Macro parms:
-    #    	incol=input monthly column
-    #    	outcol=output column with month number, where the default is the incol name with the _MN (month number) suffix
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def nonmiss_month(self, incol, outcol=""):
 
         """
@@ -634,12 +623,6 @@ class APL(TAF):
 
         return f"case {' '.join(cases)} else null end as {outcol}"
 
-    # ---------------------------------------------------------------------------------
-    #
-    # create or replace temporary view <segment name>._SPLMTL to join to base
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create_splmlt(self, segname, segfile):
 
         """    

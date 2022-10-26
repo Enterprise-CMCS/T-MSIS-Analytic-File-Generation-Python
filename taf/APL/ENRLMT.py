@@ -50,9 +50,10 @@ class ENRLMT(APL):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        # create enrollment segment
-        # select records
-        # select or create data elements
+        """
+        Create enrollment segment. Select records and select or create data elements.
+        """
+
         collist_e = ["MC_PLAN_POP"]
 
         self.annual_segment(
@@ -73,7 +74,11 @@ class ENRLMT(APL):
     #
     # ---------------------------------------------------------------------------------
     def build(self):
-        # insert into permanent table
+        
+        """
+        insert into permanent table
+        """
+        
         # z = f"""
         #     INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_ENRLMT
         #     SELECT

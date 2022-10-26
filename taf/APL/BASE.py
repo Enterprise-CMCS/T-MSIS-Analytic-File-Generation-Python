@@ -109,16 +109,12 @@ class BASE(APL):
             "OPRTG_AUTHRTY_1115_1915K_IND",
         ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
-        # create the partial base segment
-        # pulling in only columns are not accreditation
+        """
+        Create the partial base segment, pulling in only columns are not acceditation
+        """
+
         subcols = [
             "%last_best(MC_NAME)",
             "%last_best(MC_PLAN_TYPE_CD)",
@@ -470,14 +466,12 @@ class BASE(APL):
             """
         self.apl.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def build(self):
-        # insert into permanent table
+        
+        """
+        Insert into permanent table
+        """
+
         z = f"""
             INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_BASE
             SELECT

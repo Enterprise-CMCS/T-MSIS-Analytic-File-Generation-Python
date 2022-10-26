@@ -55,9 +55,9 @@ class LCTN(APL):
     # ---------------------------------------------------------------------------------
     def create(self):
 
-        # create location segment
-        # select records
-        # select or create data elements
+        """
+        Create location segment. Select records and select or create data elements.
+        """
 
         collist_l = [
             "MC_LCTN_ID",
@@ -88,7 +88,11 @@ class LCTN(APL):
     #
     # ---------------------------------------------------------------------------------
     def build(self):
-        # insert into permanent table
+        
+        """
+        insert into permanent table
+        """
+        
         # z = f"""
             # INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_LCTN
             # SELECT

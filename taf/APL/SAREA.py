@@ -16,12 +16,12 @@ from taf.APL.APL_Runner import APL_Runner
 # ---------------------------------------------------------------------------------
 class SAREA(APL):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Generate the annual PL segment for Service Area
+    Note:   This program aggregates unique values across the CY year for variables in collist.
+            It creates _SPLMTL flag for base.  Then inserts Service Area records into the permanent TAF table.
+    """
+
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "SAREA"
@@ -41,17 +41,10 @@ class SAREA(APL):
 			"MC_SAREA_LCTN_FLAG_12"
         ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
-        # create service area segment
-        # select records
-        # select or create data elements
+        """
+        Create service area segment. Select records and select or create data elements
+        """
 
         collist_s = ["MC_SAREA_NAME"]
 
@@ -73,7 +66,10 @@ class SAREA(APL):
     #
     # ---------------------------------------------------------------------------------
     def build(self):
-        # insert into permanent table
+        """    
+        insert into permanent table
+        """
+
         # z = f"""
         #     INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_SAREA
         #     SELECT
