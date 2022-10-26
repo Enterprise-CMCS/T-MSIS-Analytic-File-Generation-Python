@@ -5,22 +5,21 @@ from taf.TAF import TAF
 
 class RX(TAF):
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
+    """
+    Description: Program contains macros that massage data from various segments in T-MSIS				            	
+				THIS PROGRAM DOES NOT STAND ALONE.                                                              	
+				RX_build.sas - pull program for RX build 
+    """
+     
     def __init__(self, runner: RX_Runner):
         super().__init__(runner)
         self.st_fil_type = "RX"
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
-
+        """
+        Pull RX line item records (FIRST NON DENIED LINE) and join to final action header records dataset
+        """
+         
         # Create a temporary line file
         # FIXME: change base table or view when TMSIS changes are made
         z = f"""

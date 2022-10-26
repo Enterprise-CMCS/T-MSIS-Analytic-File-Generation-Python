@@ -8,13 +8,10 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class RX_Metadata:
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     def selectDataElements(segment_id: str, alias: str):
 
         new_line_comma = "\n\t\t\t,"
@@ -49,27 +46,22 @@ class RX_Metadata:
 
         return new_line_comma.join(columns)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def finalFormatter(output_columns):
-
+        """
+        TODO:  Update docstring
+        """
+         
         new_line_comma = "\n\t\t\t,"
 
         columns = output_columns.copy()
 
         return new_line_comma.join(columns)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def dates_of_service(colname: str, alias: str):
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
             case
                 when {alias}.{colname} is not null then {alias}.{colname}
@@ -82,13 +74,11 @@ class RX_Metadata:
             coalesce({alias}.{colname}, '01JAN1960') as {colname}
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def plan_id_num(colname: str, alias: str):
+        """
+        TODO:  Update docstring
+        """
+         
         return f"upper({alias}.{colname}) as mc_plan_id"
 
     # ---------------------------------------------------------------------------------
@@ -620,14 +610,12 @@ class RX_Metadata:
         "LINE_NUM"
     ]
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     @staticmethod
     def finalTableOutputHeader():
-
+        """
+        TODO:  Update docstring
+        """
+         
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTH
         z = """
                 insert into taf_python.taf_rxh
@@ -638,14 +626,12 @@ class RX_Metadata:
 
         return z
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     @staticmethod
     def finalTableOutputLine():
-
+        """
+        TODO:  Update docstring
+        """
+         
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTL
         z = """
                 insert into taf_python.taf_rxl

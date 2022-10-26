@@ -10,15 +10,17 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class RXH:
-
-    # --------------------------------------------------------------------------------- }
-    #
-    #
-    #
-    #
-    # --------------------------------------------------------------------------------- }
+    """
+    Description: Program contains macros that massage data from various segments in T-MSIS				            	
+				THIS PROGRAM DOES NOT STAND ALONE.                                                              	
+				RX_build.sas - pull program for RX build
+    """
+     
     def create(self, runner: RX_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
             create or replace temporary view RXH as
 
@@ -113,13 +115,11 @@ class RXH:
 
         runner.append("RX", z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: RX_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_rxh
                 SELECT
