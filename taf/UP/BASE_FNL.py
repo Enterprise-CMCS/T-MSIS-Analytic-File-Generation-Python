@@ -8,20 +8,12 @@ from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE_FNL(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:    Join all the bene-level tables created in prior programs to create the final bene-level
+                    UP BASE and insert into the permanent table 
+    """
+     
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -29,14 +21,11 @@ class BASE_FNL(UP):
     #def __init__(self, up: UP_Runner):
         #super().__init__(up)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Using the header-aggregated bene-level table from 002 as the base, join to that:
         # - DE bene-level table (b)
         # - line-aggregated bene-level table (c)
@@ -163,6 +152,10 @@ class BASE_FNL(UP):
         self.up.append(type(self).__name__, z)
 
     def build(self, runner: UP_Runner):
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
             INSERT INTO {runner.DA_SCHEMA_DC}.TAF_ANN_UP_BASE
             SELECT 

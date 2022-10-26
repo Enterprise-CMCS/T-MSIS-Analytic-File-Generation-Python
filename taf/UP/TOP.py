@@ -8,20 +8,12 @@ from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class TOP(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:    For each claims file separately, sum the total number of claims and tot paid amount
+                    from the headers by bene, pgm_type_cd, and clm_type_cd.   
+    """
+         
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -29,14 +21,11 @@ class TOP(UP):
     #def __init__(self, up: UP_Runner):
         #super().__init__(up)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Roll up all header level columns for all file types
+        """
+         
         # roll up all header level columns for all file types
 
         # distkey (msis_ident_num)
@@ -89,13 +78,11 @@ class TOP(UP):
         """
         self.up.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def build(self, runner: UP_Runner):
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
             INSERT INTO {runner.DA_SCHEMA_DC}.taf_ann_up_top
             SELECT { self.table_id_cols() }

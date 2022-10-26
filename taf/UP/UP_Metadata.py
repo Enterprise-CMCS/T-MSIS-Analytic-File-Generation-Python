@@ -2,22 +2,17 @@ from pyspark.sql import SparkSession
 import pandas as pd
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class UP_Metadata:
-
-    # -------------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # -------------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     @staticmethod
     def getDeliveryCodes():
+        """
+        TODO:  Update docstring
+        """
+         
         spark = SparkSession.getActiveSession()
 
         delivery_dgns = pd.DataFrame(

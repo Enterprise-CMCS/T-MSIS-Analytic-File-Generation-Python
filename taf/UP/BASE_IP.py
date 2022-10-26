@@ -9,20 +9,12 @@ from taf.UP.UP_Runner import UP_Runner
 from calendar import monthrange
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE_IP(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:    Read in the IP line-level file, aggregate to header, and rollup to the stay-level
+                    to count number of stays and total unique  days  
+    """
+     
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -30,14 +22,11 @@ class BASE_IP(UP):
     #def __init__(self, up: UP_Runner):
         #super().__init__(up)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Stack all three years (prior year with three months, current year, and following year with
         # three months). Create claim_provider to be able to roll up to stay-level.
         # Keep FFS and encounters only

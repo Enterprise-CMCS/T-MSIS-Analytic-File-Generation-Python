@@ -9,20 +9,12 @@ from taf.UP.UP_Runner import UP_Runner
 from taf.TAF_Closure import TAF_Closure
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE_LINE(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:    Generate counts and sums by bene at the line-level for each claim type to then be 
+                    combined across the four file types for the BASE segment
+    """
+     
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -30,14 +22,11 @@ class BASE_LINE(UP):
     #def __init__(self, up: UP_Runner):
         #super().__init__(up)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # distkey(msis_ident_num)
         # sortkey(submtg_state_cd,msis_ident_num)
 

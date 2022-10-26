@@ -9,20 +9,12 @@ from taf.UP.UP_Runner import UP_Runner
 from taf.TAF_Closure import TAF_Closure
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE_LINE_COMB(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:    Combine the four line files that were summarized to the header in program 003 - stack
+                    all four header-level rolledup files to then summarize across all four file types
+    """
+     
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -30,14 +22,14 @@ class BASE_LINE_COMB(UP):
     #def __init__(self, up: UP_Runner):
         #super().__init__(up)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Step 1: Union the four files, only keeping cols that we need to summarize across the file types 
+        (cols that are common to all four file types - listed in the macro commoncols_base_hdr.
+        Do this in the inner query. In the outer query, summarize to the bene-level and take sum/max
+        across the four file value.  
+        """
+         
         # distkey(msis_ident_num)
         # sortkey(submtg_state_cd,msis_ident_num)
         z = f"""
