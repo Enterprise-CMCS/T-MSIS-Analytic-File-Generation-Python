@@ -4,20 +4,12 @@ from taf.BSF.BSF_Runner import BSF_Runner
 from taf.BSF.ELG import ELG
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ELG00022(ELG):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Process TMSIS_ELIG_IDENTIFERS and create unique output for BSF.
+    """
+
     def __init__(self, bsf: BSF_Runner):
         self.bsf = bsf
 
@@ -29,12 +21,6 @@ class ELG00022(ELG):
         self.end_date = 'ELGBL_ID_END_DT'
         ELG.__init__(self, bsf, 'ELG00022', 'TMSIS_ELGBL_ID', 'ELGBL_ID_EFCTV_DT', 'ELGBL_ID_END_DT')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create_identifiers(self, id_type, code):
 
         #  confirm input variable names

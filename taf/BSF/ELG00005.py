@@ -13,12 +13,9 @@ from taf.BSF.ELG import ELG
 # ---------------------------------------------------------------------------------
 class ELG00005(ELG):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Process TMSIS_ELGBLTY_DTRMNT and create unique output for BSF. 
+    """
     def __init__(self, bsf: BSF_Runner):
         ELG.__init__(self, bsf, 'ELG00005', 'TMSIS_ELGBLTY_DTRMNT', 'ELGBLTY_DTRMNT_EFCTV_DT', 'ELGBLTY_DTRMNT_END_DT')
 
