@@ -189,7 +189,7 @@ class OTH:
         """
          
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA_DC}.taf_oth_test_srvcs
+                INSERT INTO {runner.DA_SCHEMA_DC}.taf_oth
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
                 FROM (
