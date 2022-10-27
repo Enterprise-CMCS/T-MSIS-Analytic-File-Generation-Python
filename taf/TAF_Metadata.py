@@ -7,14 +7,16 @@ from pyspark.sql import SparkSession
 #
 # ---------------------------------------------------------------------------------
 class TAF_Metadata:
-    # -------------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # -------------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     @staticmethod
     def getFormatsForValidationAndRecode():
+        """
+        TODO:  Update docstring
+        """
+         
         from pyspark.sql.types import StructType, StructField, StringType, DateType
         from pyspark.sql.functions import col, to_date
 
@@ -48,12 +50,6 @@ class TAF_Metadata:
 
         subDF.createOrReplaceTempView("state_submsn_type")
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     XIX_SRVC_CTGRY_CD_values = [
         "001A",
         "001B",

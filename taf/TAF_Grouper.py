@@ -5,7 +5,10 @@ from taf.TAF_Runner import TAF_Runner
 
 
 class TAF_Grouper:
-
+    """
+    TODO:  Update docstring
+    """
+     
     otmh9f = [
         "290",
         "291",
@@ -34,7 +37,7 @@ class TAF_Grouper:
         "317",
         "318",
         "319",
-    ]
+        ]
 
     otmh0f = [
         "F01",
@@ -126,7 +129,7 @@ class TAF_Grouper:
         "F97",
         "F98",
         "F99",
-    ]
+        ]
 
     otsu9f = ["303", "304", "305"]
 
@@ -213,7 +216,7 @@ class TAF_Grouper:
         "364SP0813X",
         "385HR2055X",
         "385HR2060X",
-    ]
+        ]
 
     otstax = [
         "101YA0400X",
@@ -230,26 +233,22 @@ class TAF_Grouper:
         "324500000X",
         "3245S0500X",
         "2083A0300X",
-    ]
+        ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, runner: TAF_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         self.runner = runner
         self.rep_yr = runner.reporting_period.year
         self.rep_mo = runner.reporting_period.month
 
-    # ---------------------------------------------------------------------------------
-    #
-    #   major diagnostic indicator
-    #
-    # ---------------------------------------------------------------------------------
     def mdc(self, MDC: bool, filetyp: str):
-
+        """
+        Major diagnostic indicator
+        """
+         
         select = []
         if MDC:
 
@@ -259,13 +258,11 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def iap(self, IAP: bool, filetyp: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         select = []
         if IAP:
 
@@ -273,13 +270,11 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #   code primary hierarchial conditions
-    #
-    # ---------------------------------------------------------------------------------
     def phc(self, PHC: bool, filetyp: str):
-
+        """
+        Code primary hierarchial conditions.  These variables are mutually exclusive and it takes the first populated value
+        """
+         
         select = []
         if PHC:
             # these columns are mutex and take on the first populated value
@@ -289,13 +284,11 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #   dgns_cd_ind: 1-> ICD-9, 2-> ICD-10
-    #
-    # ---------------------------------------------------------------------------------
     def icd(self, MH_SUD: bool, filetyp: str):
-
+        """
+        dgns_cd_ind: 1-> ICD-9, 2-> ICD-10
+        """
+         
         select = []
         if MH_SUD:
 
@@ -329,12 +322,10 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #   dgns_cd_ind: 1-> ICD-9, 2-> ICD-10
-    #
-    # ---------------------------------------------------------------------------------
     def icd_inner(self, MH_SUD: bool, filetyp: str):
+        """
+        dgns_cd_ind: 1-> ICD-9, 2-> ICD-10
+        """
 
         select = []
         if MH_SUD:
@@ -364,13 +355,11 @@ class TAF_Grouper:
 
             return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def select_taxonomy(self, TAXONOMY: bool, filetyp: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         select = []
         if TAXONOMY:
 
@@ -383,13 +372,11 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def select_taxonomy_inner(self, TAXONOMY: bool, filetyp: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         select = []
         if TAXONOMY:
 
@@ -424,13 +411,11 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def join_MDC(self, MDC: str):
-
+        """
+        Join MDC tables.
+        """
+         
         join = []
         if MDC:
 
@@ -446,13 +431,11 @@ class TAF_Grouper:
 
         return "\n".join(join)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def join_IAP(self, IAP: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         join = []
         if IAP:
 
@@ -480,13 +463,11 @@ class TAF_Grouper:
 
         return "\n".join(join)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def join_PHC(self, PHC: str):
-
+        """
+        Join HCC tables.
+        """
+         
         join = []
         if PHC:
 
@@ -506,13 +487,11 @@ class TAF_Grouper:
 
         return "\n".join(join)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def mh_sud(self, MH_SUD: bool, filetyp: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         select = []
         if MH_SUD:
 
@@ -536,13 +515,11 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def taxonomy(self, TAXONOMY: bool, filetyp: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         select = []
         if TAXONOMY:
 
@@ -566,13 +543,11 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def join_taxonomy(self, TAXONOMY: bool, filetyp: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         join = []
         if TAXONOMY:
 
@@ -589,13 +564,11 @@ class TAF_Grouper:
 
         return "\n".join(join)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def select_condition_category(self, MDC: str, IAP: str, PHC: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         select = []
         if MDC:
 
@@ -619,11 +592,6 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def AWS_Assign_Grouper_Data_Conv(
         self,
         filetyp,
@@ -635,7 +603,11 @@ class TAF_Grouper:
         PHC=True,
         MH_SUD=True,
         TAXONOMY=True,
-    ):
+        ):
+        
+        """
+        TODO:  Update docstring
+        """
 
         z = f"""
             create or replace temporary view {clm_tbl}_STEP1 as
@@ -767,13 +739,11 @@ class TAF_Grouper:
         """
         self.runner.append(filetyp, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def fetch_nppes(self, filetyp: str):
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
             create or replace temporary view taxo_switches as
             select prvdr_npi,
@@ -969,13 +939,11 @@ class TAF_Grouper:
         """
         self.runner.append(filetyp, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def fetch_ccs(self, filetyp: str):
+        """
+        TODO:  Update docstring
+        """
+         
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ccs_proc AS
             SELECT cd_rng
@@ -1005,12 +973,11 @@ class TAF_Grouper:
         """
         self.runner.append(filetyp, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #   federally assigned service category
-    #
-    # ---------------------------------------------------------------------------------
     def fasc_code(self, filetyp: str):
+        """
+        Federally assigned service category
+        """
+         
         # claim header
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW {filetyp}_header_0 AS

@@ -4,14 +4,11 @@ from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class TAF_Runner():
-
+    """
+    TODO:  Update docstring
+    """
+     
     PERFORMANCE = 11
 
     # ---------------------------------------------------------------------------------
@@ -22,6 +19,9 @@ class TAF_Runner():
     #
     # ---------------------------------------------------------------------------------
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
+        """
+        TODO:  Update docstring
+        """
 
         from datetime import date, datetime, timedelta
 
@@ -69,11 +69,6 @@ class TAF_Runner():
         self.sql = {}
         self.plan = {}
 
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
     def print(self):
         print('Version:\t' + self.version)
         print('-----------------------------------------------------')
@@ -89,12 +84,10 @@ class TAF_Runner():
         print('DA_SCHEMA_DC:\t' + str(self.DA_SCHEMA_DC))
         print('COMBINED_LIST:\t' + str(self.combined_list))
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def get_link_key(self):
+        """
+        TODO:  Update docstring
+        """
 
         return f"""
             cast ((concat('{self.version }',  '-',  {self.TAF_FILE_DATE},  '-',  NEW_SUBMTG_STATE_CD,  '-',
@@ -103,12 +96,10 @@ class TAF_Runner():
                  CAST(DATE_PART('DAY',ADJDCTN_DT) AS CHAR(2)), '-',  COALESCE(ADJSTMT_IND_CLEAN,'X'))) as varchar(126))
         """
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def get_link_key_line(self):
+        """
+        TODO:  Update docstring
+        """
 
         return f"""
             cast ((concat('{self.version }',  '-',  {self.TAF_FILE_DATE},  '-',  NEW_SUBMTG_STATE_CD_LINE,  '-',
@@ -117,31 +108,27 @@ class TAF_Runner():
                  CAST(DATE_PART('DAY',ADJDCTN_DT_LINE) AS CHAR(2)), '-',  COALESCE(LINE_ADJSTMT_IND_CLEAN,'X'))) as varchar(126))
         """
 
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
     @staticmethod
     def compress(string):
+        """
+        TODO:  Update docstring
+        """
+         
         return ' '.join(string.split())
 
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
     def log(self, viewname: str, sql=''):
+        """
+        TODO:  Update docstring
+        """
+         
         self.logger.info('\t' + viewname)
         if sql != '':
             self.logger.debug(TAF_Runner.compress(sql.replace('\n', '')))
 
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
     def initialize_logger(self, now: datetime):
+        """
+        TODO:  Update docstring
+        """
 
         # data_anltcs_dm_prod.state_submsn_type
         # SELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '002_bsf_ELG00002' and step_name = '0.1. create_initial_table' ;
@@ -183,13 +170,11 @@ class TAF_Runner():
 
         self.logger.addHandler(ch)
 
-    # --------------------------------------------------------------------
-    #
-    #
-    #
-    # --------------------------------------------------------------------
     def fetch_combined_list(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         from pyspark.sql import SparkSession
         spark = SparkSession.getActiveSession()
 
@@ -215,27 +200,22 @@ class TAF_Runner():
         # for j in self.combined_list.collect():
         #     print(j)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def get_combined_list(self):
+        """
+        TODO:  Update docstring
+        """
+         
         tuples = []
         for j in self.combined_list:
             tuples.append('concat' + str(j))
         return ','.join(tuples)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     @staticmethod
     def ssn_ind():
-
+        """
+        TODO:  Update docstring
+        """
+         
         return """
                 create or replace temporary view ssn_ind as
                 select distinct submtg_state_cd
@@ -249,14 +229,11 @@ class TAF_Runner():
                 group by submtg_state_cd
         """
 
-# ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def job_control_rd(self, da_run_id: int, file_type: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
                 CREATE TABLE JOB_CD_LOOKUP AS
                 SELECT
@@ -273,28 +250,22 @@ class TAF_Runner():
                 )
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def job_control_updt(self, da_run_id: int):
-
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
                 UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
                 SET job_strt_ts = CONVERT_TIMEZONE('EDT', GETDATE())
                 WHERE da_run_id = {da_run_id}
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def job_control_updt2(self, da_run_id: int):
-
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
                 UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
                 SET job_end_ts = CONVERT_TIMEZONE('EDT', GETDATE()),
@@ -302,14 +273,11 @@ class TAF_Runner():
                 WHERE da_run_id = {da_run_id}
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def get_cnt(self, table_name: str, da_run_id: int):
-
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
                 CREATE OR REPLACE TEMPORARY VIEW record_count AS
                 SELECT count(tmsis_run_id) AS row_cnt
@@ -317,19 +285,17 @@ class TAF_Runner():
                 WHERE da_run_id = {da_run_id}
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create_meta_info(
         self,
         table_name: str,
         da_run_id: int,
         fil_4th_node: str,
-    ):
+        ):
 
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
                 INSERT INTO {self.DA_SCHEMA_DC}.job_otpt_meta
                 SELECT {da_run_id} AS da_run_id
@@ -341,12 +307,6 @@ class TAF_Runner():
                 FROM record_count
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create_eftsmeta_info(
         self,
         da_run_id: int,
@@ -355,8 +315,12 @@ class TAF_Runner():
         step_name: str,
         object_name: str,
         audt_count: int,
-    ):
+        ):
 
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
                 INSERT INTO {self.DA_SCHEMA}.efts_fil_meta (
                     da_run_id
@@ -398,14 +362,11 @@ class TAF_Runner():
                     AND t4.audt_cnt_of = '{audt_count}'
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def final_control_info(self, da_run_id: int):
-
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
                 CREATE TABLE FINAL_CONTROL_INFO AS
                 SELECT A.DA_RUN_ID
@@ -420,14 +381,11 @@ class TAF_Runner():
                     AND A.DA_RUN_ID = {da_run_id}
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def file_contents(self, table_name: str, da_run_id: int):
-
+        """
+        TODO:  Update docstring
+        """
+         
         return f"""
                 SELECT *
                 FROM {self.DA_SCHEMA}.{table_name}
@@ -435,14 +393,11 @@ class TAF_Runner():
                 LIMIT 1
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def append(self, segment: str, z: str):
-
+        """
+        TODO:  Update docstring
+        """
+         
         if segment not in self.plan.keys():
             self.plan[segment] = []
 
@@ -455,27 +410,21 @@ class TAF_Runner():
         # self.log(f"{self.tab_no}", z)
         self.plan[segment].append(z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def view_plan(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         for segment, chain in self.plan.items():
             for sql in chain:
                 print(f"-- {segment}")
                 print(sql)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def write(self, module: str = ''):
-
+        """
+        TODO:  Update docstring
+        """
+         
         print('Writing SQL Files ...')
 
         for segment, chain in self.plan.items():
@@ -497,14 +446,11 @@ class TAF_Runner():
                     f.write(z)
                     f.close()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def run(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         from taf.BSF.BSF_Metadata import BSF_Metadata
         from pyspark.sql.types import StructType, StructField, StringType
         import pandas as pd
@@ -541,14 +487,11 @@ class TAF_Runner():
 
                 spark.sql(z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def audit(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         from taf.BSF.BSF_Metadata import BSF_Metadata
         from pyspark.sql.types import StructType, StructField, StringType
         import pandas as pd

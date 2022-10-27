@@ -7,14 +7,15 @@ from taf.TAF_Runner import TAF_Runner
 
 
 class TAF():
-
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     def __init__(self, runner: TAF_Runner):
-
+        """
+        TODO:  Update docstring
+        """
+         
         self.runner = runner
         self.st_fil_type = 'undefined'
 
