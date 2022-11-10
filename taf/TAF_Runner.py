@@ -6,21 +6,22 @@ from taf.TAF_Metadata import TAF_Metadata
 
 class TAF_Runner():
     """
-    TODO:  Update docstring
+    A class to represent the creation of a T-MSIS analytic file.
     """
-     
+
     PERFORMANCE = 11
 
-    # ---------------------------------------------------------------------------------
-    #
-    #   reporting_period = SUBSTR(JOB_PARMS_TXT,1,10) AS RPTPD FORMAT=$10.
-    #   e.g. '2020-01-31'
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         """
-        TODO:  Update docstring
+        Constructs all the necessary attributes for the T-MSIS analytic file runner object.
+
+            Parameters:
+                reporting_period (str): Day of month to filter T-MSIS data on (in YYYY-MM-DD format)
+                state_code (str): Comma-separated list of T-MSIS state code(s) values to include
+                run_id (str): Comma-separated list of T-MSIS run identifier(s) values to include
+
+            Returns:
+                None
         """
 
         from datetime import date, datetime, timedelta
@@ -70,6 +71,15 @@ class TAF_Runner():
         self.plan = {}
 
     def print(self):
+        """
+        Prints parameter values derived by the constructor
+
+            Parameters:
+                None
+
+            Returns:
+                None
+        """
         print('Version:\t' + self.version)
         print('-----------------------------------------------------')
         print('')
@@ -86,7 +96,13 @@ class TAF_Runner():
 
     def get_link_key(self):
         """
-        TODO:  Update docstring
+        Creates a unique key identifying claim header records.
+
+            Parameters:
+                None
+
+            Returns:
+                z (str): SQL statement string to create a link key
         """
 
         return f"""
@@ -98,7 +114,13 @@ class TAF_Runner():
 
     def get_link_key_line(self):
         """
-        TODO:  Update docstring
+        Creates a unique key identifying claim line item records.
+
+            Parameters:
+                None
+
+            Returns:
+                z (str): SQL statement string to create a line link key
         """
 
         return f"""
@@ -111,49 +133,44 @@ class TAF_Runner():
     @staticmethod
     def compress(string):
         """
-        TODO:  Update docstring
+        Splits a string into a list and joins all items into a string using a single
+        space as separator.
+
+            Parameters:
+                string (str): string value to compress
+
+            Returns:
+                z (str): compressed string value
         """
-         
+
         return ' '.join(string.split())
 
     def log(self, viewname: str, sql=''):
         """
-        TODO:  Update docstring
+        Prints view name and formatted SQL to log output
+
+            Parameters:
+                viewname (str): A view's name
+                sql (str): The view's definition (in SQL)
+
+            Returns:
+                None
         """
-         
+
         self.logger.info('\t' + viewname)
         if sql != '':
             self.logger.debug(TAF_Runner.compress(sql.replace('\n', '')))
 
     def initialize_logger(self, now: datetime):
         """
-        TODO:  Update docstring
+        Initializes the logger for a T-MSIS analytic file run.
+
+            Parameters:
+                now (datetime): The current date and time
+
+            Returns:
+                None
         """
-
-        # data_anltcs_dm_prod.state_submsn_type
-        # SELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '002_bsf_ELG00002' and step_name = '0.1. create_initial_table' ;
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS select da_run_id, pgm_audt_cnt_id, nullif(submtg_state_cd, 'xx'),audt_cnt_val from row_count1 order by audt_cnt_val desc limit 48
-        # SELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '002_bsf_ELG00002' and step_name = '0.2. MultiIds' ;
-
-        # left join data_anltcs_dm_prod.state_submsn_typeSELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '003_bsf_ELG00003' and step_name = '0.1. create_initial_table' ;
-
-        # left join data_anltcs_dm_prod.state_submsn_type s on a.submtg_state_cd = s.submtg_state_cd and upper(s.fil_type) = 'ELG'
-
-        # SELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '003_bsf_ELG00003' and step_name = '0.1. create_initial_table' ;
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # SELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '004_bsf_ELG00004' and step_name = '0.1. create_initial_table' ;
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # SELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '005_bsf_ELG00005' and step_name = '0.1. create_initial_table' ;
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # insert into data_anltcs_dm_prod.PGM_AUDT_CNTS
-        # SELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '005_bsf_ELG00005' and step_name = '0.2. MultiIds' ;
-
-        # SELECT * FROM data_anltcs_dm_prod.PGM_AUDT_CNT_LKP WHERE PGM_NAME = '021_bsf_ELG00021' and step_name = '21.3 join' ;
 
         logging.addLevelName(TAF_Runner.PERFORMANCE, 'PERFORMANCE')
 
@@ -172,13 +189,18 @@ class TAF_Runner():
 
     def fetch_combined_list(self):
         """
-        TODO:  Update docstring
+        Query T-MSIS file header eligibility data to determine the latest T-MSIS
+        run identifier value for each submitting state.
+
+            Parameters:
+                None
+
+            Returns:
+                None
         """
-         
+
         from pyspark.sql import SparkSession
         spark = SparkSession.getActiveSession()
-
-        # TODO: this is supposed to be queried from cms_prod.tmsis_fhdr_rec_elgblty
 
         sdf = spark.sql("""
             select distinct
@@ -197,14 +219,18 @@ class TAF_Runner():
 
         rdd = sdf.rdd
         self.combined_list = rdd.map(tuple)
-        # for j in self.combined_list.collect():
-        #     print(j)
 
     def get_combined_list(self):
         """
-        TODO:  Update docstring
+        Join all items in COMBINED_LIST into a comma-separated string
+
+            Parameters:
+                None
+
+            Returns:
+                None
         """
-         
+
         tuples = []
         for j in self.combined_list:
             tuples.append('concat' + str(j))
@@ -213,9 +239,16 @@ class TAF_Runner():
     @staticmethod
     def ssn_ind():
         """
-        TODO:  Update docstring
+        Create a temporary view to determine if each submitting state uses social
+        security numbers to identify members.
+
+            Parameters:
+                None
+
+            Returns:
+                z (str): SQL statement string to create a temporary view
         """
-         
+
         return """
                 create or replace temporary view ssn_ind as
                 select distinct submtg_state_cd
@@ -257,7 +290,7 @@ class TAF_Runner():
          
         return f"""
                 UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
-                SET job_strt_ts = CONVERT_TIMEZONE('EDT', GETDATE())
+                SET job_strt_ts = from_utc_timestamp(current_timestamp(), 'EST')
                 WHERE da_run_id = {da_run_id}
         """
 
@@ -268,7 +301,7 @@ class TAF_Runner():
          
         return f"""
                 UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
-                SET job_end_ts = CONVERT_TIMEZONE('EDT', GETDATE()),
+                SET job_end_ts = from_utc_timestamp(current_timestamp(), 'EST'),
                 sucsfl_ind = 1
                 WHERE da_run_id = {da_run_id}
         """
