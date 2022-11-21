@@ -1,15 +1,11 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.APL.APL import APL
 from taf.APL.APL_Runner import APL_Runner
 
 class LCTN(APL):
     """
-    TODO:  Update docstring
+    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area, 
+    a population enrolled file, and operating authority/waiver file.  A unique TAF APL link key is used to link the five APL files.
+    The TAF APL includes records for any managed cared plan with an active record in one of the twelve monthly TAF MCP files.
     """
      
     def __init__(self, apl: APL_Runner):
