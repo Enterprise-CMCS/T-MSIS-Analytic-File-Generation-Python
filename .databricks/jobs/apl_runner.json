@@ -1,66 +1,76 @@
 {
-    "name": "TAF Runner - Annual Managed Care Plans",
-    "new_cluster": {
-      "spark_version": "9.1.x-photon-scala2.12",
-      "spark_conf": {
-        "spark.databricks.repl.allowedLanguages": "python,sql",
-        "spark.databricks.acl.dfAclsEnabled": "true",
-        "spark.databricks.cluster.profile": "serverless",
-        "spark.sql.legacy.parquet.datetimeRebaseModeInRead": "LEGACY"
-      },
-      "aws_attributes": {
-        "zone_id": "us-east-1a",
-        "first_on_demand": 0,
-        "availability": "ON_DEMAND",
-        "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
-        "spot_bid_price_percent": 100,
-        "ebs_volume_count": 0
-      },
-      "node_type_id": "i3.16xlarge",
-      "driver_node_type_id": "i3.4xlarge",
-      "custom_tags": {
-        "ResourceClass": "Serverless",
-        "stack": "val",
-        "layer": "app",
-        "business": "AREMAC",
-        "business_function": "TMSIS:SAS:TAF_CONV",
-        "file_type": "APL"
-      },
-      "cluster_log_conf": {
-        "s3": {
-          "destination": "s3://macbis-dw-logs/databricks/val/cluster-logs/sas-taf-conv/taf-runner-annual-managed-care-plans",
-          "region": "us-east-1",
-          "enable_encryption": true,
-          "canned_acl": "bucket-owner-full-control"
-        }
-      },
-      "enable_elastic_disk": false,
-      "init_scripts": [
-        {
-          "dbfs": {
-            "destination": "dbfs:/databricks/init/custom_spark_conf/uat-val-metastore.sh"
-          }
-        }
-      ],
-      "autoscale": {
-        "min_workers": 20,
-        "max_workers": 160
-      }
+  "name": "TAF Runner - Annual Managed Care Plans",
+  "new_cluster": {
+    "cluster_name": "",
+    "spark_version": "11.3.x-photon-scala2.12",
+    "spark_conf": {
+      "spark.sql.adaptive.coalescePartitions.initialPartitionNum": "8192",
+      "spark.databricks.adaptive.autoOptimizeShuffle.enabled": "true",
+      "spark.executor.extraJavaOptions": "-XX:InitiatingHeapOccupancyPercent=30 -XX:ConcGCThreads=8 -XX:G1ReservePercent=15",
+      "spark.sql.adaptive.coalescePartitions.minPartitionSize": "1",
+      "spark.sql.autoBroadcastJoinThreshold": "104857600",
+      "spark.driver.maxResultSize": "12g",
+      "spark.databricks.delta.optimizeWrite.enabled": "true",
+      "spark.databricks.sql.optimizer.ensureRequirementsDP.enabled": "false",
+      "spark.sql.columnVector.offheap.enabled": "true",
+      "spark.sql.optimizer.excludedRules": "org.apache.spark.sql.catalyst.optimizer.ReorderAssociativeOperator",
+      "spark.driver.extraJavaOptions": "-XX:InitiatingHeapOccupancyPercent=30 -XX:ConcGCThreads=8 -XX:G1ReservePercent=15",
+      "spark.sql.parquet.datetimeRebaseModeInRead": "LEGACY",
+      "spark.sql.constraintPropagation.enabled": "false",
+      "spark.sql.shuffle.partitions": "auto"
     },
-    "libraries": [
+    "aws_attributes": {
+      "zone_id": "us-east-1a",
+      "first_on_demand": 0,
+      "availability": "ON_DEMAND",
+      "instance_profile_arn": "arn:aws:iam::810638926762:instance-profile/databricks-val-mstruser-worker-instance-profile",
+      "spot_bid_price_percent": 100,
+      "ebs_volume_count": 0
+    },
+    "node_type_id": "i3.4xlarge",
+    "driver_node_type_id": "i3.4xlarge",
+    "spark_env_vars": {
+      "JNAME": "zulu11-ca-amd64"
+    },
+    "enable_elastic_disk": false,
+    "init_scripts": [
       {
-        "whl": "dbfs:/FileStore/shared_uploads/akira/lib/taf-7.1.16-py3-none-any.whl"
+        "s3": {
+          "destination": "s3://aws-hhs-cms-cmcs-databricks-val/databricks-macbis-val/0/databricks/init/custom_spark_conf/uat-val-metastore.sh",
+          "region": "us-east-1"
+        }
+      },
+      {
+        "s3": {
+          "destination": "s3://aws-hhs-cms-cmcs-databricks-val/databricks-macbis-val/0/databricks/scripts/sysctl.sh",
+          "region": "us-east-1"
+        }
       }
     ],
-    "email_notifications": {},
-    "timeout_seconds": 14400,
-    "notebook_task": {
-      "notebook_path": "/SAS TAF Conversion/Runners/APL Runner",
-      "base_parameters": {
-        "reporting_period": "",
-        "state_code": "",
-        "run_id": ""
-      }
-    },
-    "max_concurrent_runs": 1
-  }
+    "num_workers": 40
+  },
+  "libraries": [
+    {
+      "jar": "s3://aws-hhs-cms-cmcs-databricks-val/databricks-macbis-val/0/FileStore/shared_uploads/akira/lib/taf-7.1.21-py3-none-any.whl"
+    }
+  ],
+  "email_notifications": {
+    "on_success": [
+      "k6r3h7j0u5u1w6l9@dataconnect-workspace.slack.com"
+    ],
+    "on_failure": [
+      "k6r3h7j0u5u1w6l9@dataconnect-workspace.slack.com"
+    ],
+    "no_alert_for_skipped_runs": false
+  },
+  "timeout_seconds": 21600,
+  "notebook_task": {
+    "notebook_path": "/SAS TAF Conversion/Runners/APL Runner",
+    "base_parameters": {
+      "reporting_period": "2021-01-31",
+      "state_code": "'01','04','05','06','08','09','10','11','12','13','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','44','45','46','47','48','49','51','53','54','55','56','72','97'",
+      "run_id": "'5007','4971','4966','4972','4990','4991','4983','4961','4995','4953','4979','5003','5000','4999','4967','4956','4969','4984','4954','5004','4973','5005','4959','4958','4985','4994','4974','4989','4980','4960','4970','4996','5006','4975','4992','4965','4987','4976','4952','4997','4955','5001','4993','4988','4986','5002','4977','4978','4964','4957','4963'"
+    }
+  },
+  "max_concurrent_runs": 1
+}
