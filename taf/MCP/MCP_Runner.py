@@ -1,15 +1,11 @@
 from taf.TAF_Runner import TAF_Runner
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class MCP_Runner(TAF_Runner):
     """
-    TODO:  Update docstring
+    The TAF-specific module contains executable statements as well as function definitions to 
+    generate and execute SQL to produce individual segment as well as final output. 
+    These statements are intended to initialize the module.
     """
      
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
@@ -19,14 +15,16 @@ class MCP_Runner(TAF_Runner):
 
     def ST_FILTER(self):
         """
-        TODO:  Update docstring
+        Use the trim function to remove extraneous space characters from start and end of state names.  
         """
          
         return "and trim(submitting_state) not in ('94','96')"
 
     def init(self):
         """
-        TODO:  Update docstring
+        Import, create, and build out each segment for a given file type.
+        At this point, a dictionary has been created for each file segment containing
+        SQL queries that will be sequential executed by the run definition to produce output. 
         """
          
         from taf.MCP.MCP01 import MCP01
@@ -37,9 +35,6 @@ class MCP_Runner(TAF_Runner):
         from taf.MCP.MCP06 import MCP06
         from taf.MCP.MCP07 import MCP07
 
-        # -----------------------------------------------------------------------------
-        #
-        # -----------------------------------------------------------------------------
         MCP01(self).create()
         MCP02(self).create()
         MCP03(self).create()
@@ -48,9 +43,6 @@ class MCP_Runner(TAF_Runner):
         MCP06(self).create()
         MCP07(self).create()
 
-        # -----------------------------------------------------------------------------
-        #
-        # -----------------------------------------------------------------------------
         MCP03(self).build(self)
         MCP04(self).build(self)
         MCP06(self).build(self)

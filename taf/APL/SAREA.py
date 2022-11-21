@@ -7,16 +7,12 @@
 from taf.APL.APL import APL
 from taf.APL.APL_Runner import APL_Runner
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class SAREA(APL):
-
     """
+    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area, 
+    a population enrolled file, and operating authority/waiver file.  A unique TAF APL link key is used to link the five APL files.
+    The TAF APL includes records for any managed cared plan with an active record in one of the twelve monthly TAF MCP files.
+
     Description:  Generate the annual PL segment for Service Area
     Note:   This program aggregates unique values across the CY year for variables in collist.
             It creates _SPLMTL flag for base.  Then inserts Service Area records into the permanent TAF table.
@@ -59,12 +55,6 @@ class SAREA(APL):
         # create temporary table with just LCTN_SPLMTL to join to base
         self.create_splmlt(segname="SAREA", segfile="sarea_pl_" + str(self.year))
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def build(self):
         """    
         insert into permanent table

@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.APL.APL import APL
 from taf.APL.APL_Runner import APL_Runner
 from taf.TAF_Closure import TAF_Closure
@@ -11,8 +5,12 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class OA(APL):
-
     """
+    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area, 
+    a population enrolled file, and operating authority/waiver file.  A unique TAF APL link key is used to link the five APL files.
+    The TAF APL includes records for any managed cared plan with an active record in one of the twelve monthly TAF MCP files.
+    
+
     Description:  Generate the annual PL segment for Operating Authority.
     Note: This program creates a separate Operating Authority table from the arrays in monthly MCP main segment
           aggregates unique values across the CY year for variables in the array and indicates month.
@@ -41,9 +39,8 @@ class OA(APL):
         ]
 
     def create(self):
-
         """
-        TODO:  update docstring
+        Create operating authority segment. Select records and select or create data elements.
         """
 
         s = f""" { TAF_Closure.monthly_array(self, incol='WVR_ID_01', nslots='1') }
@@ -181,7 +178,6 @@ class OA(APL):
         self.create_splmlt(segname="OPRTG_AUTHRTY", segfile="OpAuth1")
 
     def build(self):
-        
         """
         insert into permanent table
         """
@@ -218,9 +214,7 @@ class OA(APL):
                 ,current_timestamp() as REC_UPDT_TS
             FROM OpAuth1
             """
-
-
-
+            
         self.apl.append(type(self).__name__, z)
 
 

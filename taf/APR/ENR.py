@@ -8,15 +8,14 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ENR(APR):
-
     """
+    The TAF Annual Provider (APR) is comprised of nine files: base, affiliated group, affiliated program,
+    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.  
+    A unique TAF APR link key is used to link the first six APR files listed.  The last three files are linked
+    to the location file with a unique TAF APR location link key.  The TAF APR includes records for any provider
+    with an active record in one of the twelve monthly TAF PRV files. 
+
     Description:  Generate the annual PR segment for enrollment
 
     Note:   This program aggregates unique values across the CY year for variables in collist.
@@ -29,7 +28,10 @@ class ENR(APR):
         self.fileseg = 'ENR'
 
     def create(self):
-
+        """
+        Create the enrollment segment.  
+        """
+         
         # Create enrollment segment. Select records and select or create data elements
         collist_e = ['PRVDR_MDCD_EFCTV_DT',
                      'PRVDR_MDCD_END_DT',

@@ -1,15 +1,11 @@
 from taf.TAF_Runner import TAF_Runner
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class PRV_Runner(TAF_Runner):
     """
-    TODO:  Update docstring
+    The TAF-specific module contains executable statements as well as function definitions to 
+    generate and execute SQL to produce individual segment as well as final output. 
+    These statements are intended to initialize the module.
     """
      
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
@@ -73,12 +69,18 @@ class PRV_Runner(TAF_Runner):
 
     def ST_FILTER(self):
         """
-        TODO:  Update docstring
+        Use the trim function to remove extraneous space characters from start and end of state names.  
         """
          
         return "and trim(submitting_state) not in ('94','96')"
 
     def init(self):
+        """
+        Import, create, and build out each segment for a given file type.
+        At this point, a dictionary has been created for each file segment containing
+        SQL queries that will be sequential executed by the run definition to produce output. 
+        """
+
         from taf.PRV.PRV01 import PRV01
         from taf.PRV.PRV02 import PRV02
         from taf.PRV.PRV03 import PRV03
@@ -90,9 +92,6 @@ class PRV_Runner(TAF_Runner):
         from taf.PRV.PRV09 import PRV09
         from taf.PRV.PRV10 import PRV10
 
-        # -----------------------------------------------------------------------------
-        #
-        # -----------------------------------------------------------------------------
         PRV01(self).create()
         PRV02(self).create()
         PRV03(self).create()
@@ -104,9 +103,6 @@ class PRV_Runner(TAF_Runner):
         PRV09(self).create()
         PRV10(self).create()
 
-        # -----------------------------------------------------------------------------
-        #
-        # -----------------------------------------------------------------------------
         PRV03(self).build(self)
         PRV04(self).build(self)
         PRV05(self).build(self)
