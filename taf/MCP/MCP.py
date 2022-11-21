@@ -4,7 +4,15 @@ from taf.TAF import TAF
 
 class MCP(TAF):
     """
-    Description:  Collection of macros used by the MCP TAF build.
+    Monthly Managed Care Plans (MCP) TAF: The MCP TAF contain information about each 
+    Medicaid and CHIP managed care plan/entity that was active at least one day during 
+    the month. The information contained in the MCP TAF includes but is  not limited 
+    to: managed care name, type of managed care plan, the various locations of the managed 
+    care plan, the various service areas in which the managed care plan operates. Each MCP 
+    TAF is comprised of four files: a Base file, a Location file, a Service Area file, and 
+    Population Enrolled File. All four files can be linked together using unique keys that 
+    are constructed based on various data elements. The four MCP TAF are generated for each 
+    calendar month in which the data are reported.
     """
      
     srtlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]

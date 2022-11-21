@@ -4,7 +4,15 @@ from taf.TAF import TAF
 
 class UP(TAF):
     """
-    Description:  Macros to generate the UP TAF using the DE and monthly claims
+    Annual Use and Payment (UP) TAF: The annual UP TAF contain annual summaries of service use 
+    and expenditure measures for all Medicaid and CHIP beneficiaries who had at least one service 
+    or capitated/supplemental payment during the calendar year.  Each annual UP TAF is comprised of 
+    two files:  a Base file and a Type of Program (TOP) file.  The files can be linked together using 
+    unique keys that are constructed based on various data elements.  These annual TAF UP files are 
+    created from the annual DE TAF base file (selected data elements) and the monthly TAF IP, LT, OT 
+    and RX claims files.  The base file includes selected claims-based data elements for four groups of 
+    beneficiaries:  Medicaid non-crossover beneficiaries, S-CHIP non-crossover beneficiaries, Medicaid 
+    crossover beneficiaries and S-CHIP crossover beneficiaries.
     """
      
     #def __init__(self, up: UP_Runner):

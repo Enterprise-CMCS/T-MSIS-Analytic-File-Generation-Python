@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 from taf.TAF_Closure import TAF_Closure
@@ -11,8 +5,9 @@ from taf.TAF_Closure import TAF_Closure
 
 class BASE(APR):
     """
-    TODO:  Update docstring
+    TODO:  Update docstring 
     """
+
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'BSP'

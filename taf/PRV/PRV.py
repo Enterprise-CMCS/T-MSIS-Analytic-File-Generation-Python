@@ -3,7 +3,15 @@ from taf.TAF import TAF
 
 class PRV(TAF):
     """
-    Description:  Collection of macros used by the PRV TAF build.
+    Monthly Provider (PRV) TAF: The PRV TAF contain information about each Medicaid and CHIP provider 
+    that was active at least one day during the month.  The information contained in the PRV TAF includes 
+    but is not limited to:  provider name, provider type, the provider group (if applicable), facility-specific 
+    information (if applicable, e.g. bed count), and the various Medicaid/CHIP programs/waivers/demonstrations, 
+    locations, licenses, and identifiers (state-specific as well as national provider identifiers) associated 
+    with the provider.  Each PRV TAF is comprised of nine files: the Base file; Group file; Program file; 
+    Taxonomy file; Enrollment file; Location file; License file; Identifiers file; and Bed Type file. All nine 
+    files can be linked together using unique keys that are constructed based on various data elements. 
+    The nine PRV TAF  are generated for each calendar month in which the data are reported. 
     """
      
     srtlist = ['tms_run_id', 'submitting_state', 'submitting_state_prov_id']

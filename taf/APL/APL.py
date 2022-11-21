@@ -4,7 +4,16 @@ from taf.TAF import TAF
 
 class APL(TAF):
     """
-    TODO:  Update docstring
+    Annual Managed Care Plan (APL) TAF: The annual Managed Care Plan TAF contain information 
+    about each Medicaid and CHIP managed care plan/entity that had a qualifying T-MSIS managed
+    care main record, as reflected by the effective and end dates, during the calendar year.
+    The information contained in the APL TAF includes but is not limited to: managed care name,
+    type of managed care plan, the various locations of the managed care plan, the various service
+    areas in which the managed care plan operates, operating authorities, and eligibility groups
+    authorized to enroll in each plan. Each APL TAF is comprised of five files: a Base file; 
+    Location file; Service Area file; a Population Enrolled file; and Operating Authority file. 
+    All five files can be linked together using unique keys that are constructed based on various
+    data elements. The five APL TAF are generated for each calendar year in which the data are reported.
     """
      
     def __init__(self, apl: APL_Runner):

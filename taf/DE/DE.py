@@ -3,9 +3,17 @@ from taf.TAF import TAF
 
 
 class DE(TAF):
-
     """
-    Description:  Generate the DE TAF using the monthly BSF TAF tables.
+    Annual Demographic and Eligibility (DE) TAF: The annual DE TAF contain demographic, 
+    eligibility, and enrollment information for all Medicaid and CHIP beneficiaries who 
+    were enrolled for at least one day during each calendar year; there is also a “dummy” 
+    record for each beneficiary who had claims information during the year but no 
+    corresponding eligibility information. Each annual DE TAF is comprised of eight 
+    files:  a Base file; Eligibility Dates file; Name, Address & Phone file; Managed Care file; 
+    Waiver file; Money Follows the Person file; Health Home & State Plan Option file; 
+    and Disability and Need file. All eight files can be linked together using unique keys 
+    that are constructed based on various data elements.  The annual DE TAF are created 
+    solely from the monthly BSF TAF.
     """
 
     def __init__(self, runner: DE_Runner):

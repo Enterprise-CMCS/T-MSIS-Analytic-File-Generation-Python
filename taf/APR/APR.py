@@ -4,8 +4,20 @@ from taf.TAF import TAF
 
 class APR(TAF):
     """
-    Description:  Generate the PL TAF using the monthly MCP TAF tables
+    Annual Provider (APR) TAF: The APR TAF contain information about each Medicaid and CHIP provider
+    that had a qualifying T-MSIS provider attributes main record, as reflected by the effective and
+    end dates, during the calendar year. The information contained in the APR TAF includes but is not
+    limited to: provider name, provider taxonomy, enrollment status, the provider group (if applicable), 
+    programs with which the provider is affiliated, addresses, license number(s), NPI and other providers, 
+    and facility-specific information (if applicable, e.g. bed count), and the various Medicaid/CHIP 
+    programs/waivers/demonstrations, locations, licenses, and identifiers (state-specific as well as national 
+    provider identifiers) associated with the provider. Each APR TAF is comprised of nine files: the Base file; 
+    Affiliated Groups file; Affiliated Programs file; Taxonomy file; Enrollment file; Location file; Licensing file; 
+    Identifiers file; and Bed-Type file. All nine files can be linked together using unique keys that are 
+    constructed based on various data elements. The nine APR TAF are generated for each calendar year 
+    in which the data are reported.
     """
+
     def __init__(self, apr: APR_Runner):
 
         self.apr = apr

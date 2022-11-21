@@ -7,7 +7,14 @@ class BSF_Runner(TAF_Runner):
     generate and execute SQL to produce individual segment as well as final output. 
     These statements are intended to initialize the module.
     """
-     
+
+    """
+    Beneficiary Summary File (BSF) TAF: The BSF TAF contains information about demographic, 
+    eligibility, and enrollment information for all Medicaid- or CHIP-eligible beneficiaries 
+    who were enrolled for at least one day during a given month.  There are 22 T-MSIS eligible 
+    files and 2 third party liability files that are used in the creation of the TAF BSF. 
+    """
+
     PERFORMANCE = 11
 
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
