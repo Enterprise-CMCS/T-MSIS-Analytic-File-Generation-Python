@@ -1,21 +1,15 @@
 from taf.TAF_Runner import TAF_Runner
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class DE_Runner(TAF_Runner):
+    """
+    The TAF-specific module contains executable statements as well as function definitions to 
+    generate and execute SQL to produce individual segment as well as final output. 
+    These statements are intended to initialize the module.
+    """
 
     PERFORMANCE = 11
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         super().__init__(reporting_period, state_code, run_id)
 
@@ -65,13 +59,13 @@ class DE_Runner(TAF_Runner):
         self.FYEAR = self.YEAR + 1
         self.PYEARS = []
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def init(self):
+        """
+        Import, create, and build out each segment for a given file type.
+        At this point, a dictionary has been created for each file segment containing
+        SQL queries that will be sequential executed by the run definition to produce output. 
+        """
+
         from taf.DE.DE0001BASE import DE0001BASE
         from taf.DE.DE0002 import DE0002
         from taf.DE.DE0003 import DE0003

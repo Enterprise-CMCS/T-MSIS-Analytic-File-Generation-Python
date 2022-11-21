@@ -3,10 +3,22 @@ from taf.TAF_Runner import TAF_Runner
 
 class APR_Runner(TAF_Runner):
     """
-    TODO:  Update docstring
+    The TAF-specific module contains executable statements as well as function definitions to 
+    generate and execute SQL to produce individual segment as well as final output. 
+    These statements are intended to initialize the module.
     """
      
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
+        """
+        Users interact with the TAF-specific module by creating a TAF runner object. 
+        This object may be instantiated with three parameters to control what data is captured at run time:
+
+        Parameters:
+        reporting_period - a monthly span of time covered by a given file type. It is specified as a string in YYYY-MM-DD format and should reflect the last calendar day of a given month.
+        state_code - a quoted list of TMSIS state code values to be captured in a given run. Multiple state code values are supplied as comma-separated, quoted values through the Databricks widget.
+        run_id - a quoted list of corresponding TMSIS run ID values for each specified state code value(s). Multiple TMSIS run ID values are supplied as comma-separated, quoted values through the Databricks widget.
+        """
+
         super().__init__(reporting_period, state_code, run_id)
 
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
@@ -19,6 +31,11 @@ class APR_Runner(TAF_Runner):
         return "and trim(submitting_state) not in ('94','96')"
 
     def init(self):
+        """
+        Import, create, and build out each segment for a given file type.
+        At this point, a dictionary has been created for each file segment containing
+        SQL queries that will be sequential executed by the run definition to produce output. 
+        """
 
         from taf.APR.LOC import LOC
         from taf.APR.LIC import LIC
