@@ -25,13 +25,17 @@ class DE0009(DE):
         #super().__init__(de)
 
     def create(self):
+        """
+        Create the segment.
+        """
+
         #super().create()
         self.create_temp()
         self.create_dsblty_suppl_table()
 
     def create_temp(self):
         """
-        TODO:  Update docstring
+        Create a temporary table.  
         """
 
         # Must use month of latest non-missing LCKIN_PRVDR_NUM1 to pull all three NUMs
@@ -143,7 +147,7 @@ class DE0009(DE):
 
     def create_dsblty_suppl_table(self):
         """
-        Main function to generate the annual DE segment 009: Disability & Need
+        Generate the annual DE segment 009: Disability & Need
         """
 
         z = f"""create or replace temporary view DIS_NEED_SPLMTLS_{self.de.YEAR} as

@@ -24,13 +24,17 @@ class DE0008(DE):
         #super().__init__(de)
 
     def create(self):
+        """
+        Create the segment.  
+        """
+
         #super().create()
         self.create_temp()
         self.create_mfp_suppl_table()
 
     def create_temp(self):
         """
-        TODO:  Update docstring
+        Create a temporary table.  
         """
 
 

@@ -4,7 +4,6 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0001BASE(DE):
-
     """
     Description:  Generate the annual DE segment 001: Base
 
@@ -23,7 +22,7 @@ class DE0001BASE(DE):
 
     def create(self):
         """
-        Runner function
+        Create the segment.  
         """
 
         self.create_temp()
@@ -453,7 +452,7 @@ class DE0001BASE(DE):
 
     def gen_bsf_last_dt(self, tot_month, in_year):
         """
-        TODO:  Update docstring for gen_bsf_last_dt()
+        Create BSF last date.  
         """
 
         gen_bsf_last_dt = []
@@ -468,7 +467,7 @@ class DE0001BASE(DE):
 
     def age_date_calculate(self, inyear):
         """
-        TODO:  Update docstring for age_date_calculate()
+        Calculate age date.  
         """
 
         z = f"""case { self.gen_bsf_last_dt(tot_month=12, in_year=inyear) }

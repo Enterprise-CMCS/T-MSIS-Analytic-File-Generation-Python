@@ -26,10 +26,10 @@ class DE0002(DE):
 
     def create(self):
         """
-        Read in all eligibility dates - all 16 slots from all 12 months. The monthly_array_eldts macro
+        Read in all eligibility dates - all 16 slots from all 12 months. The monthly_array_eldts Function
         truncates anything BEFORE the first of the month to the first of the month, and anything AFTER
         the last day of the month to the last day of the month. Must
-        run each element as a separate subcol param because of macro text length issues.
+        run each element as a separate subcol param because of Function text length issues.
         """
 
         super().create()
@@ -43,7 +43,7 @@ class DE0002(DE):
 
     def create_temp(self, tname):
         """
-        TODO:  Update docstring for create_temp()
+        Create temporary table.
         """
 
         s = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_EFF_DT_', outcol="", nslots=16, truncfirst=1)
@@ -87,7 +87,7 @@ class DE0002(DE):
 
     def eligibility_dates(self, dtype, dval):
         """
-        TODO:  Update docstring for eligibility_dates()
+        Get eligibility dates.  
         """
 
         z = f"""create or replace temporary view {dtype}_dates_long as

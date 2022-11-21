@@ -26,6 +26,10 @@ class DE0005(DE):
 		#super().__init__(de)
 
 	def create(self):
+		"""
+		Create the segment.  
+		"""
+
 		#super().create()
 		self.create_temp()
 		self.create_mc_suppl_table()
@@ -491,7 +495,7 @@ class DE0005(DE):
 
 	def create_mc_suppl_table(self):
 		"""
-		Main function to generate the annual BSF segment 005: Managed Care.
+		Create the annual BSF segment 005: Managed Care.
 		"""
 
 		z = f"""create or replace temporary view MNGD_CARE_SPLMTL_{self.de.YEAR} as

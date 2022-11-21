@@ -30,7 +30,7 @@ class DE0007(DE):
 
     def create_temp(self):
         """
-        TODO:  Update docstring for create_temp()
+        Create a temporary table.
         """
 
         # Create an indicator for ANY of the MFP monthly flags = 1 which we will
@@ -63,7 +63,7 @@ class DE0007(DE):
 
     def create_mfp_suppl_table(self):
         """
-        Main function to generate the annual BSF segment 007: MFP.
+        Generate the annual BSF segment 007: MFP.
         """
 
         z = f"""create or replace temporary view MFP_SPLMTL_{self.de.YEAR} as

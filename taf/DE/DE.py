@@ -55,17 +55,17 @@ class DE(TAF):
             ):
 
         """
-        Macro create_temp_table to create each main table. For each table, there are columns we must get from the raw data in
+        Function create_temp_table to create each main table. For each table, there are columns we must get from the raw data in
         the subquery, and then columns we must get from the outer query that pulls from the subquery.
 
-        Macro parms:
+        Function parms:
             tblname=table name
             inyear=input year, where the default will be set to the current year but it can be changed to the prior year,
                     for when we need to read in demographic information from the prior year
             subcols=creation statements for all columns that must be pulled from the raw data in the subquery
             outercols=creation statements for all columns that must be pulled from the subquery
             subcols2 - subcols8=additional subcols when needing to loop over MC and waiver slots, because cannot
-                                loop over all slots within one macro var or will exceed text limit of 65534 chars
+                                loop over all slots within one Function var or will exceed text limit of 65534 chars
         """
 
         _outercols = outercols
@@ -136,19 +136,18 @@ class DE(TAF):
         """
         self.de.append(type(self).__name__, z)
         print(f"""Creating Temp Table: {tblname}_{inyear}""")
-
+ 
     def mc_type_rank(self, smonth: int, emonth: int):
         """
-        Macro mc_type_rank to look across all MC types for each month and assign one type for
+        Function mc_type_rank to look across all MC types for each month and assign one type for
         the month based on the priority ranking. For each month, must loop through each value
         in priority order and within each value, must loop through each slot.
 
-        Macro parms:
+        Function parms:
             smonth=the month to begin looping over, where default=1.
             emonth=the month to end looping over, where default=12.
         """
         
-
         priorities = ["01", "04", "05", "06", "15", "07", "14", "17", "08", "09", "10",
                       "11", "12", "13", "19", "18", "16", "02", "03", "60", "70", "80", "20", "99"]
 
@@ -173,7 +172,7 @@ class DE(TAF):
 
     def misg_enrlm_type():
         """
-        Macro misg_enrlmt_type to create indicators for ENRL_TYPE_FLAG = NULL. 
+        Function misg_enrlmt_type to create indicators for ENRL_TYPE_FLAG = NULL. 
         Set to 1 if ENRL_TYPE_FLAG = NULL AND the person is in the month. 
         Set to 0 if ENRL_TYPE_FLAG != NULL AND person in the month. 
         Set to NULL if the person is not in the month. 
@@ -197,11 +196,11 @@ class DE(TAF):
 
     def nonmiss_month(self, incol, outcol="", var_type="D"):
         """
-        Macro nonmiss_month to loop through given variable from month 12 to 1 and identify the month with
+        Function nonmiss_month to loop through given variable from month 12 to 1 and identify the month with
         the first non-missing value. This will then be used to pull additional columns that should be paired
         with that month. The month = 00 if NO non-missing month.
 
-        Macro parms:
+        Function parms:
             incol=input monthly column
             outcol=output column with month number, where the default is the incol name with the _MN (month number) suffix
         """
@@ -225,10 +224,6 @@ class DE(TAF):
 
     def nonmiss_month2(self, incol, outcol="", var_type="D"):
 
-        """
-        TODO:  Update docstring.  Why are there two functions -- nonmiss_month and nonmiss_month2???
-        """
-
         if outcol == "":
             outcol = incol + "_MN"
 
@@ -247,14 +242,14 @@ class DE(TAF):
 
     def assign_nonmiss_month(self, outcol, monthval1, incol1, monthval2='', incol2=''):
         """
-        Macro assign_nonmiss_month looks at the values for the monthly variables assigned in nonmiss_month,
+        Function assign_nonmiss_month looks at the values for the monthly variables assigned in nonmiss_month,
         and pulls multiple variables for that month based on the assigned month from nonmiss_month. Note
         this can be based on 1 or 2 monthly assignments from nonmiss_month, where the first is evaluated and
         if a month is never assigned to that variable, the second will be evaluated. This happens for HOME and
         MAIL address. Note that nonmiss_month must be run in the subquery before assign_nonmiss_month is run in
         the outer query.
 
-        Macro parms:
+        Function parms:
             outcol=column to assign based on the month captured in nonmiss_month
             monthval1=monthly value to evaluate captured in nonmiss_month
             incol1=input column to assign if monthval1 is met
@@ -278,7 +273,7 @@ class DE(TAF):
 
     def address_flag(self):
         """
-        Macro address_flag looks at the values for HOME_month and MAIL_month and assigns a 1
+        Function address_flag looks at the values for HOME_month and MAIL_month and assigns a 1
         if MAIL_month ne 00, otherwise 0 if HOME_month ne 00, otherwise null
         """
 
@@ -291,10 +286,10 @@ class DE(TAF):
 
     def address_same_year(self, incol):
         """
-        Macro address_same_year to use yearpull to pull in the address information
+        Function address_same_year to use yearpull to pull in the address information
         from the same year in which ELGBL_LINE_1_ADR was pulled 
 
-        Macro parms:
+        Function parms:
             incol = input col to pull 
         """
 
@@ -310,9 +305,9 @@ class DE(TAF):
 
     def unique_claims_ids(self, cltype):
         """
-        Macro unique_claims_ids to join the max da_run_ids for the given claims file back to the monthly TAF and
+        Function unique_claims_ids to join the max da_run_ids for the given claims file back to the monthly TAF and
         create a table of list of unique state/msis IDs with any claim.
-        These lists will be unioned outside the macro. 
+        These lists will be unioned outside the Function. 
         """
         
         z = f"""
@@ -352,7 +347,6 @@ class DE(TAF):
         TODO:  Update docstring
         """
 
-
         z = ""
         if as_select is False:
             z += f"""
@@ -371,11 +365,11 @@ class DE(TAF):
 
     def monthly_array_eldts(self, incol, outcol, nslots=16, truncfirst=1):
         """
-        Macro monthly_array_eldts to take the raw monthly columns and array into columns with _MO suffixes.
+        Function monthly_array_eldts to take the raw monthly columns and array into columns with _MO suffixes.
         Effective dates will be truncated to the first of the month if prior to the first, and end dates
         will be truncated to the end of the month if after.
 
-        Macro parms:
+        Function parms:
             incol=input monthly column
             outcol=name of column to be output, where default is the name of the incol with _MO for each month appended as a suffix
             nslots=# of slots, default = 16 (# of slots of effective/end dates on the BSF) 
@@ -430,10 +424,10 @@ class DE(TAF):
 
     def mc_waiv_slots(self, incol, values, outcol, smonth=1, emonth=12):
         """
-        Macro mc_waiv_slots to look across all MC or waiver slots for the month and create an indicator for months with specific
+        Function mc_waiv_slots to look across all MC or waiver slots for the month and create an indicator for months with specific
         values of type.
 
-        Macro parms:
+        Function parms:
             incol=input type column to evaluate
             values=list of values (waiver or MC types) to look for
             outcol=output column with indicator for specific type 
@@ -466,9 +460,9 @@ class DE(TAF):
 
     def run_mc_slots(self, _smonth, _emonth):
         """
-        Macro run_mc_slots to run the above mc_waiv_slots macro for all the MC types.
+        Function run_mc_slots to run the above mc_waiv_slots Function for all the MC types.
 
-        Macro parms:
+        Function parms:
             smonth=the month to begin looping over, where default=1
             emonth=the month to end looping over, where default=12
         """
@@ -500,9 +494,9 @@ class DE(TAF):
 
     def sum_months(self, incol, raw=0, outcol=""):
         """
-        Macro sum_months to take a SUM over all the input months.
+        Function sum_months to take a SUM over all the input months.
 
-        Macro parms:
+        Function parms:
         incol=input monthly column which will be summed (with _MO suffix for each month)
         raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
             in an earlier subquery and will therefore have the _MO suffixes, where default = 0
@@ -531,9 +525,9 @@ class DE(TAF):
 
     def run_waiv_slots(self, _smonth, _emonth):
         """
-        Macro run_waiv_slots to run the above mc_waiv_slots macro for all the Waiver types.
+        Function run_waiv_slots to run the above mc_waiv_slots Function for all the Waiver types.
 
-        Macro parms:
+        Function parms:
             smonth=the month to begin looping over, where default=1
             emonth=the month to end looping over, where default=12
         """
@@ -556,10 +550,10 @@ class DE(TAF):
     # OR non-0, 8, 9 only or non-null ID
     def mc_nonnull_zero(self, outcol, smonth, emonth):
         """
-        Macro mc_nonnull_zero to look across all MC IDs AND types slots and create an indicator
+        Function mc_nonnull_zero to look across all MC IDs AND types slots and create an indicator
         if there is any non-null/00 value for type OR any non-null/0-, 8- or 9-only value for ID (for the _SPLMTL flags) 
 
-        Macro parms:
+        Function parms:
             outcol=name of outcol (supp flag, will have suffix of smonth_emonth and then all must be combined to get
                     yearly value)
             smonth=start month to loop over
@@ -591,10 +585,10 @@ class DE(TAF):
 
     def any_col(incols: str, outcol, condition='=1'):
         """
-        Macro any_col to look across a list of columns (non-monthly) to determine if ANY meet a given
+        Function any_col to look across a list of columns (non-monthly) to determine if ANY meet a given
         condition. The default condition is = 1.
 
-        Macro parms:
+        Function parms:
             incols=input columns
             outcol=name of column to be output 
             condition=monthly condition to be evaulated, where default is = 1
@@ -620,7 +614,7 @@ class DE(TAF):
 
     def joinmonthly(self):
         """
-        Macro join_monthly to join the max da_run_ids for the given state/month back to the monthly TAF and
+        Function join_monthly to join the max da_run_ids for the given state/month back to the monthly TAF and
         then join each month by submtg_state_cd and msis_ident_num. Note this table will be pulled into for the subquery in the
         creation of each base and supplemental segment. 
         """
@@ -664,9 +658,9 @@ class DE(TAF):
 
     def last_best(self, incol, outcol="", prior=0):
         """
-        Macro last_best to take the last best value (go backwards in time from month 12 to month 1, taking the first non-missing/null value).
+        Function last_best to take the last best value (go backwards in time from month 12 to month 1, taking the first non-missing/null value).
 
-        Macro parms:
+        Function parms:
             incol=input monthly column
             outcol=name of column to be output, where default is the same name of the incol 
             prior=indicator to compare current year against prior years (for demographics) to take prior if current year is missing, where default=0 
@@ -697,10 +691,10 @@ class DE(TAF):
 
     def waiv_nonnull(self, outcol):
         """
-        Macro waiv_nonnull to look across all waiver IDs AND types slots and create an indicator
+        Function waiv_nonnull to look across all waiver IDs AND types slots and create an indicator
         if there is any non-null value (for the _SPLMTL flags) 
 
-        Macro parms:
+        Function parms:
             outcol=name of outcol (supp flag) 
         """
 
@@ -726,10 +720,10 @@ class DE(TAF):
 
     def ever_year(self, incol, condition='=1', raw=1, outcol='', usenulls=0, nullcond=''):
         """
-        Macro ever_year to look across all monthly columns and create an indicator for whether ANY of the monthly
+        Function ever_year to look across all monthly columns and create an indicator for whether ANY of the monthly
         columns meet the given condition. The default condition is = 1.
 
-        Macro parms:
+        Function parms:
             incol=input monthly column
             condition=monthly condition to be evaulated, where default is = 1
             raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
@@ -821,14 +815,14 @@ class DE(TAF):
 
     def max_run_id(self, file="", tbl="", inyear=""):
         """
-        Macro max_run_id to get the highest da_run_id for the given state for each input monthly TAF (DE or claims). This
+        Function max_run_id to get the highest da_run_id for the given state for each input monthly TAF (DE or claims). This
         table will then be merged back to the monthly TAF to pull all records for that state, month, and da_run_id.
         It is also inserted into the metadata table to keep a record of the state/month DA_RUN_IDs that make up 
         each annual run.
         To get the max run ID, must go to the job control table and get the latest national run, and then also
         get the latest state-specific run. Determine the later by state and month and then pull those IDs.
 
-        Macro parms:
+        Function parms:
             inyear=input year, where the default will be set to the current year but it can be changed to all prior years,
                     for when we need to read in demographic information from all prior years 
         """
@@ -1004,9 +998,9 @@ class DE(TAF):
 
     def drop_table(self, tblname):
         """
-        Macro drop_tables to drop temp tables.
+        Function drop_tables to drop temp tables.
 
-        Macro parms:
+        Function parms:
             temptables=list of tables to drop
         """
 
@@ -1015,7 +1009,7 @@ class DE(TAF):
 
     def create_pyears(self):
         """
-        Macro create_pyears to create a list of all prior years (from current year minus 1 to 2014).
+        Function create_pyears to create a list of all prior years (from current year minus 1 to 2014).
         Note for 2014 the list will be empty. 
         """
 

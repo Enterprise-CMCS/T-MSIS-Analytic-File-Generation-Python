@@ -22,7 +22,7 @@ class DE0003(DE):
 
     def create(self):
         """
-        TODO:  Update docstring for create()
+        Create the segment.  
         """
 
         #super().create()
@@ -105,6 +105,7 @@ class DE0003(DE):
         """
         Main function to generate the annual DE segment 003: Address/Phone
         """
+        
         if self.de.GETPRIOR == 1:
             cnt = 0
             #if self.de.GETPRIOR == 1:

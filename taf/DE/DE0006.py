@@ -28,6 +28,10 @@ class DE0006(DE):
         #super().__init__(de)
 
     def create(self):
+        """
+        Create the segment.  
+        """
+
         #super().create()
         self.create_temp()
         self.create_wvr_suppl_table()
@@ -36,8 +40,8 @@ class DE0006(DE):
         """
         Create monthly indicators for each type of Waiver to then sum 
         in the outer query. Note this will run for months 1-3 (which is the
-        text limit of the macro var), and then the other months will run in 
-        below additional subcol macro vars.
+        text limit of the Function var), and then the other months will run in 
+        below additional subcol Function vars.
         """
 
         s = f"""{DE.run_waiv_slots(self, 1, 3)}
@@ -64,7 +68,7 @@ class DE0006(DE):
 
     def create_wvr_suppl_table(self):
         """
-        Main function to generate the annual BSF segment 006: Waiver.
+        Generate the annual BSF segment 006: Waiver.
         """
 
         z = f"""create or replace temporary view WAIVER_SPLMTL_{self.de.YEAR} as
