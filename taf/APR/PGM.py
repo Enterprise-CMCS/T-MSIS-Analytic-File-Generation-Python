@@ -8,14 +8,7 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PGM(APR):
-
     """
     Description:  Generate the annual PR segment for affialiated programs
 
@@ -29,7 +22,10 @@ class PGM(APR):
         self.fileseg = 'PGM'
 
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Create affiliated programs segment. Select records and select or create data elements
 
         collist_s = ['AFLTD_PGM_TYPE_CD', 'AFLTD_PGM_ID']

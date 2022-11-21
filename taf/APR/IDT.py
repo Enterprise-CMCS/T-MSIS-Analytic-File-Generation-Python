@@ -8,14 +8,7 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class IDT(APR):
-
     """
     Description:  Generate the annual PR segment for identifiers
 
@@ -125,14 +118,11 @@ class IDT(APR):
         """
         self.apr.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Create identifiers segment. Select records and select or create data elements
 
         collist_s = ['PRVDR_LCTN_ID',

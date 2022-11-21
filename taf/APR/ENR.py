@@ -8,14 +8,7 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ENR(APR):
-
     """
     Description:  Generate the annual PR segment for enrollment
 
@@ -29,7 +22,10 @@ class ENR(APR):
         self.fileseg = 'ENR'
 
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Create enrollment segment. Select records and select or create data elements
         collist_e = ['PRVDR_MDCD_EFCTV_DT',
                      'PRVDR_MDCD_END_DT',

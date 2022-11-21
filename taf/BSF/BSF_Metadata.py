@@ -8,7 +8,6 @@ from taf.BSF.BSF_Runner import BSF_Runner
 
 
 class BSF_Metadata:
-
     """
     TODO:  Update docstring
     """
@@ -35,7 +34,6 @@ class BSF_Metadata:
 
     @staticmethod
     def finalFormatter():
-
         """
         TODO:  Update docstring
         """
@@ -56,7 +54,6 @@ class BSF_Metadata:
 
     @staticmethod
     def tagAlias(segment_id: str, alias: str):
-
         """
         TODO:  Update docstring
         """
@@ -84,9 +81,11 @@ class BSF_Metadata:
 
     @staticmethod
     def unifySelect(bsf: BSF_Runner):
-
         """
-        TODO:  Update docstring
+        This is a helper definition to combine all relevant file segments
+        in order to insert records into the final target table for the beneficiary summary file.
+        A formatted SQL string is returned, printed, then passed to spark.sql() to be executed. 
+        These steps could be combined, but were intentionally left separate for traceability.
         """
 
         z = f"""
@@ -346,9 +345,11 @@ class BSF_Metadata:
 
     @staticmethod
     def finalTableOutput(bsf: BSF_Runner):
-
         """
-        TODO:  Update docstring
+        This is a “helper” definition to create the insert statement in order to insert
+        records into the final target table for the beneficiary summary file.
+        A formatted SQL string is returned, printed, then passed to spark.sql() to be executed.
+        These steps could be combined, but were intentionally left separate for traceability.
         """
 
         z = f"""

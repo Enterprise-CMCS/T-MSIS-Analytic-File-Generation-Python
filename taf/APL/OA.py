@@ -11,7 +11,6 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class OA(APL):
-
     """
     Description:  Generate the annual PL segment for Operating Authority.
     Note: This program creates a separate Operating Authority table from the arrays in monthly MCP main segment
@@ -41,7 +40,6 @@ class OA(APL):
         ]
 
     def create(self):
-
         """
         TODO:  update docstring
         """
@@ -181,7 +179,6 @@ class OA(APL):
         self.create_splmlt(segname="OPRTG_AUTHRTY", segfile="OpAuth1")
 
     def build(self):
-        
         """
         insert into permanent table
         """
@@ -218,9 +215,7 @@ class OA(APL):
                 ,current_timestamp() as REC_UPDT_TS
             FROM OpAuth1
             """
-
-
-
+            
         self.apl.append(type(self).__name__, z)
 
 

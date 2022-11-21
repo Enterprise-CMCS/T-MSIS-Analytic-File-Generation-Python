@@ -8,14 +8,7 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class TAX(APR):
-
     """
     Description:  Generate the annual PR segment for taxonomy
 
@@ -29,7 +22,10 @@ class TAX(APR):
         self.fileseg = 'TAX'
 
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Create taxonomy segment. Select records and select or create data elements
 
         collist_s = ['PRVDR_CLSFCTN_TYPE_CD',

@@ -8,14 +8,7 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class GRP(APR):
-
     """
     Description:  Generate the annual PR segment for affiliated groups
 
@@ -27,14 +20,11 @@ class GRP(APR):
         super().__init__(apr)
         self.fileseg = 'GRP'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Create affiliated groups segment. Select records and select or create data elements
         
         collist_s = ['SUBMTG_STATE_AFLTD_PRVDR_ID']

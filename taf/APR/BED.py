@@ -8,14 +8,7 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BED(APR):
-
     """
     Description: Generate the annual PRR segment for bed type
 
@@ -29,7 +22,10 @@ class BED(APR):
         self.fileseg = 'BED'
 
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Create bed type segment. Select records and select or create data elements
 
         collist_s = ['PRVDR_LCTN_ID', 'BED_TYPE_CD', 'BED_CNT']

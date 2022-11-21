@@ -9,7 +9,10 @@ from taf.BSF.BSF_Runner import BSF_Runner
 #
 # -------------------------------------------------------------------------------------
 class ELG():
-
+    """
+    TODO:  Update docstring
+    """
+     
     def __init__(self, bsf: BSF_Runner, tab_no, _2x_segment, eff_date, end_date):
 
         self.bsf = bsf
@@ -23,35 +26,25 @@ class ELG():
 
         self.create_initial_table()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
         print('')
         # self.create()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def get_combined_list(self):
+        """
+        TODO:  Update docstring
+        """
+         
         tuples = []
         for j in self.bsf.combined_list:
             tuples.append('concat' + str(j))
         return ','.join(tuples)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create_initial_table(self):
+        """
+        TODO:  Update docstring
+        """
+         
         if (self._2x_segment.casefold() in ('tmsis_var_dmgrphc_elgblty', 'tmsis_race_info')):
            z = f"""
                     create or replace temporary view {self.tab_no} as

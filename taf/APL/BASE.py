@@ -8,21 +8,11 @@ from taf.APL.APL import APL
 from taf.APL.APL_Runner import APL_Runner
 from taf.TAF_Closure import TAF_Closure
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE(APL):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "BASE"
@@ -110,7 +100,6 @@ class BASE(APL):
         ]
 
     def create(self):
-
         """
         Create the partial base segment, pulling in only columns are not acceditation
         """
@@ -345,7 +334,6 @@ class BASE(APL):
 
         self.apl.append(type(self).__name__, z)
 
-
         z = f"""
             create or replace temporary view srtd as
             select
@@ -467,7 +455,6 @@ class BASE(APL):
         self.apl.append(type(self).__name__, z)
 
     def build(self):
-        
         """
         Insert into permanent table
         """

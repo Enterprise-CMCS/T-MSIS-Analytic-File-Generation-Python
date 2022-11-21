@@ -7,15 +7,7 @@
 from taf.APL.APL import APL
 from taf.APL.APL_Runner import APL_Runner
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class SAREA(APL):
-
     """
     Description:  Generate the annual PL segment for Service Area
     Note:   This program aggregates unique values across the CY year for variables in collist.
@@ -59,12 +51,6 @@ class SAREA(APL):
         # create temporary table with just LCTN_SPLMTL to join to base
         self.create_splmlt(segname="SAREA", segfile="sarea_pl_" + str(self.year))
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def build(self):
         """    
         insert into permanent table

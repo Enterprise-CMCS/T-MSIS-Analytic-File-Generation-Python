@@ -9,14 +9,7 @@ from taf.APR.APR_Runner import APR_Runner
 from taf.TAF_Closure import TAF_Closure
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE(APR):
-
     """
     TODO:  Update docstring
     """

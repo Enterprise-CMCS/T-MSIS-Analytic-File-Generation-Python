@@ -8,14 +8,7 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class LIC(APR):
-
     """
     Description:  Generate the annual PR segment for license
 
@@ -29,7 +22,10 @@ class LIC(APR):
         self.fileseg = 'LIC'
 
     def create(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         # Create license segment. Select records and select or create data elements
 
         collist_s = ['PRVDR_LCTN_ID',

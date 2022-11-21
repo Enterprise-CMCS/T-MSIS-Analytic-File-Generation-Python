@@ -1,41 +1,28 @@
 from taf.TAF_Runner import TAF_Runner
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class APL_Runner(TAF_Runner):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    TODO:  Update docstring
+    """
+     
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         super().__init__(reporting_period, state_code, run_id)
 
         self.monyrout = self.reporting_period.strftime("%Y%m").upper()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def ST_FILTER(self):
+        """
+        TODO:  Update docstring
+        """
+         
         return "and trim(submitting_state) not in ('94','96')"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def init(self):
-
+        """
+        TODO:  Update docstring
+        """
+         
         from taf.APL.BASE import BASE
         from taf.APL.LCTN import LCTN
         from taf.APL.SAREA import SAREA

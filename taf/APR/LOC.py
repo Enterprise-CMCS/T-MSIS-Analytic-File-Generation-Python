@@ -8,14 +8,7 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class LOC(APR):
-
     """
     Description:  Generate the annual PR segment for Location addresses
 
@@ -30,7 +23,10 @@ class LOC(APR):
 
 
     def create(self):
-        
+        """
+        TODO:  Update docstring
+        """
+         
         # Create location segment. Select records and select or create data elements
 
         collist_l = ['PRVDR_LCTN_ID',

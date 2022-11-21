@@ -2,14 +2,7 @@ from taf.APR.APR_Runner import APR_Runner
 from taf.TAF import TAF
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class APR(TAF):
-
     """
     Description:  Generate the PL TAF using the monthly MCP TAF tables
     """
@@ -33,6 +26,7 @@ class APR(TAF):
         create macro, which includes output to the permanent table. This macro will then get the count
         of records in that table, and output to the metadata table. (Note macro CREATE_META_INFO is in
         AWS_Shared_Macros)
+
         Function parms:
             -tblname=name of the output permanent table name (after TAF_ANN_{fil_typ}_)
             -FIL_4TH_NODE=abbreviated name of the table to go into the metadata table
@@ -51,7 +45,6 @@ class APR(TAF):
         pass
 
     def max_run_id(self, file: str, tbl: str, inyear):
-        
         """
         Macro max_run_id to get the highest da_run_id for the given state for input monthly TAF. This
         table will then be merged back to the monthly TAF to pull all records for that state, month, and da_run_id.
@@ -189,7 +182,6 @@ class APR(TAF):
         """
         self.apr.append(type(self).__name__, z)
 
-
     def join_monthly(self, fileseg, fil_typ, inyear, main_id):
         """
         Function join_monthly to join the max da_run_ids for the given state/month back to the monthly TAF and
@@ -261,7 +253,6 @@ class APR(TAF):
             result.append(z.format())
 
         return "\n    ".join(result)
-
     
     def all_monthly_segments(self, filet):
         """
@@ -309,7 +300,6 @@ class APR(TAF):
         return z.format()
 
     def create_temp_table(self, fileseg, tblname, inyear, subcols, outercols='', subcols2='', subcols3='', subcols4='', subcols5='', subcols6='', subcols7='', subcols8=''):
-
         """
         Macro create_temp_table to create each main table. For each table, there are columns we must get from the raw data in
         the subquery, and then columns we must get from the outer query that pulls from the subquery.
@@ -351,7 +341,6 @@ class APR(TAF):
 
         """
         self.apr.append(type(self).__name__, z)
-
 
     def annual_segment(self, fileseg, dtfile, collist, mnths, outtbl):
         """
@@ -404,7 +393,6 @@ class APR(TAF):
         self.apr.append(type(self).__name__, z)
 
     def any_col(incols, outcol, condition='=1'):
-        
         """
         Macro any_col to look across a list of columns (non-monthly) to determine if ANY meet a given
         condition. The default condition is = 1.
@@ -421,9 +409,7 @@ class APR(TAF):
 
         return f"case when {' or '.join(cases)} then 1 else 0 end as {outcol}"
 
- 
     def sum_months(incol, raw=0, outcol=''):
-
         """
         Macro sum_months to take a SUM over all the input months.
 
@@ -476,14 +462,12 @@ class APR(TAF):
         TODO:  Update docstring
         """
 
-
         vars = []
         for I_ in range(1, N):
             i = '{:02d}'.format(I_)
             vars.append(f", max(case when (_ndx={I_}) then {varnm} else null end) as {varnm}_{i}")
 
         return ' '.join(vars)
-
 
     def nonmiss_month(self, incol, outcol=''):
         """
@@ -510,7 +494,6 @@ class APR(TAF):
         return f"""case when {' when '.join(cases)} else '00' end as {outcol}"""
 
     def ind_nonmiss_month(self, outcol):
-
         """
         Macro ind_nonmiss_month to loop through individual provider variables
         from month 12 to 1 and identify the month with the first non-missing value
@@ -531,7 +514,6 @@ class APR(TAF):
         return f"case {' '.join(cases)} else '00' end as {outcol}"
 
     def assign_nonmiss_month(self, outcol, monthval1, incol1, monthval2='', incol2=''):
-
         """
         Macro assign_nonmiss_month looks at the values for the monthly variables assigned in nonmiss_month,
         and pulls multiple variables for that month based on the assigned month from nonmiss_month. Note
