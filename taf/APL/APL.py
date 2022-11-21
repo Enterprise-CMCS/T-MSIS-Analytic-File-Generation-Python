@@ -495,7 +495,7 @@ class APL(TAF):
 
     def monthly_array_ind_raw(incol, outcol=""):
         """
-        TODO:  Update docstring
+        Function to return a case statement of the monthly array raw indexes.
         """
          
         if outcol == "":
@@ -512,7 +512,7 @@ class APL(TAF):
 
     def map_arrayvars(varnm="", N=1):
         """
-        TODO:  Update docstring
+        Function to return the map array variables.  
         """
          
         vars = []

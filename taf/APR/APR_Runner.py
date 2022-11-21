@@ -25,7 +25,7 @@ class APR_Runner(TAF_Runner):
 
     def ST_FILTER(self):
         """
-        TODO:  Update docstring
+        Use the trim function to remove extraneous space characters from start and end of state names.  
         """
          
         return "and trim(submitting_state) not in ('94','96')"
