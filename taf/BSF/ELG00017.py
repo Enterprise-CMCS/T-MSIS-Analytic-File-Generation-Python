@@ -1,12 +1,8 @@
 from taf.BSF import BSF_Runner
-
-
-
 from taf.BSF.ELG import ELG
 
 
 class ELG00017(ELG):
-
     """
     Description:  Process TMSIS_DSBLTY_INFO and create unique output for BSF.
     """

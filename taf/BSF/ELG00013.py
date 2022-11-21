@@ -1,12 +1,8 @@
 from taf.BSF import BSF_Runner
 from taf.BSF.BSF_Metadata import BSF_Metadata
-
-
-
 from taf.BSF.ELG import ELG
 
 class ELG00013(ELG):
-
     """
     Description:  Process TMSIS_LTSS_PRTCPTN_DATA and create unique output for BSF.
     """
@@ -14,12 +10,6 @@ class ELG00013(ELG):
     def __init__(self, bsf: BSF_Runner):
         ELG.__init__(self, bsf, 'ELG00013', 'TMSIS_LTSS_PRTCPTN_DATA', 'LTSS_ELGBLTY_EFCTV_DT', 'LTSS_ELGBLTY_END_DT')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def ltss(self, max_keep):
 
         ltsses = []
@@ -38,12 +28,6 @@ class ELG00013(ELG):
 
         return new_line.join(ltsses)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         z = f"""

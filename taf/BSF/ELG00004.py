@@ -1,21 +1,11 @@
 from taf.BSF import BSF_Runner
-
-
-
 from taf.BSF.ELG import ELG
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ELG00004(ELG):
+    """
+    Description:  Process TMSIS_ELGBL_CNTCT and create unique output for BSF.
+    """
 
-    """
-    Description:  Process TMSIS_ELGBL_CNTCT and create unique output for BSF
-    """
     def __init__(self, bsf: BSF_Runner):
         ELG.__init__(self, bsf, 'ELG00004', 'TMSIS_ELGBL_CNTCT', 'ELGBL_ADR_EFCTV_DT', 'ELGBL_ADR_END_DT')
 

@@ -1,11 +1,9 @@
 from taf.BSF.BSF_Metadata import BSF_Metadata
 from taf.BSF.BSF_Runner import BSF_Runner
-
 from taf.BSF.ELG import ELG
 
 
 class ELG00022(ELG):
-
     """
     Description:  Process TMSIS_ELIG_IDENTIFERS and create unique output for BSF.
     """
@@ -82,12 +80,6 @@ class ELG00022(ELG):
         # select * from connection to tmsis_passthrough
         #  ( select count(msis_ident_num) as beneficiaries from {self.tab_no}_{id_type}_multi )
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         self.create_identifiers('ADDTNL', '1')

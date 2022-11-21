@@ -1,11 +1,7 @@
 from taf.BSF import BSF_Runner
-
-
-
 from taf.BSF.ELG import ELG
 
 class ELG00011(ELG):
-
     """
     Description:  Process TMSIS_STATE_PLAN_PRTCPTN and create unique output for BSF.
     """

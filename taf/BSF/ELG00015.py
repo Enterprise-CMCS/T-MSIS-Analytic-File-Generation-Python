@@ -1,7 +1,4 @@
 from taf.BSF import BSF_Runner
-
-
-
 from taf.BSF.ELG import ELG
 
 class ELG00015(ELG):

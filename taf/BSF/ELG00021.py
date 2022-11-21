@@ -1,12 +1,10 @@
 from datetime import datetime
 from taf.BSF import BSF_Runner
 from taf.BSF.BSF_Metadata import BSF_Metadata
-
 from taf.BSF.ELG import ELG
 
 
 class ELG00021(ELG):
-
     """
     Description:  Process TMSIS_ENRLMT_TIME_SGMT_DATA and create unique output for BSF.  
     """
@@ -32,14 +30,10 @@ class ELG00021(ELG):
 
         return new_line.join(enrlmts)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def st_abbrev(self):
-
+        """
+        Convert the state code to the state abbreviation.  
+        """
         stAbbrevWhere = []
 
         for i in BSF_Metadata.st_abbrev.keys():
@@ -49,13 +43,10 @@ class ELG00021(ELG):
 
         return ' '.join(stAbbrevWhere)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def processEnrollment(self, enrl_type, enrl_type_cd):
+        """
+        Process the enrollment segment by building it through multiple steps.  
+        """
 
         new_line = '\n\t\t\t'
 
@@ -209,12 +200,6 @@ class ELG00021(ELG):
 
         self.bsf.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
         from calendar import monthrange
 

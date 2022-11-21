@@ -1,11 +1,7 @@
 from taf.BSF import BSF_Runner
-
-
-
 from taf.BSF.ELG import ELG
 
 class ELG00007(ELG):
-
     """
     Description:  Process TMSIS_HH_SNTRN_PRVDR and create unique output for BSF.
     """

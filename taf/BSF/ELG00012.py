@@ -1,13 +1,9 @@
 from re import M
 from taf.BSF import BSF_Runner
 from taf.BSF.BSF_Metadata import BSF_Metadata
-
-
-
 from taf.BSF.ELG import ELG
 
 class ELG00012(ELG):
-
     """
     Description:  Process TMSIS_WVR_PRTCPTN_DATA and create unique output for BSF.
     """
@@ -33,12 +29,6 @@ class ELG00012(ELG):
 
         return new_line.join(wvr_ids)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         WVR_TYPE_CD = "lpad(trim(WVR_TYPE_CD),2,'0')"

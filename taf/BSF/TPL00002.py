@@ -1,10 +1,8 @@
 from taf.BSF import BSF_Runner
-
 from taf.BSF.ELG import ELG
 
 
 class TPL00002(ELG):
-
     """
     Description:  Process TMSIS_TPL_MDCD_PRSN_MN and create unique output for BSF.
     """

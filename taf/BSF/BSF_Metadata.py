@@ -1,21 +1,15 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.BSF.BSF_Runner import BSF_Runner
 
 
 class BSF_Metadata:
     """
-    TODO:  Update docstring
+    Create metadata for BSF.  
     """
 
     def selectDataElements(segment_id: str, alias: str):
-
         """
-        TODO:  Update docstring
+        Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
+        and masked if there are invalid values.
         """
 
         new_line_comma = '\n\t\t\t,'
@@ -35,7 +29,7 @@ class BSF_Metadata:
     @staticmethod
     def finalFormatter():
         """
-        TODO:  Update docstring
+        Function for final formatting.  Handles epochal dates, absent data, and normalization.
         """
 
         new_line_comma = '\n\t\t\t,'
@@ -55,7 +49,7 @@ class BSF_Metadata:
     @staticmethod
     def tagAlias(segment_id: str, alias: str):
         """
-        TODO:  Update docstring
+        Function to tag aliased names.  
         """
 
         # new_line_comma = '\n\t\t,'
@@ -641,10 +635,6 @@ class BSF_Metadata:
             """
         return z
 
-
-    """
-    TODO:  Provide comments for indices
-    """
     indices = {
         't2': 'ELG00002',
         't3': 'ELG00003',
@@ -668,9 +658,6 @@ class BSF_Metadata:
         't21': 'ELG00022'
     }
 
-    """
-    TODO:  Provide comments for st_abbrev
-    """
     st_abbrev = {
         '13': 'GA',
         '50': 'VT',
@@ -724,7 +711,7 @@ class BSF_Metadata:
 
     def join_segments(BSF_FILE_DATE):
         """
-        TODO:  Update docstring
+        Join BSF File Date segments.
         """
 
         joins = []
@@ -738,7 +725,7 @@ class BSF_Metadata:
 
     def dedup_tbl_joiner(tab_no: str, range: range, max_keep: int):
         """
-        TODO:  Update docstring
+        Function to deduplicate table when joining.  
         """
 
         joins = []
@@ -755,7 +742,7 @@ class BSF_Metadata:
 
     def tbl_joiner(tab_no: str, tblnum: int, type):
         """
-        TODO:  Update docstring
+        Function to join tables on submitting state code and msis_ident_num
         """
 
         return f"""
@@ -766,7 +753,7 @@ class BSF_Metadata:
 
     def cleanSubmittingStateCd(alias):
         """
-        TODO:  Update docstring
+        Function to clean submitting state code by aliasing them to standard codes.  
         """
 
         return f"""case
@@ -779,35 +766,35 @@ class BSF_Metadata:
 
     def cleanSSN(alias):
         """
-        TODO:  Update docstring
+        Clean social socurity number by left padding to a total length of 9 characters.
         """
 
         return f"lpad(cast({alias}.SSN_NUM as char(9)), 9, '0') as SSN_NUM"
 
     def cleanDisabilityTypeCd(alias):
         """
-        TODO:  Update docstring
+        Clean disability type code by left padding to a total length of 2 characters.  
         """
 
         return f"lpad(trim({alias}.DSBLTY_TYPE_CD), 2, '0') as DSBLTY_TYPE_CD"
 
     def cleanNDC_UOM_CHRNC_NON_HH_CD(alias):
         """
-        TODO:  Update docstring
+        Clean by left padding to a total length of 3 characters for NDC_UOM_CHRNC_NON_HH_CD.
         """
 
         return f"lpad(trim({alias}.NDC_UOM_CHRNC_NON_HH_CD), 3, '0') as NDC_UOM_CHRNC_NON_HH_CD"
 
     def cleanPrimaryLangCd(alias):
         """
-        TODO:  Update docstring
+        Clean Primary Language Code by uppercasing the language names.  
         """
 
         return f"upper({alias}.PRMRY_LANG_CD) as PRMRY_LANG_CD"
 
     def cleanImmigrationStatusCd(alias):
         """
-        TODO:  Update docstring
+        Clean immigration Status Code by aliasing "8" to "0" and uppercasing the code names.  
         """
 
         return f"""case
@@ -835,7 +822,7 @@ class BSF_Metadata:
     @staticmethod
     def encodePrimaryLanguage():
         """
-        TODO:  Update docstring
+        Function to encode Primary Languages.  
         """
 
         return """case
@@ -860,7 +847,7 @@ class BSF_Metadata:
     @staticmethod
     def encodeStateAsRegion():
         """
-        TODO:  Update docstring
+        Function to encode states to their region codes.  
         """
 
         return """case
@@ -879,7 +866,7 @@ class BSF_Metadata:
 
     def maskInvalidValues(column: str, alias: str):
         """
-        TODO:  Update docstring
+        Function to mask invalid values using the validator() function.  
         """
 
         delim = '\',\''
@@ -892,7 +879,7 @@ class BSF_Metadata:
 
     def rename(column: str):
         """
-        TODO:  Update docstring
+        Function to rename columns based on a list of columns to be renamed.  
         """
 
         if column in BSF_Metadata.renames.keys():
@@ -902,7 +889,7 @@ class BSF_Metadata:
 
     def normalize(column: str):
         """
-        TODO:  Update docstring
+        Normalize function.  
         """
 
         if column in BSF_Metadata.conform:
@@ -915,16 +902,13 @@ class BSF_Metadata:
     @staticmethod
     def epoch(column: str):
         """
-        TODO:  Update docstring
+        Function that takes any date earlier than 1600-01-01 and defaults it to 1599-12-31.
         """
         return f"""case
             when {column} < '1600-01-01' then '1599-12-31'
             else {column} end as {column}
         """
 
-    """
-    TODO:  Add comments
-    """
     cleanser = {
         'SSN_NUM': cleanSSN,
         'PRMRY_LANG_CD': cleanPrimaryLangCd,
@@ -933,18 +917,12 @@ class BSF_Metadata:
         'IMGRTN_STUS_CD': cleanImmigrationStatusCd
     }
 
-    """
-    TODO:  Add comments
-    """
     absent = [
         'PRGNT_IND',
         'PRGNCY_FLAG',
         '_1115A_PRTCPNT_FLAG'
     ]
 
-    """
-    TODO:  Add comments
-    """
     enumcols = [
         'LCKIN_PRVDR_NUM',
         'LCKIN_PRVDR_TYPE_CD',
@@ -956,17 +934,11 @@ class BSF_Metadata:
         'WVR_TYPE_CD'
     ]
 
-    """
-    TODO:  Add comments
-    """
     epochal = [
         'BIRTH_DT',
         'IMGRTN_STUS_5_YR_BAR_END_DT'
     ]
 
-    """
-    TODO:  Add comments
-    """
     renames = {
         '_1115A_PARTICIPANT_FLAG': '_1115A_PRTCPNT_FLAG',
         ',DUAL_ELGBL_CODE': 'DUAL_ELGBL_CD',
@@ -1025,9 +997,6 @@ class BSF_Metadata:
         'LOCK_IN_FLAG': 'LCKIN_FLAG'
     }
 
-    """
-    TODO:  Add comments
-    """
     conform = [
         'BIRTH_CNCPTN_IND',
         'CARE_LVL_STUS_CD',
@@ -1099,9 +1068,6 @@ class BSF_Metadata:
         'VET_IND',
     ]
 
-    """
-    TODO:  Add comments
-    """
     created_vars = {
 
         'ELG00002': None,
@@ -1117,9 +1083,6 @@ class BSF_Metadata:
         'ELG00022': None
     }
 
-    """
-    TODO:  Add comments
-    """
     final = {
 
         'ELG00001': [],
@@ -1272,9 +1235,6 @@ class BSF_Metadata:
         'ELG00022': []
     }
 
-    """
-    TODO:  Add comments
-    """
     columns = {
 
         'ELG00001': [
@@ -1598,9 +1558,6 @@ class BSF_Metadata:
 
     }
 
-    """
-    TODO:  Add comments
-    """
     validator = {
 
         'GNDR_CD':
@@ -1705,9 +1662,6 @@ class BSF_Metadata:
             ['0', '1', '2'],
     }
 
-    """
-    TODO:  Add comments
-    """
     prmry_lang_cd = [
         'ABK', 'ACE', 'ACH', 'ADA', 'ADY', 'AAR', 'AFH', 'AFR', 'AFA', 'AIN', 'AKA', 'AKK', 'ALB', 'ALB', 'ALE', 'ALG', 'TUT',
         'AMH', 'ANP', 'APA', 'ARA', 'ARG', 'ARP', 'ARW', 'ARM', 'RUP', 'ART', 'ASM', 'AST', 'ATH', 'AUS', 'MAP', 'AVA', 'AVE',
@@ -1739,9 +1693,6 @@ class BSF_Metadata:
         'VOL', 'VOT', 'WAK', 'WLN', 'WAR', 'WAS', 'WEL', 'FRY', 'WAL', 'WOL', 'XHO', 'SAH', 'YAO', 'YAP', 'YID', 'YOR', 'YPK',
         'ZND', 'ZAP', 'ZZA', 'ZEN', 'ZHA', 'ZUL', 'ZUN']
 
-    """
-    TODO:  Add comments
-    """
     output_columns = [
         'cast(DA_RUN_ID as integer) AS DA_RUN_ID',
         'BSF_FIL_DT',

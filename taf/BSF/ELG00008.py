@@ -1,11 +1,7 @@
 from taf.BSF import BSF_Runner
-
-
-
 from taf.BSF.ELG import ELG
 
 class ELG00008(ELG):
-
     """
     Description:  Process TMSIS_HH_CHRNC_COND and create unique output for BSF.
     """

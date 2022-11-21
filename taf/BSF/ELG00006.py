@@ -1,16 +1,7 @@
 from taf.BSF import BSF_Runner
-
-
-
 from taf.BSF.ELG import ELG
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ELG00006(ELG):
     """
     Description:  Process TMSIS_HH_SNTRN_PRTCPTN_INFO and create unique output for BSF.

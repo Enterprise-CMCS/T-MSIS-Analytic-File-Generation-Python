@@ -4,17 +4,11 @@ from taf.BSF.BSF_Metadata import BSF_Metadata
 from taf.BSF.ELG import ELG
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ELG00003(ELG):
-
     """
-    Description:  Process TMSIS_VAR_DMGRPHC_ELGBLTY and create unique output for BSF
+    Description:  Process TMSIS_VAR_DMGRPHC_ELGBLTY and create unique output for BSF.
     """
+    
     def __init__(self, bsf: BSF_Runner):
         ELG.__init__(self, bsf, 'ELG00003', 'TMSIS_VAR_DMGRPHC_ELGBLTY', 'VAR_DMGRPHC_ELE_EFCTV_DT', 'VAR_DMGRPHC_ELE_END_DT')
 

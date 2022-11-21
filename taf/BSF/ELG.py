@@ -1,16 +1,9 @@
 from taf.BSF.BSF_Metadata import BSF_Metadata
 from taf.BSF.BSF_Runner import BSF_Runner
 
-
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class ELG():
     """
-    TODO:  Update docstring
+    Description:  Process FILE-HEADER-RECORD-ELIGIBILITY and create unique output for BSF.
     """
      
     def __init__(self, bsf: BSF_Runner, tab_no, _2x_segment, eff_date, end_date):
@@ -31,9 +24,6 @@ class ELG():
         # self.create()
 
     def get_combined_list(self):
-        """
-        TODO:  Update docstring
-        """
          
         tuples = []
         for j in self.bsf.combined_list:
@@ -41,10 +31,7 @@ class ELG():
         return ','.join(tuples)
 
     def create_initial_table(self):
-        """
-        TODO:  Update docstring
-        """
-         
+  
         if (self._2x_segment.casefold() in ('tmsis_var_dmgrphc_elgblty', 'tmsis_race_info')):
            z = f"""
                     create or replace temporary view {self.tab_no} as
@@ -130,12 +117,6 @@ class ELG():
         # limit 1000
         self.bsf.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def MultiIds(self, created_vars: str, sort_key: str = '', where: str = '', suffix: str = '', val: str = ''):
 
         if len(where) > 1:

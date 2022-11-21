@@ -1,13 +1,9 @@
 from pandas import concat
 from taf.BSF import BSF_Runner
 from taf.BSF.BSF_Metadata import BSF_Metadata
-
-
-
 from taf.BSF.ELG import ELG
 
 class ELG00009(ELG):
-
     """
     Description:  Process TMSIS_LCKIN_INFO and create unique output for BSF.
     """
@@ -33,12 +29,6 @@ class ELG00009(ELG):
 
         return new_line.join(lckin_prvdrs)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def lckin_flag(self, max_keep):
 
         lckin_flags = []
@@ -48,12 +38,6 @@ class ELG00009(ELG):
 
         return ' or '.join(lckin_flags)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         z = f"""
