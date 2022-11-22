@@ -4,9 +4,6 @@ from taf.PRV.PRV import PRV
 
 
 class PRV08(PRV):
-    """
-    Description:  selection macros for the T-MSIS provider segments
-    """
      
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
@@ -82,7 +79,7 @@ class PRV08(PRV):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the PRV08 affiliated groups segment.  
         """
          
         self.process_08_groups('Prov02_Main',
@@ -109,7 +106,7 @@ class PRV08(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        TODO:  Update docstring
+        Build the PRV08 affiliated groups segment.  
         """
          
         z = f"""

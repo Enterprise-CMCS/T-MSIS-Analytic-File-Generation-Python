@@ -4,9 +4,6 @@ from taf.PRV.PRV import PRV
 
 
 class PRV03(PRV):
-    """
-    Description:  selection macros for the T-MSIS provider segments
-    """
      
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
@@ -199,7 +196,7 @@ class PRV03(PRV):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the PRV03 location data extract
         """
          
         keyl = 'PRV_LOC_LINK_KEY'
@@ -362,7 +359,7 @@ class PRV03(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        TODO:  Update docstring
+        Build the PRV03 location data extract.  
         """
          
         z = f"""

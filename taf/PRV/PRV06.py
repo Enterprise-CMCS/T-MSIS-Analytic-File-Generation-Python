@@ -4,9 +4,6 @@ from taf.PRV.PRV import PRV
 
 
 class PRV06(PRV):
-    """
-    Description:  selection macros for the T-MSIS provider segments
-    """
      
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
@@ -335,7 +332,7 @@ class PRV06(PRV):
         
     def create(self):
         """
-        TODO:  Update docstring
+        Create the PRV06 taxonomy segment.  
         """
          
         self.process_06_taxonomy('Prov02_Main',
@@ -670,7 +667,7 @@ class PRV06(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        TODO:  Update docstring
+        Build the PRV06 taxonomy segment.  
         """
          
         z = f"""

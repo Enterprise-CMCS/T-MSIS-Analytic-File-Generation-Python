@@ -3,9 +3,6 @@ from taf.PRV import PRV_Runner
 from taf.PRV.PRV import PRV
 
 class PRV10(PRV):
-    """
-    Description:  selection macros for the T-MSIS provider segments
-    """
      
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
@@ -88,7 +85,7 @@ class PRV10(PRV):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the PRV10 bed type segment.  
         """
          
         # row count
@@ -261,7 +258,7 @@ class PRV10(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        TODO:  Update docstring
+        Build the PRV10 bed type segment.  
         """
          
         z = f"""

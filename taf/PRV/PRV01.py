@@ -1,18 +1,9 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.PRV import PRV_Runner
 from taf.PRV.PRV import PRV
 from taf.PRV.PRV_Metadata import PRV_Metadata
 
 
 class PRV01(PRV):
-    """
-    Description:  selection macros for the T-MSIS provider segments
-    """
      
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
@@ -49,7 +40,7 @@ class PRV01(PRV):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the PRV01 header segment.
         """
          
         self.process_01_header('Prov01_Header')

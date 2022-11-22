@@ -4,9 +4,6 @@ from taf.PRV.PRV import PRV
 
 
 class PRV07(PRV):
-    """
-    Description:  selection macros for the T-MSIS provider segments
-    """
      
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
@@ -85,7 +82,7 @@ class PRV07(PRV):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the PRV07 Medicaid enrollment segment.  
         """
          
         self.process_07_medicaid('Prov02_Main',
@@ -315,7 +312,7 @@ class PRV07(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        TODO:  Update docstring
+        Build the PRV07 Medicaid enrollment segment.  
         """
          
         z = f"""

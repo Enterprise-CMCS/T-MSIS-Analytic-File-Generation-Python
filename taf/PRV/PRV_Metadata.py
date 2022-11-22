@@ -1,17 +1,10 @@
 from pyspark.sql import SparkSession
-
 import pandas as pd
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class PRV_Metadata:
     """
-    TODO:  Update docstring
+    Create the PRV metadata.  
     """
      
     SPCLlst = {
@@ -23,9 +16,6 @@ class PRV_Metadata:
 
     @staticmethod
     def getFormatsForValidationAndRecode():
-        """
-        TODO:  Update docstring
-        """
          
         PRV_formats_sm = pd.DataFrame([
             ['BEDCDV', '1', '1', '1', 'C', '2022-02-04 16:10:15', ''],

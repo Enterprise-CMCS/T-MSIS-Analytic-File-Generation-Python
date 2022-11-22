@@ -6,9 +6,6 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class PRV02(PRV):
-    """
-    Description:  selection macros for the T-MSIS provider segments
-    """
      
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
@@ -104,7 +101,7 @@ class PRV02(PRV):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the PRV02 main segment.  
         """
          
         self.process_02_main('Prov01_Header', 'Prov02_Main')
