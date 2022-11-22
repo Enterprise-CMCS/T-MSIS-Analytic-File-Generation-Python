@@ -1,9 +1,3 @@
-# --------------------------------------------------------------------------------- }
-#
-#
-#
-#
-# --------------------------------------------------------------------------------- }
 from taf.IP.IP_Runner import IP_Runner
 from taf.IP.IP_Metadata import IP_Metadata
 from taf.TAF_Closure import TAF_Closure
@@ -12,14 +6,17 @@ from taf.TAF_Metadata import TAF_Metadata
 
 class IPL:
     """
-    Description:  Program contains macros that massage data from various segments in T-MSIS					*/
-            THIS PROGRAM DOES NOT STAND ALONE.                                                      	*/
-            IP_build.sas - pull program for IP build
+    The IP TAF are comprised of two files – a claim header-level file and a claim line-level file. 
+    The claims included in these files are active, final-action, non-voided, non-denied claims. 
+    Only claim header records with a date in the TAF month/year, along with their associated claim 
+    line records, are included. Both files can be linked together using a unique key that is constructed 
+    based on various claim header and claim line data elements. The two IP TAF are produced for each 
+    calendar month for which data are reported.
     """
 
     def create(self, runner: IP_Runner):
         """
-        TODO:  Update docstring
+        Create the IP line-level segment.  
         """
 
         z = f"""
@@ -102,7 +99,7 @@ class IPL:
 
     def build(self, runner: IP_Runner):
         """
-        TODO:  Update docstring
+        Build SQL query for the line-level segment.  
         """
 
         z = f"""

@@ -1,20 +1,15 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.TAF_Closure import TAF_Closure
 
 
 class IP_Metadata:
     """
-    TODO:  Update docstring
+    Create the IP metadata.  
     """
 
     def selectDataElements(segment_id: str, alias: str):
         """
-        TODO:  Update docstring
+        Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
+        and masked if there are invalid values.
         """
 
         new_line_comma = "\n\t\t\t,"
@@ -51,7 +46,7 @@ class IP_Metadata:
 
     def finalFormatter(output_columns):
         """
-        TODO:  Update docstring
+        Function for final formatting.
         """
 
         new_line_comma = "\n\t\t\t,"
@@ -62,7 +57,7 @@ class IP_Metadata:
 
     def dates_of_service(colname: str, alias: str):
         """
-        TODO:  Update docstring
+        Return dates of service.  If column name is null, then set date to 01JAN1960.
         """
 
         return f"""
@@ -79,7 +74,7 @@ class IP_Metadata:
 
     def plan_id_num(colname: str, alias: str):
         """
-        TODO:  Update docstring
+        Return uppercased mc_plan_id.  
         """
 
         return f"upper({alias}.{colname}) as mc_plan_id"
