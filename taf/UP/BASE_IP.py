@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 from calendar import monthrange
@@ -24,7 +18,7 @@ class BASE_IP(UP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the BASE_IP segment.  
         """
          
         # Stack all three years (prior year with three months, current year, and following year with

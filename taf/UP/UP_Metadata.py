@@ -4,14 +4,11 @@ import pandas as pd
 
 class UP_Metadata:
     """
-    TODO:  Update docstring
+    Create the UP metadata.  
     """
      
     @staticmethod
     def getDeliveryCodes():
-        """
-        TODO:  Update docstring
-        """
          
         spark = SparkSession.getActiveSession()
 

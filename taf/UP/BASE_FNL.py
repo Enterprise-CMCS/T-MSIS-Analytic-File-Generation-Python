@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 
@@ -23,7 +17,7 @@ class BASE_FNL(UP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the BASE_FNL segment.  
         """
          
         # Using the header-aggregated bene-level table from 002 as the base, join to that:
@@ -153,7 +147,7 @@ class BASE_FNL(UP):
 
     def build(self, runner: UP_Runner):
         """
-        TODO:  Update docstring
+        Build the BASE_FNL segment.  
         """
          
         z = f"""

@@ -19,9 +19,6 @@ class UP(TAF):
         #self.up = up
 
     def __init__(self, runner: UP_Runner):
-        """
-        TODO:  Update docstring
-        """
          
         self.up = runner
         self.year = self.up.reporting_period.year
@@ -244,7 +241,7 @@ class UP(TAF):
         # Insert into a metadata table to be able to link back to this run
     def create(self):
         """
-        TODO:  Update docstring
+        Create the UP segments.  
         """
          
         UP.max_run_id(self, file="DE", tbl="taf_ann_de_base", inyear=self.year)
@@ -279,7 +276,7 @@ class UP(TAF):
 
     def max_run_id(self, file="", tbl="", inyear=""):
         """
-        TODO:  Update docstring
+        Get max run id.
         """
          
         if file.casefold() != "de":
@@ -477,7 +474,7 @@ class UP(TAF):
     @staticmethod
     def is_leap_year(inyear):
         """
-        Determine whether a year is a leap year
+        Determine whether a year is a leap year.
         """
          
         return inyear % 4 == 0 and (inyear % 100 != 0 or inyear % 400 == 0)
@@ -677,8 +674,8 @@ class UP(TAF):
 
     def union_base_hdr(self, file):
         """
-        select statement to union the four file types, called once per file type,
-        from the header-level rollup (created in 001_up_base_hdr)
+        Select statement to union the four file types, called once per file type,
+        from the header-level rollup (created in 001_up_base_hdr).
         """
          
         z = f"""
@@ -769,8 +766,8 @@ class UP(TAF):
 
     def commoncols_base_line(self) -> str:
         """
-        Macro commoncols_base_line: list of columns to be read in from all four file types from line-level
-        rollup to header (created in 003_up_base_line) when unioning all four file types 
+        Function commoncols_base_line: list of columns to be read in from all four file types from line-level
+        rollup to header (created in 003_up_base_line) when unioning all four file types.
         """
          
         cols = ["submtg_state_cd", "msis_ident_num"]
@@ -805,7 +802,7 @@ class UP(TAF):
 
     def table_id_cols(self) -> str:
         """
-        Macro table_id_cols to add the 6 cols that are the same across all tables into the final insert select
+        Function table_id_cols to add the 6 cols that are the same across all tables into the final insert select
         statement (DA_RUN_ID, DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, SUBMTG_STATE_CD, MSIS_IDENT_NUM)
         """
         

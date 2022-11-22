@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 from taf.UP.UP_Metadata import UP_Metadata
@@ -25,7 +19,7 @@ class BASE_DELIV(UP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the BASE_DELIV segment.  
         """
          
         # Pull in both IP and OT line-level files, and join to lookup tables to identify delivery

@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 
@@ -23,10 +17,10 @@ class TOP(UP):
 
     def create(self):
         """
-        Roll up all header level columns for all file types
+        Create the TOP segment.  
         """
          
-        # roll up all header level columns for all file types
+        # Roll up all header level columns for all file types
 
         # distkey (msis_ident_num)
         # sortkey(submtg_state_cd,msis_ident_num)
@@ -80,7 +74,7 @@ class TOP(UP):
 
     def build(self, runner: UP_Runner):
         """
-        TODO:  Update docstring
+        Build the TOP segment.  
         """
          
         z = f"""

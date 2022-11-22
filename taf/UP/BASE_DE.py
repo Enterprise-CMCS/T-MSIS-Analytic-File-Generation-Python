@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 
@@ -26,7 +20,7 @@ class BASE_DE(UP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the BASE_DE segment.  
         """
          
         super().create()

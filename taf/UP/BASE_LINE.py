@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 from taf.TAF_Closure import TAF_Closure
@@ -24,7 +18,7 @@ class BASE_LINE(UP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the BASE_LINE segment.  
         """
          
         # distkey(msis_ident_num)
