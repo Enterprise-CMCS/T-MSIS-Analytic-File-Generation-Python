@@ -1,9 +1,3 @@
-# --------------------------------------------------------------------------------- }
-#
-#
-#
-#
-# --------------------------------------------------------------------------------- }
 from taf.LT.LT_Runner import LT_Runner
 from taf.LT.LT_Metadata import LT_Metadata
 from taf.TAF_Closure import TAF_Closure
@@ -12,12 +6,18 @@ from taf.TAF_Metadata import TAF_Metadata
 
 class LTL:
     """
-    Description:    Program contains macros that massage data from various segments in T-MSIS					*/
-                    THIS PROGRAM DOES NOT STAND ALONE.                                                      	*/
-                    LT_Build.sas - pull program for LT build
+    Each LT TAF is comprised of two files – a claim-header level file and a claim-line level file. 
+    The claims included in these files are active, non-voided, non-denied (at the header level), 
+    non-duplicate final action claims. Only claim header records meeting these inclusion criteria, 
+    along with their associated claim line records, are incorporated. Both files can be linked together 
+    using unique keys that are constructed based on various claim header and claim line data elements. 
+    The two LT TAF are generated for each calendar month in which the data are reported.
     """
      
     def create(self, runner: LT_Runner):
+        """
+        Create the LT claim-line level segment.
+        """
 
         z = f"""
             create or replace temporary view LTL as
@@ -101,7 +101,7 @@ class LTL:
 
     def build(self, runner: LT_Runner):
         """
-        TODO:  Update docstring
+        Build the LT claim-line level segment.
         """
          
         z = f"""
