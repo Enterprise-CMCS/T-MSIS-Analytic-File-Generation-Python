@@ -1,9 +1,3 @@
-# --------------------------------------------------------------------------------- }
-#
-#
-#
-#
-# --------------------------------------------------------------------------------- }
 from taf.OT.OT_Runner import OT_Runner
 from taf.OT.OT_Metadata import OT_Metadata
 from taf.TAF_Closure import TAF_Closure
@@ -12,16 +6,18 @@ from taf.TAF_Metadata import TAF_Metadata
 
 class OTL:
     """
-    Description:    Program contains macros that massage data from various segments in T-MSIS					
-                    THIS PROGRAM DOES NOT STAND ALONE.                                                      	
-                    OT_build.sas - pull program for OT build
+    Each OT TAF is comprised of two files – a claim-header level file and a claim-line level file. 
+    The claims included in these files are active, final-action, non-voided, and non-denied claims. 
+    Only header claims with a date in the TAF month/year, along with their associated claim line 
+    records, are included. Both files can be linked together using a unique key that is constructed 
+    based on various claim header and claim line data elements. The two OT TAF are produced for each 
+    calendar month in which the data are reported.
     """
      
     def create(self, runner: OT_Runner):
         """
-        TODO:  Update docstring
+        Create the OT claim-line level segment. 
         """
-         
 
         z = f"""
             create or replace temporary view OTL as
@@ -113,7 +109,7 @@ class OTL:
 
     def build(self, runner: OT_Runner):
         """
-        TODO:  Update docstring
+        Build the OT claim-line level segment. 
         """
          
         z = f"""
