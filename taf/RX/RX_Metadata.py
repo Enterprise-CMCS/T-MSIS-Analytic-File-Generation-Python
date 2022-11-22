@@ -1,18 +1,16 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.TAF_Closure import TAF_Closure
 
 
 class RX_Metadata:
     """
-    TODO:  Update docstring
+    Create the RX metadata.  
     """
      
     def selectDataElements(segment_id: str, alias: str):
+        """
+        Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
+        and masked if there are invalid values.
+        """
 
         new_line_comma = "\n\t\t\t,"
 
@@ -48,7 +46,7 @@ class RX_Metadata:
 
     def finalFormatter(output_columns):
         """
-        TODO:  Update docstring
+        Function for final formatting.
         """
          
         new_line_comma = "\n\t\t\t,"
@@ -59,7 +57,7 @@ class RX_Metadata:
 
     def dates_of_service(colname: str, alias: str):
         """
-        TODO:  Update docstring
+        Return dates of service.  If column name is null, then set date to 01JAN1960.
         """
          
         return f"""
@@ -76,17 +74,11 @@ class RX_Metadata:
 
     def plan_id_num(colname: str, alias: str):
         """
-        TODO:  Update docstring
+        Get alias of plan id num.  
         """
          
         return f"upper({alias}.{colname}) as mc_plan_id"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     cleanser = {
         "ADJDCTN_DT": TAF_Closure.coalesce_date,
         "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
@@ -112,20 +104,8 @@ class RX_Metadata:
         "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     validator = {}
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     columns = {
         "CRX00001": ["TMSIS_RUN_ID" "SUBMTG_STATE_CD" "TMSIS_ACTV_IND"],
         "CRX00002": [
@@ -236,38 +216,14 @@ class RX_Metadata:
         ],
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     class RXH:
 
-        # ---------------------------------------------------------------------------------
-        #
-        #
-        #
-        #
-        # ---------------------------------------------------------------------------------
         columns = []
 
-        # ---------------------------------------------------------------------------------
-        #
-        #
-        #
-        #
-        # ---------------------------------------------------------------------------------
         renames = {
             "NEW_SUBMTG_STATE_CD": "SUBMTG_STATE_CD",
         }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     coalesce = {
         "ADJDCTN_DT": "01JAN1960",
         "ADJDCTN_DT": "01JAN1960",
@@ -282,12 +238,6 @@ class RX_Metadata:
         "ORGNL_CLM_NUM": "~",
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     compress_dot = {
         "ADMTG_DGNS_CD",
         "DGNS_1_CD",
@@ -304,12 +254,6 @@ class RX_Metadata:
         "DGNS_9_CD",
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     upper = [
         "ADJSTMT_LINE_NUM",
         "ADJSTMT_RSN_CD",
@@ -435,28 +379,10 @@ class RX_Metadata:
         "XOVR_IND",
     ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     renames = {}
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     header_renames = {}
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     line_renames = {
         "SUBMTG_STATE_CD": "SUBMTG_STATE_CD_LINE",
         "MSIS_IDENT_NUM": "MSIS_IDENT_NUM_LINE",
@@ -613,7 +539,7 @@ class RX_Metadata:
     @staticmethod
     def finalTableOutputHeader():
         """
-        TODO:  Update docstring
+        Create SQL query of final table output header.  
         """
          
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTH
@@ -629,7 +555,7 @@ class RX_Metadata:
     @staticmethod
     def finalTableOutputLine():
         """
-        TODO:  Update docstring
+        Create SQL query of final table output line.  
         """
          
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTL
