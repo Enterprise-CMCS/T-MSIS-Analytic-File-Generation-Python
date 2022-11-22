@@ -283,28 +283,76 @@ class TAF_Runner():
                 )
         """
 
-    def job_control_updt(self, da_run_id: int):
+    def job_control_wrt(self, file_type: str):
         """
-        TODO:  Update docstring
-        """
-         
-        return f"""
-                UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
-                SET job_strt_ts = from_utc_timestamp(current_timestamp(), 'EST')
-                WHERE da_run_id = {da_run_id}
+        TODO: Update docstring
         """
 
-    def job_control_updt2(self, da_run_id: int):
+        spark = SparkSession.getActiveSession()
+
+        spark.sql(
+            f"""
+            INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
+                da_run_id
+               ,fil_type
+               ,schld_ordr_num
+               ,job_parms_txt
+               ,cd_spec_vrsn_name
+               ,job_strt_ts
+               ,job_end_ts
+               ,sucsfl_ind
+               ,rec_add_ts
+               ,rec_updt_ts
+               ,rfrsh_vw_flag
+               ,taf_cd_spec_vrsn_name
+            )
+            VALUES (
+                {self.DA_RUN_ID}
+               ,"{file_type}"
+               ,1
+               ,"{self.st_dt}"
+               ,concat("{self.version}", ",", "7.1")
+               ,NULL
+               ,NULL
+               ,False
+               ,from_utc_timestamp(current_timestamp(), "EST")
+               ,NULL
+               ,False
+               ,concat("{self.version}", ",", "7.1")
+            )
+        """
+        )
+
+    def job_control_updt(self):
         """
         TODO:  Update docstring
         """
-         
-        return f"""
+
+        spark = SparkSession.getActiveSession()
+
+        spark.sql(
+            f"""
+                UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
+                SET job_strt_ts = from_utc_timestamp(current_timestamp(), 'EST')
+                WHERE da_run_id = {self.DA_RUN_ID}
+        """
+        )
+
+    def job_control_updt2(self):
+        """
+        TODO:  Update docstring
+        """
+
+        spark = SparkSession.getActiveSession()
+
+        spark.sql(
+            f"""
                 UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
                 SET job_end_ts = from_utc_timestamp(current_timestamp(), 'EST'),
                 sucsfl_ind = 1
-                WHERE da_run_id = {da_run_id}
+                WHERE da_run_id = {self.DA_RUN_ID}
         """
+        )
 
     def get_cnt(self, table_name: str, da_run_id: int):
         """
