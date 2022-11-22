@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
@@ -97,7 +91,7 @@ class MCP07(MCP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the MCP07 accreditation segment.  
         """
          
         self.process_07_accreditation("MC02_Main_RAW", "MC07_Accreditation")
@@ -335,7 +329,7 @@ class MCP07(MCP):
 
     def build(self, runner: MCP_Runner):
         """
-        TODO:  Update docstring
+        Build the MCP07 accreditation segment.  
         """
          
         base_col_list = [   

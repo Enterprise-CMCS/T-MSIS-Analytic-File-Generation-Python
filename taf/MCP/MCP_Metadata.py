@@ -1,19 +1,10 @@
 from pyspark.sql import SparkSession
-
 import pandas as pd
-
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 
 
 class MCP_Metadata:
     """
-    TODO:  Update docstring
+    Create MCP metadata.  
     """
      
     SPCLlst = {"93": "CHIP", "94": "TPA", "96": "CHIP", "97": "CHIP"}
@@ -21,7 +12,7 @@ class MCP_Metadata:
     @staticmethod
     def getFormatsForValidationAndRecode():
         """
-        TODO:  Update docstring
+        Function to get formats for validation and recode.  
         """
          
         MC_formats_sm = pd.DataFrame(

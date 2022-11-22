@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
@@ -11,7 +5,7 @@ from taf.TAF_Closure import TAF_Closure
 
 class MCP02(MCP):
     """
-    Description:  Selection macros for the T-MSIS provider segments
+    Description:  Selection Functions for the T-MSIS provider segments
     """
      
     def __init__(self, mcp: MCP_Runner):
@@ -90,7 +84,7 @@ class MCP02(MCP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the MCP02 main segment.  
         """
          
         self.process_02_mcmain("MC01_Header", "MC02_Main_RAW")

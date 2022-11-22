@@ -1,16 +1,10 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
 
 class MCP03(MCP):
     """
-    Description:  Selection macros for the T-MSIS MC segments.
+    Description:  Selection Functions for the T-MSIS MC segments.
     """
      
     def __init__(self, mcp: MCP_Runner):
@@ -105,7 +99,7 @@ class MCP03(MCP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the MCP03 location segment.  
         """
          
         self.process_03_location("MC02_Main_RAW", "MC03_Location")
@@ -166,7 +160,7 @@ class MCP03(MCP):
 
     def build(self, runner: MCP_Runner):
         """
-        TODO:  Update docstring
+        Build the MCP03 location segment.  
         """
          
         z = f"""

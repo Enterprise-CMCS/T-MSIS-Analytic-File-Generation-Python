@@ -1,16 +1,10 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
 
 class MCP04(MCP):
     """
-    Description:  Selection macros for the T-MSIS MC segments
+    Description:  Selection Functions for the T-MSIS MC segments
     """
      
     def __init__(self, mcp: MCP_Runner):
@@ -95,7 +89,7 @@ class MCP04(MCP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the MCP04 service area segment.  
         """
          
         self.process_04_service_area("MC02_Main_RAW", "MC04_Service_Area")
@@ -124,7 +118,7 @@ class MCP04(MCP):
 
     def build(self, runner: MCP_Runner):
         """
-        TODO:  Update docstring
+        Build the MCP04 service area segment.  
         """
          
         z = f"""

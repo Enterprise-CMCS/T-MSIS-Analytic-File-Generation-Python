@@ -1,15 +1,8 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
 
 class MCP05(MCP):
-
     """
     Description:  Selection macros for the T-MSIS MC segments
     """
@@ -109,7 +102,7 @@ class MCP05(MCP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the MCP05 operating authority segment.  
         """
          
         self.process_05_operating_authority("MC02_Main_RAW", "MC05_Operating_Authority")

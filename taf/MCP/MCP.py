@@ -24,16 +24,13 @@ class MCP(TAF):
     ]
 
     def __init__(self, mcp: MCP_Runner):
-        """
-        TODO:  Update docstring
-        """
 
         self.mcp = mcp
         self.st_fil_type = "MCP"
 
     def screen_runid(self, intbl, runtbl, runvars, outtbl, runtyp="C"):
         """
-        TODO:  Update docstring
+        Function to screen the run ids.  
         """
          
         if runtyp == "M":
@@ -61,7 +58,7 @@ class MCP(TAF):
 
     def copy_activerows(self, intbl, collist, whr, outtbl):
         """
-        TODO:  Update docstring
+        Function to copy active rows.  
         """
          
         from taf.TAF_Closure import TAF_Closure
@@ -91,9 +88,6 @@ class MCP(TAF):
         self.mcp.append(type(self).__name__, z)
 
     def copy_activerows_nts(self, intbl, collist, outtbl):
-        """
-        TODO:  Update docstring
-        """
          
         # diststyle even compound sortkey(tms_run_id, submitting_state)
         z = f"""
@@ -121,7 +115,7 @@ class MCP(TAF):
 
     def screen_dates(self, intbl, keyvars, dtvar_beg, dtvar_end, outtbl):
         """
-        TODO:  Update docstring
+        Function to screen dates.  
         """
          
         # diststyle key
@@ -162,9 +156,6 @@ class MCP(TAF):
         self.mcp.append(type(self).__name__, z)
 
     def remove_duprecs(self, intbl, grpvars, dtvar_beg, dtvar_end, ordvar, outtbl):
-        """
-        TODO:  Update docstring
-        """
          
         # limit data to the latest available reporting periods
         # distkey(state_plan_id_num)
@@ -204,7 +195,7 @@ class MCP(TAF):
 
     def count_rows(self, intbl, cntvar, outds):
         """
-        TODO:  Update docstring
+        Count rows, grouped by submitting state.  
         """
          
         z = f"""
@@ -220,7 +211,7 @@ class MCP(TAF):
 
     def map_arrayvars(varnm, N, fldtyp):
         """
-        TODO:  Update docstring
+        Function to map array variables.  
         """
          
         vars = []
@@ -239,9 +230,6 @@ class MCP(TAF):
         return " ".join(vars)
 
     def recode_lookup(self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen=None):
-        """
-        TODO:  Update docstring
-        """
          
         if fldtyp == "C":
             select = f"T.*, cast(F.label as varchar({fldlen})) as {newvar}"
@@ -266,9 +254,6 @@ class MCP(TAF):
         self.mcp.append(type(self).__name__, z)
 
     def recode_notnull(self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen):
-        """
-        TODO:  Update docstring
-        """
 
         if fldtyp == "C":
             # :: varchar({fldlen}) as {newvar}"
@@ -295,18 +280,12 @@ class MCP(TAF):
         self.mcp.append(type(self).__name__, z)
 
     def write_equalkeys(self, keyvars, t1, t2):
-        """
-        TODO:  Update docstring
-        """
          
         klist = map(lambda x: f"{t1}.{x} = {t2}.{x}", keyvars)
         keylist = list(klist)
         return " and ".join(str(k) for k in keylist)
 
     def write_keyprefix(self, keyvars, prefix):
-        """
-        TODO:  Update docstring
-        """
          
         klist = map(lambda x: f"{prefix}.{x}", keyvars)
         keylist = list(klist)

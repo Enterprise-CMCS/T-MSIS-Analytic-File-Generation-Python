@@ -1,9 +1,3 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
@@ -11,7 +5,7 @@ from taf.TAF_Closure import TAF_Closure
 
 class MCP06(MCP):
     """
-    Description:  Selection macros for the T-MSIS MC segments
+    Description:  Selection Functions for the T-MSIS MC segments
     """
      
     def __init__(self, mcp: MCP_Runner):
@@ -96,7 +90,7 @@ class MCP06(MCP):
 
     def create(self):
         """
-        TODO:  Update docstring
+        Create the MCP06 population segment.  
         """
          
         self.process_06_population("MC02_Main_RAW", "MC06_Population_RAW")
@@ -236,7 +230,7 @@ class MCP06(MCP):
 
     def build(self, runner: MCP_Runner):
         """
-        TODO:  Update docstring
+        Build the MCP06 population segment.  
         """
          
         z = f"""
