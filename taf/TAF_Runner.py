@@ -1,5 +1,5 @@
 import logging
-
+from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
 
