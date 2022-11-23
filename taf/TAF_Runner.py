@@ -285,7 +285,7 @@ class TAF_Runner():
 
     def job_control_wrt(self, file_type: str):
         """
-        TODO: Update docstring
+        Insert the job control parameters.
         """
 
         spark = SparkSession.getActiveSession()
@@ -325,7 +325,7 @@ class TAF_Runner():
 
     def job_control_updt(self):
         """
-        TODO:  Update docstring
+        Update the job control parameters.  
         """
 
         spark = SparkSession.getActiveSession()
