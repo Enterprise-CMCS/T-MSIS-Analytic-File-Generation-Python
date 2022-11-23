@@ -6,7 +6,7 @@ from taf.TAF_Runner import TAF_Runner
 
 class TAF_Grouper:
     """
-    TODO:  Update docstring
+    Contains helper functions to facilitate TAF analysis.
     """
      
     otmh9f = [
@@ -236,9 +236,6 @@ class TAF_Grouper:
         ]
 
     def __init__(self, runner: TAF_Runner):
-        """
-        TODO:  Update docstring
-        """
          
         self.runner = runner
         self.rep_yr = runner.reporting_period.year
@@ -357,7 +354,7 @@ class TAF_Grouper:
 
     def select_taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        TODO:  Update docstring
+        Create case-when SQL statements to select taxonomy.  
         """
          
         select = []
@@ -374,7 +371,7 @@ class TAF_Grouper:
 
     def select_taxonomy_inner(self, TAXONOMY: bool, filetyp: str):
         """
-        TODO:  Update docstring
+        Helper function to select taxonomy.  
         """
          
         select = []
@@ -433,7 +430,7 @@ class TAF_Grouper:
 
     def join_IAP(self, IAP: str):
         """
-        TODO:  Update docstring
+        Join IAP tables.  
         """
          
         join = []
@@ -465,7 +462,7 @@ class TAF_Grouper:
 
     def join_PHC(self, PHC: str):
         """
-        Join HCC tables.
+        Join PCC tables.
         """
          
         join = []
@@ -517,7 +514,7 @@ class TAF_Grouper:
 
     def taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        TODO:  Update docstring
+        Create case-when statements for taxonomy.  
         """
          
         select = []
@@ -545,7 +542,7 @@ class TAF_Grouper:
 
     def join_taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        TODO:  Update docstring
+        Join taxonomy tables.  
         """
          
         join = []
@@ -566,7 +563,7 @@ class TAF_Grouper:
 
     def select_condition_category(self, MDC: str, IAP: str, PHC: str):
         """
-        TODO:  Update docstring
+        Helper function to generate SQL code for selecting condition category.  
         """
          
         select = []
@@ -604,11 +601,7 @@ class TAF_Grouper:
         MH_SUD=True,
         TAXONOMY=True,
         ):
-        
-        """
-        TODO:  Update docstring
-        """
-
+  
         z = f"""
             create or replace temporary view {clm_tbl}_STEP1 as
             select
@@ -741,7 +734,7 @@ class TAF_Grouper:
 
     def fetch_nppes(self, filetyp: str):
         """
-        TODO:  Update docstring
+        Helper function that generates SQL to generate nppes. 
         """
          
         z = f"""
@@ -941,7 +934,7 @@ class TAF_Grouper:
 
     def fetch_ccs(self, filetyp: str):
         """
-        TODO:  Update docstring
+        Helper function that generates case-when SQLs statements to fetch ccs.  
         """
          
         z = f"""

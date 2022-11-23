@@ -3,7 +3,7 @@ from taf.TAF_Runner import TAF_Runner
 
 class TAF_Claims():
     """
-    TODO:  Update docstring
+    Contains helper functions to facilitate TAF analysis.  
     """
      
     def __init__(self, runner: TAF_Runner):
@@ -14,7 +14,7 @@ class TAF_Claims():
 
     def analysis_date(self, fl, analysis_date):
         """
-        TODO:  Update docstring
+        Creates case-when SQL statements of analysis dates.  
         """
          
         if fl == 'IP':
@@ -26,7 +26,7 @@ class TAF_Claims():
 
     def where_analysis_date(self, fl, analysis_date, rep_yr, rep_mo):
         """
-        TODO:  Update docstring
+        Helper function for where SQL statements of analysis dates.  
         """
          
         clause = ''
@@ -54,7 +54,7 @@ class TAF_Claims():
 
     def where_state_level_filter(self, fl, alias):
         """
-        TODO:  Update docstring
+        Helper function to define where SQL statement that filters by state level.  
         """
          
         # if fl == 'OTHR_TOC':  # For OT it s state by state
@@ -67,7 +67,7 @@ class TAF_Claims():
 
     def select_date(self, fl):
         """
-        TODO:  Update docstring
+        Helper function to generate SQL for selecting dates.    
         """
          
         if fl == 'IP':
@@ -79,7 +79,7 @@ class TAF_Claims():
 
     def where_date(self, fl):
         """
-        TODO:  Update docstring
+        Helper function to generate a where SQL statement for selecting dates.  
         """
          
         if fl == 'IP':
@@ -89,7 +89,7 @@ class TAF_Claims():
 
     def exclude_missing_end_date(self, fl):
         """
-        TODO:  Update docstring
+        Helper function to generate SQL statement to exlude missing end dates.  
         """
          
         if fl == 'IP':
@@ -99,7 +99,7 @@ class TAF_Claims():
 
     def coalesce_dos(self, fl):
         """
-        TODO:  Update docstring
+        Helper function to generate SQL statement to coalesce dos.  
         """
          
         if fl in ['IP', 'OTHR_TOC']:
@@ -130,7 +130,7 @@ class TAF_Claims():
 
     def use_header(self, fl):
         """
-        TODO:  Update docstring
+        Helper function for generating SQL by using a header.  
         """
          
         if fl in ['IP', 'OTHR_TOC']:
@@ -140,7 +140,7 @@ class TAF_Claims():
 
     def selectDataElements(self, fl: str, segment_id: str, alias: str):
         """
-        TODO:  Update docstring
+        Helper function for selecting data elements from IP, LT, RX, and OTHR_TOC.
         """
          
         if (fl.casefold() == 'ip'):
@@ -166,7 +166,7 @@ class TAF_Claims():
     # ---------------------------------------------------------------------------------
     def AWS_Claims_Family_Table_Link(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, analysis_date):
         """
-        Pull final action claims from claims family tables and join to header records
+        Pull final action claims from claims family tables and join to header records.
         """
          
         # -----------------------------------------------------------------------------

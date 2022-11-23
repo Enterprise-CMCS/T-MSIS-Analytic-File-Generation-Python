@@ -264,7 +264,7 @@ class TAF_Runner():
 
     def job_control_rd(self, da_run_id: int, file_type: str):
         """
-        TODO:  Update docstring
+        Creates a job control table.  
         """
          
         return f"""
@@ -285,7 +285,7 @@ class TAF_Runner():
 
     def job_control_updt(self, da_run_id: int):
         """
-        TODO:  Update docstring
+        Helper function to update the job control parameters with the da_run_id.  
         """
          
         return f"""
@@ -296,7 +296,7 @@ class TAF_Runner():
 
     def job_control_updt2(self, da_run_id: int):
         """
-        TODO:  Update docstring
+        Helper function to update the job control parameters with the da_run_id.
         """
          
         return f"""
@@ -308,7 +308,7 @@ class TAF_Runner():
 
     def get_cnt(self, table_name: str, da_run_id: int):
         """
-        TODO:  Update docstring
+        Create a temporary view of the count of tmsis_run_id filtered by da_run_id.  
         """
          
         return f"""
@@ -324,10 +324,6 @@ class TAF_Runner():
         da_run_id: int,
         fil_4th_node: str,
         ):
-
-        """
-        TODO:  Update docstring
-        """
          
         return f"""
                 INSERT INTO {self.DA_SCHEMA_DC}.job_otpt_meta
@@ -349,10 +345,6 @@ class TAF_Runner():
         object_name: str,
         audt_count: int,
         ):
-
-        """
-        TODO:  Update docstring
-        """
          
         return f"""
                 INSERT INTO {self.DA_SCHEMA}.efts_fil_meta (
@@ -397,7 +389,7 @@ class TAF_Runner():
 
     def final_control_info(self, da_run_id: int):
         """
-        TODO:  Update docstring
+        Create the final control info table.  
         """
          
         return f"""
@@ -416,7 +408,7 @@ class TAF_Runner():
 
     def file_contents(self, table_name: str, da_run_id: int):
         """
-        TODO:  Update docstring
+        Helper function to display contents of a table given table name and da_run_id.  
         """
          
         return f"""
@@ -428,7 +420,7 @@ class TAF_Runner():
 
     def append(self, segment: str, z: str):
         """
-        TODO:  Update docstring
+        Helper function to append segments to the query plan.  
         """
          
         if segment not in self.plan.keys():
@@ -445,7 +437,7 @@ class TAF_Runner():
 
     def view_plan(self):
         """
-        TODO:  Update docstring
+        Helper function to view the query plan.  
         """
          
         for segment, chain in self.plan.items():
@@ -455,7 +447,7 @@ class TAF_Runner():
 
     def write(self, module: str = ''):
         """
-        TODO:  Update docstring
+        Write the SQL files.  
         """
          
         print('Writing SQL Files ...')
@@ -481,7 +473,7 @@ class TAF_Runner():
 
     def run(self):
         """
-        TODO:  Update docstring
+        Run the generated SQL query.  
         """
          
         from taf.BSF.BSF_Metadata import BSF_Metadata
@@ -522,7 +514,7 @@ class TAF_Runner():
 
     def audit(self):
         """
-        TODO:  Update docstring
+        Helper function to assist with auditing.  Nice to have, but not necessary.  
         """
          
         from taf.BSF.BSF_Metadata import BSF_Metadata

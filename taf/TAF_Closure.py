@@ -1,46 +1,37 @@
 class TAF_Closure:
     """
-    TODO:  Update docstring
+    Contains helper functions to facilitate TAF analysis.
     """
      
     def coalesce_date(colname: str, alias: str):
         """
-        TODO:  Update docstring
+        Helper function to coalesce null dates to a default date of 1960-01-01.  
         """
          
         return f"coalesce({alias}.{colname}, to_date('1960-01-01')) as {colname}"
 
     def cleanADJSTMT_IND(colname: str, alias: str):
-        """
-        TODO:  Update docstring
-        """
          
         return f"COALESCE(upper({alias}.{colname}), 'X') AS {colname}"
 
     def cleanXIX_SRVC_CTGRY_CD(colname: str, alias: str):
-        """
-        TODO:  Update docstring
-        """
          
         return f"upper(lpad(trim({alias}.{colname}), 4, '0')) as {colname}"
 
     def cleanXXI_SRVC_CTGRY_CD(colname: str, alias: str):
-        """
-        TODO:  Update docstring
-        """
          
         return f"upper(lpad(trim({alias}.{colname}), 3, '0')) as {colname}"
 
     def compress_dots(col):
         """
-        TODO:  Update docstring
+        Renames columns by removing dots from the string.   
         """
          
         return "trim(translate(col, '.', ''))"
 
     def compress_dots(colname: str, alias: str):
         """
-        TODO:  Update docstring
+        Renames columns by removing dots from the string. 
         """
          
         return (
@@ -48,16 +39,10 @@ class TAF_Closure:
         )
 
     def coalesce_tilda(colname: str, alias: str):
-        """
-        TODO:  Update docstring
-        """
          
         return f"coalesce(upper({alias}.{colname}), '~') as {colname}"
 
     def cast_as_dollar(colname: str, alias: str):
-        """
-        TODO:  Update docstring
-        """
          
         return f"cast({alias}.{colname} as decimal(13, 2)) as {colname}"
 
@@ -85,8 +70,7 @@ class TAF_Closure:
             result.append(f"as {new}")
         return "\n    ".join(result)
 
-    def var_set_type2(
-        var: str,
+    def var_set_type2(var: str,
         lpad: int = 0,
         cond1: str = "@",
         cond2: str = "@",
@@ -99,12 +83,10 @@ class TAF_Closure:
         cond9: str = "@",
         cond10: str = "@",
         ):
-
         """
         TODO:  Update docstring
         """
          
-
         result = []
         result.append(f"case when {var} is NOT NULL and")
         if lpad == 0:
@@ -155,7 +137,6 @@ class TAF_Closure:
         spaces: bool = True,
         new: str = "NO",
         ):
-
         """
         TODO:  Update docstring
         """
@@ -214,7 +195,6 @@ class TAF_Closure:
         cond9: str = "@",
         cond10: str = "@",
         ):
-
         """
         TODO:  Update docstring
         """
@@ -267,7 +247,6 @@ class TAF_Closure:
         upperbound: int = 10,
         multiple_condition: bool = False,
         ):
-
         """
         TODO:  Update docstring
         """
@@ -301,11 +280,9 @@ class TAF_Closure:
         cond6: str = "@",
         new: str = "NO",
         ):
-
         """
         TODO:  Update docstring
         """
-         
 
         result = []
 
@@ -333,7 +310,7 @@ class TAF_Closure:
 
     def var_set_proc(var):
         """
-        TODO: this is a validator and should use that component
+        TODO: Update docstring
         """
          
         return f"""
@@ -350,7 +327,7 @@ class TAF_Closure:
 
     def var_set_ptstatus(var):
         """
-        TODO: this is a validator and should use that component
+        TODO: Update docstring
         """
 
         return f"""
@@ -366,7 +343,7 @@ class TAF_Closure:
 
     def var_set_tos(var):
         """
-        TODO: this is a validator and should use that component
+        TODO: Update docstring
         """
 
         return f"""
@@ -381,7 +358,7 @@ class TAF_Closure:
 
     def var_set_prtype(var):
         """
-        TODO: this is a validator and should use that component
+        TODO: Update docstring
         """
 
         return f"""
@@ -393,7 +370,7 @@ class TAF_Closure:
 
     def var_set_spclty(var):
         """
-        TODO: this is a validator and should use that component
+        TODO: Update docstring
         """
 
         return f"""
@@ -409,7 +386,7 @@ class TAF_Closure:
 
     def var_set_poa(var):
         """
-        TODO: this is a validator and should use that component
+        TODO: Update docstring
         """
 
         return f"""
@@ -429,7 +406,6 @@ class TAF_Closure:
         spaces: bool = True,
         new: str = "NO",
         ):
-
         """
         TODO:  Update docstring
         """
@@ -488,7 +464,6 @@ class TAF_Closure:
         spaces: bool = True,
         new: str = "NO",
         ):
-
         """
         TODO:  Update docstring
         """
@@ -539,7 +514,7 @@ class TAF_Closure:
 
     def var_set_rsn(var):
         """
-        TODO: this is a validator and should use that component
+        TODO: Update docstring
         """
 
         return f"""
@@ -563,7 +538,6 @@ class TAF_Closure:
         spaces: bool = True,
         new: str = "NO",
         ):
-
         """
         TODO:  Update docstring
         """
@@ -619,14 +593,15 @@ class TAF_Closure:
 
     def fix_old_dates(date_var):
         """
-        TODO:  Update docstring
+        For dates older than 1600-01-01, default the dates to 1599-12-31.  
         """
          
         return f"case when ({date_var} < to_date('1600-01-01')) then to_date('1599-12-31') else {date_var} end as {date_var}"
 
     def set_end_dt(enddt):
         """
-        TODO:  Update docstring
+        For dates older than 1600-01-01, default the dates to 1599-12-31. 
+        For null dates, set dates to 9999-12-31.  
         """
 
         return f"""
@@ -639,26 +614,23 @@ class TAF_Closure:
 
     def upper_case(textst):
         """
-        TODO:  Update docstring
+        Uppercase the name.   
         """
          
         return f"nullif(trim(upper({textst})),'')"
 
-    """
-    TODO:  Update docstring
-    """
     zpad = {"XIX_SRVC_CTGRY_CD": 4, "XXI_SRVC_CTGRY_CD": 3}
 
     def zpad(col):
         """
-        TODO:  Update docstring
+        Zero pad the column name.  
         """
-         
+
         return "lpad(trim(col), 4, '0')"
 
     def zero_pad(var_cd, var_len):
         """
-        TODO:  Update docstring
+        Another zero pad function.  
         """
          
         return f"""case
@@ -668,9 +640,6 @@ class TAF_Closure:
                    end as {var_cd}
         """
 
-    """
-    TODO:  Update docstring
-    """
     typecast = {
         # 'NCVRD_CHRGS_AMT': decimal(13, 2)
     }
@@ -678,10 +647,10 @@ class TAF_Closure:
 
     def last_best(incol, outcol=""):
         """
-        Macro last_best to take the last best value (go backwards in time from month
+        Function last_best to take the last best value (go backwards in time from month
         12 to month 1, taking the first non-missing/null value).
 
-        Macro parms:
+        Function parms:
             incol=input monthly column
             outcol=name of column to be output, where default is the same name of the
             incol
@@ -699,9 +668,9 @@ class TAF_Closure:
 
     def monthly_array(self, incol, outcol="", nslots="1"):
         """
-        Macro monthly_array to take the raw monthly columns and array into columns with _MO suffixes.
+        Function monthly_array to take the raw monthly columns and array into columns with _MO suffixes.
 
-        Macro parms:
+        Function parms:
             incol=input monthly column
             outcol=name of column to be output, where default is the name of the incol with _MO for each month appended as a suffix
             nslots=# of slots (used for columns like MC or waiver where we have multiple slots) - default is 1, and for those with
@@ -754,10 +723,10 @@ class TAF_Closure:
 
     def ever_year(incol, condition="=1", raw=1, outcol="", usenulls=0, nullcond=""):
         """
-        Macro ever_year to look across all monthly columns and create an indicator for whether ANY of the monthly
+        Function ever_year to look across all monthly columns and create an indicator for whether ANY of the monthly
         columns meet the given condition. The default condition is = 1.
 
-        Macro parms:
+        Function parms:
             incol=input monthly column
             condition=monthly condition to be evaulated, where default is = 1
             raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
@@ -841,13 +810,12 @@ class TAF_Closure:
 
         return f"{z} then 1 else 0 end as {outcol}"
 
-
     def any_month(incols: str, outcol, condition="=1"):
         """
-        Macro any_month to look at multiple columns within a month to evaluate whether ANY
+        Function any_month to look at multiple columns within a month to evaluate whether ANY
         of the months meets a certain condition, and output monthly indicators.
 
-        Macro parms:
+        Function parms:
             incols=list of input columns to be evaluated, separated by spaces
             outcol=name of the output col with the indicators, with the _MO suffix appended
             condition=monthly condition to be evaulated, where default is = 1
@@ -1034,9 +1002,6 @@ class TAF_Closure:
                OR {var} IS NULL
         """
 
-    """
-    TODO:  Update docstring
-    """
     passthrough = {
         "%any_month": any_month,
         "%any_rec": any_rec,

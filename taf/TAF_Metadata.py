@@ -1,20 +1,15 @@
 from pyspark.sql import SparkSession
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
+
 class TAF_Metadata:
     """
-    TODO:  Update docstring
+    Contains helper functions to facilitate TAF analysis.
     """
      
     @staticmethod
     def getFormatsForValidationAndRecode():
         """
-        TODO:  Update docstring
+        Helper function to get formats for validation and recode.  
         """
          
         from pyspark.sql.types import StructType, StructField, StringType, DateType
