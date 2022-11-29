@@ -817,7 +817,7 @@ class UP(TAF):
 
     def join_del_lists(self, file: str, diag_cols, prcdr_cols) -> str:
         """
-        TODO:  Update docstring
+        Functin to join delivery lists.  
         """
 
         z = f"""

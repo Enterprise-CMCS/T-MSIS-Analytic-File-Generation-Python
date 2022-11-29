@@ -257,7 +257,7 @@ class TAF_Grouper:
 
     def iap(self, IAP: bool, filetyp: str):
         """
-        TODO:  Update docstring
+        Helper function to return the IAP_CONDITION_IND as part of a SQL query.  
         """
          
         select = []
@@ -486,7 +486,7 @@ class TAF_Grouper:
 
     def mh_sud(self, MH_SUD: bool, filetyp: str):
         """
-        TODO:  Update docstring
+        Create case-when SQL statements for mh_sud.  
         """
          
         select = []

@@ -344,7 +344,7 @@ class DE(TAF):
 
     def table_id_cols_sfx(self, suffix="", extra_cols=[], as_select=False):
         """
-        TODO:  Update docstring
+        Function to generate SQL adding current timestamp, DA_RUN_ID, and Submitting State code to the query.
         """
 
         z = ""
@@ -959,7 +959,7 @@ class DE(TAF):
 
     def create_dates_out_root(self):
         """
-        TODO:  Update docstring.  What is create_dates_out_root()???
+        Create dates_out by extracting and combining data from MDCD_dates_out and CHIP_dates_out.
         """
 
         from taf.DE.DE0002 import DE0002

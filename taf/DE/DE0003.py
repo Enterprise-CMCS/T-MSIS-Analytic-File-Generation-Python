@@ -82,7 +82,7 @@ class DE0003(DE):
 
     def create_hist_adr(self, tblname, inyear):
         """
-        TODO:  Update docstring for create_hist_adr()
+        Function used to create the address phone table name.  
         """
 
         z = f"""create or replace temporary view {tblname}_{inyear} as

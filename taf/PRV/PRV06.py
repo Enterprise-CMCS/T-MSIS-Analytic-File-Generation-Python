@@ -160,9 +160,8 @@ class PRV06(PRV):
 
     def nppes_tax(self, DA_SCHEMA, id_intbl, tax_intbl, tax_outtbl):
         """
-        TODO:  Update docstring
+        Function to generate SQL query with multiple temporary views for nppes_tax.  
         """
-         
 
         # get NPPES taxonomy codes using NPI from PRV identifier segment
         z = f"""

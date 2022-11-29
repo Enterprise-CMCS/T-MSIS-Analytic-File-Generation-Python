@@ -41,7 +41,7 @@ class PRV(TAF):
 
     def zero_pad(self, var_cd, var_len):
         """
-        TODO:  Update docstring
+        Helper function to zero pad some string names.  
         """
          
         z = f"""

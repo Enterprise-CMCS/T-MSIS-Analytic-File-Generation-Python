@@ -391,7 +391,7 @@ class DE0001BASE(DE):
 
     def create_hist_demo(self, tblname, inyear):
         """
-        TODO:  Update docstring for create_hist_demo()
+        Create the base demo table.  
         """
 
         z = f"""create or replace temporary view {tblname}_{inyear} as

@@ -48,7 +48,7 @@ class TAF_Closure:
 
     def var_set_type1(var: str, upper: bool = False, lpad: int = 0, new: str = "NO"):
         """
-        TODO:  Update docstring
+        Helper function that acts as a template to standardize how name strings are manipulated.
         """
          
         result = []
@@ -84,7 +84,7 @@ class TAF_Closure:
         cond10: str = "@",
         ):
         """
-        TODO:  Update docstring
+        Helper function that acts as a template to standardize how name strings are manipulated.
         """
          
         result = []
@@ -138,7 +138,7 @@ class TAF_Closure:
         new: str = "NO",
         ):
         """
-        TODO:  Update docstring
+        Helper function that acts as a template to standardize how name strings are manipulated.
         """
          
 
@@ -196,7 +196,7 @@ class TAF_Closure:
         cond10: str = "@",
         ):
         """
-        TODO:  Update docstring
+        Helper function that acts as a template to standardize how name strings are manipulated.
         """
 
         result = []
@@ -248,7 +248,7 @@ class TAF_Closure:
         multiple_condition: bool = False,
         ):
         """
-        TODO:  Update docstring
+        Helper function that acts as a template to standardize how name strings are manipulated.
         """
          
 
@@ -281,7 +281,7 @@ class TAF_Closure:
         new: str = "NO",
         ):
         """
-        TODO:  Update docstring
+        Helper function that acts as a template to standardize how name strings are manipulated.
         """
 
         result = []
@@ -310,7 +310,7 @@ class TAF_Closure:
 
     def var_set_proc(var):
         """
-        TODO: Update docstring
+        Helper function for left paddiing the procedure code indicators.  
         """
          
         return f"""
@@ -327,7 +327,7 @@ class TAF_Closure:
 
     def var_set_ptstatus(var):
         """
-        TODO: Update docstring
+        Helper function for left padding patient status.  
         """
 
         return f"""
@@ -343,7 +343,7 @@ class TAF_Closure:
 
     def var_set_tos(var):
         """
-        TODO: Update docstring
+        Helper function for left padding TOS.  
         """
 
         return f"""
@@ -358,7 +358,7 @@ class TAF_Closure:
 
     def var_set_prtype(var):
         """
-        TODO: Update docstring
+        Helper function for left padding provider type.   
         """
 
         return f"""
@@ -370,7 +370,7 @@ class TAF_Closure:
 
     def var_set_spclty(var):
         """
-        TODO: Update docstring
+        Helper function for left padding specialty.  
         """
 
         return f"""
@@ -386,7 +386,7 @@ class TAF_Closure:
 
     def var_set_poa(var):
         """
-        TODO: Update docstring
+        Helper function for setting POA.   
         """
 
         return f"""
@@ -407,7 +407,7 @@ class TAF_Closure:
         new: str = "NO",
         ):
         """
-        TODO:  Update docstring
+        Helper function typically used for manipulating diagnostic codes.    
         """
 
         result = []
@@ -465,7 +465,7 @@ class TAF_Closure:
         new: str = "NO",
         ):
         """
-        TODO:  Update docstring
+        Helper function for filling procedures.  
         """
          
 
@@ -514,7 +514,7 @@ class TAF_Closure:
 
     def var_set_rsn(var):
         """
-        TODO: Update docstring
+        Helper function for manipulating adjustment reason.  
         """
 
         return f"""
@@ -539,7 +539,7 @@ class TAF_Closure:
         new: str = "NO",
         ):
         """
-        TODO:  Update docstring
+        Helper function for manipulating taxonomy.  
         """
          
         result = []
@@ -990,7 +990,7 @@ class TAF_Closure:
 
     def misslogic(var, length):
         """
-        TODO:  Update docstring
+        Helper function containing msis logic.  
         """
          
         return f"""

@@ -112,7 +112,8 @@ class TAF_Claims():
 
     def rep_yr_mo(self, fl, rep_yr, rep_mo):
         """
-        TODO:  Update docstring
+        Function to return year and month.  If IP, use max svc ending date year and month.
+        If OTHR_TOC, use analysis date year and month.  
         """
          
         if fl == 'IP':
