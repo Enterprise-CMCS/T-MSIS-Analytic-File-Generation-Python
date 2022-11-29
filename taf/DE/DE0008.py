@@ -88,7 +88,7 @@ class DE0008(DE):
 
     def create_hh_spo_splmtl_table(self):
         """
-        TODO:  Generate the annual BSF segment 008: HH_SPO_SPLMTL.  
+        Generate the annual BSF segment 008: HH_SPO_SPLMTL.  
         """
 
         z = f"""create or replace temporary view HH_SPO_SPLMTL_{self.de.YEAR} as
