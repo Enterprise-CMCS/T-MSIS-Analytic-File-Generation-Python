@@ -30,7 +30,7 @@ class DE0008(DE):
 
         #super().create()
         self.create_temp()
-        self.create_mfp_suppl_table()
+        self.create_hh_spo_splmtl_table()
 
     def create_temp(self):
         """
@@ -86,9 +86,9 @@ class DE0008(DE):
 
         return
 
-    def create_mfp_suppl_table(self):
+    def create_hh_spo_splmtl_table(self):
         """
-        TODO:  Function is improperly named?  
+        TODO:  Generate the annual BSF segment 008: HH_SPO_SPLMTL.  
         """
 
         z = f"""create or replace temporary view HH_SPO_SPLMTL_{self.de.YEAR} as

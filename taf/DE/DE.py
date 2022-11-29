@@ -329,7 +329,7 @@ class DE(TAF):
 
     def table_id_cols_pre(self, suffix="", extra_cols=[]):
         """
-        TODO:  Update docstring
+        Function to generate ID cols like DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, and MSIS_IDENT_NUM
         """
 
         z = f"""cast ({self.de.DA_RUN_ID} || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||

@@ -89,7 +89,7 @@ class PRV06(PRV):
     
     def hc_prvdr_sw_pos(self, max_keep):
         """
-        TODO:  Update docstring
+        Function to generate strings needed for creating sw_positions col 
         """
          
         hc_prvdr_sw_pos = []
@@ -101,7 +101,7 @@ class PRV06(PRV):
 
     def hc_prvdr_cd_pos(self, max_keep):
         """
-        TODO:  Update docstring
+        Function to generate strings needed for creating cd_positions col 
         """
          
         hc_prvdr_cd_pos = []
@@ -113,7 +113,7 @@ class PRV06(PRV):
 
     def hc_prvdr_sw_pos_y(self, max_keep):
         """
-        TODO:  Update docstring
+        Function to generate strings needed for creating case when for prvdr_clsfctn_cd col
         """
          
         hc_prvdr_sw_pos_y = []
@@ -125,7 +125,7 @@ class PRV06(PRV):
 
     def hc_prvdr_sw_pos_x(self, max_keep):
         """
-        TODO:  Update docstring
+        Function to generate strings needed for creating case when for prvdr_clsfctn_cd col
         """
          
         hc_prvdr_sw_pos_x = []
@@ -137,7 +137,7 @@ class PRV06(PRV):
 
     def prmry_NPPES_tax0b(self, max_keep):
         """
-        TODO:  Update docstring
+        Function to generate strings needed for creating sql for nppes_tax0b table
         """
          
         prmry_NPPES_tax0b = []
