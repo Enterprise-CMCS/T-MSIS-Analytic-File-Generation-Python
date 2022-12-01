@@ -1,4 +1,5 @@
 import logging
+import pandas as pd
 from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
@@ -354,76 +355,105 @@ class TAF_Runner():
         """
         )
 
-    def get_cnt(self, table_name: str, da_run_id: int):
+    def get_cnt(self, table_name: str):
         """
         Create a temporary view of the count of tmsis_run_id filtered by da_run_id.  
         """
-         
-        return f"""
+        spark = SparkSession.getActiveSession()
+
+        spark.sql(
+            f"""
                 CREATE OR REPLACE TEMPORARY VIEW record_count AS
                 SELECT count(tmsis_run_id) AS row_cnt
                 FROM {self.DA_SCHEMA}.{table_name}
-                WHERE da_run_id = {da_run_id}
+                WHERE da_run_id = {self.DA_RUN_ID}
         """
+        )
 
     def create_meta_info(
         self,
         table_name: str,
-        da_run_id: int,
         fil_4th_node: str,
-        ):
-         
-        return f"""
+    ):
+        """
+        Helper function to create and inject meta info.  
+        """
+        spark = SparkSession.getActiveSession()
+
+        spark.sql(
+            f"""
                 INSERT INTO {self.DA_SCHEMA_DC}.job_otpt_meta
-                SELECT {da_run_id} AS da_run_id
+                SELECT {self.DA_RUN_ID} AS da_run_id
                     ,'TABLE' AS otpt_type
                     ,'{table_name}' AS otpt_name
                     ,'{self.DA_SCHEMA_DC}' AS otpt_lctn_txt
-                    ,row_count AS rec_cnt
+                    ,row_cnt AS rec_cnt
                     ,'{fil_4th_node}' AS fil_4th_node_txt
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts
+                    ,NULL as rec_updt_ts
+                    ,NULL as trnct_ts
                 FROM record_count
         """
+        )
 
     def create_eftsmeta_info(
         self,
-        da_run_id: int,
         table_name: str,
         pgm_name: str,
         step_name: str,
         object_name: str,
         audt_count: int,
-        ):
-         
-        return f"""
+    ):
+        """
+        Helper function to create and inject eftsmeta info.  
+        """
+        spark = SparkSession.getActiveSession()
+
+        spark.sql(
+            f"""
                 INSERT INTO {self.DA_SCHEMA}.efts_fil_meta (
                     da_run_id
-                    ,fil_4th_node_txt
-                    ,otpt_name
-                    ,rptg_prd
-                    ,itrtn_num
-                    ,tot_rec_cnt
-                    ,fil_cret_dt
-                    ,incldd_state_cd
-                    ,rec_cnt_by_state_cd
-                    ,fil_dt
-                    ,taf_cd_spec_vrsn_name
-                    )
+                   ,fil_4th_node_txt
+                   ,otpt_name
+                   ,rptg_prd
+                   ,itrtn_num
+                   ,tot_rec_cnt
+                   ,fil_cret_dt
+                   ,incldd_state_cd
+                   ,rec_cnt_by_state_cd
+                   ,rec_add_ts
+                   ,rec_updt_ts
+                   ,fil_dt
+                   ,taf_cd_spec_vrsn_name
+                   ,rfrsh_vw_flag
+                   ,ltst_run_ind
+                   ,ccb_qtr
+                   ,rif_finl_vrsn
+                   ,rif_prelim_vrsn
+                )
                 SELECT t1.da_run_id
                     ,t2.fil_4th_node_txt
                     ,t2.otpt_name
-                    ,to_char(cast(substring(t1.job_parms_txt, 1, 10) AS DATE), 'Month,YYYY') AS rptg_prd
+                    ,date_format(cast(substring(t1.job_parms_txt, 1, 10) AS date), "MMMM,yyyy") AS rptg_prd
                     ,substring(t1.taf_cd_spec_vrsn_name, 2, 2) AS itrtn_num
                     ,t2.rec_cnt AS tot_rec_cnt
-                    ,to_char(DATE (t2.rec_add_ts), 'MM/DD/YYYY') AS fil_cret_dt
+                    ,date_format(cast(t2.rec_add_ts AS date), "MM/dd/yyyy") AS fil_cret_dt
                     ,coalesce(t3.submtg_state_cd, 'Missing') AS incldd_state_cd
                     ,t3.audt_cnt_val AS rec_cnt_by_state_cd
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts
+                    ,NULL AS rec_updt_ts
                     ,{self.TAF_FILE_DATE} AS fil_dt
                     ,t1.taf_cd_spec_vrsn_name
+                    ,False as rfrsh_vw_flag
+                    ,False as ltst_run_ind
+                    ,typeof(NULL) as ccb_qtr
+                    ,NULL as rif_finl_vrsn
+                    ,NULL as rif_prelim_vrsn
                 FROM {self.DA_SCHEMA}.job_cntl_parms as t1
                     ,{self.DA_SCHEMA}.job_otpt_meta as t2
                     ,{self.DA_SCHEMA}.pgm_audt_cnts as t3
-                    ,{self.DA_SCHEMA}.pgm_audt_cnt_lkp as t4
-                WHERE t1.da_run_id = {da_run_id}
+                    ,pgm_audt_cnt_lkp as t4
+                WHERE t1.da_run_id = {self.DA_RUN_ID}
                     AND t1.da_run_id = t2.da_run_id
                     AND t2.da_run_id = t3.da_run_id
                     AND t2.otpt_name = '{table_name}'
@@ -432,16 +462,19 @@ class TAF_Runner():
                     AND t4.pgm_name = '{pgm_name}'
                     AND t4.step_name = '{step_name}'
                     AND t4.obj_name = '{object_name}'
-                    AND t4.audt_cnt_of = '{audt_count}'
+                    AND t4.audt_cnt_of = '{audt_count}'                    
         """
+        )
 
-    def final_control_info(self, da_run_id: int):
+    def final_control_info(self):
         """
         Create the final control info table.  
         """
-         
-        return f"""
-                CREATE TABLE FINAL_CONTROL_INFO AS
+        spark = SparkSession.getActiveSession()
+
+        spark.sql(
+            f"""
+                CREATE OR REPLACE TEMPORARY VIEW FINAL_CONTROL_INFO AS
                 SELECT A.DA_RUN_ID
                     ,JOB_STRT_TS
                     ,JOB_END_TS
@@ -451,20 +484,93 @@ class TAF_Runner():
                 FROM {self.DA_SCHEMA}.JOB_CNTL_PARMS as A
                     ,{self.DA_SCHEMA}.JOB_OTPT_META as B
                 WHERE A.DA_RUN_ID = B.DA_RUN_ID
-                    AND A.DA_RUN_ID = {da_run_id}
+                    AND A.DA_RUN_ID = {self.DA_RUN_ID}
         """
+        )
 
-    def file_contents(self, table_name: str, da_run_id: int):
+    def file_contents(self, table_name: str):
         """
         Helper function to display contents of a table given table name and da_run_id.  
         """
-         
-        return f"""
+        spark = SparkSession.getActiveSession()
+
+        spark.sql(
+            f"""
                 SELECT *
                 FROM {self.DA_SCHEMA}.{table_name}
-                WHERE da_run_id = {da_run_id}
+                WHERE da_run_id = {self.DA_RUN_ID}
                 LIMIT 1
         """
+        )
+
+    def getcounts(self, pgm_name: str, step_name: str):
+        """
+        Helper function to get counts of a table.  
+        """
+        spark = SparkSession.getActiveSession()
+
+        df = spark.sql(f"""
+            SELECT *
+            FROM pgm_audt_cnt_lkp
+            WHERE pgm_name = "{pgm_name}"
+                AND step_name = "{step_name}"
+        """)
+
+        dict_audt = df.toPandas().to_dict(orient="records")
+
+        for i in dict_audt:
+            spark.sql(f"""
+                CREATE OR REPLACE TEMPORARY VIEW row_count AS
+                SELECT da_run_id
+                    ,pgm_audt_cnt_id
+                    ,submtg_state_cd
+                    ,audt_cnt_val
+                FROM (
+                    SELECT {self.DA_RUN_ID} AS da_run_id
+                        ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
+                        ,t1.state AS submtg_state_cd
+                        ,t1.cnt AS audt_cnt_val
+                    FROM (
+                        SELECT {i.get("grp_by")} AS state
+                            ,count({i.get("audt_cnt_of")}) AS cnt
+                        FROM {i.get("obj_name")}
+                        GROUP BY {i.get("grp_by")}
+                    ) AS t1
+                ) AS t2
+                UNION
+                SELECT {self.DA_RUN_ID} AS da_run_id
+                    ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
+                    ,"xx" as submtg_state_cd
+                    ,0 AS audt_cnt_val
+            """)
+
+            rtCntDF = spark.sql("""
+                SELECT CASE
+                        WHEN t1.cnt = 1
+                            THEN 1
+                        WHEN t1.cnt > 1
+                            THEN t1.cnt - 1
+                        END AS rcnt
+                FROM (
+                    SELECT count(*) AS cnt
+                    FROM row_count
+                    ) AS t1
+            """)
+
+            rtcnt = rtCntDF.select(max(["rcnt"])).distinct().collect()[0][0]
+
+            spark.sql(f"""
+                INSERT INTO {self.DA_SCHEMA}.pgm_audt_cnts
+                SELECT {self.DA_RUN_ID} AS da_run_id
+                    ,pgm_audt_cnt_id
+                    ,nullif(submtg_state_cd, 'xx') AS submtg_state_cd
+                    ,audt_cnt_val
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                    ,NULL as rec_updt_ts
+                FROM row_count
+                ORDER BY audt_cnt_val DESC
+                LIMIT {rtcnt}
+            """)
 
     def append(self, segment: str, z: str):
         """
