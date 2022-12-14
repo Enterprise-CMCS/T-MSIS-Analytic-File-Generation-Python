@@ -184,7 +184,7 @@ class TAF_Claims():
                 { self.analysis_date(fl, analysis_date) }
 
             from
-                taf_python.{_2x_segment}_temp_taf as a
+                {TMSIS_SCHEMA}.{_2x_segment} as a
             where
                 ( {self.where_analysis_date(fl, analysis_date, self.rep_yr, self.rep_mo) } )
                 and
