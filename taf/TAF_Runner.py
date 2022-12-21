@@ -12,7 +12,7 @@ class TAF_Runner():
 
     PERFORMANCE = 11
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str):
+    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
         """
         Constructs all the necessary attributes for the T-MSIS analytic file runner object.
 
@@ -35,9 +35,9 @@ class TAF_Runner():
         # state submission type
         TAF_Metadata.getFormatsForValidationAndRecode()
 
-        # FIXME: this should be monotonic or something more crafty
-        self.DA_RUN_ID = datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')
-        self.DA_SCHEMA = 'taf_python' # For using data from Redshift for testing DE and up
+        # This gets passed in from the runner and is the job_id from DataBricks
+        self.DA_RUN_ID = job_id
+        self.DA_SCHEMA = 'taf_python'  # For using data from Redshift for testing DE and up
         self.DA_SCHEMA_DC = 'taf_python'
 
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
@@ -265,9 +265,9 @@ class TAF_Runner():
 
     def job_control_rd(self, da_run_id: int, file_type: str):
         """
-        Creates a job control table.  
+        Creates a job control table.
         """
-         
+
         return f"""
                 CREATE TABLE JOB_CD_LOOKUP AS
                 SELECT
@@ -302,7 +302,7 @@ class TAF_Runner():
                ,job_strt_ts
                ,job_end_ts
                ,sucsfl_ind
-               ,rec_add_ts
+               ,REC_ADD_TS
                ,rec_updt_ts
                ,rfrsh_vw_flag
                ,taf_cd_spec_vrsn_name
@@ -326,7 +326,7 @@ class TAF_Runner():
 
     def job_control_updt(self):
         """
-        Update the job control parameters.  
+        Update the job control parameters.
         """
 
         spark = SparkSession.getActiveSession()
@@ -357,7 +357,7 @@ class TAF_Runner():
 
     def get_cnt(self, table_name: str):
         """
-        Create a temporary view of the count of tmsis_run_id filtered by da_run_id.  
+        Create a temporary view of the count of tmsis_run_id filtered by da_run_id.
         """
         spark = SparkSession.getActiveSession()
 
@@ -376,7 +376,7 @@ class TAF_Runner():
         fil_4th_node: str,
     ):
         """
-        Helper function to create and inject meta info.  
+        Helper function to create and inject meta info.
         """
         spark = SparkSession.getActiveSession()
 
@@ -389,7 +389,7 @@ class TAF_Runner():
                     ,'{self.DA_SCHEMA_DC}' AS otpt_lctn_txt
                     ,row_cnt AS rec_cnt
                     ,'{fil_4th_node}' AS fil_4th_node_txt
-                    ,from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                     ,NULL as rec_updt_ts
                     ,NULL as trnct_ts
                 FROM record_count
@@ -405,7 +405,7 @@ class TAF_Runner():
         audt_count: int,
     ):
         """
-        Helper function to create and inject eftsmeta info.  
+        Helper function to create and inject eftsmeta info.
         """
         spark = SparkSession.getActiveSession()
 
@@ -421,7 +421,7 @@ class TAF_Runner():
                    ,fil_cret_dt
                    ,incldd_state_cd
                    ,rec_cnt_by_state_cd
-                   ,rec_add_ts
+                   ,REC_ADD_TS
                    ,rec_updt_ts
                    ,fil_dt
                    ,taf_cd_spec_vrsn_name
@@ -437,10 +437,10 @@ class TAF_Runner():
                     ,date_format(cast(substring(t1.job_parms_txt, 1, 10) AS date), "MMMM,yyyy") AS rptg_prd
                     ,substring(t1.taf_cd_spec_vrsn_name, 2, 2) AS itrtn_num
                     ,t2.rec_cnt AS tot_rec_cnt
-                    ,date_format(cast(t2.rec_add_ts AS date), "MM/dd/yyyy") AS fil_cret_dt
+                    ,date_format(cast(t2.REC_ADD_TS AS date), "MM/dd/yyyy") AS fil_cret_dt
                     ,coalesce(t3.submtg_state_cd, 'Missing') AS incldd_state_cd
                     ,t3.audt_cnt_val AS rec_cnt_by_state_cd
-                    ,from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                     ,NULL AS rec_updt_ts
                     ,{self.TAF_FILE_DATE} AS fil_dt
                     ,t1.taf_cd_spec_vrsn_name
@@ -462,13 +462,13 @@ class TAF_Runner():
                     AND t4.pgm_name = '{pgm_name}'
                     AND t4.step_name = '{step_name}'
                     AND t4.obj_name = '{object_name}'
-                    AND t4.audt_cnt_of = '{audt_count}'                    
+                    AND t4.audt_cnt_of = '{audt_count}'
         """
         )
 
     def final_control_info(self):
         """
-        Create the final control info table.  
+        Create the final control info table.
         """
         spark = SparkSession.getActiveSession()
 
@@ -490,7 +490,7 @@ class TAF_Runner():
 
     def file_contents(self, table_name: str):
         """
-        Helper function to display contents of a table given table name and da_run_id.  
+        Helper function to display contents of a table given table name and da_run_id.
         """
         spark = SparkSession.getActiveSession()
 
@@ -505,7 +505,7 @@ class TAF_Runner():
 
     def getcounts(self, pgm_name: str, step_name: str):
         """
-        Helper function to get counts of a table.  
+        Helper function to get counts of a table.
         """
         spark = SparkSession.getActiveSession()
 
@@ -574,9 +574,9 @@ class TAF_Runner():
 
     def append(self, segment: str, z: str):
         """
-        Helper function to append segments to the query plan.  
+        Helper function to append segments to the query plan.
         """
-         
+
         if segment not in self.plan.keys():
             self.plan[segment] = []
 
@@ -591,9 +591,9 @@ class TAF_Runner():
 
     def view_plan(self):
         """
-        Helper function to view the query plan.  
+        Helper function to view the query plan.
         """
-         
+
         for segment, chain in self.plan.items():
             for sql in chain:
                 print(f"-- {segment}")
@@ -601,9 +601,9 @@ class TAF_Runner():
 
     def write(self, module: str = ''):
         """
-        Write the SQL files.  
+        Write the SQL files.
         """
-         
+
         print('Writing SQL Files ...')
 
         for segment, chain in self.plan.items():
@@ -627,9 +627,9 @@ class TAF_Runner():
 
     def run(self):
         """
-        Run the generated SQL query.  
+        Run the generated SQL query.
         """
-         
+
         from taf.BSF.BSF_Metadata import BSF_Metadata
         from pyspark.sql.types import StructType, StructField, StringType
         import pandas as pd
@@ -668,9 +668,9 @@ class TAF_Runner():
 
     def audit(self):
         """
-        Helper function to assist with auditing.  Nice to have, but not necessary.  
+        Helper function to assist with auditing.  Nice to have, but not necessary.
         """
-         
+
         from taf.BSF.BSF_Metadata import BSF_Metadata
         from pyspark.sql.types import StructType, StructField, StringType
         import pandas as pd

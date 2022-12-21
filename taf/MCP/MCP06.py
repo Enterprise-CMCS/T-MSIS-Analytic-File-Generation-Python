@@ -7,7 +7,7 @@ class MCP06(MCP):
     """
     Description:  Selection Functions for the T-MSIS MC segments
     """
-     
+
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
@@ -15,7 +15,7 @@ class MCP06(MCP):
         """
         000-06 population segment
         """
-         
+
         # screen out all but the latest run id
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
@@ -90,9 +90,9 @@ class MCP06(MCP):
 
     def create(self):
         """
-        Create the MCP06 population segment.  
+        Create the MCP06 population segment.
         """
-         
+
         self.process_06_population("MC02_Main_RAW", "MC06_Population_RAW")
 
         self.recode_lookup(
@@ -230,14 +230,14 @@ class MCP06(MCP):
 
     def build(self, runner: MCP_Runner):
         """
-        Build the MCP06 population segment.  
+        Build the MCP06 population segment.
         """
-         
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mce
                 SELECT
                     *
-                   ,to_timestamp('{self.mcp.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                   ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                    ,current_timestamp() as REC_UPDT_TS
                 FROM
                     MC06_Population

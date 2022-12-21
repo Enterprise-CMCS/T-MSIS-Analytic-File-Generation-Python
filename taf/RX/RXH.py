@@ -97,7 +97,7 @@ class RXH:
                 , { TAF_Closure.var_set_type2('COPAY_WVD_IND', 0, cond1='0', cond2='1') }
                 , cll_cnt
                 , num_cll
-                ,to_timestamp('{runner.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 ,cast(NULL as timestamp) as REC_UPDT_TS
             from (
                 select

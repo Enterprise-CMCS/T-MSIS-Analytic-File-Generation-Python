@@ -199,7 +199,7 @@ class PRV07(PRV):
                     PRVDR_MDCD_ENRLMT_MTHD_CD,
                     APLCTN_DT,
                     PRVDR_MDCD_ENRLMT_STUS_CTGRY,
-                    to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
+                    from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
                     current_timestamp() as REC_UPDT_TS
                     from Prov07_Medicaid_CNST
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
@@ -299,7 +299,7 @@ class PRV07(PRV):
                         T.sud_srvc_prvdr_ind,
                         T.mh_srvc_prvdr_ind,
                         T.emer_srvcs_prvdr_ind,
-                        to_timestamp(cast(M.da_run_id as string), 'yyyyMMddHHmmss') as REC_ADD_TS,
+                        from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
                         current_timestamp() as REC_UPDT_TS
                 from Prov02_Main_CNST M
                 left join Prov07_Medicaid_Mapped E
