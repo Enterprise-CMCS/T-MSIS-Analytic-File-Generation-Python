@@ -65,7 +65,7 @@ class TAX(APR):
             SELECT
                 {self.table_id_cols()}
                 ,{ ', '.join(basecols) }
-                ,to_timestamp('{self.apr.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM txnmy_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)

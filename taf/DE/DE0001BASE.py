@@ -22,7 +22,7 @@ class DE0001BASE(DE):
 
     def create(self):
         """
-        Create the segment.  
+        Create the segment.
         """
 
         self.create_temp()
@@ -236,18 +236,18 @@ class DE0001BASE(DE):
             ,MISG_ENRLMT_TYPE_IND_12
             ,MISG_ELGBLTY_DATA_IND
             ,ELGBLTY_CHG_RSN_CD_01
-			,ELGBLTY_CHG_RSN_CD_02
-			,ELGBLTY_CHG_RSN_CD_03
-			,ELGBLTY_CHG_RSN_CD_04
-			,ELGBLTY_CHG_RSN_CD_05
-			,ELGBLTY_CHG_RSN_CD_06
-			,ELGBLTY_CHG_RSN_CD_07
-			,ELGBLTY_CHG_RSN_CD_08
-			,ELGBLTY_CHG_RSN_CD_09
-			,ELGBLTY_CHG_RSN_CD_10
-			,ELGBLTY_CHG_RSN_CD_11
-			,ELGBLTY_CHG_RSN_CD_12
-			,ELGBL_AFTR_EOY_IND
+            ,ELGBLTY_CHG_RSN_CD_02
+            ,ELGBLTY_CHG_RSN_CD_03
+            ,ELGBLTY_CHG_RSN_CD_04
+            ,ELGBLTY_CHG_RSN_CD_05
+            ,ELGBLTY_CHG_RSN_CD_06
+            ,ELGBLTY_CHG_RSN_CD_07
+            ,ELGBLTY_CHG_RSN_CD_08
+            ,ELGBLTY_CHG_RSN_CD_09
+            ,ELGBLTY_CHG_RSN_CD_10
+            ,ELGBLTY_CHG_RSN_CD_11
+            ,ELGBLTY_CHG_RSN_CD_12
+            ,ELGBL_AFTR_EOY_IND
         """
         return z
 
@@ -388,10 +388,9 @@ class DE0001BASE(DE):
         )
     pass
 
-
     def create_hist_demo(self, tblname, inyear):
         """
-        Create the base demo table.  
+        Create the base demo table.
         """
 
         z = f"""create or replace temporary view {tblname}_{inyear} as
@@ -429,30 +428,30 @@ class DE0001BASE(DE):
                             ,elgbl_state_cd
                             ,msis_case_num
                             ,mdcr_bene_id
-                            ,mdcr_hicn_num		          
-                    from  
+                            ,mdcr_hicn_num
+                    from
                         max_run_id_de_{inyear} a
                     inner join
                         {self.de.DA_SCHEMA}.taf_ann_de_base b
-				    on 
+                    on
                         a.submtg_state_cd = b.submtg_state_cd and
-				        a.da_run_id = b.da_run_id
-				    where 
+                    a.da_run_id = b.da_run_id
+                    where
                         b.misg_elgblty_data_ind = 0
-				    order by 
+                    order by
                         submtg_state_cd,
-				        msis_ident_num       
-			        ) as c
-			    left join 
-                    {self.de.DA_SCHEMA}.taf_ann_de_cntct_dtls as d 
-                on 
+                    msis_ident_num
+                    ) as c
+                    left join
+                    {self.de.DA_SCHEMA}.taf_ann_de_cntct_dtls as d
+                on
                     c.de_link_key = d.de_link_key
             """
         self.de.append(type(self).__name__, z)
 
     def gen_bsf_last_dt(self, tot_month, in_year):
         """
-        Create BSF last date.  
+        Create BSF last date.
         """
 
         gen_bsf_last_dt = []
@@ -467,13 +466,13 @@ class DE0001BASE(DE):
 
     def age_date_calculate(self, inyear):
         """
-        Calculate age date.  
+        Calculate age date.
         """
 
         z = f"""case { self.gen_bsf_last_dt(tot_month=12, in_year=inyear) }
                 end as BSF_LAST_DT,
                 case when BSF_RECORD = '12' then ELGBL_AFTR_EOM_TEMP
-                else 0 
+                else 0
                 end as ELGBL_AFTR_EOY_IND
             """
         return z
@@ -486,7 +485,7 @@ class DE0001BASE(DE):
 
         if self.de.GETPRIOR == 1:
             cnt = 0
-            #for pyear in range(1, self.de.PYEARS + 1):
+            # for pyear in range(1, self.de.PYEARS + 1):
             for pyear in self.de.PYEARS:
                 self.create_hist_demo(tblname="base_demo", inyear=pyear)
 
@@ -522,7 +521,7 @@ class DE0001BASE(DE):
 
                     ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""+' '
 
-                #for pyear in range(1, self.de.PYEARS + 1):
+            # for pyear in range(1, self.de.PYEARS + 1):
             for pyear in self.de.PYEARS:
                 cnt += 1
                 z += f"""when p{cnt}.ELGBL_LINE_1_ADR is not null then {pyear}"""+' '
@@ -538,7 +537,7 @@ class DE0001BASE(DE):
             cnt = 0
             for pyear in self.de.PYEARS:
                 cnt += 1
-                #for pyear in range(1, self.de.PYEARS + 1):
+                # for pyear in range(1, self.de.PYEARS + 1):
                 z += f"""
                     left join
                     base_demo_{pyear} p{cnt}
@@ -617,22 +616,22 @@ class DE0001BASE(DE):
 
         z = f"""create or replace temporary view base_{self.de.YEAR}_temp1 as
                 select *,
-                    case when AGE_NUM_TEMP is not null then AGE_NUM_TEMP 
+                    case when AGE_NUM_TEMP is not null then AGE_NUM_TEMP
                         when BIRTH_DT is not null then
                         case when DEATH_DT is not null then floor(datediff(DEATH_DT, BIRTH_DT) /365.25)
                             when BSF_RECORD is not null then floor(datediff(BSF_LAST_DT, BIRTH_DT) /365.25)
                         end
-                    else null 
+                    else null
                     end as AGE_NUM_RAW
                 from base_{self.de.YEAR}_temp
             """
-        self.de.append(type(self).__name__, z)        
+        self.de.append(type(self).__name__, z)
 
         z = f"""create or replace temporary view base_{self.de.YEAR}_temp2 as
                 select *,
-                    case when AGE_NUM_RAW < -1 then null 
-                        when AGE_NUM_RAW > 125 then 125 
-                    else AGE_NUM_RAW 
+                    case when AGE_NUM_RAW < -1 then null
+                        when AGE_NUM_RAW > 125 then 125
+                    else AGE_NUM_RAW
                     end as AGE_NUM
                 from base_{self.de.YEAR}_temp1
             """
@@ -640,7 +639,7 @@ class DE0001BASE(DE):
 
         z = f"""create or replace temporary view base_{self.de.YEAR} as
                 select *,
-                    case when AGE_NUM between -1 and 0 then 1 
+                    case when AGE_NUM between -1 and 0 then 1
                         when AGE_NUM between 1 and 5 then 2
                         when AGE_NUM between 6 and 14 then 3
                         when AGE_NUM between 15 and 18 then 4
@@ -650,7 +649,7 @@ class DE0001BASE(DE):
                         when AGE_NUM between 65 and 74 then 8
                         when AGE_NUM between 75 and 84 then 9
                         when AGE_NUM between 85 and 125 then 10
-                    else null 
+                    else null
                     end as AGE_GRP_FLAG
                 from base_{self.de.YEAR}_temp2
             """
