@@ -460,7 +460,7 @@ class BASE(APL):
             SELECT
                  {self.table_id_cols()}
                 ,{",".join(self.basecols)}
-                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM base_{self.year}_final
             """

@@ -347,7 +347,7 @@ class PRV03(PRV):
                     when L.PRVDR_ADR_SRVC_IND=1 and T.SUBMTG_STATE_rcd<>T.ADR_STATE_CD then 1
                     else null
                     end as PRVDR_SRVC_ST_DFRNT_SUBMTG_ST,
-                    from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
+                    to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
                     current_timestamp() as REC_UPDT_TS
             from Prov03_Location_BSM T
                 left join Prov03_Location_mapt L

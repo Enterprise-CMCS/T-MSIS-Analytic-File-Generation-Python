@@ -3,15 +3,15 @@ from taf.TAF_Runner import TAF_Runner
 
 class DE_Runner(TAF_Runner):
     """
-    The TAF-specific module contains executable statements as well as function definitions to
-    generate and execute SQL to produce individual segment as well as final output.
+    The TAF-specific module contains executable statements as well as function definitions to 
+    generate and execute SQL to produce individual segment as well as final output. 
     These statements are intended to initialize the module.
     """
 
     PERFORMANCE = 11
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
-        super().__init__(reporting_period, state_code, run_id, job_id)
+    def __init__(self, reporting_period: str, state_code: str, run_id: str):
+        super().__init__(reporting_period, state_code, run_id)
 
         #  - REPORTING_PERIOD: Date value from which we will take the last 4 characters to determine year
     #                      (read from job control table)
@@ -49,7 +49,7 @@ class DE_Runner(TAF_Runner):
         self.MONTHSB = ["12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01"]
         self.RUNDATE = ""
         self.VERSION: int = 0
-        # self.DA_RUN_ID: int = run_id
+        #self.DA_RUN_ID: int = run_id
         self.ROWCOUNT: int = 0
         self.TMSIS_SCHEMA = "TMSIS"
         self.ST_FILTER = ""
@@ -63,7 +63,7 @@ class DE_Runner(TAF_Runner):
         """
         Import, create, and build out each segment for a given file type.
         At this point, a dictionary has been created for each file segment containing
-        SQL queries that will be sequential executed by the run definition to produce output.
+        SQL queries that will be sequential executed by the run definition to produce output. 
         """
 
         from taf.DE.DE0001BASE import DE0001BASE

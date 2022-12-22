@@ -8,8 +8,8 @@ class UP_Runner(TAF_Runner):
     These statements are intended to initialize the module.
     """
      
-    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
-        super().__init__(reporting_period, state_code, run_id, job_id)
+    def __init__(self, reporting_period: str, state_code: str, run_id: str):
+        super().__init__(reporting_period, state_code, run_id)
 
     def ST_FILTER(self):
         """

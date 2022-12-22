@@ -394,7 +394,7 @@ class PRV06(PRV):
                         submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
                         PRVDR_CLSFCTN_TYPE_CD,
                         PRVDR_CLSFCTN_CD,
-                        from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
+                        to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
                         current_timestamp() as REC_UPDT_TS
                         from Prov06_Taxonomies_ALL
                         where PRVDR_CLSFCTN_TYPE_CD is not null and PRVDR_CLSFCTN_CD is not null

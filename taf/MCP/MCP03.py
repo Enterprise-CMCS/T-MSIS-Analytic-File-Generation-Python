@@ -6,7 +6,7 @@ class MCP03(MCP):
     """
     Description:  Selection Functions for the T-MSIS MC segments.
     """
-
+     
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
@@ -14,7 +14,7 @@ class MCP03(MCP):
         """
         000-03 location segment
         """
-
+         
         # screen out all but the latest run id
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
@@ -99,9 +99,9 @@ class MCP03(MCP):
 
     def create(self):
         """
-        Create the MCP03 location segment.
+        Create the MCP03 location segment.  
         """
-
+         
         self.process_03_location("MC02_Main_RAW", "MC03_Location")
 
         self.recode_notnull(
@@ -160,14 +160,14 @@ class MCP03(MCP):
 
     def build(self, runner: MCP_Runner):
         """
-        Build the MCP03 location segment.
+        Build the MCP03 location segment.  
         """
-
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mcl
                 SELECT
                     *
-                   ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                   ,to_timestamp('{self.mcp.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
                    ,current_timestamp() as REC_UPDT_TS
                 FROM
                     MC03_Location_CNST
