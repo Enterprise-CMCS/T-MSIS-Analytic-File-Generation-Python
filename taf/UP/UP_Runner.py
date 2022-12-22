@@ -3,28 +3,28 @@ from taf.TAF_Runner import TAF_Runner
 
 class UP_Runner(TAF_Runner):
     """
-    The TAF-specific module contains executable statements as well as function definitions to 
-    generate and execute SQL to produce individual segment as well as final output. 
+    The TAF-specific module contains executable statements as well as function definitions to
+    generate and execute SQL to produce individual segment as well as final output.
     These statements are intended to initialize the module.
     """
-     
-    def __init__(self, reporting_period: str, state_code: str, run_id: str):
-        super().__init__(reporting_period, state_code, run_id)
+
+    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
+        super().__init__(reporting_period, state_code, run_id, job_id)
 
     def ST_FILTER(self):
         """
-        Use the trim function to remove extraneous space characters from start and end of state names.  
+        Use the trim function to remove extraneous space characters from start and end of state names.
         """
-         
+
         return "and trim(submitting_state) not in ('94','96')"
 
     def init(self):
         """
         Import, create, and build out each segment for a given file type.
         At this point, a dictionary has been created for each file segment containing
-        SQL queries that will be sequential executed by the run definition to produce output. 
+        SQL queries that will be sequential executed by the run definition to produce output.
         """
-         
+
         from taf.UP.BASE_DE import BASE_DE
         from taf.UP.BASE_HDR import BASE_HDR
         from taf.UP.BASE_HDR_COMB import BASE_HDR_COMB
