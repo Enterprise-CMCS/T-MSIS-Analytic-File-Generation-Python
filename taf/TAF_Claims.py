@@ -3,9 +3,9 @@ from taf.TAF_Runner import TAF_Runner
 
 class TAF_Claims():
     """
-    Contains helper functions to facilitate TAF analysis.  
+    Contains helper functions to facilitate TAF analysis.
     """
-     
+
     def __init__(self, runner: TAF_Runner):
 
         self.runner = runner
@@ -14,9 +14,9 @@ class TAF_Claims():
 
     def analysis_date(self, fl, analysis_date):
         """
-        Creates case-when SQL statements of analysis dates.  
+        Creates case-when SQL statements of analysis dates.
         """
-         
+
         if fl == 'IP':
             return f",case when {analysis_date} is NULL then 1 else 0 end as NO_DISCH_DT"
         elif fl == 'OTHR_TOC':
@@ -26,9 +26,9 @@ class TAF_Claims():
 
     def where_analysis_date(self, fl, analysis_date, rep_yr, rep_mo):
         """
-        Helper function for where SQL statements of analysis dates.  
+        Helper function for where SQL statements of analysis dates.
         """
-         
+
         clause = ''
         if fl == 'OTHR_TOC':
             # analysis date year is ref year and
@@ -54,9 +54,9 @@ class TAF_Claims():
 
     def where_state_level_filter(self, fl, alias):
         """
-        Helper function to define where SQL statement that filters by state level.  
+        Helper function to define where SQL statement that filters by state level.
         """
-         
+
         # if fl == 'OTHR_TOC':  # For OT it s state by state
         #     return f""" and {alias}.submtg_state_cd = '{self.submtg_state_cd}'
         #                 and {alias}.tmsis_run_id = {self.tmsis_run_id}
@@ -67,9 +67,9 @@ class TAF_Claims():
 
     def select_date(self, fl):
         """
-        Helper function to generate SQL for selecting dates.    
+        Helper function to generate SQL for selecting dates.
         """
-         
+
         if fl == 'IP':
             return ",A.NO_DISCH_DT"
         elif fl == 'OTHR_TOC':
@@ -79,9 +79,9 @@ class TAF_Claims():
 
     def where_date(self, fl):
         """
-        Helper function to generate a where SQL statement for selecting dates.  
+        Helper function to generate a where SQL statement for selecting dates.
         """
-         
+
         if fl == 'IP':
             return "A.NO_DISCH_DT = 0"
         elif fl == 'OTHR_TOC':
@@ -89,9 +89,9 @@ class TAF_Claims():
 
     def exclude_missing_end_date(self, fl):
         """
-        Helper function to generate SQL statement to exlude missing end dates.  
+        Helper function to generate SQL statement to exlude missing end dates.
         """
-         
+
         if fl == 'IP':
             return "coalesce(L.SRVC_ENDG_DT, L.SRVC_BGNNG_DT) is not NULL and H.NO_DISCH_DT = 1"
         elif fl == 'OTHR_TOC':
@@ -99,9 +99,9 @@ class TAF_Claims():
 
     def coalesce_dos(self, fl):
         """
-        Helper function to generate SQL statement to coalesce dos.  
+        Helper function to generate SQL statement to coalesce dos.
         """
-         
+
         if fl in ['IP', 'OTHR_TOC']:
             return """
                 ,coalesce(A.SRVC_ENDG_DT_DRVD_H,H.SRVC_ENDG_DT_DRVD_L) as SRVC_ENDG_DT_DRVD
@@ -113,9 +113,9 @@ class TAF_Claims():
     def rep_yr_mo(self, fl, rep_yr, rep_mo):
         """
         Function to return year and month.  If IP, use max svc ending date year and month.
-        If OTHR_TOC, use analysis date year and month.  
+        If OTHR_TOC, use analysis date year and month.
         """
-         
+
         if fl == 'IP':
             # max svc ending date year is ref year and
             # max svc ending date month is ref month
@@ -131,9 +131,9 @@ class TAF_Claims():
 
     def use_header(self, fl):
         """
-        Helper function for generating SQL by using a header.  
+        Helper function for generating SQL by using a header.
         """
-         
+
         if fl in ['IP', 'OTHR_TOC']:
             return "COMBINED_HEADER"
         else:
@@ -143,7 +143,7 @@ class TAF_Claims():
         """
         Helper function for selecting data elements from IP, LT, RX, and OTHR_TOC.
         """
-         
+
         if (fl.casefold() == 'ip'):
             from taf.IP.IP_Metadata import IP_Metadata
             return IP_Metadata.selectDataElements(segment_id, alias)
@@ -169,7 +169,7 @@ class TAF_Claims():
         """
         Pull final action claims from claims family tables and join to header records.
         """
-         
+
         # -----------------------------------------------------------------------------
         #
         #  HEADER_?
@@ -184,14 +184,7 @@ class TAF_Claims():
                 { self.analysis_date(fl, analysis_date) }
 
             from
-        """
-
-        if (_2x_segment.casefold() == 'tmsis_clh_rec_ip'):
-            z += "tmsis.tmsis_test_view2 A"
-        else:
-            z += f"TAF_PYTHON.{_2x_segment}_TEMP_TAF A"
-
-        z += f"""
+                {TMSIS_SCHEMA}.{_2x_segment} as a
             where
                 ( {self.where_analysis_date(fl, analysis_date, self.rep_yr, self.rep_mo) } )
                 and
