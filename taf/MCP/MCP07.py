@@ -439,7 +439,7 @@ class MCP07(MCP):
                 INSERT INTO {runner.DA_SCHEMA}.taf_mcp
                 SELECT
                     { ', '.join(base_col_list) }
-                   ,to_timestamp('{self.mcp.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                   ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                    ,current_timestamp() as REC_UPDT_TS
                 FROM
                     MC02_Base

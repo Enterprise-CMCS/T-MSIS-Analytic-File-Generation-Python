@@ -120,7 +120,7 @@ class PRV04(PRV):
                     LCNS_TYPE_CD,
                     license_or_accreditation_number as LCNS_OR_ACRDTN_NUM,
                     license_issuing_entity_id as LCNS_ISSG_ENT_ID_TXT,
-                    to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
+                    from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
                     current_timestamp() as REC_UPDT_TS
                     from Prov04_Licensing_TYP
                     where LCNS_TYPE_CD is not null
