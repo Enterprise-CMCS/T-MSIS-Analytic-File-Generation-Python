@@ -1,28 +1,13 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 from calendar import monthrange, isleap
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE_LT(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Read in the LT line-level file, aggregate to header, and count unique LT days
+    """
+     
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -30,14 +15,18 @@ class BASE_LT(UP):
     #def __init__(self, up: UP_Runner):
         #super().__init__(up)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
+        """
+        Create the BASE_LT segment.  
+        """
 
+        # Take the header-level file with needed cols, and join to a rolled-up line level file to
+        # get min srvc_bgnng_dt and TOS_CD from the line. Only keep FFS/MC claims, and only keep
+        # claims with at least one line with specific TOS_CD values (009, 043-050, 059), OR with 
+        # all TOS_CD values = null.
+        # Then need to get daily indicators for each stay, and then get the MAX across all days for each bene
+        # to create a count of unique LT days ;
+        
         # distkey(msis_ident_num)
         # sortkey(submtg_state_cd,msis_ident_num)
         z = f"""

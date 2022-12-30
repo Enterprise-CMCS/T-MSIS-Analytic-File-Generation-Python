@@ -5,23 +5,32 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class LT(TAF):
-
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
+    """
+    Long-Term Care Claims (LT) TAF: The LT TAF contains information about long-term care 
+    institution claims, including nursing facilities, intermediate care facility services 
+    for individuals with intellectual disabilities, mental health facility services, and 
+    independent (free-standing) psychiatric wings of acute care hospitals. The claims in TAF 
+    include fee-for-service claims, managed care encounter claims, service tracking claims, 
+    and supplemental payments for Medicaid, Medicaid-expansion CHIP, and Separate CHIP. 
+    Inclusion in the LT TAF is based on the month/year of the ending date of service in 
+    the claim header. Each LT TAF is comprised of two files – a claim-header level file 
+    and a claim-line level file. The claims included in these files are active, non-voided, 
+    non-denied (at the header level), non-duplicate final action claims. Only claim header 
+    records meeting these inclusion criteria, along with their associated claim line records, 
+    are incorporated. Both files can be linked together using unique keys that are constructed 
+    based on various claim header and claim line data elements. The two LT TAF are generated 
+    for each calendar month in which the data are reported.
+    """
+    
     def __init__(self, runner: LT_Runner):
         super().__init__(runner)
         self.st_fil_type = "LT"
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
-
+        """
+        Pull line item records for header records linked with claims family table dataset.
+        """
+         
         # Subset line file and attach row numbers to all records belonging to an ICN set.  Fix PA & IA
         # FIXME: change base table or view when TMSIS changes are made
         z = f"""

@@ -8,31 +8,32 @@ from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class LOC(APR):
+    """
+    The TAF Annual Provider (APR) is comprised of nine files: base, affiliated group, affiliated program,
+    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.  
+    A unique TAF APR link key is used to link the first six APR files listed.  The last three files are linked
+    to the location file with a unique TAF APR location link key.  The TAF APR includes records for any provider
+    with an active record in one of the twelve monthly TAF PRV files. 
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    Description:  Generate the annual PR segment for Location addresses
+
+    Note:   This program aggregates unique values across the CY year for variables in collist.
+            It creates _SPLMTL flag for base.
+            Then inserts location records into the permanent TAF table.
+    """
+
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'LOC'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+
     def create(self):
+        """
+        Create the segment for location.  
+        """
+         
+        # Create location segment. Select records and select or create data elements
 
         collist_l = ['PRVDR_LCTN_ID',
                      'PRVDR_ADR_BLG_IND',

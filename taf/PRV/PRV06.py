@@ -3,31 +3,16 @@ from taf.PRV import PRV_Runner
 from taf.PRV.PRV import PRV
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV06(PRV):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+     
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_06_taxonomy(self, maintbl, outtbl):
-
+        """
+        000-06 taxonomy segment
+        """
+         
         # screen out all but the latest(selected) run id - provider id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -101,16 +86,12 @@ class PRV06(PRV):
 
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV06_Final)
-
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     
     def hc_prvdr_sw_pos(self, max_keep):
+        """
+        Function to generate strings needed for creating sw_positions col 
+        """
+         
         hc_prvdr_sw_pos = []
         cmma_cnct = ',\n\t\t\t'
         for i in list(range(1, 15 + 1)):
@@ -119,6 +100,10 @@ class PRV06(PRV):
         return cmma_cnct.join(hc_prvdr_sw_pos)
 
     def hc_prvdr_cd_pos(self, max_keep):
+        """
+        Function to generate strings needed for creating cd_positions col 
+        """
+         
         hc_prvdr_cd_pos = []
         cmma_cnct = ',\n\t\t\t'
         for i in list(range(1, 15 + 1)):
@@ -127,6 +112,10 @@ class PRV06(PRV):
         return cmma_cnct.join(hc_prvdr_cd_pos)
 
     def hc_prvdr_sw_pos_y(self, max_keep):
+        """
+        Function to generate strings needed for creating case when for prvdr_clsfctn_cd col
+        """
+         
         hc_prvdr_sw_pos_y = []
         new_line = '\n\t\t\t'
         for i in list(range(1, 15 + 1)):
@@ -135,6 +124,10 @@ class PRV06(PRV):
         return new_line.join(hc_prvdr_sw_pos_y)
 
     def hc_prvdr_sw_pos_x(self, max_keep):
+        """
+        Function to generate strings needed for creating case when for prvdr_clsfctn_cd col
+        """
+         
         hc_prvdr_sw_pos_x = []
         new_line = '\n\t\t\t'
         for i in list(range(1, 15 + 1)):
@@ -143,6 +136,10 @@ class PRV06(PRV):
         return new_line.join(hc_prvdr_sw_pos_x)
 
     def prmry_NPPES_tax0b(self, max_keep):
+        """
+        Function to generate strings needed for creating sql for nppes_tax0b table
+        """
+         
         prmry_NPPES_tax0b = []
         new_line = '\n\n \t\tUNION ALL \n\t\t\t'
         for i in list(range(1, 15 + 1)):
@@ -162,6 +159,9 @@ class PRV06(PRV):
 
 
     def nppes_tax(self, DA_SCHEMA, id_intbl, tax_intbl, tax_outtbl):
+        """
+        Function to generate SQL query with multiple temporary views for nppes_tax.  
+        """
 
         # get NPPES taxonomy codes using NPI from PRV identifier segment
         z = f"""
@@ -329,15 +329,11 @@ class PRV06(PRV):
             """
         self.prv.append(type(self).__name__, z)
         
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Create the PRV06 taxonomy segment.  
+        """
+         
         self.process_06_taxonomy('Prov02_Main',
                                  'Prov06_Taxonomies')
 
@@ -668,13 +664,11 @@ class PRV06(PRV):
             """
         self.prv.append(type(self).__name__, z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: PRV_Runner):
-
+        """
+        Build the PRV06 taxonomy segment.  
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_tax
                 SELECT

@@ -1,38 +1,24 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.APR.APR import APR
 from taf.APR.APR_Runner import APR_Runner
 from taf.TAF_Closure import TAF_Closure
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE(APR):
+    """
+    The TAF Annual Provider (APR) is comprised of nine files: base, affiliated group, affiliated program,
+    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.  
+    A unique TAF APR link key is used to link the first six APR files listed.  The last three files are linked
+    to the location file with a unique TAF APR location link key.  The TAF APR includes records for any provider
+    with an active record in one of the twelve monthly TAF PRV files.  
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    Description: Generate the annual PRR segment for base.
+
+    """
+
     def __init__(self, apr: APR_Runner):
         super().__init__(apr)
         self.fileseg = 'BSP'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         # Create the partial base segment, pulling in only columns are not acceditation

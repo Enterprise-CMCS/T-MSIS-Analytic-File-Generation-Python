@@ -1,28 +1,13 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 from taf.UP.UP_Metadata import UP_Metadata
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE_DELIV(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Read in IP and OT files, join to lookup tables, and identify benes with delivery claims
+    """
+     
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -32,14 +17,11 @@ class BASE_DELIV(UP):
 
         UP_Metadata.getDeliveryCodes()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Create the BASE_DELIV segment.  
+        """
+         
         # Pull in both IP and OT line-level files, and join to lookup tables to identify delivery
         # diagnosis/procedure/rev codes. In inner query, create indicator for line having any maternal/newborn
         # code. In outer query, aggregate to bene-level and get max of maternal/newborn indicators

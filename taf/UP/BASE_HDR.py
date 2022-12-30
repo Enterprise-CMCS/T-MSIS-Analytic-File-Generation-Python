@@ -1,28 +1,13 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 from taf.TAF_Closure import TAF_Closure
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE_HDR(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:    Generate counts and sums by bene at the header-level for each claim type to then be 
+                    combined across the four file types for the BASE segment
+    """
+     
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -30,14 +15,11 @@ class BASE_HDR(UP):
     #def __init__(self, up: UP_Runner):
         #super().__init__(up)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Create the BASE_HDR segment.  
+        """
+         
         for file in self.fltypes:
             # distkey(msis_ident_num)
             # sortkey(submtg_state_cd,msis_ident_num)

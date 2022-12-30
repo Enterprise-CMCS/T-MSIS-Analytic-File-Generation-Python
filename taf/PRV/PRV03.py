@@ -3,31 +3,16 @@ from taf.PRV import PRV_Runner
 from taf.PRV.PRV import PRV
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV03(PRV):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+     
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_03_locations(self, maintbl, outtbl):
-
+        """
+        000-03 location data extract
+        """
+         
         # screen out all but the latest(selected) run id - provider id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -209,14 +194,11 @@ class PRV03(PRV):
         """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Create the PRV03 location data extract
+        """
+         
         keyl = 'PRV_LOC_LINK_KEY'
 
         self.process_03_locations('Prov02_Main',
@@ -375,14 +357,11 @@ class PRV03(PRV):
         """
         self.prv.append(type(self).__name__, z)
 
-
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: PRV_Runner):
-
+        """
+        Build the PRV03 location data extract.  
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_loc
                 SELECT

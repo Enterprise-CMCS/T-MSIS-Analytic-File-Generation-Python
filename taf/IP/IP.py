@@ -5,22 +5,34 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class IP(TAF):
+    """
+    Inpatient (IP) TAF: The IP TAF contains information about fee-for-service claims, managed care 
+    encounter claims, service tracking claims, capitated payments, and supplemental payments for 
+    Medicaid, Medicaid-expansion CHIP, and Separate CHIP.  Inclusion in the IP TAF is based on the 
+    month/year of the discharge date or, when the discharge date is unavailable, the most recent 
+    service end date associated with the claim. If the most recent service end date is unavailable, 
+    the most recent service begin date will be used. Records in TAF begin when the state officially 
+    cut over to submitting T-MSIS data. Each file provides T-MSIS source data as well as constructed 
+    variables designed to support research and analysis. The constructed variables are designed to 
+    facilitate analysis such as outcomes measurement, public reporting, quality improvement initiatives, 
+    and quality monitoring, among other items.
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
+    The IP TAF are comprised of two files: a claim header-level file and a claim line-level file. 
+    The claims included in these files are active, final-action, non-voided, non-denied claims. 
+    Only claim header records with a date in the TAF month/year, along with their associated claim 
+    line records, are included. Both files can be linked together using a unique key that is constructed 
+    based on various claim header and claim line data elements. The two IP TAF are produced for each 
+    calendar month for which data are reported.
+    """
+
     def __init__(self, runner: IP_Runner):
         super().__init__(runner)
         self.st_fil_type = "IP"
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
+        """
+        Pull line item records for header records linked with claims family table dataset.
+        """
 
         # Create a temporary line file
         # FIXME: change base table or view when TMSIS changes are made

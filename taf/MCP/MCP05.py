@@ -1,39 +1,20 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class MCP05(MCP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Selection macros for the T-MSIS MC segments
+    """
+     
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_05_operating_authority(self, runtbl, outtbl):
-
+        """
+        000-05 Operating_Authority segment
+        """
+         
         # screen out all but the latest run id
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
@@ -119,14 +100,11 @@ class MCP05(MCP):
         # row count
         self.count_rows(outtbl, "cnt_final", "MC05_Final")
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Create the MCP05 operating authority segment.  
+        """
+         
         self.process_05_operating_authority("MC02_Main_RAW", "MC05_Operating_Authority")
 
         self.recode_lookup(

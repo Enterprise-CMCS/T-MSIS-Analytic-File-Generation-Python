@@ -3,31 +3,16 @@ from taf.PRV import PRV_Runner
 from taf.PRV.PRV import PRV
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV07(PRV):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+     
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_07_medicaid(self, maintbl, outtbl):
-
+        """
+        000-07 Medicaid enrollment segment
+        """
+         
         # screen out all but the latest(selected) run id - provider id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -95,14 +80,11 @@ class PRV07(PRV):
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV07_Final)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Create the PRV07 Medicaid enrollment segment.  
+        """
+         
         self.process_07_medicaid('Prov02_Main',
                                  'Prov07_Medicaid')
 
@@ -328,13 +310,11 @@ class PRV07(PRV):
             """
         self.prv.append(type(self).__name__, z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: PRV_Runner):
-
+        """
+        Build the PRV07 Medicaid enrollment segment.  
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv
                 SELECT

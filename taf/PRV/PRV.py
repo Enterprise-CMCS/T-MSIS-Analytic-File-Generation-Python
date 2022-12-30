@@ -1,39 +1,35 @@
 from taf.PRV.PRV_Runner import PRV_Runner
 from taf.TAF import TAF
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV(TAF):
-
+    """
+    Monthly Provider (PRV) TAF: The PRV TAF contain information about each Medicaid and CHIP provider 
+    that was active at least one day during the month.  The information contained in the PRV TAF includes 
+    but is not limited to:  provider name, provider type, the provider group (if applicable), facility-specific 
+    information (if applicable, e.g. bed count), and the various Medicaid/CHIP programs/waivers/demonstrations, 
+    locations, licenses, and identifiers (state-specific as well as national provider identifiers) associated 
+    with the provider.  Each PRV TAF is comprised of nine files: the Base file; Group file; Program file; 
+    Taxonomy file; Enrollment file; Location file; License file; Identifiers file; and Bed Type file. All nine 
+    files can be linked together using unique keys that are constructed based on various data elements. 
+    The nine PRV TAF  are generated for each calendar month in which the data are reported. 
+    """
+     
     srtlist = ['tms_run_id', 'submitting_state', 'submitting_state_prov_id']
     srtlistl = ['tms_run_id',
                 'submitting_state',
                 'submitting_state_prov_id',
                 'prov_location_id']
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, prv: PRV_Runner):
 
         self.prv = prv
         self.st_fil_type = 'PRV'
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def set_end_dt(self, enddt):
+        """
+        Function to handle null end dates.  
+        """
+         
         z = f"""
             case
                 when to_date('{enddt}') is null then to_date('9999-12-31')
@@ -43,13 +39,11 @@ class PRV(TAF):
             """
         return z.format(enddt)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def zero_pad(self, var_cd, var_len):
+        """
+        Helper function to zero pad some string names.  
+        """
+         
         z = f"""
             case
                 when length(trim({var_cd})) < {var_len} and length(trim({var_cd})) > 0 and {var_cd} is not null
@@ -59,14 +53,11 @@ class PRV(TAF):
             """
         return z.format(var_cd, var_len)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def screen_runid(self, intbl, runtbl, runvars, outtbl, runtyp='C'):
-
+        """
+        Function to screen the run ids.  
+        """
+         
         if runtyp == 'M':
             on = f"on { self.write_equalkeys(runvars, 'T', 'R') }"
         elif runtyp == 'L':
@@ -95,13 +86,8 @@ class PRV(TAF):
 
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def copy_activerows(self, intbl, collist, whr, outtbl):
+         
         from taf.TAF_Closure import TAF_Closure
 
         if whr != '':
@@ -128,15 +114,9 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     # def copy_activerows_nts(self, intbl, collist, whr, outtbl):
     def copy_activerows_nts(self, intbl, collist, outtbl):
-
+         
         # diststyle even compound sortkey(tms_run_id, submitting_state)
         z = f"""
                 create or replace temporary view {outtbl} as
@@ -162,12 +142,6 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def screen_dates(self, intbl, keyvars, dtvar_beg, dtvar_end, outtbl):
 
         # diststyle key
@@ -206,14 +180,8 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def remove_duprecs(self, intbl, grpvars, dtvar_beg, dtvar_end, ordvar, outtbl):
-
+         
         # limit data to the latest available reporting periods
         # distkey(submitting_state_prov_id)
         z = f"""
@@ -250,14 +218,8 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def count_rows(self, intbl, cntvar, outds):
-
+         
         z = f"""
             create or replace temporary view {outds} as
             select
@@ -269,14 +231,8 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def recode_lookup(self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen=None):
-
+         
         if fldtyp == 'C':
             select = f"T.*, cast(F.label as varchar({fldlen})) as {newvar}"
         else:
@@ -299,14 +255,8 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def recode_notnull(self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen):
-
+         
         if fldtyp == 'C':
             # :: varchar({fldlen}) as {newvar}"
             case = f"case when F.label is null then T.{srcvar} else F.label end as {newvar}"
@@ -331,26 +281,14 @@ class PRV(TAF):
             """
         self.prv.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def write_equalkeys(self, keyvars, t1, t2):
-
+         
         klist = map(lambda x: f"{t1}.{x} = {t2}.{x}", keyvars)
         keylist = list(klist)
         return ' and '.join(str(k) for k in keylist)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def write_keyprefix(self, keyvars, prefix):
-
+         
         klist = map(lambda x: f"{prefix}.{x}", keyvars)
         keylist = list(klist)
         # return ', '.join(str(k) for k in keylist)

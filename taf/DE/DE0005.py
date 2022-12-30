@@ -4,23 +4,42 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0005(DE):
-    tblname: str = "managed_care"
-    tbl_suffix: str = "mc"
+	"""
+	Description:  Generate the annual BSF segment 005: Managed Care
 
-    def __init__(self, runner: DE_Runner):
-        DE.__init__(self, runner)
-        self.de = runner
+	Note:  	This program arrays out all MC slots for every month. Also, it creates counts of
+			enrolled months for each type of MC (based on a given type in ANY of the monthly slots
+			for each month). It then inserts this temp table into the permanent table and deletes
+			the temp table.
+			It also creates the flag MNGD_CARE_SPLMTL which = 1 if ANY ID or type in the year is
+			non-null, which will be kept in a temp table to be joined to the base segment.
+	"""
+	
+	tblname: str = "managed_care"
+	tbl_suffix: str = "mc"
 
-    #def __init__(self, de: DE_Runner):
-        #super().__init__(de)
+	def __init__(self, runner: DE_Runner):
+		DE.__init__(self, runner)
+		self.de = runner
 
-    def create(self):
-        #super().create()
-        self.create_temp()
-        self.create_mc_suppl_table()
+	#def __init__(self, de: DE_Runner):
+		#super().__init__(de)
 
-    def basecols(self):
-        z = """
+	def create(self):
+		"""
+		Create the segment.  
+		"""
+
+		#super().create()
+		self.create_temp()
+		self.create_mc_suppl_table()
+
+	def basecols(self):
+		"""
+		Insert into the permanent table, subset to EITHER MNGD_CARE_SPLMTL=1
+		"""
+
+		z = """
 			,CMPRHNSV_MC_PLAN_MOS
 			,TRDTNL_PCCM_MC_PLAN_MOS
 			,ENHNCD_PCCM_MC_PLAN_MOS
@@ -428,74 +447,82 @@ class DE0005(DE):
 			,MC_PLAN_TYPE_CD16_12
 			,LTSS_PIHP_MC_PLAN_MOS
 			,OTHR_MC_PLAN_MOS
-        """
-        return z        
+		"""
+		return z        
 
-    def create_temp(self):
-        s = f"""{DE.run_mc_slots(self, 1, 3)}
-                ,{TAF_Closure.monthly_array(self, incol='MC_PLAN_ID', nslots=self.de.NMCSLOTS)}
-                ,{TAF_Closure.monthly_array(self, incol='MC_PLAN_TYPE_CD', nslots=self.de.NMCSLOTS)}"""
-        s2 = f"""{DE.run_mc_slots(self, 4, 6)}"""
-        s3 = f"""{DE.run_mc_slots(self, 7, 9)}"""
-        s4 = f"""{DE.run_mc_slots(self, 10, 12)}"""
-        s5 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 1, 3)}"""
-        s6 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 4, 6)}"""
-        s7 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 7, 9)}"""
-        s8 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 10, 12)}"""
-        os = f"""{DE.sum_months(self, 'CMPRHNSV_MC_PLAN')}
-                 {DE.sum_months(self, 'TRDTNL_PCCM_MC_PLAN')}
-                 {DE.sum_months(self, 'ENHNCD_PCCM_MC_PLAN')}
-                 {DE.sum_months(self, 'HIO_MC_PLAN')}
-                 {DE.sum_months(self, 'PIHP_MC_PLAN')}
-                 {DE.sum_months(self, 'PAHP_MC_PLAN')}
-                 {DE.sum_months(self, 'LTC_PIHP_MC_PLAN')}
-                 {DE.sum_months(self, 'MH_PIHP_MC_PLAN')}
-                 {DE.sum_months(self, 'MH_PAHP_MC_PLAN')}
-                 {DE.sum_months(self, 'SUD_PIHP_MC_PLAN')}
-                 {DE.sum_months(self, 'SUD_PAHP_MC_PLAN')}
-                 {DE.sum_months(self, 'MH_SUD_PIHP_MC_PLAN')}
-                 {DE.sum_months(self, 'MH_SUD_PAHP_MC_PLAN')}
-                 {DE.sum_months(self, 'DNTL_PAHP_MC_PLAN')}
-                 {DE.sum_months(self, 'TRANSPRTN_PAHP_MC_PLAN')}
-                 {DE.sum_months(self, 'DEASE_MGMT_MC_PLAN')}
-                 {DE.sum_months(self, 'PACE_MC_PLAN')}
-                 {DE.sum_months(self, 'PHRMCY_PAHP_MC_PLAN')}
-                 {DE.sum_months(self, 'ACNTBL_MC_PLAN')}
-                 {DE.sum_months(self, 'HM_HOME_MC_PLAN')}
-                 {DE.sum_months(self, 'IC_DUALS_MC_PLAN')}
-                 {DE.sum_months(self, 'LTSS_PIHP_MC_PLAN')}
-                 {DE.sum_months(self, 'OTHR_MC_PLAN')}                 
-            """
-        DE.create_temp_table(self, tblname=self.tblname, inyear=self.de.YEAR, subcols=s, subcols2=s2, subcols3=s3,
-                             subcols4=s4, subcols5=s5, subcols6=s6, subcols7=s7, subcols8=s8, outercols=os)
-        return
+	def create_temp(self):
+		"""
+		Create temp table with just MNGD_CARE_SPLMTL (must create as ANY=1 from the four above) to join to base.
+		"""
 
-    def create_mc_suppl_table(self):
-        z = f"""create or replace temporary view MNGD_CARE_SPLMTL_{self.de.YEAR} as
-        select submtg_state_cd
-                ,msis_ident_num
-                ,case when MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
-                            MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1
-                        then 1 else 0 end
-                        as MNGD_CARE_SPLMTL
+		s = f"""{DE.run_mc_slots(self, 1, 3)}
+				,{TAF_Closure.monthly_array(self, incol='MC_PLAN_ID', nslots=self.de.NMCSLOTS)}
+				,{TAF_Closure.monthly_array(self, incol='MC_PLAN_TYPE_CD', nslots=self.de.NMCSLOTS)}"""
+		s2 = f"""{DE.run_mc_slots(self, 4, 6)}"""
+		s3 = f"""{DE.run_mc_slots(self, 7, 9)}"""
+		s4 = f"""{DE.run_mc_slots(self, 10, 12)}"""
+		s5 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 1, 3)}"""
+		s6 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 4, 6)}"""
+		s7 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 7, 9)}"""
+		s8 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 10, 12)}"""
+		os = f"""{DE.sum_months(self, 'CMPRHNSV_MC_PLAN')}
+				{DE.sum_months(self, 'TRDTNL_PCCM_MC_PLAN')}
+				{DE.sum_months(self, 'ENHNCD_PCCM_MC_PLAN')}
+				{DE.sum_months(self, 'HIO_MC_PLAN')}
+				{DE.sum_months(self, 'PIHP_MC_PLAN')}
+				{DE.sum_months(self, 'PAHP_MC_PLAN')}
+				{DE.sum_months(self, 'LTC_PIHP_MC_PLAN')}
+				{DE.sum_months(self, 'MH_PIHP_MC_PLAN')}
+				{DE.sum_months(self, 'MH_PAHP_MC_PLAN')}
+				{DE.sum_months(self, 'SUD_PIHP_MC_PLAN')}
+				{DE.sum_months(self, 'SUD_PAHP_MC_PLAN')}
+				{DE.sum_months(self, 'MH_SUD_PIHP_MC_PLAN')}
+				{DE.sum_months(self, 'MH_SUD_PAHP_MC_PLAN')}
+				{DE.sum_months(self, 'DNTL_PAHP_MC_PLAN')}
+				{DE.sum_months(self, 'TRANSPRTN_PAHP_MC_PLAN')}
+				{DE.sum_months(self, 'DEASE_MGMT_MC_PLAN')}
+				{DE.sum_months(self, 'PACE_MC_PLAN')}
+				{DE.sum_months(self, 'PHRMCY_PAHP_MC_PLAN')}
+				{DE.sum_months(self, 'ACNTBL_MC_PLAN')}
+				{DE.sum_months(self, 'HM_HOME_MC_PLAN')}
+				{DE.sum_months(self, 'IC_DUALS_MC_PLAN')}
+				{DE.sum_months(self, 'LTSS_PIHP_MC_PLAN')}
+				{DE.sum_months(self, 'OTHR_MC_PLAN')}                 
+			"""
+		DE.create_temp_table(self, tblname=self.tblname, inyear=self.de.YEAR, subcols=s, subcols2=s2, subcols3=s3,
+							subcols4=s4, subcols5=s5, subcols6=s6, subcols7=s7, subcols8=s8, outercols=os)
+		return
 
-        from managed_care_{self.de.YEAR}"""
+	def create_mc_suppl_table(self):
+		"""
+		Create the annual BSF segment 005: Managed Care.
+		"""
 
-        self.de.append(type(self).__name__, z)
+		z = f"""create or replace temporary view MNGD_CARE_SPLMTL_{self.de.YEAR} as
+		select submtg_state_cd
+				,msis_ident_num
+				,case when MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
+							MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1
+						then 1 else 0 end
+						as MNGD_CARE_SPLMTL
 
-        z = f"""insert into {self.de.DA_SCHEMA_DC}.TAF_ANN_DE_{self.tbl_suffix}
-                select
+		from managed_care_{self.de.YEAR}"""
 
-                    {DE.table_id_cols_pre(self)}
-                    {self.basecols()}
-                    {DE.table_id_cols_sfx(self)}
+		self.de.append(type(self).__name__, z)
 
-                from managed_care_{self.de.YEAR}
-                where MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
-                    MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1"""
+		z = f"""insert into {self.de.DA_SCHEMA_DC}.TAF_ANN_DE_{self.tbl_suffix}
+				select
 
-        self.de.append(type(self).__name__, z)
-        return
+					{DE.table_id_cols_pre(self)}
+					{self.basecols()}
+					{DE.table_id_cols_sfx(self)}
+
+				from managed_care_{self.de.YEAR}
+				where MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
+					MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1"""
+
+		self.de.append(type(self).__name__, z)
+		return
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

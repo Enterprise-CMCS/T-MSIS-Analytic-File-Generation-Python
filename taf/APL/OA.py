@@ -1,28 +1,23 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.APL.APL import APL
 from taf.APL.APL_Runner import APL_Runner
 from taf.TAF_Closure import TAF_Closure
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
-class OA(APL):
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+class OA(APL):
+    """
+    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area, 
+    a population enrolled file, and operating authority/waiver file.  A unique TAF APL link key is used to link the five APL files.
+    The TAF APL includes records for any managed cared plan with an active record in one of the twelve monthly TAF MCP files.
+    
+
+    Description:  Generate the annual PL segment for Operating Authority.
+    Note: This program creates a separate Operating Authority table from the arrays in monthly MCP main segment
+          aggregates unique values across the CY year for variables in the array and indicates month.
+          It creates _SPLMTL flag for base.
+          Then inserts Operating Authority records into the permanent TAF table.
+    """
+
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "OPRTG_AUTHRTY"
@@ -43,13 +38,10 @@ class OA(APL):
 			    "OPRTG_AUTHRTY_FLAG_12",
         ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
+        """
+        Create operating authority segment. Select records and select or create data elements.
+        """
 
         s = f""" { TAF_Closure.monthly_array(self, incol='WVR_ID_01', nslots='1') }
                 ,{ TAF_Closure.monthly_array(self, incol='WVR_ID_02', nslots='1') }
@@ -185,14 +177,11 @@ class OA(APL):
         # create temp table with just OPRTG_AUTHRTY_SPLMTL to join to base
         self.create_splmlt(segname="OPRTG_AUTHRTY", segfile="OpAuth1")
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def build(self):
-        # insert into permanent table
+        """
+        insert into permanent table
+        """
+
         # z = f"""
         #     INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_OA
         #     SELECT
@@ -225,9 +214,7 @@ class OA(APL):
                 ,current_timestamp() as REC_UPDT_TS
             FROM OpAuth1
             """
-
-
-
+            
         self.apl.append(type(self).__name__, z)
 
 

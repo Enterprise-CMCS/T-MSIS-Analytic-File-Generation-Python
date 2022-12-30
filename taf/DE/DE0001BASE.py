@@ -4,13 +4,27 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0001BASE(DE):
+    """
+    Description:  Generate the annual DE segment 001: Base
+
+    Notes:  This program first creates all the non-demographic columns for the base file, using
+            the current year data. It then pulls in the demographic columns (for which we also look
+            to the prior year if available) for current and prior year, if getprior=1. If getprior=1,
+            join the current and prior year demographics and take the last best with current year
+            first, then prior. It then joins the non-demographic data to the demographic data.
+            Finally, it pulls in the days eligible counts and _SPLMTL flags.
+            It then inserts into the permanent table.
+    """
 
     def __init__(self, runner: DE_Runner):
         DE.__init__(self, runner)
         self.de = runner
 
-    # runner function
     def create(self):
+        """
+        Create the segment.  
+        """
+
         self.create_temp()
         self.demographics(self.de.YEAR)
         self.create_base("base")
@@ -19,8 +33,11 @@ class DE0001BASE(DE):
         # Drop temporary table from DE0006
         self.drop_table("numbers_two")
 
-    # define base columns here
     def basecols(self):
+        """
+        Define base columns.
+        """
+
         z = """
             ,SSN_NUM
             ,BIRTH_DT
@@ -234,9 +251,12 @@ class DE0001BASE(DE):
         """
         return z
 
-    # Create the base segment, pulling in only non-demographic columns for which we DO NOT look to the prior year.
-    # Set all pregnancy flags to null
     def create_temp(self):
+        """
+        Create the base segment, pulling in only non-demographic columns for which we DO NOT look to the prior year.
+        Set all pregnancy flags to null.
+        """
+
         tblname = "base_nondemo"
         s = f"""
             {DE.last_best(self, 'CTZNSHP_VRFCTN_IND')}
@@ -308,11 +328,13 @@ class DE0001BASE(DE):
                                subcols2=s2, subcols3=s3, subcols4=s4,
                                subcols5=s5, subcols6=s6)
 
-    # Now pull in the demographic columns for which we will look to the prior year if data are
-    # available - if so, pull in the same columns for the prior year and then join to get last/best
-    # values from current and prior year
-
     def demographics(self, runyear: int):
+        """
+        Pull in the demographic columns for which we will look to the prior year if data are
+        available - if so, pull in the same columns for the prior year and then join to get last/best
+        values from current and prior year.
+        """
+
         from taf.TAF_Closure import TAF_Closure
 
         # Must array all address elements to take the value that aligns with
@@ -368,6 +390,10 @@ class DE0001BASE(DE):
 
 
     def create_hist_demo(self, tblname, inyear):
+        """
+        Create the base demo table.  
+        """
+
         z = f"""create or replace temporary view {tblname}_{inyear} as
                 select
                     c.*
@@ -425,6 +451,10 @@ class DE0001BASE(DE):
         self.de.append(type(self).__name__, z)
 
     def gen_bsf_last_dt(self, tot_month, in_year):
+        """
+        Create BSF last date.  
+        """
+
         gen_bsf_last_dt = []
         new_line = '\n\t\t\t'
         for i in list(range(1, 12 + 1)):
@@ -436,6 +466,10 @@ class DE0001BASE(DE):
         return new_line.join(gen_bsf_last_dt)
 
     def age_date_calculate(self, inyear):
+        """
+        Calculate age date.  
+        """
+
         z = f"""case { self.gen_bsf_last_dt(tot_month=12, in_year=inyear) }
                 end as BSF_LAST_DT,
                 case when BSF_RECORD = '12' then ELGBL_AFTR_EOM_TEMP
@@ -445,6 +479,11 @@ class DE0001BASE(DE):
         return z
 
     def create_base(self, tblname):
+        """
+        Create the base segment, pulling in only non-demographic columns for which we DO NOT look to the prior year.
+        Set all pregnancy flags to null.
+        """
+
         if self.de.GETPRIOR == 1:
             cnt = 0
             #for pyear in range(1, self.de.PYEARS + 1):

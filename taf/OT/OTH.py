@@ -1,23 +1,22 @@
-# --------------------------------------------------------------------------------- }
-#
-#
-#
-#
-# --------------------------------------------------------------------------------- }
 from taf.OT.OT_Runner import OT_Runner
 from taf.OT.OT_Metadata import OT_Metadata
 from taf.TAF_Closure import TAF_Closure
 
 
 class OTH:
+    """
+    Each OT TAF is comprised of two files – a claim-header level file and a claim-line level file. 
+    The claims included in these files are active, final-action, non-voided, and non-denied claims. 
+    Only header claims with a date in the TAF month/year, along with their associated claim line 
+    records, are included. Both files can be linked together using a unique key that is constructed 
+    based on various claim header and claim line data elements. The two OT TAF are produced for each 
+    calendar month in which the data are reported.
+    """
 
-    # --------------------------------------------------------------------------------- }
-    #
-    #
-    #
-    #
-    # --------------------------------------------------------------------------------- }
     def create(self, runner: OT_Runner):
+        """
+        Create the OT claim-header level segment.  
+        """
 
         # ORDER VARIABLES AND UPCASE', LEFT PAD WITH ZEROS AND RESET COALESCE VALUES HEADER FILE }
 
@@ -181,13 +180,11 @@ class OTH:
 
         runner.append("OTHR_TOC", z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: OT_Runner):
-
+        """
+        Build the OT claim-header level segment. 
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_oth
                 SELECT

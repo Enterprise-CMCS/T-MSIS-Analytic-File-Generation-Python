@@ -3,6 +3,17 @@ from taf.DE.DE_Runner import DE_Runner
 
 
 class DE0002(DE):
+    """
+    Description:  Generate the annual DE segment 002: Eligibility Dates
+
+    Notes:  This program reads in the 16 monthly effective/end date pairs for both Medicaid and CHIP,
+            and takes from wide to long and combines/dedups overlapping or duplicated spells.
+            It then inserts this temp table with one record/enrollee/spell into the permanent table.
+            In the process, it creates monthly and yearly counts of enrolled days (Medicaid and 
+            CHIP separately) to be added to the Base segment. This temp table is called
+            enrolled_days_#YR and is the only temp table not deleted at the end of the program.
+    """
+
     tblname: str = "eligibility_dates"
     tbl_abrv: str = "eldts"
 
@@ -14,6 +25,13 @@ class DE0002(DE):
         #super().__init__(de)
 
     def create(self):
+        """
+        Read in all eligibility dates - all 16 slots from all 12 months. The monthly_array_eldts Function
+        truncates anything BEFORE the first of the month to the first of the month, and anything AFTER
+        the last day of the month to the last day of the month. Must
+        run each element as a separate subcol param because of Function text length issues.
+        """
+
         super().create()
         self.numbers()
         self.create_temp(self.tblname)
@@ -24,6 +42,10 @@ class DE0002(DE):
         self.create_dates_out_root()
 
     def create_temp(self, tname):
+        """
+        Create temporary table.
+        """
+
         s = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_EFF_DT_', outcol="", nslots=16, truncfirst=1)
         s2 = DE.monthly_array_eldts(self, incol='MDCD_ENRLMT_END_DT_', outcol="", nslots=16, truncfirst=0)
         s3 = DE.monthly_array_eldts(self, incol='CHIP_ENRLMT_EFF_DT_', outcol="", nslots=16, truncfirst=1)
@@ -33,6 +55,10 @@ class DE0002(DE):
                                subcols2=s2, subcols3=s3, subcols4=s4)
 
     def numbers(self):
+        """
+        Create dummy table with one record per slot/month to join to dates and get to long form.
+        """
+
         z = f"""create table if not exists {self.de.DA_SCHEMA_DC}.numbers
                 (slot int, month string)
                 using parquet"""
@@ -60,6 +86,10 @@ class DE0002(DE):
         self.de.append(type(self).__name__, z)
 
     def eligibility_dates(self, dtype, dval):
+        """
+        Get eligibility dates.  
+        """
+
         z = f"""create or replace temporary view {dtype}_dates_long as
                 select submtg_state_cd
                         ,msis_ident_num

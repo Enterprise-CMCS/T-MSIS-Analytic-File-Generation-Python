@@ -1,31 +1,15 @@
 from taf.BSF import BSF_Runner
-
 from taf.BSF.ELG import ELG
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ELG00020(ELG):
+    """
+    Description:  Process TMSIS_HCBS_CHRNC_COND_NON_HH and create unique output for BSF.
+    """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, bsf: BSF_Runner):
         ELG.__init__(self, bsf, 'ELG00020', 'TMSIS_HCBS_CHRNC_COND_NON_HH', 'NDC_UOM_CHRNC_NON_HH_EFCTV_DT', 'NDC_UOM_CHRNC_NON_HH_END_DT')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         #  Create temp table to determine which beneficiaries have multiple records

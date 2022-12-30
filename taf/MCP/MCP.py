@@ -2,14 +2,19 @@ from taf.MCP.MCP_Runner import MCP_Runner
 from taf.TAF import TAF
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class MCP(TAF):
-
+    """
+    Monthly Managed Care Plans (MCP) TAF: The MCP TAF contain information about each 
+    Medicaid and CHIP managed care plan/entity that was active at least one day during 
+    the month. The information contained in the MCP TAF includes but is  not limited 
+    to: managed care name, type of managed care plan, the various locations of the managed 
+    care plan, the various service areas in which the managed care plan operates. Each MCP 
+    TAF is comprised of four files: a Base file, a Location file, a Service Area file, and 
+    Population Enrolled File. All four files can be linked together using unique keys that 
+    are constructed based on various data elements. The four MCP TAF are generated for each 
+    calendar month in which the data are reported.
+    """
+     
     srtlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
     srtlistl = [
         "tms_run_id",
@@ -18,25 +23,16 @@ class MCP(TAF):
         "managed_care_location_id",
     ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, mcp: MCP_Runner):
 
         self.mcp = mcp
         self.st_fil_type = "MCP"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def screen_runid(self, intbl, runtbl, runvars, outtbl, runtyp="C"):
-
+        """
+        Function to screen the run ids.  
+        """
+         
         if runtyp == "M":
             on = f"on { self.write_equalkeys(runvars, 'T', 'R') }"
         else:
@@ -60,13 +56,11 @@ class MCP(TAF):
 
         self.mcp.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def copy_activerows(self, intbl, collist, whr, outtbl):
+        """
+        Function to copy active rows.  
+        """
+         
         from taf.TAF_Closure import TAF_Closure
 
         if whr != "":
@@ -93,13 +87,8 @@ class MCP(TAF):
             """
         self.mcp.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def copy_activerows_nts(self, intbl, collist, outtbl):
+         
         # diststyle even compound sortkey(tms_run_id, submitting_state)
         z = f"""
                 create or replace temporary view {outtbl} as
@@ -124,14 +113,11 @@ class MCP(TAF):
             """
         self.mcp.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def screen_dates(self, intbl, keyvars, dtvar_beg, dtvar_end, outtbl):
-
+        """
+        Function to screen dates.  
+        """
+         
         # diststyle key
         # distkey(state_plan_id_num)
         # compound sortkey (&&&keyvars) as
@@ -169,14 +155,8 @@ class MCP(TAF):
             """
         self.mcp.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def remove_duprecs(self, intbl, grpvars, dtvar_beg, dtvar_end, ordvar, outtbl):
-
+         
         # limit data to the latest available reporting periods
         # distkey(state_plan_id_num)
         z = f"""
@@ -213,14 +193,11 @@ class MCP(TAF):
             """
         self.mcp.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def count_rows(self, intbl, cntvar, outds):
-
+        """
+        Count rows, grouped by submitting state.  
+        """
+         
         z = f"""
             create or replace temporary view {outds} as
             select
@@ -232,14 +209,11 @@ class MCP(TAF):
             """
         self.mcp.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def map_arrayvars(varnm, N, fldtyp):
-
+        """
+        Function to map array variables.  
+        """
+         
         vars = []
         for I_ in range(1, N):
             i = "{:02d}".format(I_)
@@ -255,16 +229,8 @@ class MCP(TAF):
 
         return " ".join(vars)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    def recode_lookup(
-        self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen=None
-    ):
-
+    def recode_lookup(self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen=None):
+         
         if fldtyp == "C":
             select = f"T.*, cast(F.label as varchar({fldlen})) as {newvar}"
         else:
@@ -287,15 +253,7 @@ class MCP(TAF):
             """
         self.mcp.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
-    def recode_notnull(
-        self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen
-    ):
+    def recode_notnull(self, intbl, srtvars, fmttbl, fmtnm, srcvar, newvar, outtbl, fldtyp, fldlen):
 
         if fldtyp == "C":
             # :: varchar({fldlen}) as {newvar}"
@@ -321,26 +279,14 @@ class MCP(TAF):
             """
         self.mcp.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def write_equalkeys(self, keyvars, t1, t2):
-
+         
         klist = map(lambda x: f"{t1}.{x} = {t2}.{x}", keyvars)
         keylist = list(klist)
         return " and ".join(str(k) for k in keylist)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def write_keyprefix(self, keyvars, prefix):
-
+         
         klist = map(lambda x: f"{prefix}.{x}", keyvars)
         keylist = list(klist)
         # return ', '.join(str(k) for k in keylist)

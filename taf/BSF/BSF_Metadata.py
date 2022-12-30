@@ -1,21 +1,16 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.BSF.BSF_Runner import BSF_Runner
 
 
 class BSF_Metadata:
+    """
+    Create metadata for BSF.  
+    """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def selectDataElements(segment_id: str, alias: str):
+        """
+        Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
+        and masked if there are invalid values.
+        """
 
         new_line_comma = '\n\t\t\t,'
 
@@ -33,6 +28,9 @@ class BSF_Metadata:
 
     @staticmethod
     def finalFormatter():
+        """
+        Function for final formatting.  Handles epochal dates, absent data, and normalization.
+        """
 
         new_line_comma = '\n\t\t\t,'
 
@@ -48,14 +46,12 @@ class BSF_Metadata:
 
         return new_line_comma.join(columns)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     @staticmethod
     def tagAlias(segment_id: str, alias: str):
+        """
+        Function to tag aliased names.  
+        """
+
         # new_line_comma = '\n\t\t,'
         # aliased_cols = [alias + '.' + c for c in BSF_Metadata.final.get(segment)]
         # i = ','.join([new_line_comma.join(aliased_cols)])
@@ -77,14 +73,14 @@ class BSF_Metadata:
 
         return new_line_comma.join(columns)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     @staticmethod
     def unifySelect(bsf: BSF_Runner):
+        """
+        This is a helper definition to combine all relevant file segments
+        in order to insert records into the final target table for the beneficiary summary file.
+        A formatted SQL string is returned, printed, then passed to spark.sql() to be executed. 
+        These steps could be combined, but were intentionally left separate for traceability.
+        """
 
         z = f"""
             create or replace temporary view BSF_STEP1 as
@@ -341,14 +337,14 @@ class BSF_Metadata:
 
         return z
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     @staticmethod
     def finalTableOutput(bsf: BSF_Runner):
+        """
+        This is a “helper” definition to create the insert statement in order to insert
+        records into the final target table for the beneficiary summary file.
+        A formatted SQL string is returned, printed, then passed to spark.sql() to be executed.
+        These steps could be combined, but were intentionally left separate for traceability.
+        """
 
         z = f"""
                 INSERT INTO {bsf.DA_SCHEMA_DC}.taf_mon_bsf
@@ -639,12 +635,6 @@ class BSF_Metadata:
             """
         return z
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     indices = {
         't2': 'ELG00002',
         't3': 'ELG00003',
@@ -668,70 +658,67 @@ class BSF_Metadata:
         't21': 'ELG00022'
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     st_abbrev = {
-        '13': 'GA',
-        '50': 'VT',
-        '32': 'NV',
-        '17': 'IL',
-        '49': 'UT',
-        '30': 'MT',
-        '42': 'PA',
-        '24': 'MD',
-        '55': 'WI',
-        '23': 'ME',
-        '27': 'MN',
-        '38': 'ND',
-        '19': 'IA',
-        '47': 'TN',
-        '28': 'MS',
-        '78': 'VI',
-        '08': 'CO',
-        '51': 'VA',
-        '15': 'HI',
-        '33': 'NH',
-        '18': 'IN',
-        '31': 'NE',
-        '35': 'NM',
-        '25': 'MA',
-        '36': 'NY',
-        '45': 'SC',
-        '53': 'WA',
-        '26': 'MI',
-        '46': 'SD',
-        '12': 'FL',
-        '21': 'KY',
-        '41': 'OR',
-        '09': 'CT',
-        '39': 'OH',
-        '04': 'AZ',
-        '05': 'AR',
-        '72': 'PR',
-        '22': 'LA',
-        '44': 'RI',
-        '16': 'ID',
-        '40': 'OK',
-        '54': 'WV',
-        '34': 'NJ',
-        '01': 'AL',
-        '11': 'DC',
-        '20': 'KS',
-        '29': 'MO',
-        '10': 'DE',
+       '01' : 'AL',
+       '02' : 'AK',
+       '04' : 'AZ',
+       '05' : 'AR',
+       '06' : 'CA',
+       '08' : 'CO',
+       '09' : 'CT',
+       '10' : 'DE',
+       '11' : 'DC',
+       '12' : 'FL',
+       '13' : 'GA',
+       '15' : 'HI',
+       '16' : 'ID',
+       '17' : 'IL',
+       '18' : 'IN',
+       '19' : 'IA',
+       '20' : 'KS',
+       '21' : 'KY',
+       '22' : 'LA',
+       '23' : 'ME',
+       '24' : 'MD',
+       '25' : 'MA',
+       '26' : 'MI',
+       '27' : 'MN',
+       '28' : 'MS',
+       '29' : 'MO',
+       '30' : 'MT',
+       '31' : 'NE',
+       '32' : 'NV',
+       '33' : 'NH',
+       '34' : 'NJ',
+       '35' : 'NM',
+       '36' : 'NY',
+       '37' : 'NC',
+       '38' : 'ND',
+       '39' : 'OH',
+       '40' : 'OK',
+       '41' : 'OR',
+       '42' : 'PA',
+       '44' : 'RI',
+       '45' : 'SC',
+       '46' : 'SD',
+       '47' : 'TN',
+       '48' : 'TX',
+       '49' : 'UT',
+       '50' : 'VT',
+       '51' : 'VA',
+       '53' : 'WA',
+       '54' : 'WV',
+       '55' : 'WI',
+       '56' : 'WY',
+       '72' : 'PR',
+       '78' : 'VI',
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def join_segments(BSF_FILE_DATE):
+        """
+        Join BSF File Date segments.
+        """
+
         joins = []
         new_line = '\n\t\t\t'
         for t, tbl in BSF_Metadata.indices.items():
@@ -741,13 +728,11 @@ class BSF_Metadata:
                 """.format())
         return new_line.join(joins)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def dedup_tbl_joiner(tab_no: str, range: range, max_keep: int):
+        """
+        Function to deduplicate table when joining.  
+        """
+
         joins = []
         new_line = '\n\t\t\t'
 
@@ -760,26 +745,22 @@ class BSF_Metadata:
                 """.format())
         return new_line.join(joins)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def tbl_joiner(tab_no: str, tblnum: int, type):
+        """
+        Function to join tables on submitting state code and msis_ident_num
+        """
+
         return f"""
             left join (select * from {tab_no}_{type}_step4 where keeper={tblnum}) t{tblnum}
                  on m.submtg_state_cd = t{tblnum}.submtg_state_cd
                 and m.msis_ident_num  = t{tblnum}.msis_ident_num
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def cleanSubmittingStateCd(alias):
+        """
+        Function to clean submitting state code by aliasing them to standard codes.  
+        """
+
         return f"""case
             when {alias}.SUBMTG_STATE_CD = '96' then '19'
             when {alias}.SUBMTG_STATE_CD = '97' then '42'
@@ -788,49 +769,39 @@ class BSF_Metadata:
             else {alias}.SUBMTG_STATE_CD end as SUBMTG_STATE_CD
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def cleanSSN(alias):
+        """
+        Clean social socurity number by left padding to a total length of 9 characters.
+        """
+
         return f"lpad(cast({alias}.SSN_NUM as char(9)), 9, '0') as SSN_NUM"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def cleanDisabilityTypeCd(alias):
+        """
+        Clean disability type code by left padding to a total length of 2 characters.  
+        """
+
         return f"lpad(trim({alias}.DSBLTY_TYPE_CD), 2, '0') as DSBLTY_TYPE_CD"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def cleanNDC_UOM_CHRNC_NON_HH_CD(alias):
+        """
+        Clean by left padding to a total length of 3 characters for NDC_UOM_CHRNC_NON_HH_CD.
+        """
+
         return f"lpad(trim({alias}.NDC_UOM_CHRNC_NON_HH_CD), 3, '0') as NDC_UOM_CHRNC_NON_HH_CD"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def cleanPrimaryLangCd(alias):
+        """
+        Clean Primary Language Code by uppercasing the language names.  
+        """
+
         return f"upper({alias}.PRMRY_LANG_CD) as PRMRY_LANG_CD"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def cleanImmigrationStatusCd(alias):
+        """
+        Clean immigration Status Code by aliasing "8" to "0" and uppercasing the code names.  
+        """
+
         return f"""case
             when {alias}.IMGRTN_STUS_CD = '8' then '0'
             else upper(nullif(trim({alias}.IMGRTN_STUS_CD),'')) end as IMGRTN_STUS_CD
@@ -855,6 +826,10 @@ class BSF_Metadata:
     # ---------------------------------------------------------------------------------
     @staticmethod
     def encodePrimaryLanguage():
+        """
+        Function to encode Primary Languages.  
+        """
+
         return """case
              when trim(PRMRY_LANG_CODE) in('CHI')                         then  'C'
              when trim(PRMRY_LANG_CODE) in('GER','GMH','GOH','GSW','NDS') then  'D'
@@ -874,14 +849,12 @@ class BSF_Metadata:
              else 'O' end as PRMRY_LANG_FLG
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     @staticmethod
     def encodeStateAsRegion():
+        """
+        Function to encode states to their region codes.  
+        """
+
         return """case
             when ST_ABBREV in('CT','MA','ME','NH','RI','VT')           then '01'
             when ST_ABBREV in('NJ','NY','PR','VI')                     then '02'
@@ -896,13 +869,11 @@ class BSF_Metadata:
             else '11' end as REGION
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def maskInvalidValues(column: str, alias: str):
+        """
+        Function to mask invalid values using the validator() function.  
+        """
+
         delim = '\',\''
         return f"""case
             when upper(trim({alias}.{column}))
@@ -911,25 +882,21 @@ class BSF_Metadata:
                         else null end as {column}
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def rename(column: str):
+        """
+        Function to rename columns based on a list of columns to be renamed.  
+        """
+
         if column in BSF_Metadata.renames.keys():
             return f"{BSF_Metadata.renames.get(column)}"
         else:
             return column
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def normalize(column: str):
+        """
+        Normalize function.  
+        """
+
         if column in BSF_Metadata.conform:
             return f"upper(nullif(trim({column}),'')) as {BSF_Metadata.rename(column)}"
         elif list(filter(column.startswith, BSF_Metadata.enumcols)) != []:
@@ -937,25 +904,16 @@ class BSF_Metadata:
         else:
             return BSF_Metadata.rename(column)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     @staticmethod
     def epoch(column: str):
+        """
+        Function that takes any date earlier than 1600-01-01 and defaults it to 1599-12-31.
+        """
         return f"""case
             when {column} < '1600-01-01' then '1599-12-31'
             else {column} end as {column}
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     cleanser = {
         'SSN_NUM': cleanSSN,
         'PRMRY_LANG_CD': cleanPrimaryLangCd,
@@ -964,24 +922,12 @@ class BSF_Metadata:
         'IMGRTN_STUS_CD': cleanImmigrationStatusCd
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     absent = [
         'PRGNT_IND',
         'PRGNCY_FLAG',
         '_1115A_PRTCPNT_FLAG'
     ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     enumcols = [
         'LCKIN_PRVDR_NUM',
         'LCKIN_PRVDR_TYPE_CD',
@@ -993,23 +939,11 @@ class BSF_Metadata:
         'WVR_TYPE_CD'
     ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     epochal = [
         'BIRTH_DT',
         'IMGRTN_STUS_5_YR_BAR_END_DT'
     ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     renames = {
         '_1115A_PARTICIPANT_FLAG': '_1115A_PRTCPNT_FLAG',
         ',DUAL_ELGBL_CODE': 'DUAL_ELGBL_CD',
@@ -1068,12 +1002,6 @@ class BSF_Metadata:
         'LOCK_IN_FLAG': 'LCKIN_FLAG'
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     conform = [
         'BIRTH_CNCPTN_IND',
         'CARE_LVL_STUS_CD',
@@ -1145,12 +1073,6 @@ class BSF_Metadata:
         'VET_IND',
     ]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     created_vars = {
 
         'ELG00002': None,
@@ -1166,12 +1088,6 @@ class BSF_Metadata:
         'ELG00022': None
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     final = {
 
         'ELG00001': [],
@@ -1324,12 +1240,6 @@ class BSF_Metadata:
         'ELG00022': []
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     columns = {
 
         'ELG00001': [
@@ -1653,12 +1563,6 @@ class BSF_Metadata:
 
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     validator = {
 
         'GNDR_CD':
@@ -1763,12 +1667,6 @@ class BSF_Metadata:
             ['0', '1', '2'],
     }
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     prmry_lang_cd = [
         'ABK', 'ACE', 'ACH', 'ADA', 'ADY', 'AAR', 'AFH', 'AFR', 'AFA', 'AIN', 'AKA', 'AKK', 'ALB', 'ALB', 'ALE', 'ALG', 'TUT',
         'AMH', 'ANP', 'APA', 'ARA', 'ARG', 'ARP', 'ARW', 'ARM', 'RUP', 'ART', 'ASM', 'AST', 'ATH', 'AUS', 'MAP', 'AVA', 'AVE',
@@ -1800,12 +1698,6 @@ class BSF_Metadata:
         'VOL', 'VOT', 'WAK', 'WLN', 'WAR', 'WAS', 'WEL', 'FRY', 'WAL', 'WOL', 'XHO', 'SAH', 'YAO', 'YAP', 'YID', 'YOR', 'YPK',
         'ZND', 'ZAP', 'ZZA', 'ZEN', 'ZHA', 'ZUL', 'ZUN']
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     output_columns = [
         'cast(DA_RUN_ID as integer) AS DA_RUN_ID',
         'BSF_FIL_DT',

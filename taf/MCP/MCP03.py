@@ -1,39 +1,20 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.MCP import MCP_Runner
 from taf.MCP.MCP import MCP
 from taf.TAF_Closure import TAF_Closure
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class MCP03(MCP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:  Selection Functions for the T-MSIS MC segments.
+    """
+     
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_03_location(self, runtbl, outtbl):
-
+        """
+        000-03 location segment
+        """
+         
         # screen out all but the latest run id
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
@@ -116,14 +97,11 @@ class MCP03(MCP):
         # row count
         self.count_rows(outtbl, "cnt_final", "MC03_Final")
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Create the MCP03 location segment.  
+        """
+         
         self.process_03_location("MC02_Main_RAW", "MC03_Location")
 
         self.recode_notnull(
@@ -180,13 +158,11 @@ class MCP03(MCP):
 
         self.mcp.append(type(self).__name__, z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: MCP_Runner):
-
+        """
+        Build the MCP03 location segment.  
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mcl
                 SELECT

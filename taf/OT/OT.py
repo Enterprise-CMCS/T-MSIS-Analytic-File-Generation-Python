@@ -5,23 +5,42 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class OT(TAF):
+    """
+    Other Services (OT) TAF: The OT TAF contains information about claims for services other 
+    than those provided by an inpatient hospital, long-term care facility, or pharmacy as 
+    submitted to T-MSIS by their respective state agencies. Services in the OT TAF include 
+    but are not limited to: physician services, outpatient hospital services, dental services, 
+    other physician services (i.e. chiropractors, podiatrists, psychologists, optometrists, etc.), 
+    clinic services, laboratory services, X-ray services, sterilizations, home health services, 
+    personal support services, and managed care capitation payments. The claims in TAF include 
+    fee-for-service claims, managed care encounter claims, service tracking claims, capitated payments, 
+    and supplemental payments for Medicaid, Medicaid-expansion CHIP, and Separate CHIP. Inclusion in 
+    the OT TAF is based on the month/year of the ending date of service from the claim header. 
+    If the service end date is missing, the OT TAF uses the service begin date from the claim header. 
+    If the service begin date on the claim header is missing, the OT TAF uses the most recent service 
+    end date from the claim line. Records in TAF begin when the state officially cut over to submitting 
+    T-MSIS data. Each file provides T-MSIS source data as well as constructed variables designed to 
+    support research and analysis. The constructed variables are designed to facilitate analysis such 
+    as outcomes measurement, public reporting, quality improvement initiatives, and quality monitoring, 
+    among other items.
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
+    Each OT TAF is comprised of two files – a claim-header level file and a claim-line level file. 
+    The claims included in these files are active, final-action, non-voided, and non-denied claims.
+    Only header claims with a date in the TAF month/year, along with their associated claim line records, 
+    are included. Both files can be linked together using a unique key that is constructed based on various 
+    claim header and claim line data elements. The two OT TAF are produced for each calendar month in 
+    which the data are reported.
+    """
+
     def __init__(self, runner: OT_Runner):
         super().__init__(runner)
         self.st_fil_type = "OTHR_TOC"
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
-
+        """
+        Pull OT line item records for header records linked with claims family table dataset
+        """
+         
         # Create a temporary line file
         # FIXME: change base table or view when TMSIS changes are made
         z = f"""

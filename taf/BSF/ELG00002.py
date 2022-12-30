@@ -1,32 +1,16 @@
 from taf.BSF import BSF_Runner
-
 from taf.BSF.ELG import ELG
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ELG00002(ELG):
+    """
+    Description:  Process TMSIS_PRMRY_DMGRPHC_ELGBLTY and create unique output for BSF
+    """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, bsf: BSF_Runner):
         ELG.__init__(self, bsf, 'ELG00002A', 'TMSIS_PRMRY_DMGRPHC_ELGBLTY', 'PRMRY_DMGRPHC_ELE_EFCTV_DT', 'PRMRY_DMGRPHC_ELE_END_DT')
         ELG.__init__(self, bsf, 'ELG00002', 'TMSIS_PRMRY_DMGRPHC_ELGBLTY', 'PRMRY_DMGRPHC_ELE_EFCTV_DT', 'PRMRY_DMGRPHC_ELE_END_DT')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         # Create temp table to determine which beneficiaries have multiple records

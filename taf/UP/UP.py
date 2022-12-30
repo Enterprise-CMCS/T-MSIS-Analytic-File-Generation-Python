@@ -2,24 +2,24 @@ from taf.UP.UP_Runner import UP_Runner
 from taf.TAF import TAF
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class UP(TAF):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Annual Use and Payment (UP) TAF: The annual UP TAF contain annual summaries of service use 
+    and expenditure measures for all Medicaid and CHIP beneficiaries who had at least one service 
+    or capitated/supplemental payment during the calendar year.  Each annual UP TAF is comprised of 
+    two files:  a Base file and a Type of Program (TOP) file.  The files can be linked together using 
+    unique keys that are constructed based on various data elements.  These annual TAF UP files are 
+    created from the annual DE TAF base file (selected data elements) and the monthly TAF IP, LT, OT 
+    and RX claims files.  The base file includes selected claims-based data elements for four groups of 
+    beneficiaries:  Medicaid non-crossover beneficiaries, S-CHIP non-crossover beneficiaries, Medicaid 
+    crossover beneficiaries and S-CHIP crossover beneficiaries.
+    """
+     
     #def __init__(self, up: UP_Runner):
         #self.up = up
 
     def __init__(self, runner: UP_Runner):
+         
         self.up = runner
         self.year = self.up.reporting_period.year
 
@@ -240,6 +240,10 @@ class UP(TAF):
         # For IP only, must also look to prior and following years (last three of prior and first three of following)
         # Insert into a metadata table to be able to link back to this run
     def create(self):
+        """
+        Create the UP segments.  
+        """
+         
         UP.max_run_id(self, file="DE", tbl="taf_ann_de_base", inyear=self.year)
         UP.max_run_id(self, file="IP", inyear=self.year)
         UP.max_run_id(self, file="IP", inyear=self.pyear)
@@ -270,15 +274,11 @@ class UP(TAF):
         )
         UP.pullclaims(self, "RX")
 
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def max_run_id(self, file="", tbl="", inyear=""):
-
+        """
+        Get max run id.
+        """
+         
         if file.casefold() != "de":
             node = file + "H"
         else:
@@ -471,28 +471,27 @@ class UP(TAF):
         """
         self.up.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    # determine whether a year is a leap year
-    #
-    # ---------------------------------------------------------------------------------
     @staticmethod
     def is_leap_year(inyear):
+        """
+        Determine whether a year is a leap year.
+        """
+         
         return inyear % 4 == 0 and (inyear % 100 != 0 or inyear % 400 == 0)
 
-    # ---------------------------------------------------------------------------------
-    # pull in all the monthly claims files, subsetting to only desired claim types,
-    # non-null MSIS ID, and MSIS ID not beginning with '&'. Keep only needed cols.
-    #
-    # Also create MDCD, SCHIP, NON_XOVR and XOVR indicators to more easily pull in
-    # these four combinations of records when
-    # counting/summing.
-    #
-    # For NON_XOVR/XOVR, if the input xovr_ind is null, look to tot_mdcr_ddctbl_amt
-    # and tot_mdcr_coinsrnc_amt - if EITHER is > 0, set OXVR=1
-    # ---------------------------------------------------------------------------------
     def pullclaims(self, file: str, hcols="", lcols="", inyear=None):
-
+        """
+        Pull in all the monthly claims files, subsetting to only desired claim types,
+        non-null MSIS ID, and MSIS ID not beginning with '&'. Keep only needed cols.
+        
+        Also create MDCD, SCHIP, NON_XOVR and XOVR indicators to more easily pull in
+        these four combinations of records when
+        counting/summing.
+        
+        For NON_XOVR/XOVR, if the input xovr_ind is null, look to tot_mdcr_ddctbl_amt
+        and tot_mdcr_coinsrnc_amt - if EITHER is > 0, set OXVR=1
+        """
+         
         if (inyear == None):
             inyear = self.year
 
@@ -672,14 +671,13 @@ class UP(TAF):
         """
         self.up.append(type(self).__name__, z)
 
-    # ---------------------------------------------------------------------------------
-    #
-    # select statement to union the four file types, called once per file type,
-    # from the header-level rollup (created in 001_up_base_hdr)
-    #
-    # ---------------------------------------------------------------------------------
-    def union_base_hdr(self, file):
 
+    def union_base_hdr(self, file):
+        """
+        Select statement to union the four file types, called once per file type,
+        from the header-level rollup (created in 001_up_base_hdr).
+        """
+         
         z = f"""
             SELECT submtg_state_cd
                 ,msis_ident_num
@@ -766,18 +764,20 @@ class UP(TAF):
 
         return z
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def commoncols_base_line(self) -> str:
-
+        """
+        Function commoncols_base_line: list of columns to be read in from all four file types from line-level
+        rollup to header (created in 003_up_base_line) when unioning all four file types.
+        """
+         
         cols = ["submtg_state_cd", "msis_ident_num"]
 
         for h in range(1, 8):
             cols.append(f"""hcbs_{h}_clm_flag""")
+
+        # For four combinations of claims (MDCD non-xover, SCHIP non-xover, MDCD xovr and SCHIP xovr,
+        # get the same counts and totals. Loop over INDS1 (MDCD SCHIP) and INDS2 (NON_XOVR XOVR) to assign
+        # the four pairs of records
 
         for ind1 in self.inds1:
             for ind2 in self.inds2:
@@ -800,13 +800,12 @@ class UP(TAF):
 
         return ",".join(cols)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def table_id_cols(self) -> str:
+        """
+        Function table_id_cols to add the 6 cols that are the same across all tables into the final insert select
+        statement (DA_RUN_ID, DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, SUBMTG_STATE_CD, MSIS_IDENT_NUM)
+        """
+        
         return f"""
                {self.up.DA_RUN_ID} AS DA_RUN_ID
                    ,cast(('{self.up.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.up.version}' || '-' || SUBMTG_STATE_CD || '-' || MSIS_IDENT_NUM) AS VARCHAR(40)) AS UP_LINK_KEY
@@ -816,13 +815,11 @@ class UP(TAF):
                    ,MSIS_IDENT_NUM
         """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def join_del_lists(self, file: str, diag_cols, prcdr_cols) -> str:
+        """
+        Functin to join delivery lists.  
+        """
+
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW {file}_deliv_{self.year} as
 

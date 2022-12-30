@@ -4,6 +4,15 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0007(DE):
+    """
+    Description:  Generate the annual BSF segment 007: MFP
+
+    Notes:  This program reads in the MFP-related cols and creates a temp table to be inserted into
+            the permanent table. It also creates the column MFP_SPLMTL which = 1 if ANY of the MFP 
+            monthly flags = 1 or if any of the other MFP-related cols are non-missing. This
+            flag only is kept in a temp table to be joined to the base table.
+    """
+
     table_name: str = "mfp"
     tbl_suffix: str = "mfp"
 
@@ -20,6 +29,10 @@ class DE0007(DE):
         self.create_mfp_suppl_table()
 
     def create_temp(self):
+        """
+        Create a temporary table.
+        """
+
         # Create an indicator for ANY of the MFP monthly flags = 1 which we will
         # use to create MFP_SPLMTL
 
@@ -49,6 +62,10 @@ class DE0007(DE):
         return
 
     def create_mfp_suppl_table(self):
+        """
+        Generate the annual BSF segment 007: MFP.
+        """
+
         z = f"""create or replace temporary view MFP_SPLMTL_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num

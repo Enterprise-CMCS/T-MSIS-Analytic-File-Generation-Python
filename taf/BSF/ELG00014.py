@@ -1,32 +1,15 @@
 from taf.BSF import BSF_Runner
 from taf.BSF.BSF_Metadata import BSF_Metadata
-
 from taf.BSF.ELG import ELG
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class ELG00014(ELG):
+    """
+    Description:  Process TMSIS_MC_PRTCPTN_DATA and create unique output for BSF.
+    """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, bsf: BSF_Runner):
         ELG.__init__(self, bsf, 'ELG00014', 'TMSIS_MC_PRTCPTN_DATA', 'MC_PLAN_ENRLMT_EFCTV_DT', 'MC_PLAN_ENRLMT_END_DT')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def mc_plan(self, max_keep):
 
         mc_plans = []
@@ -45,12 +28,6 @@ class ELG00014(ELG):
 
         return new_line.join(mc_plans)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         ENRLD_MC_PLAN_TYPE_CODE = "lpad(trim(enrld_mc_plan_type_cd),2,'0')"

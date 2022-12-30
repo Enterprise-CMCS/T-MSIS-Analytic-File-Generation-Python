@@ -1,27 +1,13 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.UP.UP import UP
 from taf.UP.UP_Runner import UP_Runner
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class BASE_DE(UP):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    Description:    Generate counts and sums by bene at the header-level for each claim type to then be 
+                    combined across the four file types for the BASE segment
+    """
+     
     def __init__(self, runner: UP_Runner):
         UP.__init__(self, runner)
         self.up = runner
@@ -32,13 +18,11 @@ class BASE_DE(UP):
         self.chipmos_char = ["nonchip_mdcd", "mchip", "schip"]
         self.chipmos_num = ["1", "2", "3"]
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
+        """
+        Create the BASE_DE segment.  
+        """
+         
         super().create()
 
         # distkey(msis_ident_num)

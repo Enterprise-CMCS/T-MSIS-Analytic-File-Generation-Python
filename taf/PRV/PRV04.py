@@ -3,31 +3,16 @@ from taf.PRV import PRV_Runner
 from taf.PRV.PRV import PRV
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class PRV04(PRV):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def process_04_licensing(self, loctbl, outtbl):
-
+        """
+        000-04 licensing segment
+        """
+         
         # screen out all but the latest(selected) run id - provider id - location id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -104,14 +89,11 @@ class PRV04(PRV):
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV04_Final)
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
-
+        """
+        Create the PRV04 licensing segment.  
+        """
+         
         self.process_04_licensing('Prov03_Locations_g0',
                                   'Prov04_Licensing')
 
@@ -146,13 +128,11 @@ class PRV04(PRV):
             """
         self.prv.append(type(self).__name__, z)
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def build(self, runner: PRV_Runner):
-
+        """
+        Build the PRV04 licensing segment.  
+        """
+         
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_lic
                 SELECT

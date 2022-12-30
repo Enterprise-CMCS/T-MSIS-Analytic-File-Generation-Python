@@ -1,27 +1,13 @@
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 from taf.APL.APL import APL
 from taf.APL.APL_Runner import APL_Runner
 
-
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class LCTN(APL):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area, 
+    a population enrolled file, and operating authority/waiver file.  A unique TAF APL link key is used to link the five APL files.
+    The TAF APL includes records for any managed cared plan with an active record in one of the twelve monthly TAF MCP files.
+    """
+     
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "LCTN"
@@ -46,18 +32,12 @@ class LCTN(APL):
 			"MC_LCTN_FLAG_10",
 			"MC_LCTN_FLAG_11",
 			"MC_LCTN_FLAG_12",
-        ]
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+            ]
+   
     def create(self):
-
-        # create location segment
-        # select records
-        # select or create data elements
+        """
+        Create location segment. Select records and select or create data elements.
+        """
 
         collist_l = [
             "MC_LCTN_ID",
@@ -81,14 +61,11 @@ class LCTN(APL):
         # create temporary table with just LCTN_SPLMTL to join to base
         self.create_splmlt(segname="LCTN", segfile="lctn_pl_" + str(self.year))
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def build(self):
-        # insert into permanent table
+        """
+        insert into permanent table
+        """
+        
         # z = f"""
             # INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_LCTN
             # SELECT

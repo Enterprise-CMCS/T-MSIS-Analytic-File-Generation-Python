@@ -4,6 +4,15 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0008(DE):
+    """
+    Description:  Generate the annual BSF segment 008: HH & SPO
+
+    Notes:  This program reads in all columns related to HHs and SPOs, and looks across all
+            cols to create HH_SPO_SPLMTL, which = 1 when ANY of the related cols = 1. It keeps
+            this flag only on a temp table to be joined to base segment, and then inserts
+            all other cols into the permanent table (subset to HH_SPO_SPLMTL=1). 
+    """
+
     table_name: str = "hhspo"
     tbl_suffix: str = "hh_spo"
 
@@ -15,11 +24,20 @@ class DE0008(DE):
         #super().__init__(de)
 
     def create(self):
+        """
+        Create the segment.  
+        """
+
         #super().create()
         self.create_temp()
-        self.create_mfp_suppl_table()
+        self.create_hh_spo_splmtl_table()
 
     def create_temp(self):
+        """
+        Create a temporary table.  
+        """
+
+
         # Create a series of flags to be evaluated to create HH_SPO_SPLMTL
 
         s = f""",{TAF_Closure.monthly_array(self, 'HH_PGM_PRTCPNT_FLAG')}
@@ -68,7 +86,11 @@ class DE0008(DE):
 
         return
 
-    def create_mfp_suppl_table(self):
+    def create_hh_spo_splmtl_table(self):
+        """
+        Generate the annual BSF segment 008: HH_SPO_SPLMTL.  
+        """
+
         z = f"""create or replace temporary view HH_SPO_SPLMTL_{self.de.YEAR} as
         select submtg_state_cd
                 ,msis_ident_num

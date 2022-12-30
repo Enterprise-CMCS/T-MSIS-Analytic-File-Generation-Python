@@ -1,22 +1,24 @@
-# -----------------------------------------------------------------------------
-#
-#
-#
-# -----------------------------------------------------------------------------
 from taf.TAF_Runner import TAF_Runner
 
 
-class TAF():
+class TAF:
+    """
+    A class to represent a T-MSIS analytic file.
+    """
 
-    # -----------------------------------------------------------------------------
-    #
-    #
-    #
-    # -----------------------------------------------------------------------------
     def __init__(self, runner: TAF_Runner):
+        """
+        Constructs all the necessary attributes for the T-MSIS analytic file object.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+        """
 
         self.runner = runner
-        self.st_fil_type = 'undefined'
+        self.st_fil_type = "undefined"
 
 
 # -----------------------------------------------------------------------------

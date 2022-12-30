@@ -1,33 +1,23 @@
 from taf.TAF_Runner import TAF_Runner
 
 
-# -------------------------------------------------------------------------------------
-#
-#
-#
-#
-# -------------------------------------------------------------------------------------
 class PRV_Runner(TAF_Runner):
-
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
+    """
+    The TAF-specific module contains executable statements as well as function definitions to 
+    generate and execute SQL to produce individual segment as well as final output. 
+    These statements are intended to initialize the module.
+    """
+     
     def __init__(self, reporting_period: str, state_code: str, run_id: str):
         super().__init__(reporting_period, state_code, run_id)
 
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def AWS_MAXID_pull_non_claim(self, TMSIS_SCHEMA, table, hdrtable):
-
-        # /* applies cutover date while identifying max run id of last successful T-MSIS load by state - results stored in combined_list */
-        # /* hdrtable already has the header records selected for tms_is_active=1 and tms_reporting_period is not null and tot_rec_cnt > 0 and ST_FILTER  */
+        """
+        Applies cutover date while identifying max run id of last successful T-MSIS load by state - results stored in combined_list.
+        hdrtable already has the header records selected for tms_is_active=1 and tms_reporting_period is not null and tot_rec_cnt > 0 and ST_FILTER.
+        """
 
         # %global RUN_IDS STATE_IDS combined_list;
 
@@ -77,22 +67,20 @@ class PRV_Runner(TAF_Runner):
         # %put state_ids = &state_ids;
         # %put combined_list = &combined_list;
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def ST_FILTER(self):
+        """
+        Use the trim function to remove extraneous space characters from start and end of state names.  
+        """
+         
         return "and trim(submitting_state) not in ('94','96')"
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def init(self):
+        """
+        Import, create, and build out each segment for a given file type.
+        At this point, a dictionary has been created for each file segment containing
+        SQL queries that will be sequential executed by the run definition to produce output. 
+        """
+
         from taf.PRV.PRV01 import PRV01
         from taf.PRV.PRV02 import PRV02
         from taf.PRV.PRV03 import PRV03
@@ -104,9 +92,6 @@ class PRV_Runner(TAF_Runner):
         from taf.PRV.PRV09 import PRV09
         from taf.PRV.PRV10 import PRV10
 
-        # -----------------------------------------------------------------------------
-        #
-        # -----------------------------------------------------------------------------
         PRV01(self).create()
         PRV02(self).create()
         PRV03(self).create()
@@ -118,9 +103,6 @@ class PRV_Runner(TAF_Runner):
         PRV09(self).create()
         PRV10(self).create()
 
-        # -----------------------------------------------------------------------------
-        #
-        # -----------------------------------------------------------------------------
         PRV03(self).build(self)
         PRV04(self).build(self)
         PRV05(self).build(self)

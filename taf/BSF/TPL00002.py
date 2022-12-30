@@ -1,31 +1,15 @@
 from taf.BSF import BSF_Runner
-
 from taf.BSF.ELG import ELG
 
 
-# ---------------------------------------------------------------------------------
-#
-#
-#
-#
-# ---------------------------------------------------------------------------------
 class TPL00002(ELG):
+    """
+    Description:  Process TMSIS_TPL_MDCD_PRSN_MN and create unique output for BSF.
+    """
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def __init__(self, bsf: BSF_Runner):
         ELG.__init__(self, bsf, 'TPL00002', 'TMSIS_TPL_MDCD_PRSN_MN', 'ELGBL_PRSN_MN_EFCTV_DT', 'ELGBL_PRSN_MN_END_DT')
 
-    # ---------------------------------------------------------------------------------
-    #
-    #
-    #
-    #
-    # ---------------------------------------------------------------------------------
     def create(self):
 
         # Create temp table to determine which beneficiaries have multiple records
