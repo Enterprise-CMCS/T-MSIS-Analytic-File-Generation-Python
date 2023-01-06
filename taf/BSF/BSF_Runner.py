@@ -3,30 +3,30 @@ from taf.TAF_Runner import TAF_Runner
 
 class BSF_Runner(TAF_Runner):
     """
-    The TAF-specific module contains executable statements as well as function definitions to 
-    generate and execute SQL to produce individual segment as well as final output. 
+    The TAF-specific module contains executable statements as well as function definitions to
+    generate and execute SQL to produce individual segment as well as final output.
     These statements are intended to initialize the module.
     """
 
     """
-    Beneficiary Summary File (BSF) TAF: The BSF TAF contains information about demographic, 
-    eligibility, and enrollment information for all Medicaid- or CHIP-eligible beneficiaries 
-    who were enrolled for at least one day during a given month.  There are 22 T-MSIS eligible 
-    files and 2 third party liability files that are used in the creation of the TAF BSF. 
+    Beneficiary Summary File (BSF) TAF: The BSF TAF contains information about demographic,
+    eligibility, and enrollment information for all Medicaid- or CHIP-eligible beneficiaries
+    who were enrolled for at least one day during a given month.  There are 22 T-MSIS eligible
+    files and 2 third party liability files that are used in the creation of the TAF BSF.
     """
 
     PERFORMANCE = 11
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str):
-        super().__init__(reporting_period, state_code, run_id)
+    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
+        super().__init__(reporting_period, state_code, run_id, job_id)
 
     def init(self):
         """
         Import, create, and build out each segment for a given file type.
         At this point, a dictionary has been created for each file segment containing
-        SQL queries that will be sequential executed by the run definition to produce output. 
+        SQL queries that will be sequential executed by the run definition to produce output.
         """
-         
+
         from taf.BSF.ELG00002 import ELG00002
         from taf.BSF.ELG00003 import ELG00003
         from taf.BSF.ELG00004 import ELG00004

@@ -86,7 +86,7 @@ class SAREA(APL):
             SELECT
                  {self.table_id_cols()}
                 ,{",".join(self.basecols)}
-                ,to_timestamp('{self.apl.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 ,current_timestamp() as REC_UPDT_TS
             FROM sarea_pl_{self.year}
             """            

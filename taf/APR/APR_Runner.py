@@ -3,14 +3,14 @@ from taf.TAF_Runner import TAF_Runner
 
 class APR_Runner(TAF_Runner):
     """
-    The TAF-specific module contains executable statements as well as function definitions to 
-    generate and execute SQL to produce individual segment as well as final output. 
+    The TAF-specific module contains executable statements as well as function definitions to
+    generate and execute SQL to produce individual segment as well as final output.
     These statements are intended to initialize the module.
     """
-     
-    def __init__(self, reporting_period: str, state_code: str, run_id: str):
+
+    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
         """
-        Users interact with the TAF-specific module by creating a TAF runner object. 
+        Users interact with the TAF-specific module by creating a TAF runner object.
         This object may be instantiated with three parameters to control what data is captured at run time:
 
         Parameters:
@@ -19,22 +19,22 @@ class APR_Runner(TAF_Runner):
         run_id - a quoted list of corresponding TMSIS run ID values for each specified state code value(s). Multiple TMSIS run ID values are supplied as comma-separated, quoted values through the Databricks widget.
         """
 
-        super().__init__(reporting_period, state_code, run_id)
+        super().__init__(reporting_period, state_code, run_id,  job_id)
 
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 
     def ST_FILTER(self):
         """
-        Use the trim function to remove extraneous space characters from start and end of state names.  
+        Use the trim function to remove extraneous space characters from start and end of state names.
         """
-         
+
         return "and trim(submitting_state) not in ('94','96')"
 
     def init(self):
         """
         Import, create, and build out each segment for a given file type.
         At this point, a dictionary has been created for each file segment containing
-        SQL queries that will be sequential executed by the run definition to produce output. 
+        SQL queries that will be sequential executed by the run definition to produce output.
         """
 
         from taf.APR.LOC import LOC

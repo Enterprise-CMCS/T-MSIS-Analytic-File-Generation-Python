@@ -6,7 +6,7 @@ class MCP04(MCP):
     """
     Description:  Selection Functions for the T-MSIS MC segments
     """
-     
+
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
@@ -14,7 +14,7 @@ class MCP04(MCP):
         """
         000-04 service_area segment
         """
-         
+
         # screen out all but the latest run id
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
@@ -89,9 +89,9 @@ class MCP04(MCP):
 
     def create(self):
         """
-        Create the MCP04 service area segment.  
+        Create the MCP04 service area segment.
         """
-         
+
         self.process_04_service_area("MC02_Main_RAW", "MC04_Service_Area")
 
         # diststyle key distkey(state_plan_id_num)
@@ -118,14 +118,14 @@ class MCP04(MCP):
 
     def build(self, runner: MCP_Runner):
         """
-        Build the MCP04 service area segment.  
+        Build the MCP04 service area segment.
         """
-         
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mcs
                 SELECT
                     *
-                   ,to_timestamp('{self.mcp.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS
+                   ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                    ,current_timestamp() as REC_UPDT_TS
                 FROM
                     MC04_Service_Area_CNST

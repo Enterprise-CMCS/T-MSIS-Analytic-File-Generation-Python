@@ -127,7 +127,7 @@ class PRV09(PRV):
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
                     AFLTD_PGM_TYPE_CD,
                     affiliated_program_id as AFLTD_PGM_ID,
-                    to_timestamp('{self.prv.DA_RUN_ID}', 'yyyyMMddHHmmss') as REC_ADD_TS,
+                    from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
                     current_timestamp() as REC_UPDT_TS
                     from Prov09_AffPgms_TYP
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
