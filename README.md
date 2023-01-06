@@ -45,7 +45,7 @@ From the top level folder, run these commands:
 
 This step uses the Databricks command-line interface (CLI) to interface with the Databricks platform. After installing the CLI, there's a manual step (depdendent on your operating system (OS)) to set up [authentication](https://docs.databricks.com/dev-tools/cli/index.html). Windows users may need to add the ```insecure = True``` option to their profile entries stored in the file ```~/.databrickscfg```.
 
-7. > ```databricks --profile val fs cp ./dist/ dbfs:/FileStore/shared_uploads/akira/lib/ --recursive --overwrite```
+7. > ```databricks --profile val fs cp ./dist/ dbfs:/FileStore/shared_uploads/TAF/lib/ --recursive --overwrite```
 
 
 ## Deploy the library to the Databricks cluster
@@ -63,6 +63,6 @@ We would be happy to receive suggestions on how to fix bugs or make improvements
 
 ## Public domain
 
-This project is in the worldwide [public domain](https://github.com/tmsis/T-MSIS-Analytic-File-Generation-Python/blob/develop/LICENSE).
+This project is in the worldwide [public domain](https://github.com/Enterprise-CMCS/T-MSIS-Analytic-File-Generation-Python/blob/develop/LICENSE).
 
 This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/).
