@@ -756,14 +756,12 @@ class TAF_Grouper:
         #   taxo switches
         # ------------------------------------------------------------------------------
 
-        # ,length(sw_positions)
         z += ", length("
 
         for i in range(1, 15):
             z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' '),"""
         z += f"""nvl(hc_prvdr_prmry_txnmy_sw_15,' ')))))))))))))))"""
 
-        # - coalesce(length(regexp_replace(sw_positions, 'Y', ''), 0)) as taxo_switches
         z += ") - coalesce(length(regexp_replace("
 
         for i in range(1, 15):
@@ -802,14 +800,12 @@ class TAF_Grouper:
         #   taxo_cds
         # ------------------------------------------------------------------------------
 
-        # ,length(cd_positions)
         z += ", length("
 
         for i in range(1, 15):
             z += f"""concat(nvl({taxopos.format(i)} else ' ' end,' '),"""
         z += f"""nvl({taxopos.format(15)} else ' ' end, ' ')))))))))))))))"""
 
-        # - coalesce(length(regexp_replace(cd_positions, 'X', ''), 0)) as taxo_cds
         z += ") - coalesce(length(regexp_replace("
 
         for i in range(1, 15):
