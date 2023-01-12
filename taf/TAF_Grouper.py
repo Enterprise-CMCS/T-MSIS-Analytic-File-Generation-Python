@@ -734,9 +734,10 @@ class TAF_Grouper:
 
     def fetch_nppes(self, filetyp: str):
         """
-        Helper function that generates SQL to generate nppes. 
+        Helper function that generates SQL transforming national provider identifier
+        registry data from CMS.
         """
-         
+
         z = f"""
             create or replace temporary view taxo_switches as
             select prvdr_npi,
