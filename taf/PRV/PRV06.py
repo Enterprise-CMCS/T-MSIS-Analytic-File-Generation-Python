@@ -86,29 +86,29 @@ class PRV06(PRV):
 
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV06_Final)
-    
+
     def hc_prvdr_sw_pos(self, max_keep):
         """
-        Function to generate strings needed for creating sw_positions col 
+        Function to generate strings needed for creating sw_positions col
         """
-         
+
         hc_prvdr_sw_pos = []
         cmma_cnct = ',\n\t\t\t'
         for i in list(range(1, 15 + 1)):
             if i <= max_keep:
-                hc_prvdr_sw_pos.append(f"nvl(nppes.hc_prvdr_prmry_txnmy_sw_{i},' ')".format())
+                hc_prvdr_sw_pos.append(f"nvl(nppes.`Healthcare Provider Primary Taxonomy Switch_{i}`,' ')".format())
         return cmma_cnct.join(hc_prvdr_sw_pos)
 
     def hc_prvdr_cd_pos(self, max_keep):
         """
-        Function to generate strings needed for creating cd_positions col 
+        Function to generate strings needed for creating cd_positions col
         """
-         
+
         hc_prvdr_cd_pos = []
         cmma_cnct = ',\n\t\t\t'
         for i in list(range(1, 15 + 1)):
             if i <= max_keep:
-                hc_prvdr_cd_pos.append(f"nvl(substring(nppes.hc_prvdr_txnmy_cd_{i},10,1),' ')".format())
+                hc_prvdr_cd_pos.append(f"nvl(substring(nppes.`Healthcare Provider Taxonomy Code_{i}`,10,1),' ')".format())
         return cmma_cnct.join(hc_prvdr_cd_pos)
 
     def hc_prvdr_sw_pos_y(self, max_keep):
@@ -201,21 +201,51 @@ class PRV06(PRV):
             """ 
         self.prv.append(type(self).__name__, z)
 
-        # link on NPI in NPPES set flags to identify primary taxonomy codes 
+        # link on NPI in NPPES set flags to identify primary taxonomy codes
         # that should be included in the TAF classification segment
         max_keep = 15
 
         z = f"""
             create or replace temporary view nppes_tax_flags_temp as
             select
-                nppes.*, 
+                nppes.NPI AS prvdr_npi,
+                nppes.`Healthcare Provider Taxonomy Code_1` AS hc_prvdr_txnmy_cd_1,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_1` AS hc_prvdr_prmry_txnmy_sw_1,
+                nppes.`Healthcare Provider Taxonomy Code_2` AS hc_prvdr_txnmy_cd_2,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_2` AS hc_prvdr_prmry_txnmy_sw_2,
+                nppes.`Healthcare Provider Taxonomy Code_3` AS hc_prvdr_txnmy_cd_3,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_3` AS hc_prvdr_prmry_txnmy_sw_3,
+                nppes.`Healthcare Provider Taxonomy Code_4` AS hc_prvdr_txnmy_cd_4,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_4` AS hc_prvdr_prmry_txnmy_sw_4,
+                nppes.`Healthcare Provider Taxonomy Code_5` AS hc_prvdr_txnmy_cd_5,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_5` AS hc_prvdr_prmry_txnmy_sw_5,
+                nppes.`Healthcare Provider Taxonomy Code_6` AS hc_prvdr_txnmy_cd_6,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_6` AS hc_prvdr_prmry_txnmy_sw_6,
+                nppes.`Healthcare Provider Taxonomy Code_7` AS hc_prvdr_txnmy_cd_7,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_7` AS hc_prvdr_prmry_txnmy_sw_7,
+                nppes.`Healthcare Provider Taxonomy Code_8` AS hc_prvdr_txnmy_cd_8,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_8` AS hc_prvdr_prmry_txnmy_sw_8,
+                nppes.`Healthcare Provider Taxonomy Code_9` AS hc_prvdr_txnmy_cd_9,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_9` AS hc_prvdr_prmry_txnmy_sw_9,
+                nppes.`Healthcare Provider Taxonomy Code_10` AS hc_prvdr_txnmy_cd_10,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_10` AS hc_prvdr_prmry_txnmy_sw_10,
+                nppes.`Healthcare Provider Taxonomy Code_11` AS hc_prvdr_txnmy_cd_11,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_11` AS hc_prvdr_prmry_txnmy_sw_11,
+                nppes.`Healthcare Provider Taxonomy Code_12` AS hc_prvdr_txnmy_cd_12,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_12` AS hc_prvdr_prmry_txnmy_sw_12,
+                nppes.`Healthcare Provider Taxonomy Code_13` AS hc_prvdr_txnmy_cd_13,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_13` AS hc_prvdr_prmry_txnmy_sw_13,
+                nppes.`Healthcare Provider Taxonomy Code_14` AS hc_prvdr_txnmy_cd_14,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_14` AS hc_prvdr_prmry_txnmy_sw_14,
+                nppes.`Healthcare Provider Taxonomy Code_15` AS hc_prvdr_txnmy_cd_15,
+                nppes.`Healthcare Provider Primary Taxonomy Switch_15` AS hc_prvdr_prmry_txnmy_sw_15,
                 t2.prvdr_id,
                 CONCAT({ self.hc_prvdr_sw_pos(max_keep) }) as sw_positions,
                 CONCAT({ self.hc_prvdr_cd_pos(max_keep) }) as cd_positions
             from
                 nppes_id2 t2
             left join
-                {DA_SCHEMA}.data_anltcs_prvdr_npi_data_vw nppes
+                nppes.npidata nppes
             on
                 t2.prvdr_id=nppes.prvdr_npi
             """
