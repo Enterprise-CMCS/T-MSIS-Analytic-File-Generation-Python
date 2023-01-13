@@ -1,4 +1,5 @@
 from taf.TAF_Runner import TAF_Runner
+from datetime import date
 
 
 class BSF_Runner(TAF_Runner):
@@ -70,6 +71,15 @@ class BSF_Runner(TAF_Runner):
         ELG00021(self).create()
         ELG00022(self).create()
         TPL00002(self).create()
+
+    # -------------------------------------
+    #
+    # -------------------------------------
+    @staticmethod
+    def get_run_ids(asOf: date = None):
+        return TAF_Runner._get_run_ids(reporting_date=asOf,
+                                       table_name=TAF_Runner.Metadata.
+                                       table_name.get("BSF"))
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

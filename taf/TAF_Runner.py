@@ -1,7 +1,12 @@
+import calendar
+import json
 import logging
+from datetime import date, datetime
+
+import dateutil.parser as dp
 import pandas as pd
 from pyspark.sql import SparkSession
-from datetime import datetime
+
 from taf.TAF_Metadata import TAF_Metadata
 
 
@@ -727,6 +732,96 @@ class TAF_Runner():
         else:
             self.logger.info('No valid Spark Session')
             return None
+
+    # -------------------------------------------------
+    #
+    # Static method to look up latest run tmsis run id
+    #
+    # -------------------------------------------------
+    @staticmethod
+    def _get_run_ids(reporting_date: str = None, table_name: str = None):
+        """
+        @staticmethod
+        Args:
+            reporting_period: Date of reporting period
+            table_name: The filer header table suffix to query
+            use_eoy_if_no_records: If no results are found return the end of previous year reporting
+
+        Returns:
+            df: returns a dataframe of the results (Use display(df))
+
+        Example:
+            TAF_Runner._get_run_ids("2022-12-01", "ip")
+        """
+        from pyspark.sql import SparkSession
+        spark = SparkSession.getActiveSession()
+
+        if reporting_date is None:
+            # Get the last day of the month
+            reporting_dttm = date.today()
+        else:
+            reporting_dttm = dp.parse(reporting_date)
+
+        # separating this out in to give us flexibility in case of chnages
+        reporting_logic = f"""
+                           tms_reporting_period = "{reporting_dttm}"
+                           """
+
+        z = f"""select distinct
+                    max(tms_run_id) as latest_tms_run_id,
+                    year(tms_reporting_period) as period,
+                    submitting_state
+                from
+                    tmsis.file_header_record_{table_name}
+                where
+                    {reporting_logic}
+                group by
+                    period,
+                    submitting_state
+                order by
+                    submitting_state asc,
+                    latest_tms_run_id asc,
+                    period asc
+            """
+
+        df = spark.sql(z)
+
+        # set up json strings here for user
+        params: dict = {}
+        rp = []
+        sc = []
+        id = []
+        for row in df.collect():
+            rp.append(str(row['period']))
+            sc.append(str(row['submitting_state']))
+            id.append(str(row['latest_tms_run_id']))
+
+        params.update({"reporting_period": ",".join(rp)})
+        params.update({"state_code": ",".join(sc)})
+        params.update({"run_id": ",".join(id)})
+
+        # Print pretty json string here
+        pjson = json.dumps(params, indent=4)
+        print("json:")
+        print(pjson)
+
+        # print the sql as well
+        print("SQL:")
+        print(z)
+
+        # return the df frame after printing
+        return df
+
+    class Metadata():
+        table_name = {
+            "BSF": "eligibility",
+            "IP": "ip",
+            "LT": "lt",
+            "MCP": "managed_care",
+            "OT": "ot",
+            "PRV": "provider",
+            "RX": "rx",
+        }
 
 
 # -----------------------------------------------------------------------------

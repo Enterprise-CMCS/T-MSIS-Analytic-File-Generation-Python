@@ -1,3 +1,5 @@
+from datetime import date
+
 from taf.TAF_Runner import TAF_Runner
 
 
@@ -112,6 +114,14 @@ class PRV_Runner(TAF_Runner):
         PRV09(self).build(self)
         PRV10(self).build(self)
 
+    # -------------------------------------
+    #
+    # -------------------------------------
+    @staticmethod
+    def get_run_ids(asOf: date = None):
+        return TAF_Runner._get_run_ids(reporting_date=asOf,
+                                       table_name=TAF_Runner.Metadata.
+                                       table_name.get("PRV"))
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

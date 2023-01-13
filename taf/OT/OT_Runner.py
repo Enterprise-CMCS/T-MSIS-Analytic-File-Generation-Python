@@ -1,6 +1,7 @@
 from taf.TAF_Claims import TAF_Claims
 from taf.TAF_Grouper import TAF_Grouper
 from taf.TAF_Runner import TAF_Runner
+from datetime import date
 
 
 class OT_Runner(TAF_Runner):
@@ -99,6 +100,16 @@ class OT_Runner(TAF_Runner):
 
         OTH().build(self)
         OTL().build(self)
+
+    # -------------------------------------
+    #
+    # -------------------------------------
+    @staticmethod
+    def get_run_ids(asOf: date = None):
+        return TAF_Runner._get_run_ids(reporting_date=asOf,
+                                       table_name=TAF_Runner.Metadata.
+                                       table_name.get("OT"))
+
 
 
 # -----------------------------------------------------------------------------
