@@ -758,9 +758,9 @@ class TAF_Runner():
 
         if reporting_date is None:
             # Get the last day of the month
-            reporting_dttm = date.today()
+            reporting_dttm = dp.parse(str(date.today().year) + "-" + str(date.today().month) + "-01").date()
         else:
-            reporting_dttm = dp.parse(reporting_date)
+            reporting_dttm = dp.parse(reporting_date).date()
 
         # separating this out in to give us flexibility in case of chnages
         reporting_logic = f"""

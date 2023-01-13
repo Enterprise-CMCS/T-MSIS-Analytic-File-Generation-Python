@@ -118,8 +118,8 @@ class PRV_Runner(TAF_Runner):
     #
     # -------------------------------------
     @staticmethod
-    def get_run_ids(asOf: date = None):
-        return TAF_Runner._get_run_ids(reporting_date=asOf,
+    def get_run_ids(reporting_date: date = None):
+        return TAF_Runner._get_run_ids(reporting_date=reporting_date,
                                        table_name=TAF_Runner.Metadata.
                                        table_name.get("PRV"))
 

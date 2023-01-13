@@ -1,3 +1,4 @@
+from datetime import date
 from taf.TAF_Runner import TAF_Runner
 
 
@@ -48,6 +49,14 @@ class MCP_Runner(TAF_Runner):
         MCP06(self).build(self)
         MCP07(self).build(self)
 
+    # -------------------------------------
+    #
+    # -------------------------------------
+    @staticmethod
+    def get_run_ids(reporting_date: date = None):
+        TAF_Runner._get_run_ids(reporting_date=reporting_date,
+                                table_name=TAF_Runner.Metadata.
+                                table_name.get("MCP"))
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
