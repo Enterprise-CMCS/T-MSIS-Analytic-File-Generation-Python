@@ -280,8 +280,8 @@ class PRV02(PRV):
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
                     REG_FLAG,
                     case
-                      when nullif(trim(TRAILING FROM prov_doing_business_as_name),'')='888888888888888888888888888888888888888888888888888888888888888' then ''
-                      when nullif(trim(TRAILING FROM prov_doing_business_as_name),'')='99999999999999999999999999999999999999999999999999' then ''
+                      when nullif(trim(TRAILING FROM prov_doing_business_as_name),'')='888888888888888888888888888888888888888888888888888888888888888' then NULL
+                      when nullif(trim(TRAILING FROM prov_doing_business_as_name),'')='99999999999999999999999999999999999999999999999999' then NULL
                       else { TAF_Closure.upper_case('prov_doing_business_as_name') } 
                     end as PRVDR_DBA_NAME,
                     { TAF_Closure.upper_case('prov_legal_name') } as PRVDR_LGL_NAME,
