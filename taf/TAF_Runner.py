@@ -36,6 +36,7 @@ class TAF_Runner():
         TAF_Metadata.getFormatsForValidationAndRecode()
 
         # This gets passed in from the runner and is the job_id from DataBricks
+        self.state_code = state_code
         self.DA_RUN_ID = job_id
         self.DA_SCHEMA = 'taf_python'  # For using data from Redshift for testing DE and up
         self.DA_SCHEMA_DC = 'taf_python'
@@ -67,6 +68,12 @@ class TAF_Runner():
                 self.combined_list = [(eval(state_code), eval(run_id)),]
         else:
             self.combined_list = []
+
+        # determine if national or state specific run
+        if set(list(eval(state_code))) == set(TAF_Metadata.submtgStates):
+            self.national_run = 1
+        else:
+            self.national_run = 0
 
         self.sql = {}
         self.plan = {}
@@ -291,6 +298,11 @@ class TAF_Runner():
 
         spark = SparkSession.getActiveSession()
 
+        if (self.national_run):
+            parms = f"{self.st_dt}"
+        else:
+            parms = f"{self.st_dt}" + ", " + "submtg_state_cd" + " " + "in" + " " + "(" + f"{self.state_code}" + ")"
+
         spark.sql(
             f"""
             INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
@@ -311,7 +323,7 @@ class TAF_Runner():
                 {self.DA_RUN_ID}
                ,"{file_type}"
                ,1
-               ,"{self.st_dt}"
+               ,"{parms}"
                ,concat("{self.version}", ",", "7.1")
                ,NULL
                ,NULL
