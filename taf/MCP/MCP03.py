@@ -168,7 +168,7 @@ class MCP03(MCP):
                 SELECT
                     *
                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                   ,current_timestamp() as REC_UPDT_TS
+                   ,cast(NULL as timestamp) as REC_UPDT_TS
                 FROM
                     MC03_Location_CNST
         """

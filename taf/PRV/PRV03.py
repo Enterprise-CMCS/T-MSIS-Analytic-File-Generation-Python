@@ -348,7 +348,7 @@ class PRV03(PRV):
                     else null
                     end as PRVDR_SRVC_ST_DFRNT_SUBMTG_ST,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                    current_timestamp() as REC_UPDT_TS
+                    cast(NULL as timestamp) as REC_UPDT_TS
             from Prov03_Location_BSM T
                 left join Prov03_Location_mapt L
                     on T.{keyl}=L.{keyl}

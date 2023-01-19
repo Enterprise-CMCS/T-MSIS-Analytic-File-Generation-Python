@@ -794,7 +794,7 @@ class DE0001BASE(DE):
                 ,MSIS_IDENT_NUM_comb
                 {self.basecols()}
                 ,current_timestamp() as REC_ADD_TS
-                ,current_timestamp() as REC_UPDT_TS
+                ,cast(NULL as timestamp) as REC_UPDT_TS
                 ,{self.de.DA_RUN_ID} as DA_RUN_ID
                 ,SUBMTG_STATE_CD_comb
 
