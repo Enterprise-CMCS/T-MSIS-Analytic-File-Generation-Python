@@ -121,7 +121,7 @@ class PRV04(PRV):
                     license_or_accreditation_number as LCNS_OR_ACRDTN_NUM,
                     license_issuing_entity_id as LCNS_ISSG_ENT_ID_TXT,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                    current_timestamp() as REC_UPDT_TS
+                    cast(NULL as timestamp) as REC_UPDT_TS
                     from Prov04_Licensing_TYP
                     where LCNS_TYPE_CD is not null
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID, PRVDR_LCTN_ID

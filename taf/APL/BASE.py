@@ -461,7 +461,7 @@ class BASE(APL):
                  {self.table_id_cols()}
                 ,{",".join(self.basecols)}
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,current_timestamp() as REC_UPDT_TS
+                ,cast(NULL as timestamp) as REC_UPDT_TS
             FROM base_{self.year}_final
             """
         self.apl.append(type(self).__name__, z)

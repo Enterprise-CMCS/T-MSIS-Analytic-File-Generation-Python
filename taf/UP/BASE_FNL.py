@@ -156,7 +156,7 @@ class BASE_FNL(UP):
                      { self.table_id_cols() }
                     ,{",".join(self.basecols)}
                     ,current_timestamp() as REC_ADD_TS
-                    ,current_timestamp() as REC_UPDT_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
             FROM base_fnl_{self.year}
         """
         self.up.append(type(self).__name__, z)
