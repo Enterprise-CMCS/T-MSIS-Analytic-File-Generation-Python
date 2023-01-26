@@ -42,11 +42,11 @@ class ELG():
                     from
                         taf_python.{self._2x_segment}_temp_taf as a
 
-                    -- left join
-                    --     data_anltcs_dm_prod.state_submsn_type s
-                    --     on
-                    --         a.submtg_state_cd = s.submtg_state_cd
-                    --         and upper(s.fil_type) = 'ELG'
+                    left join
+                        state_submsn_type s
+                        on
+                            a.submtg_state_cd = s.submtg_state_cd
+                            and upper(s.fil_type) = 'ELG'
 
                     where
                         (
@@ -59,14 +59,16 @@ class ELG():
                                 )
                             )
                         )
-                        and a.TMSIS_RPTG_PRD >= to_date('{self.bsf.st_dt}')
-                        -- and (
-                        --     (
-                        --         upper(coalesce(s.submsn_type, 'X')) <> 'CSO'
-                        --         and a.TMSIS_RPTG_PRD >= to_date('{self.bsf.st_dt}')
-                        --     )
-                        --     or (upper(coalesce(s.submsn_type, 'X')) = 'CSO')
-                        -- )
+                        AND (
+                            (
+                                upper(coalesce(s.submsn_type, 'X')) <> 'CSO'
+                                AND a.TMSIS_RPTG_PRD >= to_date('{self.bsf.st_dt}')
+                            )
+                            OR
+                            (
+                                upper(coalesce(s.submsn_type, 'X')) = 'CSO'
+                            )
+                        )
                         and concat(a.submtg_state_cd, a.tmsis_run_id) in (
                             {self.get_combined_list()}
                         )
@@ -83,11 +85,11 @@ class ELG():
                     from
                         tmsis.{self._2x_segment} as a
 
-                    -- left join
-                    --     data_anltcs_dm_prod.state_submsn_type s
-                    --     on
-                    --         a.submtg_state_cd = s.submtg_state_cd
-                    --         and upper(s.fil_type) = 'ELG'
+                    left join
+                        state_submsn_type s
+                        on
+                            a.submtg_state_cd = s.submtg_state_cd
+                            and upper(s.fil_type) = 'ELG'
 
                     where
                         (
@@ -100,14 +102,16 @@ class ELG():
                                 )
                             )
                         )
-                        and a.TMSIS_RPTG_PRD >= to_date('{self.bsf.st_dt}')
-                        -- and (
-                        --     (
-                        --         upper(coalesce(s.submsn_type, 'X')) <> 'CSO'
-                        --         and a.TMSIS_RPTG_PRD >= to_date('{self.bsf.st_dt}')
-                        --     )
-                        --     or (upper(coalesce(s.submsn_type, 'X')) = 'CSO')
-                        -- )
+                        AND (
+                            (
+                                upper(coalesce(s.submsn_type, 'X')) <> 'CSO'
+                                AND a.TMSIS_RPTG_PRD >= to_date('{self.bsf.st_dt}')
+                            )
+                            OR
+                            (
+                                upper(coalesce(s.submsn_type, 'X')) = 'CSO'
+                            )
+                        )
                         and concat(a.submtg_state_cd, a.tmsis_run_id) in (
                             {self.get_combined_list()}
                         )

@@ -351,7 +351,7 @@ class DE(TAF):
         if as_select is False:
             z += f"""
                 ,current_timestamp() as REC_ADD_TS
-                ,current_timestamp() as REC_UPDT_TS
+                ,cast(NULL as timestamp) as REC_UPDT_TS
                 ,{self.de.DA_RUN_ID} as DA_RUN_ID
                 ,SUBMTG_STATE_CD
                 """

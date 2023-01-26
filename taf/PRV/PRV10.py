@@ -117,7 +117,7 @@ class PRV10(PRV):
                     BED_TYPE_CD,
                     bed_count as BED_CNT,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                    current_timestamp() as REC_UPDT_TS
+                    cast(NULL as timestamp) as REC_UPDT_TS
                 from Prov10_BedType_TYP
                 where BED_TYPE_CD is not null or (bed_count is not null and bed_count<>0)
                 order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID, PRVDR_LCTN_ID
@@ -250,7 +250,7 @@ class PRV10(PRV):
                     NULL AS ADR_BRDR_STATE_IND,
                     NULL AS PRVDR_SRVC_ST_DFRNT_SUBMTG_ST,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                    current_timestamp() as REC_UPDT_TS
+                    cast(NULL as timestamp) as REC_UPDT_TS
                 from
                     loc__g
         """

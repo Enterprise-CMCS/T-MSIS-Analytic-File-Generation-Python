@@ -86,7 +86,7 @@ class TOP(UP):
                 ,CLM_TOT
                 ,SUM_TOT_MDCD_PD
                 ,current_timestamp() as REC_ADD_TS
-                ,current_timestamp() as REC_UPDT_TS
+                ,cast(NULL as timestamp) as REC_UPDT_TS
             FROM top_fnl_{self.year}
         """
         self.up.append(type(self).__name__, z)

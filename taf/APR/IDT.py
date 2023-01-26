@@ -167,7 +167,7 @@ class IDT(APR):
                 {self.table_id_cols(loctype=2)}
                 ,{ ', '.join(basecols) }
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,current_timestamp() as REC_UPDT_TS
+                ,cast(NULL as timestamp) as REC_UPDT_TS
             FROM id_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 
