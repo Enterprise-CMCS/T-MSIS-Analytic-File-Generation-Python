@@ -629,7 +629,7 @@ class TAF_Grouper:
                     { self.select_taxonomy_inner(TAXONOMY, filetyp) }
                 from
                     {clm_tbl} b
-                    left join nppes_npi nppes on nppes.prvdr_npi=b.BLG_PRVDR_NPI_NUM
+                    left join nppes_npi nppes on nppes.NPI=b.BLG_PRVDR_NPI_NUM
             ) as a
 
             left join ccs_dx ccs_dx on ccs_dx.icd_10_cm_cd=a.DGNS_1_CD
@@ -734,20 +734,21 @@ class TAF_Grouper:
 
     def fetch_nppes(self, filetyp: str):
         """
-        Helper function that generates SQL to generate nppes. 
+        Helper function that generates SQL transforming national provider identifier
+        registry data from CMS.
         """
-         
+
         z = f"""
             create or replace temporary view taxo_switches as
-            select prvdr_npi,
+            select NPI AS prvdr_npi,
         """
 
         for i in range(1, 15):
-            z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' '),
+            z += f"""concat(nvl(`Healthcare Provider Primary Taxonomy Switch_{i}`,' '),
             """
 
         z += f"""
-                            nvl(hc_prvdr_prmry_txnmy_sw_15,' ')))))))))))))))
+                            nvl(`Healthcare Provider Primary Taxonomy Switch_15`,' ')))))))))))))))
                         as sw_positions
         """
 
@@ -755,19 +756,17 @@ class TAF_Grouper:
         #   taxo switches
         # ------------------------------------------------------------------------------
 
-        # ,length(sw_positions)
         z += ", length("
 
         for i in range(1, 15):
-            z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' '),"""
-        z += f"""nvl(hc_prvdr_prmry_txnmy_sw_15,' ')))))))))))))))"""
+            z += f"""concat(nvl(`Healthcare Provider Primary Taxonomy Switch_{i}`,' '),"""
+        z += f"""nvl(`Healthcare Provider Primary Taxonomy Switch_15`,' ')))))))))))))))"""
 
-        # - coalesce(length(regexp_replace(sw_positions, 'Y', ''), 0)) as taxo_switches
         z += ") - coalesce(length(regexp_replace("
 
         for i in range(1, 15):
-            z += f"""concat(nvl(hc_prvdr_prmry_txnmy_sw_{i},' '),"""
-        z += f"""nvl(hc_prvdr_prmry_txnmy_sw_15,' ')))))))))))))))"""
+            z += f"""concat(nvl(`Healthcare Provider Primary Taxonomy Switch_{i}`,' '),"""
+        z += f"""nvl(`Healthcare Provider Primary Taxonomy Switch_15`,' ')))))))))))))))"""
 
         z += ", 'Y', '')), 0) as taxo_switches,"
         # ------------------------------------------------------------------------------
@@ -776,8 +775,8 @@ class TAF_Grouper:
         #   taxopos
         # ------------------------------------------------------------------------------
         taxopos = f"""
-            case when hc_prvdr_txnmy_cd_{{0}} is not null and
-                    hc_prvdr_txnmy_cd_{{0}} <> ' ' then 'X'
+            case when `Healthcare Provider Taxonomy Code_{{0}}` is not null and
+                    `Healthcare Provider Taxonomy Code_{{0}}` <> ' ' then 'X'
             """
         # ------------------------------------------------------------------------------
         for i in range(1, 16):
@@ -801,14 +800,12 @@ class TAF_Grouper:
         #   taxo_cds
         # ------------------------------------------------------------------------------
 
-        # ,length(cd_positions)
         z += ", length("
 
         for i in range(1, 15):
             z += f"""concat(nvl({taxopos.format(i)} else ' ' end,' '),"""
         z += f"""nvl({taxopos.format(15)} else ' ' end, ' ')))))))))))))))"""
 
-        # - coalesce(length(regexp_replace(cd_positions, 'X', ''), 0)) as taxo_cds
         z += ") - coalesce(length(regexp_replace("
 
         for i in range(1, 15):
@@ -821,20 +818,20 @@ class TAF_Grouper:
 
         for i in range(1, 16):
             z += f"""
-                    case when hc_prvdr_txnmy_cd_{i} is not null and
-                            hc_prvdr_txnmy_cd_{i} <> ' ' then {i} else null end as taxo{i}
+                    case when `Healthcare Provider Taxonomy Code_{i}` is not null and
+                            `Healthcare Provider Taxonomy Code_{i}` <> ' ' then {i} else null end as taxo{i}
             """
             if i < 15:
                 z += ","
 
         z += f"""
-            from {self.runner.DA_SCHEMA_DC}.DATA_ANLTCS_PRVDR_NPI_DATA_VW
+            from nppes.npidata
         """
         self.runner.append(filetyp, z)
 
         z = f"""
             create or replace temporary view nppes_npi_step2 as
-            select a.prvdr_npi
+            select a.NPI as prvdr_npi
                 ,taxo_switches
                 ,sw_positions
                 ,taxo_cds
@@ -845,31 +842,31 @@ class TAF_Grouper:
         """
 
         for i in range(1, 15):
-            z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
+            z += f"""nvl(`Healthcare Provider Taxonomy Code_{i}`,' '),
         """
 
         z += f"""
-                                            nvl(hc_prvdr_txnmy_cd_15,' ')),position('Y' in sw_positions),1)
+                                            nvl(`Healthcare Provider Taxonomy Code_15`,' ')),position('Y' in sw_positions),1)
                         when taxo_switches = 0 and taxo_cds = 1 then
                             slice(array(
         """
 
         for i in range(1, 15):
-            z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
+            z += f"""nvl(`Healthcare Provider Taxonomy Code_{i}`,' '),
         """
 
         z += f"""
-                                            nvl(hc_prvdr_txnmy_cd_15,' ')),position('X' in cd_positions),1)
+                                            nvl(`Healthcare Provider Taxonomy Code_15`,' ')),position('X' in cd_positions),1)
                         when taxo_switches = 0 and taxo_cds > 1 then null
                         when taxo_switches > 1 then
                             slice(array(
         """
         for i in range(1, 15):
-            z += f"""nvl(hc_prvdr_txnmy_cd_{i},' '),
+            z += f"""nvl(`Healthcare Provider Taxonomy Code_{i}`,' '),
         """
 
         z += f"""
-             nvl(hc_prvdr_txnmy_cd_15,' ')),least(
+             nvl(`Healthcare Provider Taxonomy Code_15`,' ')),least(
         """
 
         for j in range(1, 14):
@@ -885,7 +882,7 @@ class TAF_Grouper:
 
         for i in range(1, 16):
             z += f"""
-                 ,hc_prvdr_txnmy_cd_{i}
+                 ,`Healthcare Provider Taxonomy Code_{i}`
             """
 
         for i in range(1, 16):
@@ -894,10 +891,10 @@ class TAF_Grouper:
             """
 
         z += f"""
-            from {self.runner.DA_SCHEMA_DC}.DATA_ANLTCS_PRVDR_NPI_DATA_VW a
+            from nppes.npidata a
                 inner join
                 taxo_switches b
-            on	   a.prvdr_npi=b.prvdr_npi
+            on	   a.NPI=b.prvdr_npi
             where  b.taxo_cds>0
         """
         self.runner.append(filetyp, z)
