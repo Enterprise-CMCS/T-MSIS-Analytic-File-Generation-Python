@@ -121,7 +121,7 @@ class PRV05(PRV):
                     cast(prov_identifier as varchar(12)) as PRVDR_ID,
                     prov_identifier_issuing_entity_id as PRVDR_ID_ISSG_ENT_ID_TXT,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                    current_timestamp() as REC_UPDT_TS
+                    cast(NULL as timestamp) as REC_UPDT_TS
                     from Prov05_Identifiers_TYP
                     where PRVDR_ID_TYPE_CD is not null
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID, PRVDR_LCTN_ID

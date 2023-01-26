@@ -200,7 +200,7 @@ class PRV07(PRV):
                     APLCTN_DT,
                     PRVDR_MDCD_ENRLMT_STUS_CTGRY,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                    current_timestamp() as REC_UPDT_TS
+                    cast(NULL as timestamp) as REC_UPDT_TS
                     from Prov07_Medicaid_CNST
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
             """
@@ -300,7 +300,7 @@ class PRV07(PRV):
                         T.mh_srvc_prvdr_ind,
                         T.emer_srvcs_prvdr_ind,
                         from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                        current_timestamp() as REC_UPDT_TS
+                        cast(NULL as timestamp) as REC_UPDT_TS
                 from Prov02_Main_CNST M
                 left join Prov07_Medicaid_Mapped E
                     on {self.write_equalkeys(self.srtlist, 'M', 'E')}

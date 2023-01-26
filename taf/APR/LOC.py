@@ -89,7 +89,7 @@ class LOC(APR):
                     {self.table_id_cols(loctype=1)}
                     ,{ ', '.join(basecols) }
                     ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                    ,current_timestamp() as REC_UPDT_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
                 FROM lctn_pr_{self.year}"""
         self.apr.append(type(self).__name__, z)
 

@@ -128,7 +128,7 @@ class PRV09(PRV):
                     AFLTD_PGM_TYPE_CD,
                     affiliated_program_id as AFLTD_PGM_ID,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                    current_timestamp() as REC_UPDT_TS
+                    cast(NULL as timestamp) as REC_UPDT_TS
                     from Prov09_AffPgms_TYP
             order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
             """

@@ -425,7 +425,7 @@ class PRV06(PRV):
                         PRVDR_CLSFCTN_TYPE_CD,
                         PRVDR_CLSFCTN_CD,
                         from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                        current_timestamp() as REC_UPDT_TS
+                        cast(NULL as timestamp) as REC_UPDT_TS
                         from Prov06_Taxonomies_ALL
                         where PRVDR_CLSFCTN_TYPE_CD is not null and PRVDR_CLSFCTN_CD is not null
                 order by TMSIS_RUN_ID, SUBMTG_STATE_CD, SUBMTG_STATE_PRVDR_ID
