@@ -26,8 +26,6 @@ class DE_Runner(TAF_Runner):
     #                  in the tmsis_config_macro above
     #  - DA_SCHEMA: Data Analytic schema (e.g. dev, val, prod) in which the program is being run, assigned
     #               in the da_config_macro above
-    #  - ST_FILTER: List of states to run (if no states are listed, then take all) (read from job control
-    #               table)
     #  - PYEAR: Prior years (all years from 2014 to current year minus 1)
     #  - GETPRIOR: Indicator for whether there are ANY records in the prior yeara to do prior year lookback.
     #              If yes, set = 1 and look to prior yeara to get demographic information if current year
@@ -41,21 +39,15 @@ class DE_Runner(TAF_Runner):
         self.st_fil_type: str = 'DE'
         self.fil_typ = "DE"
         self.fileseg = "de"
-        self.LFIL_TYP = self.fil_typ.lower()
         self.main_id = "MC_PLAN_ID"
 
         self.NMCSLOTS: int = 16
         self.NWAIVSLOTS: int = 10
-        self.MONTHSB = ["12", "11", "10", "09", "08", "07", "06", "05", "04", "03", "02", "01"]
-        self.RUNDATE = ""
         self.VERSION: int = 0
         # self.DA_RUN_ID: int = run_id
-        self.ROWCOUNT: int = 0
         self.TMSIS_SCHEMA = "TMSIS"
-        self.ST_FILTER = ""
         self.GETPRIOR: int = 1
         self.PYEAR = self.YEAR - 1
-        self.PYEAR2 = self.YEAR - 2
         self.FYEAR = self.YEAR + 1
         self.PYEARS = []
 

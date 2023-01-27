@@ -1,4 +1,3 @@
-from pandas import concat
 from taf.BSF import BSF_Runner
 from taf.BSF.BSF_Metadata import BSF_Metadata
 from taf.BSF.ELG import ELG

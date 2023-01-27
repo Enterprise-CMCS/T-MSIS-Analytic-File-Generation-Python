@@ -31,11 +31,10 @@ class IDT(APR):
         self.fileseg = 'IDT'
 
         # create table with prvdr_npi_01 prvdr_npi_02 prvdr_npi_cnt with
-        # one record per provider(submtg_state_cd, submtg_state_prvdr_id, splmtl_submsn_type)
+        # one record per provider(submtg_state_cd, submtg_state_prvdr_id)
         # which link to PR base
 
-        # select all monthly taf_prv_idt records with prvdr_id_type_cd='2' and prvdr_id is not null, and
-        # create splmtl_submsn_type for the link back to PR base
+        # select all monthly taf_prv_idt records with prvdr_id_type_cd='2' and prvdr_id is not null
 
         z = f"""
             create or replace temporary view npi_main as

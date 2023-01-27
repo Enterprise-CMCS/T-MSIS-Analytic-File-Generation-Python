@@ -21,7 +21,6 @@ class APL(TAF):
         self.apl = apl
         self.st_fil_type = "APL"
         self.fil_typ = "PL"
-        self.LFIL_TYP = self.fil_typ.lower()
         self.main_id = "MC_PLAN_ID"
         self.year = self.apl.reporting_period.year
         self.monthsb = [
@@ -154,9 +153,6 @@ class APL(TAF):
                         AND otpt_name = 'TAF_{file}'
             """
 
-        if str(self.apl.ST_FILTER).find("ALL") != -1:
-            z += f"""WHERE {self.apl.ST_FILTER}"""
-
         z += f"""
                     ) b ON a.da_run_id = b.da_run_id
                 GROUP BY a.{file}_fil_dt
@@ -255,19 +251,6 @@ class APL(TAF):
         """Function all_monthly_segment(intbl=, filet=) to join the records with max da_run_ids for the given state/month back to the monthly TAF and
         select all records for the target year (plan or provider). Note: this table will be the source for creation of annual supplemental segments.
         """
-
-        if files.casefold() in ("bed", "lic", "idt"):
-            splmtl_submsn_type = f"""
-                when right(b.{filet}_loc_link_key,5)='-CHIP' then 'CHIP'
-                when right(b.{filet}_loc_link_key,4)='-TPA' then 'TPA'
-                     else ' '
-                """
-        else:
-            splmtl_submsn_type = f"""
-                when right(b.{filet}_link_key,5)='-CHIP' then 'CHIP'
-                when right(b.{filet}_link_key,4)='-TPA' then 'TPA'
-                     else ' '
-                """
 
         if files.casefold() in (
             "bed",
@@ -443,73 +426,6 @@ class APL(TAF):
           """
         self.apl.append(type(self).__name__, z)
 
-    def any_col(incols, outcol, condition="=1"):
-        
-        """
-        Function any_col to look across a list of columns (non-monthly) to determine if ANY meet a given
-        condition. The default condition is = 1.
-
-        Function parms:
-        incols=input columns
-        outcol=name of column to be output
-        condition=monthly condition to be evaulated, where default is = 1
-        """
-
-        cases = []
-        for col in incols.split():
-            cases.append(f", case when {col} {condition}")
-
-        return f"case when {' or '.join(cases)} then 1 else 0 end as {outcol}"
-
-    def sum_months(incol, raw=0, outcol=""):
-        """
-        Function sum_months to take a SUM over all the input months.
-
-        Function parms:
-        incol=input monthly column which will be summed (with _MO suffix for each month)
-        raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
-            in an earlier subquery and will therefore have the _MO suffixes, where default = 0
-            outcol=output column with summation, where the default is the incol name with the _MONTHS suffix
-        """
-
-        if outcol == "":
-            outcol = incol + "_MOS"
-
-        if raw == 1:
-
-            z = f""",
-                coalesce(m01.{incol}, 0) + coalesce(m02.{incol}, 0) + coalesce(m03.{incol}, 0) +
-                coalesce(m04.{incol}, 0) + coalesce(m05.{incol}, 0) + coalesce(m06.{incol}, 0) +
-                coalesce(m07.{incol}, 0) + coalesce(m08.{incol}, 0) + coalesce(m09.{incol}, 0) +
-                coalesce(m10.{incol}, 0) + coalesce(m11.{incol}, 0) + coalesce(m12.{incol}, 0)"""
-
-        if raw == 0:
-
-            z = f""",
-                coalesce({incol}_01, 0) + coalesce({incol}_02, 0) + coalesce({incol}_03, 0) +
-                coalesce({incol}_04, 0) + coalesce({incol}_05, 0) + coalesce({incol}_06, 0) +
-                coalesce({incol}_07, 0) + coalesce({incol}_08, 0) + coalesce({incol}_09, 0) +
-                coalesce({incol}_10, 0) + coalesce({incol}_11, 0) + coalesce({incol}_12, 0)"""
-
-        return f"{z} as {outcol}"
-
-    def monthly_array_ind_raw(incol, outcol=""):
-        """
-        Function to return a case statement of the monthly array raw indexes.
-        """
-         
-        if outcol == "":
-            outcol = incol
-
-        cases = []
-        for m in range(1, 12):
-            mm = "{:02d}".format(m)
-            cases.append(
-                f",case when m{mm}{incol} is not null then 1 else 0 end as {outcol}_{mm}"
-            )
-
-        return " ".join(cases)
-
     def map_arrayvars(varnm="", N=1):
         """
         Function to return the map array variables.  
@@ -607,60 +523,6 @@ class APL(TAF):
         cols.append(f"""cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
                      SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(32)) as {self.fil_typ}_LINK_KEY """)
 
-        # if self.fil_typ == "PL":
-
-        #     cols.append(
-        #         f"""case
-        #     when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-        #     cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-        #             SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(32))
-        #     else
-        #     cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-        #             SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(32))
-        #     end as {self.fil_typ}_LINK_KEY"""
-        #     )
-
-        # else:
-
-        #     if loctype == 0 or loctype == 1:
-
-        #         cols.append(
-        #             f"""case
-        #         when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-        #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(56))
-        #         else
-        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-        #                 SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(56))
-        #         end as {self.fil_typ}_LINK_KEY"""
-        #         )
-
-        #         if loctype == 1:
-
-        #             cols.append(
-        #                 f"""case
-        #             when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-        #             cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-        #                     SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
-        #             else
-        #             cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-        #                     SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
-        #             end as {self.fil_typ}_LOC_LINK_KEY"""
-        #             )
-
-        #     elif loctype == 2:
-
-        #         cols.append(
-        #             f"""case
-        #         when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-        #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
-        #         else
-        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
-        #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
-        #         end as {self.fil_typ}_LOC_LINK_KEY"""
-        #         )
-
         cols.append(f"""'{self.year}' as {self.fil_typ}_FIL_DT""")
         cols.append(f"""'{self.apl.version}' as {self.fil_typ}_VRSN""")
         cols.append("SUBMTG_STATE_CD")
@@ -668,20 +530,6 @@ class APL(TAF):
 
         return ",".join(cols.copy())
  
-    def get_ann_count(self, tblname):
-        """
-        Function get_ann_cnt to get the count of the given table and put the count into a Function var
-        Function parms: tblname=perm table name
-        """
-
-        z = f"""
-            (select count(submtg_state_cd) as row_cnt
-                from {self.apl.DA_SCHEMA}.TAF_ANN_{self.fil_typ}_{tblname}
-                where da_run_id={self.apl.DA_RUN_ID}
-            )
-        """
-        self.apl.append(type(self).__name__, z)
-
     def create_efts_metadata(self, tblname):
         """
         Function create_efts_metadata to get the count of the given table by state and insert into the EFT

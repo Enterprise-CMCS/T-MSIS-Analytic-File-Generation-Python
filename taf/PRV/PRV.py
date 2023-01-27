@@ -25,34 +25,6 @@ class PRV(TAF):
         self.prv = prv
         self.st_fil_type = 'PRV'
 
-    def set_end_dt(self, enddt):
-        """
-        Function to handle null end dates.  
-        """
-         
-        z = f"""
-            case
-                when to_date('{enddt}') is null then to_date('9999-12-31')
-                when to_date('{enddt}') < to_date('1600-01-01') then to_date('1599-12-31')
-                else to_date('{enddt}')
-            end
-            """
-        return z.format(enddt)
-
-    def zero_pad(self, var_cd, var_len):
-        """
-        Helper function to zero pad some string names.  
-        """
-         
-        z = f"""
-            case
-                when length(trim({var_cd})) < {var_len} and length(trim({var_cd})) > 0 and {var_cd} is not null
-                then lpad(trim(upper({var_cd})),{var_len},'0')
-                else nullif(trim(upper({var_cd})),'')
-            end as {var_cd}
-            """
-        return z.format(var_cd, var_len)
-
     def screen_runid(self, intbl, runtbl, runvars, outtbl, runtyp='C'):
         """
         Function to screen the run ids.  
@@ -132,10 +104,8 @@ class PRV(TAF):
                         tms_is_active = 1 and
                         tms_reporting_period is not null and
                         tot_rec_cnt > 0 and
-                        trim(TRAILING FROM submitting_state) not in ('94','96')
+                        trim(submitting_state) not in ('94','96')
                     )
-                where
-                    1=1 { self.prv.ST_FILTER() }
                 order by
                     tms_run_id,
                     submitting_state

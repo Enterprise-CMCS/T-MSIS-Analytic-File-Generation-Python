@@ -21,15 +21,6 @@ class APR_Runner(TAF_Runner):
 
         super().__init__(reporting_period, state_code, run_id,  job_id)
 
-        self.monyrout = self.reporting_period.strftime('%Y%m').upper()
-
-    def ST_FILTER(self):
-        """
-        Use the trim function to remove extraneous space characters from start and end of state names.
-        """
-
-        return "and trim(submitting_state) not in ('94','96')"
-
     def init(self):
         """
         Import, create, and build out each segment for a given file type.

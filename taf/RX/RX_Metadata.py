@@ -224,36 +224,6 @@ class RX_Metadata:
             "NEW_SUBMTG_STATE_CD": "SUBMTG_STATE_CD",
         }
 
-    coalesce = {
-        "ADJDCTN_DT": "01JAN1960",
-        "ADJDCTN_DT": "01JAN1960",
-        "DSCHRG_DT": "01JAN1960",
-        "SRVC_BGNNG_DT": "01JAN1960",
-        "SRVC_ENDG_DT": "01JAN1960",
-        "ADJSTMT_CLM_NUM": "~",
-        "ADJSTMT_CLM_NUM": "~",
-        "ADJSTMT_IND": "X",
-        "LINE_ADJSTMT_IND": "X",
-        "ORGNL_CLM_NUM": "~",
-        "ORGNL_CLM_NUM": "~",
-    }
-
-    compress_dot = {
-        "ADMTG_DGNS_CD",
-        "DGNS_1_CD",
-        "DGNS_10_CD",
-        "DGNS_11_CD",
-        "DGNS_12_CD",
-        "DGNS_2_CD",
-        "DGNS_3_CD",
-        "DGNS_4_CD",
-        "DGNS_5_CD",
-        "DGNS_6_CD",
-        "DGNS_7_CD",
-        "DGNS_8_CD",
-        "DGNS_9_CD",
-    }
-
     upper = [
         "ADJSTMT_LINE_NUM",
         "ADJSTMT_RSN_CD",
@@ -535,39 +505,6 @@ class RX_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM"
     ]
-
-    @staticmethod
-    def finalTableOutputHeader():
-        """
-        Create SQL query of final table output header.  
-        """
-         
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTH
-        z = """
-                insert into taf_python.taf_rxh
-                select
-                    *
-                from RXH
-        """
-
-        return z
-
-    @staticmethod
-    def finalTableOutputLine():
-        """
-        Create SQL query of final table output line.  
-        """
-         
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTL
-        z = """
-                insert into taf_python.taf_rxl
-                select
-                    *
-                from RXL
-        """
-
-        return z
-
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

@@ -278,11 +278,6 @@ class UP(TAF):
         """
         Get max run id.
         """
-         
-        if file.casefold() != "de":
-            node = file + "H"
-        else:
-            node = "BSE"
 
         if not tbl:
             _tbl = tbl
@@ -445,9 +440,6 @@ class UP(TAF):
                 ) b ON a.da_run_id = b.da_run_id
         """
 
-        if UP_Runner.ST_FILTER(self).count("ALL"):
-            z += f"""WHERE {UP_Runner.ST_FILTER(self)}
-            """
         z += f"""
             GROUP BY a.{file}_fil_dt
                 ,b.submtg_state_cd
@@ -470,14 +462,6 @@ class UP(TAF):
             FROM max_run_id_{file}_{inyear}
         """
         self.up.append(type(self).__name__, z)
-
-    @staticmethod
-    def is_leap_year(inyear):
-        """
-        Determine whether a year is a leap year.
-        """
-         
-        return inyear % 4 == 0 and (inyear % 100 != 0 or inyear % 400 == 0)
 
     def pullclaims(self, file: str, hcols="", lcols="", inyear=None):
         """

@@ -806,13 +806,6 @@ class DE(TAF):
 
         return f"{z} then 1 else 0 end as {outcol}"
 
-    def ST_FILTER(self):
-        """
-        Use the trim function to remove extraneous space characters from start and end of state names.
-        """
-
-        return "and trim(submitting_state) not in ('94','96')"
-
     def max_run_id(self, file="", tbl="", inyear=""):
         """
         Function max_run_id to get the highest da_run_id for the given state for each input monthly TAF (DE or claims). This
@@ -947,10 +940,6 @@ class DE(TAF):
                 ) b ON a.da_run_id = b.da_run_id
         """
 
-        if self.ST_FILTER().count("ALL"):
-            z += f"""
-                 WHERE {self.ST_FILTER()}
-                 """
         z += f"""
             GROUP BY a.{file}_fil_dt
                 ,b.submtg_state_cd

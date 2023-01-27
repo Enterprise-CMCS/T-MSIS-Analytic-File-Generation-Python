@@ -1,4 +1,3 @@
-from pyspark.sql.functions import regexp_replace
 from taf.IP.IP_Runner import IP_Runner
 from taf.IP.IP_Metadata import IP_Metadata
 from taf.TAF_Closure import TAF_Closure

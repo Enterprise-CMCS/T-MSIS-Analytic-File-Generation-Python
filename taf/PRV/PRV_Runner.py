@@ -13,67 +13,6 @@ class PRV_Runner(TAF_Runner):
 
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 
-    def AWS_MAXID_pull_non_claim(self, TMSIS_SCHEMA, table, hdrtable):
-        """
-        Applies cutover date while identifying max run id of last successful T-MSIS load by state - results stored in combined_list.
-        hdrtable already has the header records selected for tms_is_active=1 and tms_reporting_period is not null and tot_rec_cnt > 0 and ST_FILTER.
-        """
-
-        # %global RUN_IDS STATE_IDS combined_list;
-
-        # select cats("'",submtg_state_cd,"'") into :CUTOVER_FILTER
-        # separated by ','
-        # from
-        # (select * from connection to tmsis_passthrough
-        # (
-        # select * from &da_schema..state_tmsis_cutovr_dt
-        # where {self.prv.TAF_FILE_DATE} >= cast(tmsis_cutovr_dt as integer)
-        # ));
-
-        z = f"""
-            select
-                *
-            from
-                {self.da_schema}.state_tmsis_cutovr_dt
-            where
-                {self.TAF_FILE_DATE} >= cast(tmsis_cutovr_dt as integer)
-        )
-            """
-        self.prv.append(type(self).__name__, z)
-
-        # CUTOVER_FILTER =
-
-        # select tmsis_run_id, submtg_state_cd, cats("('",submtg_state_cd,"',",tmsis_run_id,")")
-        #     into :run_ids separated by ' ',
-        #         :state_ids separated by ' ',
-        #         :combined_list separated by ','
-        # from connection to tmsis_passthrough
-        # (select
-        #     j.submtg_state_cd as submtg_state_cd
-        #     ,max(j.tmsis_run_id) as tmsis_run_id
-        # from &TMSIS_SCHEMA..&table. as j
-        #     join &hdrtable. as h
-        #     on h.submitting_state = j.submtg_state_cd and h.tms_run_id = j.tmsis_run_id
-        # where j.job_stus = 'success'
-        #     and j.tot_actv_rcrds_prv02 > 0
-        #     and j.submtg_state_cd in(&CUTOVER_FILTER)
-        # group by submtg_state_cd)
-        # order by submtg_state_cd;
-
-        # z = f"""
-        #     """
-        # self.prv.append(type(self).__name__, z)
-
-        # %put state_ids = &state_ids;
-        # %put combined_list = &combined_list;
-
-    def ST_FILTER(self):
-        """
-        Use the trim function to remove extraneous space characters from start and end of state names.
-        """
-
-        return "and trim(submitting_state) not in ('94','96')"
-
     def init(self):
         """
         Import, create, and build out each segment for a given file type.

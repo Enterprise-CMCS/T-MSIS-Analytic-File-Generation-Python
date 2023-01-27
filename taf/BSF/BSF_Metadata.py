@@ -745,30 +745,6 @@ class BSF_Metadata:
                 """.format())
         return new_line.join(joins)
 
-    def tbl_joiner(tab_no: str, tblnum: int, type):
-        """
-        Function to join tables on submitting state code and msis_ident_num
-        """
-
-        return f"""
-            left join (select * from {tab_no}_{type}_step4 where keeper={tblnum}) t{tblnum}
-                 on m.submtg_state_cd = t{tblnum}.submtg_state_cd
-                and m.msis_ident_num  = t{tblnum}.msis_ident_num
-        """
-
-    def cleanSubmittingStateCd(alias):
-        """
-        Function to clean submitting state code by aliasing them to standard codes.  
-        """
-
-        return f"""case
-            when {alias}.SUBMTG_STATE_CD = '96' then '19'
-            when {alias}.SUBMTG_STATE_CD = '97' then '42'
-            when {alias}.SUBMTG_STATE_CD = '93' then '56'
-            when {alias}.SUBMTG_STATE_CD = '94' then '30'
-            else {alias}.SUBMTG_STATE_CD end as SUBMTG_STATE_CD
-        """
-
     def cleanSSN(alias):
         """
         Clean social socurity number by left padding to a total length of 9 characters.
@@ -847,26 +823,6 @@ class BSF_Metadata:
              when trim(PRMRY_LANG_CODE) in('UND','','.')
                   or PRMRY_LANG_CODE is null                               then  null
              else 'O' end as PRMRY_LANG_FLG
-        """
-
-    @staticmethod
-    def encodeStateAsRegion():
-        """
-        Function to encode states to their region codes.  
-        """
-
-        return """case
-            when ST_ABBREV in('CT','MA','ME','NH','RI','VT')           then '01'
-            when ST_ABBREV in('NJ','NY','PR','VI')                     then '02'
-            when ST_ABBREV in('DE','DC','MD','PA','VA','WV')           then '03'
-            when ST_ABBREV in('AL','FL','GA','KY','MS','NC','SC','TN') then '04'
-            when ST_ABBREV in('IL','IN','MI','MN','OH','WI')           then '05'
-            when ST_ABBREV in('AR','LA','NM','OK','TX')                then '06'
-            when ST_ABBREV in('IA','KS','MO','NE')                     then '07'
-            when ST_ABBREV in('CO','MT','ND','SD','UT','WY')           then '08'
-            when ST_ABBREV in('AZ','CA','HI','NV','AS','GU','MP')      then '09'
-            when ST_ABBREV in('AK','ID','OR','WA')                     then '10'
-            else '11' end as REGION
         """
 
     def maskInvalidValues(column: str, alias: str):

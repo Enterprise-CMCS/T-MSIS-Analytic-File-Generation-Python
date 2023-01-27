@@ -153,22 +153,6 @@ class TAF_Runner():
 
         return ' '.join(string.split())
 
-    def log(self, viewname: str, sql=''):
-        """
-        Prints view name and formatted SQL to log output
-
-            Parameters:
-                viewname (str): A view's name
-                sql (str): The view's definition (in SQL)
-
-            Returns:
-                None
-        """
-
-        self.logger.info('\t' + viewname)
-        if sql != '':
-            self.logger.debug(TAF_Runner.compress(sql.replace('\n', '')))
-
     def initialize_logger(self, now: datetime):
         """
         Initializes the logger for a T-MSIS analytic file run.
@@ -194,39 +178,6 @@ class TAF_Runner():
             self.logger.handlers.clear()
 
         self.logger.addHandler(ch)
-
-    def fetch_combined_list(self):
-        """
-        Query T-MSIS file header eligibility data to determine the latest T-MSIS
-        run identifier value for each submitting state.
-
-            Parameters:
-                None
-
-            Returns:
-                None
-        """
-
-        from pyspark.sql import SparkSession
-        spark = SparkSession.getActiveSession()
-
-        sdf = spark.sql("""
-            select distinct
-                submtg_state_cd,
-                max(tmsis_run_id) as tmsis_run_id
-            from
-                tmsis.tmsis_fhdr_rec_elgblty
-            where tmsis_actv_ind = 1 and
-                tmsis_rptg_prd is not null and
-                tot_rec_cnt > 0 and
-                ssn_ind in ('1','0')
-            group by
-                submtg_state_cd
-            order by
-                submtg_state_cd""")
-
-        rdd = sdf.rdd
-        self.combined_list = rdd.map(tuple)
 
     def get_combined_list(self):
         """
@@ -268,27 +219,6 @@ class TAF_Runner():
                     and tot_rec_cnt > 0
                     and ssn_ind IN ('1','0')
                 group by submtg_state_cd
-        """
-
-    def job_control_rd(self, da_run_id: int, file_type: str):
-        """
-        Creates a job control table.
-        """
-
-        return f"""
-                CREATE TABLE JOB_CD_LOOKUP AS
-                SELECT
-                    {da_run_id}
-                   ,schld_ordr_num
-                   ,job_parms_txt
-                   ,taf_cd_spec_vrsn_name
-                FROM {self.DA_SCHEMA}.job_cntl_parms
-                WHERE schld_ordr_num = (
-                    SELECT MIN(schld_ordr_num)
-                    FROM {self.DA_SCHEMA}.job_cntl_parms
-                    WHERE sucsfl_ind IS NULL
-                    AND fil_type = {file_type}
-                )
         """
 
     def job_control_wrt(self, file_type: str):
@@ -478,28 +408,6 @@ class TAF_Runner():
         """
         )
 
-    def final_control_info(self):
-        """
-        Create the final control info table.
-        """
-        spark = SparkSession.getActiveSession()
-
-        spark.sql(
-            f"""
-                CREATE OR REPLACE TEMPORARY VIEW FINAL_CONTROL_INFO AS
-                SELECT A.DA_RUN_ID
-                    ,JOB_STRT_TS
-                    ,JOB_END_TS
-                    ,CAST(OTPT_NAME AS CHAR(100)) AS OTPTNAME
-                    ,CAST(OTPT_LCTN_TXT AS CHAR(100)) AS OTPTLCTNTXT
-                    ,REC_CNT
-                FROM {self.DA_SCHEMA}.JOB_CNTL_PARMS as A
-                    ,{self.DA_SCHEMA}.JOB_OTPT_META as B
-                WHERE A.DA_RUN_ID = B.DA_RUN_ID
-                    AND A.DA_RUN_ID = {self.DA_RUN_ID}
-        """
-        )
-
     def file_contents(self, table_name: str):
         """
         Helper function to display contents of a table given table name and da_run_id.
@@ -598,7 +506,6 @@ class TAF_Runner():
         if len(vs) >= 5:
             self.sql[vs[5]] = z
 
-        # self.log(f"{self.tab_no}", z)
         self.plan[segment].append(z)
 
     def view_plan(self):

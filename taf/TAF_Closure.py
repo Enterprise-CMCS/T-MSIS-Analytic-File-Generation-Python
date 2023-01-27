@@ -619,15 +619,6 @@ class TAF_Closure:
          
         return f"nullif(trim(upper({textst})),'')"
 
-    zpad = {"XIX_SRVC_CTGRY_CD": 4, "XXI_SRVC_CTGRY_CD": 3}
-
-    def zpad(col):
-        """
-        Zero pad the column name.  
-        """
-
-        return "lpad(trim(col), 4, '0')"
-
     def zero_pad(var_cd, var_len):
         """
         Another zero pad function.  
@@ -639,11 +630,6 @@ class TAF_Closure:
                      else nullif(trim(upper({var_cd})),'')
                    end as {var_cd}
         """
-
-    typecast = {
-        # 'NCVRD_CHRGS_AMT': decimal(13, 2)
-    }
-
 
     def last_best(incol, outcol=""):
         """

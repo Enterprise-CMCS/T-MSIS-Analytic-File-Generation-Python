@@ -23,9 +23,7 @@ class APR(TAF):
         self.apr = apr
         self.st_fil_type = 'APR'
         self.fil_typ = 'PR'
-        self.LFIL_TYP = self.fil_typ.lower()
         self.main_id = 'SUBMTG_STATE_PRVDR_ID'  # main_id= MC_PLAN_ID for MCP and SUBMTG_STATE_PRVDR_ID for PRV
-        self.loc_id = 'PRVDR_LCTN_ID'
         self.monthsb = ['12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01']
         self.year = self.apr.reporting_period.year
 
@@ -47,7 +45,6 @@ class APR(TAF):
         # %create_{tblname};
 
         # sysecho 'in get cnt';
-        # %get_ann_count({tblname}):
 
         # sysecho 'create metainfo';
         # %CREATE_META_INFO({self.apr.DA_SCHEMA}, TAF_ANN_{fil_typ}_{tblname}, {self.apr.DA_RUN_ID}, &ROWCOUNT., &FIL_4TH_NODE.):
@@ -165,11 +162,6 @@ class APR(TAF):
             on a.da_run_id = b.da_run_id
         """
 
-        if (str(self.apr.ST_FILTER).find("ALL") != -1):
-            z += f"""
-                 WHERE {self.apr.ST_FILTER}
-            """
-
         z += f"""
             group by a.{file}_fil_dt
                     ,b.submtg_state_cd
@@ -272,19 +264,6 @@ class APR(TAF):
         select all records for the target year (plan or provider). Note: this table will be the source for creation of annual supplemental segments.
         """
 
-        if self.fileseg.casefold() in ('bed', 'lic', 'idt'):
-            splmtl_submsn_type = f"""
-                when right(b.{filet}_loc_link_key,5)='-CHIP' then 'CHIP'
-                when right(b.{filet}_loc_link_key,4)='-TPA' then 'TPA'
-                     else ' '
-                """
-        else:
-            splmtl_submsn_type = f"""
-                when right(b.{filet}_link_key,5)='-CHIP' then 'CHIP'
-                when right(b.{filet}_link_key,4)='-TPA' then 'TPA'
-                     else ' '
-                """
-
         if self.fileseg.casefold() in ('bed', 'enr', 'grp', 'idt', 'lic', 'loc', 'pgm', 'tax'):
             b = f"{self.apr.DA_SCHEMA}.taf_{filet}_{self.fileseg}"
         else:
@@ -327,7 +306,6 @@ class APR(TAF):
         """
 
         # distkey({self.main_id})
-        # sortkey(submtg_state_cd,{self.main_id},splmtl_submsn_type) as
 
         z = f"""
             create or replace temporary view {tblname}_{self.year} as
@@ -403,71 +381,6 @@ class APR(TAF):
              order by SUBMTG_STATE_CD, {self.main_id}, { ', '.join(collist) }
           """
         self.apr.append(type(self).__name__, z)
-
-    def any_col(incols, outcol, condition='=1'):
-        """
-        Function any_col to look across a list of columns (non-monthly) to determine if ANY meet a given
-        condition. The default condition is = 1.
-
-        Function parms:
-        incols=input columns
-        outcol=name of column to be output 
-        condition=monthly condition to be evaulated, where default is = 1
-        """
-
-        cases = []
-        for col in incols.split():
-            cases.append(f", case when {col} {condition}")
-
-        return f"case when {' or '.join(cases)} then 1 else 0 end as {outcol}"
-
-    def sum_months(incol, raw=0, outcol=''):
-        """
-        Function sum_months to take a SUM over all the input months.
-
-        Function parms:
-        incol=input monthly column which will be summed (with _MO suffix for each month)
-        raw=indicator for whether the monthly variables are raw (must come from the 12 monthly files) or were created
-            in an earlier subquery and will therefore have the _MO suffixes, where default = 0
-        outcol=output column with summation, where the default is the incol name with the _MONTHS suffix
-        """
-
-
-        if outcol == '':
-            outcol = incol + '_MOS'
-
-        if raw == 1:
-
-            z = f""",
-                coalesce(m01.{incol}, 0) + coalesce(m02.{incol}, 0) + coalesce(m03.{incol}, 0) +
-                coalesce(m04.{incol}, 0) + coalesce(m05.{incol}, 0) + coalesce(m06.{incol}, 0) +
-                coalesce(m07.{incol}, 0) + coalesce(m08.{incol}, 0) + coalesce(m09.{incol}, 0) +
-                coalesce(m10.{incol}, 0) + coalesce(m11.{incol}, 0) + coalesce(m12.{incol}, 0)"""
-
-        if raw == 0:
-
-            z = f""",
-                coalesce({incol}_01, 0) + coalesce({incol}_02, 0) + coalesce({incol}_03, 0) +
-                coalesce({incol}_04, 0) + coalesce({incol}_05, 0) + coalesce({incol}_06, 0) +
-                coalesce({incol}_07, 0) + coalesce({incol}_08, 0) + coalesce({incol}_09, 0) +
-                coalesce({incol}_10, 0) + coalesce({incol}_11, 0) + coalesce({incol}_12, 0)"""
-
-        return f"{z} as {outcol}"
-
-    def monthly_array_ind_raw(incol, outcol=''):
-        """
-        Function to return a case statement of the monthly array raw indexes.
-        """
-
-        if outcol == '':
-            outcol = incol
-
-        cases = []
-        for m in range(1, 12):
-            mm = '{:02d}'.format(m)
-            cases.append(f",case when m{mm}{incol} is not null then 1 else 0 end as {outcol}_{mm}")
-
-        return ' '.join(cases)
 
     def map_arrayvars(varnm='', N=1):
         """
@@ -616,20 +529,6 @@ class APR(TAF):
         cols.append(f"""{self.main_id}""")
 
         return ','.join(cols.copy())
-
-    def get_ann_count(self, tblname):
-        """
-        Function get_ann_cnt to get the count of the given table and put the count into a Function var
-        Function parms: tblname=perm table name
-        """
-
-        z = f"""
-            (select count(submtg_state_cd) as row_cnt
-                from {self.apr.DA_SCHEMA}.TAF_ANN_{self.fil_typ}_{tblname}
-                where da_run_id={self.apr.DA_RUN_ID}
-            )
-        """
-        self.apr.append(type(self).__name__, z)
 
     def create_efts_metadata(self, tblname):
         """

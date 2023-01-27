@@ -7,13 +7,6 @@ class PRV_Metadata:
     Create the PRV metadata.  
     """
      
-    SPCLlst = {
-        '93': 'CHIP',
-        '94': 'TPA',
-        '96': 'CHIP',
-        '97': 'CHIP'
-    }
-
     @staticmethod
     def getFormatsForValidationAndRecode():
          

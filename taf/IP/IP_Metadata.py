@@ -371,22 +371,6 @@ class IP_Metadata:
         "ORGNL_CLM_NUM": "~",
     }
 
-    compress_dot = {
-        "ADMTG_DGNS_CD",
-        "DGNS_1_CD",
-        "DGNS_10_CD",
-        "DGNS_11_CD",
-        "DGNS_12_CD",
-        "DGNS_2_CD",
-        "DGNS_3_CD",
-        "DGNS_4_CD",
-        "DGNS_5_CD",
-        "DGNS_6_CD",
-        "DGNS_7_CD",
-        "DGNS_8_CD",
-        "DGNS_9_CD",
-    }
-
     header_renames = {}
 
     line_renames = {

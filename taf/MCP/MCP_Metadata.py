@@ -7,8 +7,6 @@ class MCP_Metadata:
     Create MCP metadata.  
     """
      
-    SPCLlst = {"93": "CHIP", "94": "TPA", "96": "CHIP", "97": "CHIP"}
-
     @staticmethod
     def getFormatsForValidationAndRecode():
         """

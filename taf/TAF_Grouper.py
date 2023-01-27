@@ -241,46 +241,6 @@ class TAF_Grouper:
         self.rep_yr = runner.reporting_period.year
         self.rep_mo = runner.reporting_period.month
 
-    def mdc(self, MDC: bool, filetyp: str):
-        """
-        Major diagnostic indicator
-        """
-         
-        select = []
-        if MDC:
-
-            select.append(
-                f",coalesce(m14.XREF_VAL, m13.XREF_VAL, m12.XREF_VAL, NULL) as MAJOR_DIAGNOSTIC_CATEGORY"
-            )
-
-        return "\n".join(select)
-
-    def iap(self, IAP: bool, filetyp: str):
-        """
-        Helper function to return the IAP_CONDITION_IND as part of a SQL query.  
-        """
-         
-        select = []
-        if IAP:
-
-            select.append(f"typeof(NULL) as IAP_CONDITION_IND")
-
-        return "\n".join(select)
-
-    def phc(self, PHC: bool, filetyp: str):
-        """
-        Code primary hierarchial conditions.  These variables are mutually exclusive and it takes the first populated value
-        """
-         
-        select = []
-        if PHC:
-            # these columns are mutex and take on the first populated value
-            select.append(
-                f",coalesce(h12.XREF_VAL, h13.XREF_VAL, h14.XREF_VAL, h16.XREF_VAL, NULL) as PRIMARY_HIERARCHICAL_CONDITION"
-            )
-
-        return "\n".join(select)
-
     def icd(self, MH_SUD: bool, filetyp: str):
         """
         dgns_cd_ind: 1-> ICD-9, 2-> ICD-10

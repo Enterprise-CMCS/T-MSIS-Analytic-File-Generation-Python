@@ -105,8 +105,6 @@ class MCP(TAF):
                         tms_reporting_period is not null and
                         tot_rec_cnt > 0 and
                         trim(submitting_state) not in ('94','96'))
-                where 
-                    1=1 { self.mcp.ST_FILTER() }
                 order by
                     tms_run_id,
                     submitting_state

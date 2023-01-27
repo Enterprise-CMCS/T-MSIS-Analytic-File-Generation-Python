@@ -290,7 +290,6 @@ class BASE(APL):
         #     create or replace table taf_python.cntrct_vert_month (
         #             SUBMTG_STATE_CD varchar(2),
         #             MC_PLAN_ID varchar(12),
-        #             splmtl_submsn_type varchar(6),
         #             MC_EFF_DT date,
         #             MC_CNTRCT_END_DT date,
         #             mc_mnth_eff_dt date,
@@ -388,7 +387,6 @@ class BASE(APL):
         # join base_pl selected_cntrct_dt and new accreditation arrays
 
         # distkey(MC_PLAN_ID)
-        # sortkey(SUBMTG_STATE_CD,MC_PLAN_ID,splmtl_submsn_type) as
         z = f"""
             create or replace temporary view base_{self.year} as
 
@@ -426,7 +424,6 @@ class BASE(APL):
         # join to the monthly supplemental flags
 
         # distkey(MC_PLAN_ID)
-        # sortkey(SUBMTG_STATE_CD,MC_PLAN_ID,splmtl_submsn_type) as
         z = f"""
             create or replace temporary view base_{self.year}_final as
 

@@ -320,8 +320,6 @@ class OT_Metadata:
         "ORGNL_CLM_NUM": "~",
     }
 
-    compress_dot = {}
-
     upper = [
         "ADJSTMT_LINE_NUM",
         "ADJSTMT_LINE_RSN_CD",
