@@ -7,26 +7,26 @@ class BASE_LT(UP):
     """
     Description:  Read in the LT line-level file, aggregate to header, and count unique LT days
     """
-     
+
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
 
-    #def __init__(self, up: UP_Runner):
-        #super().__init__(up)
+    # def __init__(self, up: UP_Runner):
+        # super().__init__(up)
 
     def create(self):
         """
-        Create the BASE_LT segment.  
+        Create the BASE_LT segment.
         """
 
         # Take the header-level file with needed cols, and join to a rolled-up line level file to
         # get min srvc_bgnng_dt and TOS_CD from the line. Only keep FFS/MC claims, and only keep
-        # claims with at least one line with specific TOS_CD values (009, 043-050, 059), OR with 
+        # claims with at least one line with specific TOS_CD values (009, 043-050, 059), OR with
         # all TOS_CD values = null.
         # Then need to get daily indicators for each stay, and then get the MAX across all days for each bene
         # to create a count of unique LT days ;
-        
+
         # distkey(msis_ident_num)
         # sortkey(submtg_state_cd,msis_ident_num)
         z = f"""
@@ -82,7 +82,7 @@ class BASE_LT(UP):
                       when admsn_dt is not null then admsn_dt
                   else null
                  end as bgnng_dt
-                 FROM lth_2021 a
+                 FROM lth_{self.year} a
                  LEFT JOIN (
                      SELECT lt_link_key
                          ,min(srvc_bgnng_dt_ln) AS srvc_bgnng_dt_ln_min
@@ -107,10 +107,10 @@ class BASE_LT(UP):
                                  THEN 1
                              ELSE 0
                              END AS TOS_CD_NULL
-                     FROM ltl_2021
+                     FROM ltl_{self.year}
                      GROUP BY lt_link_key
                      ) b
-                on a.lt_link_key = b.lt_link_key 
+                on a.lt_link_key = b.lt_link_key
                 where a.clm_type_cd in ('1','A','3','C')
                  ) c
         """
@@ -160,15 +160,12 @@ class BASE_LT(UP):
         z += " "
 
         z += f"""from lt_hdr_days_{self.year}
-		         where CLAIM_TOS_KEEP=1
-		         group by submtg_state_cd
-		             ,msis_ident_num
+                 where CLAIM_TOS_KEEP=1
+                 group by submtg_state_cd
+                     ,msis_ident_num
         """
 
         self.up.append(type(self).__name__, z)
-
-
-
 
 
 # -----------------------------------------------------------------------------
