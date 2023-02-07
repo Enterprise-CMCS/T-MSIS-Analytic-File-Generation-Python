@@ -629,7 +629,7 @@ class TAF_Grouper:
                     { self.select_taxonomy_inner(TAXONOMY, filetyp) }
                 from
                     {clm_tbl} b
-                    left join nppes_npi nppes on nppes.NPI=b.BLG_PRVDR_NPI_NUM
+                    left join nppes_npi nppes on nppes.prvdr_npi=b.BLG_PRVDR_NPI_NUM
             ) as a
 
             left join ccs_dx ccs_dx on ccs_dx.icd_10_cm_cd=a.DGNS_1_CD
