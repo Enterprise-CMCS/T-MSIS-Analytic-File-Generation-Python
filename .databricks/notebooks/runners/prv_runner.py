@@ -159,7 +159,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "base_Prov")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "base_Prov", "Prov02_Base", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV"\nFIL_4TH_NODE = "PBS"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "base_Prov")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "base_Prov", "Prov02_Base", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
@@ -175,7 +175,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV_LOC"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_3_Prov03")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_3_Prov03", "Prov03_Location_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV_LOC"\nFIL_4TH_NODE = "PLO"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_3_Prov03")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_3_Prov03", "Prov03_Location_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
@@ -191,7 +191,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV_LIC"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov04")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov04", "Prov04_Licensing_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV_LIC"\nFIL_4TH_NODE = "PLI"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov04")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov04", "Prov04_Licensing_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
@@ -207,7 +207,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV_IDT"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov05")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov05", "Prov05_Identifiers_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV_IDT"\nFIL_4TH_NODE = "PID"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov05")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov05", "Prov05_Identifiers_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
@@ -223,7 +223,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV_TAX"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov06")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov06", "Prov06_Taxonomies_seg", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV_TAX"\nFIL_4TH_NODE = "PTX"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov06")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov06", "Prov06_Taxonomies_seg", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
@@ -239,7 +239,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV_ENR"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "segment_Prov07")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "segment_Prov07", "Prov07_Medicaid_ENROP", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV_ENR"\nFIL_4TH_NODE = "PEN"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "segment_Prov07")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "segment_Prov07", "Prov07_Medicaid_ENROP", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
@@ -255,7 +255,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV_GRP"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov08")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov08", "Prov08_Groups_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV_GRP"\nFIL_4TH_NODE = "PAG"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov08")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov08", "Prov08_Groups_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
@@ -271,7 +271,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV_PGM"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov09")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov09", "Prov09_AffPgms_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV_PGM"\nFIL_4TH_NODE = "PAP"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov09")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov09", "Prov09_AffPgms_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
@@ -287,7 +287,7 @@
         {
             "cell_type": "code",
             "source": [
-                'TABLE_NAME = "TAF_PRV_BED"\nFIL_4TH_NODE = "PRV"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov10")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov10", "Prov10_BedType_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
+                'TABLE_NAME = "TAF_PRV_BED"\nFIL_4TH_NODE = "PBT"\n \nprv.get_cnt(TABLE_NAME)\nprv.getcounts("101_prvdr_build.sas", "constructed_Prov10")\nprv.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\nprv.create_eftsmeta_info(TABLE_NAME, "101_prvdr_build.sas", "constructed_Prov10", "Prov10_BedType_CNST", "submtg_state_cd")\nprv.file_contents(TABLE_NAME)'
             ],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
