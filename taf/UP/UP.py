@@ -328,7 +328,7 @@ class UP(TAF):
             """
 
         z += f"""
-                    AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\s+', ' ')) = 0
+                    AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) = 0
                 )
 
             GROUP BY {file}_fil_dt
@@ -346,7 +346,7 @@ class UP(TAF):
                 ,max(da_run_id) AS da_run_id
             FROM (
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
-                    ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{2})') AS submtg_state_cd
+                    ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{{2}})') AS submtg_state_cd
                     ,da_run_id
                 FROM {self.up.DA_SCHEMA_DC}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
@@ -373,7 +373,7 @@ class UP(TAF):
             """
 
         z += f"""
-                    AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\s+', ' ')) > 0
+                    AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) > 0
                 )
 
             GROUP BY {file}_fil_dt

@@ -75,8 +75,7 @@ class APL(TAF):
                     WHERE upper(fil_type) = '{file}'
                         AND sucsfl_ind = 1
                         AND substring(job_parms_txt, 1, 4) = '{inyear}'
-                        AND charindex('submtg_state_cd
-                in', regexp_replace(job_parms_txt, '\\s+', ' ')) = 0
+                        AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) = 0
                     )
                 GROUP BY {file}_fil_dt
         """
@@ -92,13 +91,13 @@ class APL(TAF):
                     ,max(da_run_id) AS da_run_id
                 FROM (
                     SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
-                        ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{2})') AS submtg_state_cd
+                        ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{{2}})') AS submtg_state_cd
                         ,da_run_id
                     FROM {self.apl.DA_SCHEMA}.job_cntl_parms
                     WHERE upper(fil_type) = '{file}'
                         AND sucsfl_ind = 1
                         AND substring(job_parms_txt, 1, 4) = '{inyear}'
-                        AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\s+', ' ')) > 0
+                        AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) > 0
                     )
                 GROUP BY {file}_fil_dt
                     ,submtg_state_cd
