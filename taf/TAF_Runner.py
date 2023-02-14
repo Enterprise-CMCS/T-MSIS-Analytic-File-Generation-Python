@@ -756,16 +756,13 @@ class TAF_Runner():
         from pyspark.sql import SparkSession
         spark = SparkSession.getActiveSession()
 
-        if reporting_date is None:
-            # Get the last day of the month
-            reporting_dttm = dp.parse(str(date.today().year) + "-" + str(date.today().month) + "-01").date()
-        else:
-            reporting_dttm = dp.parse(reporting_date).date()
-
         # separating this out in to give us flexibility in case of chnages
-        reporting_logic = f"""
-                           tms_reporting_period = "{reporting_dttm}"
-                           """
+        reporting_logic = """
+                            where tms_is_active = 1
+                                and tms_reporting_period is not null
+                                and tot_rec_cnt > 0
+                                and submitting_state not in ('94', '96')
+                          """
 
         z = f"""select distinct
                     max(tms_run_id) as latest_tms_run_id,
@@ -773,8 +770,7 @@ class TAF_Runner():
                     submitting_state
                 from
                     tmsis.file_header_record_{table_name}
-                where
-                    {reporting_logic}
+                {reporting_logic}
                 group by
                     period,
                     submitting_state
