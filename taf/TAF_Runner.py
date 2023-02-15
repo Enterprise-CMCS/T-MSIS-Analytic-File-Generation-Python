@@ -70,7 +70,7 @@ class TAF_Runner():
             self.combined_list = []
 
         # determine if national or state specific run
-        if set(list(eval(state_code))) == set(TAF_Metadata.submtgStates):
+        if list(eval(state_code)).len() > 1:
             self.national_run = 1
         else:
             self.national_run = 0
