@@ -130,6 +130,150 @@
         },
         {
             "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "LCTN"\n#FIL_4TH_NODE = "LCP"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "998adf4d-724f-4a5e-9631-d93aebe905ae",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "LCNS"\n#FIL_4TH_NODE = "LIC"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "c522bb34-6485-46ad-b73b-bdc7113a3a83",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "ID"\n#FIL_4TH_NODE = "IDP"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "303e0f31-e8eb-488f-af36-a57534418381",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "TXNMY"\n#FIL_4TH_NODE = "TAX"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "4f2050ec-35d0-435c-8ec3-f6c4a9b98fff",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "ENRLMT"\n#FIL_4TH_NODE = "ENP"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "dfae9300-00ed-49af-8847-8e2d42ed91e4",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "GRP"\n#FIL_4TH_NODE = "GRP"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "06eff76c-3787-4896-97fe-3a0e3bfd0c1b",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "PGM"\n#FIL_4TH_NODE = "PGM"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "21707b45-3509-4b12-a2fc-7a5d57c68467",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "BED"\n#FIL_4TH_NODE = "BED"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "b7b60590-a8f6-4111-8a9c-e530da5fdadb",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "BASE"\n#FIL_4TH_NODE = "BSP"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "50561b0b-22dc-40ea-b579-84c6808811ef",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
             "source": ["apr.job_control_updt2()"],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {

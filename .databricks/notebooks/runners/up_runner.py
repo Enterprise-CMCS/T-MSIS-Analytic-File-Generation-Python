@@ -130,13 +130,45 @@
         },
         {
             "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "BASE"\n#FIL_4TH_NODE = "BSU"\n\n#up.create_meta_info(TABLE_NAME, FIL_4TH_NODE)'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "fbc89566-427b-46d0-8c85-5a78808cf9cc",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "TOP"\n#FIL_4TH_NODE = "TOP"\n\n#up.create_meta_info(TABLE_NAME, FIL_4TH_NODE)'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "30371d43-3c69-4a22-84a3-dc4589fc847d",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
             "source": ["up.job_control_updt2()"],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
                     "title": "",
                     "showTitle": false,
                     "inputWidgets": {},
-                    "nuid": "1a330971-dfb5-49f6-b6aa-3c431b77152b",
+                    "nuid": "c2bae7d4-ebca-4d24-82d3-2c4ea5671fe5",
                 }
             },
             "outputs": [],

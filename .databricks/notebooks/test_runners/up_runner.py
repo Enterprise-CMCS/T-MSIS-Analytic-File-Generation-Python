@@ -130,6 +130,38 @@
         },
         {
             "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "BASE"\n#FIL_4TH_NODE = "BSU"\n\n#up.create_meta_info(TABLE_NAME, FIL_4TH_NODE)'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "2d69f072-a78b-4620-af72-409df2bc1f57",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "TOP"\n#FIL_4TH_NODE = "TOP"\n\n#up.create_meta_info(TABLE_NAME, FIL_4TH_NODE)'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "32825ee2-2d50-43a5-ba99-cb5db4a782b3",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
             "source": ["up.job_control_updt2()"],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {

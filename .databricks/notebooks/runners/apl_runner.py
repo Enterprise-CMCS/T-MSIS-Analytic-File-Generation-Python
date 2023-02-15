@@ -130,6 +130,86 @@
         },
         {
             "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "LCTN"\n#FIL_4TH_NODE = "LCM"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "4fb0e9d9-b1e2-441b-a503-7ef9561bd4bd",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "SAREA"\n#FIL_4TH_NODE = "SAM"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "865d487e-b602-412c-8f50-9e6c989919f2",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "ENRLMT"\n#FIL_4TH_NODE = "EPM"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "35b3f4ba-8d68-42a5-b4c2-7aa92d52c1fd",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "OA"\n#FIL_4TH_NODE = "OAM"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "38c52914-564e-4f90-ac7a-c33e999cad64",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                '#TABLE_NAME = "BASE"\n#FIL_4TH_NODE = "BSM"\n \n#de.get_ann_count(TABLE_NAME)\n#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)\n#de.create_efts_metadata()'
+            ],
+            "metadata": {
+                "application/vnd.databricks.v1+cell": {
+                    "title": "",
+                    "showTitle": false,
+                    "inputWidgets": {},
+                    "nuid": "07ae4d5b-d1cf-4bea-b5db-ded7cd973221",
+                }
+            },
+            "outputs": [],
+            "execution_count": 0,
+        },
+        {
+            "cell_type": "code",
             "source": ["apl.job_control_updt2()"],
             "metadata": {
                 "application/vnd.databricks.v1+cell": {
