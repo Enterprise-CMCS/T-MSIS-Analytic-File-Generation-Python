@@ -26,7 +26,7 @@ class LT(TAF):
         super().__init__(runner)
         self.st_fil_type = "LT"
 
-    def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
+    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment):
         """
         Pull line item records for header records linked with claims family table dataset.
         """
@@ -40,7 +40,7 @@ class LT(TAF):
                 { LT_Metadata.selectDataElements(tab_no, 'a') }
 
             from
-                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
+                {DA_SCHEMA}.{_2x_segment}_TEMP_TAF A
 
             where
                 a.TMSIS_ACTV_IND = 1

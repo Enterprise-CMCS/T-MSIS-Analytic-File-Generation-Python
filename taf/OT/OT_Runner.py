@@ -10,8 +10,8 @@ class OT_Runner(TAF_Runner):
     These statements are intended to initialize the module.
     """
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
-        super().__init__(reporting_period, state_code, run_id, job_id)
+    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int):
+        super().__init__(da_schema, reporting_period, state_code, run_id, job_id)
 
     def init(self):
         """
@@ -63,7 +63,7 @@ class OT_Runner(TAF_Runner):
         # -------------------------------------------------
         ot = OT(self)
         ot.AWS_Extract_Line(
-            "tmsis", "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
+            "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
         )
 
         # -------------------------------------------------

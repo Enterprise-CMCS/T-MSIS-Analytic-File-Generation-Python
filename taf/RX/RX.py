@@ -21,7 +21,7 @@ class RX(TAF):
         super().__init__(runner)
         self.st_fil_type = "RX"
 
-    def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
+    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment):
         """
         Pull RX line item records (FIRST NON DENIED LINE) and join to final action header records dataset
         """
@@ -35,7 +35,7 @@ class RX(TAF):
                 { RX_Metadata.selectDataElements(tab_no, 'a') }
 
             from
-                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
+                {DA_SCHEMA}.{_2x_segment}_TEMP_TAF A
 
             where
                 a.TMSIS_ACTV_IND = 1

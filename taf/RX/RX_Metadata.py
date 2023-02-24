@@ -417,7 +417,7 @@ class RX_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "RX_LINK_KEY",
         "RX_VRSN",
         "RX_FIL_DT",
@@ -486,7 +486,7 @@ class RX_Metadata:
     ]
 
     line_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "RX_LINK_KEY",
         "RX_VRSN",
         "RX_FIL_DT",
@@ -535,38 +535,6 @@ class RX_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM"
     ]
-
-    @staticmethod
-    def finalTableOutputHeader():
-        """
-        Create SQL query of final table output header.  
-        """
-         
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTH
-        z = """
-                insert into taf_python.taf_rxh
-                select
-                    *
-                from RXH
-        """
-
-        return z
-
-    @staticmethod
-    def finalTableOutputLine():
-        """
-        Create SQL query of final table output line.  
-        """
-         
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTL
-        z = """
-                insert into taf_python.taf_rxl
-                select
-                    *
-                from RXL
-        """
-
-        return z
 
 
 # -----------------------------------------------------------------------------

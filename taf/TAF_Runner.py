@@ -12,14 +12,16 @@ class TAF_Runner():
 
     PERFORMANCE = 11
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
+    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int):
         """
         Constructs all the necessary attributes for the T-MSIS analytic file runner object.
 
             Parameters:
+                da_schema (str): Schema to be written to
                 reporting_period (str): Day of month to filter T-MSIS data on (in YYYY-MM-DD format)
                 state_code (str): Comma-separated list of T-MSIS state code(s) values to include
                 run_id (str): Comma-separated list of T-MSIS run identifier(s) values to include
+                job_id (int): Final data will use this for da_run_id
 
             Returns:
                 None
@@ -38,8 +40,8 @@ class TAF_Runner():
         # This gets passed in from the runner and is the job_id from DataBricks
         self.state_code = state_code
         self.DA_RUN_ID = job_id
-        self.DA_SCHEMA = 'taf_python'  # For using data from Redshift for testing DE and up
-        self.DA_SCHEMA_DC = 'taf_python'
+        self.DA_SCHEMA = da_schema  # For using data from Redshift for testing DE and up
+        self.DA_SCHEMA_DC = da_schema
 
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
 

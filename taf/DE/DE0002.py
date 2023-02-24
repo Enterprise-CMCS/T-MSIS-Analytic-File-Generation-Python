@@ -76,13 +76,13 @@ class DE0002(DE):
                     z += ","
         self.de.append(type(self).__name__, z)
 
-        z = f"""CONVERT TO DELTA taf_python.numbers"""
+        z = f"""CONVERT TO DELTA {self.de.DA_SCHEMA}.numbers"""
         self.de.append(type(self).__name__, z)
 
-        z = f"""OPTIMIZE taf_python.numbers ZORDER BY (slot, month)"""
+        z = f"""OPTIMIZE {self.de.DA_SCHEMA}.numbers ZORDER BY (slot, month)"""
         self.de.append(type(self).__name__, z)
 
-        z = f"""VACUUM taf_python.numbers"""
+        z = f"""VACUUM {self.de.DA_SCHEMA}.numbers"""
         self.de.append(type(self).__name__, z)
 
     def eligibility_dates(self, dtype, dval):
