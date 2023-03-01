@@ -179,7 +179,7 @@ class APR(TAF):
         #    that go into each annual {fil_typ} file
 
         z = f"""
-            insert into {self.apr.DA_SCHEMA}.TAF_ANN_{self.st_fil_type}_INP_SRC
+            insert into {self.apr.DA_SCHEMA}.TAF_ANN_INP_SRC
             select
                 {self.apr.DA_RUN_ID} as ANN_DA_RUN_ID,
                 'apr' as ann_fil_type,
