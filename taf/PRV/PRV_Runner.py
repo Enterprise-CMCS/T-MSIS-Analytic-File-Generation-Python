@@ -34,7 +34,7 @@ class PRV_Runner(TAF_Runner):
             select
                 *
             from
-                {self.da_schema}.state_tmsis_cutovr_dt
+                {self.DA_SCHEMA}.state_tmsis_cutovr_dt
             where
                 {self.TAF_FILE_DATE} >= cast(tmsis_cutovr_dt as integer)
         )

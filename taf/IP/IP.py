@@ -43,7 +43,7 @@ class IP(TAF):
                 { IP_Metadata.selectDataElements(tab_no, 'a') }
 
             from
-                TAF_PYTHON.{_2x_segment}_TEMP_TAF A
+                {self.runner.DA_SCHEMA}.{_2x_segment}_TEMP_TAF A
 
             where
                 a.TMSIS_ACTV_IND = 1

@@ -1,11 +1,12 @@
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Runner import TAF_Runner
 
 
 class RX_Metadata:
     """
-    Create the RX metadata.  
+    Create the RX metadata.
     """
-     
+
     def selectDataElements(segment_id: str, alias: str):
         """
         Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
@@ -48,7 +49,7 @@ class RX_Metadata:
         """
         Function for final formatting.
         """
-         
+
         new_line_comma = "\n\t\t\t,"
 
         columns = output_columns.copy()
@@ -59,7 +60,7 @@ class RX_Metadata:
         """
         Return dates of service.  If column name is null, then set date to 01JAN1960.
         """
-         
+
         return f"""
             case
                 when {alias}.{colname} is not null then {alias}.{colname}
@@ -74,9 +75,9 @@ class RX_Metadata:
 
     def plan_id_num(colname: str, alias: str):
         """
-        Get alias of plan id num.  
+        Get alias of plan id num.
         """
-         
+
         return f"upper({alias}.{colname}) as mc_plan_id"
 
     cleanser = {
@@ -539,12 +540,12 @@ class RX_Metadata:
     @staticmethod
     def finalTableOutputHeader():
         """
-        Create SQL query of final table output header.  
+        Create SQL query of final table output header.
         """
-         
+
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTH
         z = """
-                insert into taf_python.taf_rxh
+                insert into {TAF_Runner.DA_SCHEMA}.taf_rxh
                 select
                     *
                 from RXH
@@ -555,12 +556,12 @@ class RX_Metadata:
     @staticmethod
     def finalTableOutputLine():
         """
-        Create SQL query of final table output line.  
+        Create SQL query of final table output line.
         """
-         
+
         # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTL
-        z = """
-                insert into taf_python.taf_rxl
+        z = f"""
+                insert into {TAF_Runner.DA_SCHEMA}.taf_rxl
                 select
                     *
                 from RXL

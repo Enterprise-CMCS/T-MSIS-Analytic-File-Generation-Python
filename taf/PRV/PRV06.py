@@ -410,8 +410,7 @@ class PRV06(PRV):
         """
         self.prv.append(type(self).__name__, z)
 
-
-        self.nppes_tax('taf_python', 'Prov05_Identifiers_CNST', 'Prov06_Taxonomies_CCD2', 'Prov06_Taxonomies_ALL')
+        self.nppes_tax('{self.prv.DA_SCHEMA}', 'Prov05_Identifiers_CNST', 'Prov06_Taxonomies_CCD2', 'Prov06_Taxonomies_ALL')
 
         z = f"""
                 create or replace temporary view Prov06_Taxonomies_seg as

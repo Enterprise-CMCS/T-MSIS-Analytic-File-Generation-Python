@@ -101,75 +101,75 @@ class BASE(APL):
         """
 
         subcols = [
-            "%last_best(MC_NAME)",
-            "%last_best(MC_PLAN_TYPE_CD)",
-            "%last_best(MC_PLAN_TYPE_CAT)",
-            "%last_best(MC_CNTRCT_END_DT)",
+            f"""{TAF_Closure.last_best('MC_NAME')}""",
+            f"""{TAF_Closure.last_best('MC_PLAN_TYPE_CD')}""",
+            f"""{TAF_Closure.last_best('MC_PLAN_TYPE_CAT')}""",
+            f"""{TAF_Closure.last_best('MC_CNTRCT_END_DT')}""",
             f"""{ APL.nonmiss_month(self,'MC_CNTRCT_END_DT') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='MC_CNTRCT_EFCTV_DT', nslots='1') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='MC_CNTRCT_END_DT', nslots='1') }""",
-            "%last_best(MC_PGM_CD)",
-            "%last_best(REIMBRSMT_ARNGMT_CD)",
-            "%last_best(REIMBRSMT_ARNGMT_CAT)",
-            "%last_best(MC_SAREA_CD)",
-            "%ever_year(SAREA_STATEWIDE_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1115_DEMO_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915B_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1932A_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915A_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915BC_CONC_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915AC_CONC_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1932A_1915C_IND)",
-            "%ever_year(OPRTG_AUTHRTY_PACE_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1905T_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1937_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1902A70_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915BI_CONC_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915AI_CONC_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1932A_1915I_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1945_HH_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915AJ_CONC_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1932A_1915J_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915BJ_CONC_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1115_1915J_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915AK_CONC_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1932A_1915K_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1915BK_CONC_IND)",
-            "%ever_year(OPRTG_AUTHRTY_1115_1915K_IND)",           
-            "%ever_year(POP_MDCD_MAND_COV_ADLT_IND)",
-            "%ever_year(POP_MDCD_MAND_COV_ABD_IND)",
-            "%ever_year(POP_MDCD_OPTN_COV_ADLT_IND)",
-            "%ever_year(POP_MDCD_OPTN_COV_ABD_IND)",
-            "%ever_year(POP_MDCD_MDCLY_NDY_ADLT_IND)",
-            "%ever_year(POP_MDCD_MDCLY_NDY_ABD_IND)",
-            "%ever_year(POP_CHIP_COV_CHLDRN_IND)",
-            "%ever_year(POP_CHIP_OPTN_CHLDRN_IND)",
-            "%ever_year(POP_CHIP_OPTN_PRGNT_WMN_IND)",
-            "%ever_year(POP_1115_EXPNSN_IND)",
-            "%ever_year(POP_UNK_IND)",
-            "%last_best(REG_FLAG)",
-            "%last_best(CBSA_CD)",
-            "%last_best(MC_PRFT_STUS_CD)",
-            "%last_best(BUSNS_PCT)",
+            f"""{TAF_Closure.last_best('MC_PGM_CD')}""",
+            f"""{TAF_Closure.last_best('REIMBRSMT_ARNGMT_CD')}""",
+            f"""{TAF_Closure.last_best('REIMBRSMT_ARNGMT_CAT')}""",
+            f"""{TAF_Closure.last_best('MC_SAREA_CD')}""",
+            f"""{TAF_Closure.ever_year('SAREA_STATEWIDE_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1115_DEMO_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915B_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1932A_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915A_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915BC_CONC_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915AC_CONC_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1932A_1915C_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_PACE_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1905T_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1937_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1902A70_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915BI_CONC_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915AI_CONC_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1932A_1915I_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1945_HH_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915AJ_CONC_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1932A_1915J_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915BJ_CONC_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1115_1915J_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915AK_CONC_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1932A_1915K_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915BK_CONC_IND')}""",
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1115_1915K_IND')}""",           
+            f"""{TAF_Closure.ever_year('POP_MDCD_MAND_COV_ADLT_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_MDCD_MAND_COV_ABD_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_MDCD_OPTN_COV_ADLT_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_MDCD_OPTN_COV_ABD_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_MDCD_MDCLY_NDY_ADLT_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_MDCD_MDCLY_NDY_ABD_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_CHIP_COV_CHLDRN_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_CHIP_OPTN_CHLDRN_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_CHIP_OPTN_PRGNT_WMN_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_1115_EXPNSN_IND')}""",
+            f"""{TAF_Closure.ever_year('POP_UNK_IND')}""",
+            f"""{TAF_Closure.last_best('REG_FLAG')}""",
+            f"""{TAF_Closure.last_best('CBSA_CD')}""",
+            f"""{TAF_Closure.last_best('MC_PRFT_STUS_CD')}""",
+            f"""{TAF_Closure.last_best('BUSNS_PCT')}"""
         ]
 
         subcols2 = [
             f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_01', nslots='1') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_02', nslots='1') }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_03', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_03', nslots='1') }"""
         ]
 
         subcols3 = [
             f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_01', nslots='1') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_02', nslots='1') }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_03', nslots='1') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_ACHVMT_DT_03', nslots='1') }"""
         ]
 
         subcols4 = [
             f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_01', nslots='1') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_02', nslots='1') }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_03', nslots='1') }""",
-            "%any_month(MC_PLAN_ID MC_NAME,PLAN_ID_FLAG,IS NOT NULL)",
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_03', nslots='1') }"""
+            f"""{ TAF_Closure.any_month('MC_PLAN_ID MC_NAME','PLAN_ID_FLAG','IS NOT NULL')}"""
         ]
 
         outercols = [
@@ -287,7 +287,7 @@ class BASE(APL):
 
         # contract start date
         # z = f"""
-        #     create or replace table taf_python.cntrct_vert_month (
+        #     create or replace table {TAF_Runner.DA_SCHEMA}.cntrct_vert_month (
         #             SUBMTG_STATE_CD varchar(2),
         #             MC_PLAN_ID varchar(12),
         #             splmtl_submsn_type varchar(6),

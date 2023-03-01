@@ -22,7 +22,7 @@ class DE0003(DE):
 
     def create(self):
         """
-        Create the segment.  
+        Create the segment.
         """
 
         #super().create()
@@ -32,7 +32,7 @@ class DE0003(DE):
 
     def address_phone(self, runyear):
         """
-        Pull in address and phone, for which we DO look to prior year. 
+        Pull in address and phone, for which we DO look to prior year.
         """
 
         DE.create_temp_table(self,
@@ -68,7 +68,7 @@ class DE0003(DE):
 
     def create_temp(self):
         """
-        Create the name part of the segment, pulling in only those elements for which we do 
+        Create the name part of the segment, pulling in only those elements for which we do
         NOT look to the prior year.
         """
 
@@ -82,20 +82,20 @@ class DE0003(DE):
 
     def create_hist_adr(self, tblname, inyear):
         """
-        Function used to create the address phone table name.  
+        Function used to create the address phone table name.
         """
 
         z = f"""create or replace temporary view {tblname}_{inyear} as
                 select
                     b.*
-                from  
+                from
                     max_run_id_de_{inyear} a
                 inner join
                     {self.de.DA_SCHEMA}.taf_ann_de_cntct_dtls b
-                on 
+                on
                     a.submtg_state_cd = b.submtg_state_cd and
                     a.da_run_id = b.da_run_id
-                order by 
+                order by
                     submtg_state_cd,
                     msis_ident_num
             """
@@ -105,11 +105,12 @@ class DE0003(DE):
         """
         Main function to generate the annual DE segment 003: Address/Phone
         """
-        
+
         if self.de.GETPRIOR == 1:
             cnt = 0
             #if self.de.GETPRIOR == 1:
                 #for pyear in range(1, self.de.PYEARS + 1):
+            print("PYEAR LIST: " + str(self.de.PYEARS))
             for pyear in self.de.PYEARS:
                 self.create_hist_adr(tblname="address_phone", inyear=pyear)
 
