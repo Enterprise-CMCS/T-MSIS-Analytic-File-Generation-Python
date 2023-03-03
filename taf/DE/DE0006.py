@@ -100,13 +100,13 @@ class DE0006(DE):
                     z += ","
         self.de.append(type(self).__name__, z)
 
-        z = f"""CONVERT TO DELTA taf_python.numbers_two"""
+        z = f"""CONVERT TO DELTA {self.de.DA_SCHEMA}.numbers_two"""
         self.de.append(type(self).__name__, z)
 
-        z = f"""OPTIMIZE taf_python.numbers_two ZORDER BY (slot, month)"""
+        z = f"""OPTIMIZE {self.de.DA_SCHEMA}.numbers_two ZORDER BY (slot, month)"""
         self.de.append(type(self).__name__, z)
 
-        z = f"""VACUUM taf_python.numbers_two"""
+        z = f"""VACUUM {self.de.DA_SCHEMA}.numbers_two"""
         self.de.append(type(self).__name__, z)
 
         z = """create or replace temporary view waiver_long as

@@ -500,7 +500,7 @@ class LT_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "LT_LINK_KEY",
         "LT_VRSN",
         "LT_FIL_DT",
@@ -658,7 +658,7 @@ class LT_Metadata:
     #
     # ---------------------------------------------------------------------------------
     line_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "LT_LINK_KEY",
         "LT_VRSN",
         "LT_FIL_DT",

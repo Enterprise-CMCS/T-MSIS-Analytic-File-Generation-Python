@@ -8,7 +8,7 @@ class APR_Runner(TAF_Runner):
     These statements are intended to initialize the module.
     """
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
+    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int):
         """
         Users interact with the TAF-specific module by creating a TAF runner object.
         This object may be instantiated with three parameters to control what data is captured at run time:
@@ -19,7 +19,7 @@ class APR_Runner(TAF_Runner):
         run_id - a quoted list of corresponding TMSIS run ID values for each specified state code value(s). Multiple TMSIS run ID values are supplied as comma-separated, quoted values through the Databricks widget.
         """
 
-        super().__init__(reporting_period, state_code, run_id,  job_id)
+        super().__init__(da_schema, reporting_period, state_code, run_id, job_id)
 
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 

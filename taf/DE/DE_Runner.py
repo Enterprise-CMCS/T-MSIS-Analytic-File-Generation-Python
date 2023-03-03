@@ -10,8 +10,8 @@ class DE_Runner(TAF_Runner):
 
     PERFORMANCE = 11
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
-        super().__init__(reporting_period, state_code, run_id, job_id)
+    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int):
+        super().__init__(da_schema, reporting_period, state_code, run_id, job_id)
 
         #  - REPORTING_PERIOD: Date value from which we will take the last 4 characters to determine year
     #                      (read from job control table)

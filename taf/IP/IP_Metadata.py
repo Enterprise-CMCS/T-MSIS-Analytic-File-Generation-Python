@@ -535,7 +535,7 @@ class IP_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "IP_LINK_KEY",
         "IP_VRSN",
         "IP_FIL_DT",
@@ -736,7 +736,7 @@ class IP_Metadata:
     #
     # ---------------------------------------------------------------------------------
     line_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "IP_LINK_KEY",
         "IP_VRSN",
         "IP_FIL_DT",

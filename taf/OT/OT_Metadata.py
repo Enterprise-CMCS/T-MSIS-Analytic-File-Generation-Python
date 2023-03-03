@@ -462,7 +462,7 @@ class OT_Metadata:
     }
 
     header_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "OT_LINK_KEY",
         "OT_VRSN",
         "OT_FIL_DT",
@@ -597,7 +597,7 @@ class OT_Metadata:
     ]
 
     line_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "OT_LINK_KEY",
         "OT_VRSN",
         "OT_FIL_DT",

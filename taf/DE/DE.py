@@ -1004,7 +1004,7 @@ class DE(TAF):
                       'ENRLMT_EFCTV_CY_DT',
                       'ENRLMT_END_CY_DT'
                      ]
-        z = f"""insert into taf_python.taf_ann_de_{DE0002.tbl_abrv}
+        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{DE0002.tbl_abrv}
                 select
                     {DE.table_id_cols_pre(self, suffix="", extra_cols=extra_cols)}
                     {DE.table_id_cols_sfx(self)}
