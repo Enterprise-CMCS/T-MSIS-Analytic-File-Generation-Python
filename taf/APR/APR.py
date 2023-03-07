@@ -179,7 +179,7 @@ class APR(TAF):
         #    that go into each annual {fil_typ} file
 
         z = f"""
-            insert into {self.apr.DA_SCHEMA}.TAF_ANN_{self.st_fil_type}_INP_SRC
+            insert into {self.apr.DA_SCHEMA}.TAF_ANN_INP_SRC
             select
                 {self.apr.DA_RUN_ID} as ANN_DA_RUN_ID,
                 'apr' as ann_fil_type,
@@ -187,7 +187,7 @@ class APR(TAF):
                 lower('{file}') as src_fil_type,
                 {file}_FIL_DT as src_fil_dt,
                 DA_RUN_ID as SRC_DA_RUN_ID,
-			    fil_cret_dt as src_fil_creat_dt
+                fil_cret_dt as src_fil_creat_dt
 
             from max_run_id_{file}_{inyear}
         """

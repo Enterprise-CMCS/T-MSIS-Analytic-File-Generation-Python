@@ -11,6 +11,7 @@ class TAF_Runner():
     """
 
     PERFORMANCE = 11
+    DA_SCHEMA = 'taf_python_v3'
 
     def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
         """
@@ -38,8 +39,8 @@ class TAF_Runner():
         # This gets passed in from the runner and is the job_id from DataBricks
         self.state_code = state_code
         self.DA_RUN_ID = job_id
-        self.DA_SCHEMA = 'taf_python'  # For using data from Redshift for testing DE and up
-        self.DA_SCHEMA_DC = 'taf_python'
+        self.DA_SCHEMA = 'taf_python_v3'  # For using data from Redshift for testing DE and up
+        self.DA_SCHEMA_DC = 'taf_python_v3'
 
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
 
@@ -302,6 +303,37 @@ class TAF_Runner():
             parms = f"{self.st_dt}"
         else:
             parms = f"{self.st_dt}" + ", " + "submtg_state_cd" + " " + "in" + " " + "(" + f"{self.state_code}" + ")"
+
+        print("DEBUG: " + f"""
+            INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
+                da_run_id
+               ,fil_type
+               ,schld_ordr_num
+               ,job_parms_txt
+               ,cd_spec_vrsn_name
+               ,job_strt_ts
+               ,job_end_ts
+               ,sucsfl_ind
+               ,rec_add_ts
+               ,rec_updt_ts
+               ,rfrsh_vw_flag
+               ,taf_cd_spec_vrsn_name
+            )
+            VALUES (
+                {self.DA_RUN_ID}
+               ,"{file_type}"
+               ,1
+               ,"{parms}"
+               ,concat("{self.version}", ",", "7.1")
+               ,NULL
+               ,NULL
+               ,False
+               ,from_utc_timestamp(current_timestamp(), "EST")
+               ,NULL
+               ,False
+               ,concat("{self.version}", ",", "7.1")
+            )
+        """)
 
         spark.sql(
             f"""
