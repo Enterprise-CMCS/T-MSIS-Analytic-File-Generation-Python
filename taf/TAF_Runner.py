@@ -72,7 +72,7 @@ class TAF_Runner():
             self.combined_list = []
 
         # determine if national or state specific run
-        if list(eval(state_code)).len() > 1:
+        if len(state_code) > 4:
             self.national_run = 1
         else:
             self.national_run = 0
