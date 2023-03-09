@@ -1,15 +1,15 @@
-from taf.IP.IP_Runner import IP_Runner
+from taf.OT.OT_Runner import OT_Runner
 
-ip = IP_Runner(
+ot = OT_Runner(
     da_schema="TAF_PYTHON",
     reporting_period="2022-02-28",
     state_code="'05'",
     run_id="'4863'",
     job_id="'99999'",
 )
-ip.init()
+ot.init()
 
-ip.view_plan()
+ot.view_plan()
 
 
 # -----------------------------------------------------------------------------
