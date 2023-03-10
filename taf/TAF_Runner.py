@@ -1,5 +1,4 @@
 import logging
-import pandas as pd
 from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
@@ -12,7 +11,7 @@ class TAF_Runner():
 
     PERFORMANCE = 11
 
-    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int):
+    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int, file_version: str):
         """
         Constructs all the necessary attributes for the T-MSIS analytic file runner object.
 
@@ -30,7 +29,7 @@ class TAF_Runner():
         from datetime import date, datetime, timedelta
 
         self.now = datetime.now()
-        self.version = '0A'
+        self.version = file_version
 
         self.initialize_logger(self.now)
 
