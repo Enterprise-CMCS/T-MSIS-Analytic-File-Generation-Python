@@ -1,4 +1,6 @@
 import logging
+import sys
+
 from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
@@ -11,7 +13,13 @@ class TAF_Runner():
 
     PERFORMANCE = 11
 
-    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int, file_version: str):
+    def __init__(self,
+                 da_schema: str,
+                 reporting_period: str,
+                 state_code: str,
+                 run_id: str,
+                 job_id: int,
+                 file_version: str):
         """
         Constructs all the necessary attributes for the T-MSIS analytic file runner object.
 
@@ -29,9 +37,13 @@ class TAF_Runner():
         from datetime import date, datetime, timedelta
 
         self.now = datetime.now()
-        self.version = file_version
-
         self.initialize_logger(self.now)
+
+        if len(file_version) == 3:
+            self.version = file_version
+        else:
+            self.logger.error("ERROR: File Version must be 3 characters.")
+            sys.exit(1)
 
         # state submission type
         TAF_Metadata.getFormatsForValidationAndRecode()
@@ -183,7 +195,7 @@ class TAF_Runner():
 
         logging.addLevelName(TAF_Runner.PERFORMANCE, 'PERFORMANCE')
 
-        self.logger = logging.getLogger('dqm_log')
+        self.logger = logging.getLogger('taf_log')
         self.logger.setLevel(logging.INFO)
 
         ch = logging.StreamHandler()
@@ -195,6 +207,12 @@ class TAF_Runner():
             self.logger.handlers.clear()
 
         self.logger.addHandler(ch)
+
+        # writing to stdout
+        stdout = logging.StreamHandler(sys.stdout)
+        stdout.setLevel(logging.ERROR)
+        stdout.setFormatter(formatter)
+        self.logger.addHandler(stdout)
 
     def fetch_combined_list(self):
         """
