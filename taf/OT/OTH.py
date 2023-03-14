@@ -48,14 +48,14 @@ class OTH:
                 , { TAF_Closure.var_set_type2('SECT_1115A_DEMO_IND', 0, cond1='0', cond2='1') }
                 , case when upper(clm_type_cd) in('1', '2', '3', '4', '5', 'A', 'B', 'C', 'D', 'E', 'U', 'V', 'W', 'X', 'Y', 'Z') then upper(clm_type_cd) else NULL end as clm_type_cd
                 , { TAF_Closure.var_set_type1('BILL_TYPE_CD') }
-                , case when lpad(pgm_type_cd, 2, '0') in ('06', '09') then typeof(NULL) else { TAF_Closure.var_set_type5('pgm_type_cd', lpad=2, lowerbound=0, upperbound=17, multiple_condition='YES') }
+                , case when lpad(pgm_type_cd, 2, '0') in ('06', '09') then NULL else { TAF_Closure.var_set_type5('pgm_type_cd', lpad=2, lowerbound=0, upperbound=17, multiple_condition='YES') }
                 , { TAF_Closure.var_set_type1('MC_PLAN_ID') }
                 , { TAF_Closure.var_set_type1('ELGBL_LAST_NAME', upper='YES') }
                 , { TAF_Closure.var_set_type1('ELGBL_1ST_NAME', upper='YES') }
                 , { TAF_Closure.var_set_type1('ELGBL_MDL_INITL_NAME', upper='YES') }
                 , { TAF_Closure.fix_old_dates('BIRTH_DT') }
 
-                , case when lpad(wvr_type_cd, 2, '0') = '88' then typeof(NULL) else { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2,lowerbound=1,upperbound=33,multiple_condition='YES') }
+                , case when lpad(wvr_type_cd, 2, '0') = '88' then NULL else { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2,lowerbound=1,upperbound=33,multiple_condition='YES') }
 
                 , { TAF_Closure.var_set_type1('WVR_ID') }
                 , { TAF_Closure.var_set_type2('srvc_trkng_type_cd', 2, cond1='00', cond2='01', cond3='02', cond4='03', cond5='04', cond6='05', cond7='06') }
@@ -172,7 +172,7 @@ class OTH:
                     *,
                     case when ADJSTMT_IND is NOT NULL and
                     trim(ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
-                    then trim(ADJSTMT_IND) else typeof(NULL) end as ADJSTMT_IND_CLEAN
+                    then trim(ADJSTMT_IND) else NULL end as ADJSTMT_IND_CLEAN
                 from
                     OTHR_TOC_HEADER_GROUPER
                 ) H

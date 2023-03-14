@@ -40,7 +40,7 @@ class BSF_Metadata:
             if column in BSF_Metadata.epochal:
                 columns[i] = BSF_Metadata.epoch(column)
             elif column in BSF_Metadata.absent:
-                columns[i] = f"typeof(null) as {column}"
+                columns[i] = f"null as {column}"
             else:
                 columns[i] = BSF_Metadata.normalize(column)
 
@@ -1798,8 +1798,8 @@ class BSF_Metadata:
         'PRMRY_LANG_FLAG',
         'ENGLSH_PRFCNCY_CD as PRMRY_LANG_ENGLSH_PRFCNCY_CD',
         'HSEHLD_SIZE_CD',
-        'cast(typeof(NULL) as string) as PRGNT_IND',
-        'cast(typeof(NULL) as integer) as PRGNCY_FLAG',
+        'cast(NULL as string) as PRGNT_IND',
+        'cast(NULL as integer) as PRGNCY_FLAG',
         'AMRCN_INDN_ALSKA_NTV_IND as CRTFD_AMRCN_INDN_ALSKN_NTV_IND',
         'ETHNCTY_CD',
         'ELGBL_LINE_1_ADR_HOME',

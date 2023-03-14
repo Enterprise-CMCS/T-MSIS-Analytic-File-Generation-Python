@@ -460,7 +460,7 @@ class TAF_Runner():
                     ,t1.taf_cd_spec_vrsn_name
                     ,False as rfrsh_vw_flag
                     ,False as ltst_run_ind
-                    ,typeof(NULL) as ccb_qtr
+                    ,NULL as ccb_qtr
                     ,NULL as rif_finl_vrsn
                     ,NULL as rif_prelim_vrsn
                 FROM {self.DA_SCHEMA}.job_cntl_parms as t1

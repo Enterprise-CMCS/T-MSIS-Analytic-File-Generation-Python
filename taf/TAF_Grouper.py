@@ -263,7 +263,7 @@ class TAF_Grouper:
         select = []
         if IAP:
 
-            select.append(f"typeof(NULL) as IAP_CONDITION_IND")
+            select.append(f"NULL as IAP_CONDITION_IND")
 
         return "\n".join(select)
 
@@ -577,7 +577,7 @@ class TAF_Grouper:
         if IAP:
 
             # code IAP_CONDITION_IND
-            select.append(",typeof(NULL) as IAP_CONDITION_IND")
+            select.append(",NULL as IAP_CONDITION_IND")
 
         if PHC:
 
