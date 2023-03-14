@@ -61,10 +61,7 @@ class IP_Metadata:
         """
 
         return f"""
-            case
-                when {alias}.{colname} is not null then {alias}.{colname}
-                else null
-            end as SRVC_ENDG_DT_DRVD_H,
+            {alias}.{colname} as SRVC_ENDG_DT_DRVD_H,
             case
                 when {alias}.{colname} is not null then '1'
                 else null
@@ -535,7 +532,7 @@ class IP_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "IP_LINK_KEY",
         "IP_VRSN",
         "IP_FIL_DT",
@@ -736,7 +733,7 @@ class IP_Metadata:
     #
     # ---------------------------------------------------------------------------------
     line_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "IP_LINK_KEY",
         "IP_VRSN",
         "IP_FIL_DT",

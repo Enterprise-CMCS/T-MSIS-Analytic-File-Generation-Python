@@ -957,6 +957,23 @@ class DE(TAF):
         """
         self.de.append(type(self).__name__, z)
 
+        # Insert into metadata table so we keep track of all monthly DA_RUN_IDs (both DE and claims)
+        # that go into each annual UP file
+
+        z = f"""
+            INSERT INTO {self.de.DA_SCHEMA_DC}.TAF_ANN_INP_SRC
+            SELECT
+                 {self.de.DA_RUN_ID} AS ANN_DA_RUN_ID
+                ,'ade' as ann_fil_type
+                ,SUBMTG_STATE_CD
+                ,lower('{file}') as src_fil_type
+                ,{file}_FIL_DT as src_fil_dt
+                ,DA_RUN_ID AS SRC_DA_RUN_ID
+                ,fil_cret_dt as src_fil_creat_dt
+            FROM max_run_id_{file}_{inyear}
+        """
+        self.de.append(type(self).__name__, z)
+
     def create_dates_out_root(self):
         """
         Create dates_out by extracting and combining data from MDCD_dates_out and CHIP_dates_out.
@@ -987,7 +1004,7 @@ class DE(TAF):
                       'ENRLMT_EFCTV_CY_DT',
                       'ENRLMT_END_CY_DT'
                      ]
-        z = f"""insert into taf_python.taf_ann_de_{DE0002.tbl_abrv}
+        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{DE0002.tbl_abrv}
                 select
                     {DE.table_id_cols_pre(self, suffix="", extra_cols=extra_cols)}
                     {DE.table_id_cols_sfx(self)}

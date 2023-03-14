@@ -10,8 +10,8 @@ class LT_Runner(TAF_Runner):
     These statements are intended to initialize the module.
     """
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
-        super().__init__(reporting_period, state_code, run_id, job_id)
+    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int):
+        super().__init__(da_schema, reporting_period, state_code, run_id, job_id)
 
     def init(self):
         """
@@ -62,7 +62,7 @@ class LT_Runner(TAF_Runner):
         #   4 - LT_HEADER
         # -------------------------------------------------
         lt = LT(self)
-        lt.AWS_Extract_Line("tmsis", "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT")
+        lt.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT")
 
         # -------------------------------------------------
         #   Produces:

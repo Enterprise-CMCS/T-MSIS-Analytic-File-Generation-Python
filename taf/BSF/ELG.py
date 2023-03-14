@@ -40,7 +40,7 @@ class ELG():
                         , upper(a.MSIS_IDENT_NUM) as MSIS_IDENT_NUM
                         , a.TMSIS_RPTG_PRD
                     from
-                        taf_python.{self._2x_segment}_temp_taf as a
+                        {self.bsf.DA_SCHEMA}.{self._2x_segment}_temp_taf as a
 
                     left join
                         state_submsn_type s

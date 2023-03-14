@@ -55,23 +55,6 @@ class RX_Metadata:
 
         return new_line_comma.join(columns)
 
-    def dates_of_service(colname: str, alias: str):
-        """
-        Return dates of service.  If column name is null, then set date to 01JAN1960.
-        """
-         
-        return f"""
-            case
-                when {alias}.{colname} is not null then {alias}.{colname}
-                else typeof(null)
-            end as SRVC_ENDG_DT_DRVD_H,
-            case
-                when {alias}.{colname} is not null then '1'
-                else typeof(null)
-            end as SRVC_ENDG_DT_CD_H,
-            coalesce({alias}.{colname}, '01JAN1960') as {colname}
-        """
-
     def plan_id_num(colname: str, alias: str):
         """
         Get alias of plan id num.  
@@ -417,7 +400,7 @@ class RX_Metadata:
     #
     # ---------------------------------------------------------------------------------
     header_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "RX_LINK_KEY",
         "RX_VRSN",
         "RX_FIL_DT",
@@ -486,7 +469,7 @@ class RX_Metadata:
     ]
 
     line_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "RX_LINK_KEY",
         "RX_VRSN",
         "RX_FIL_DT",
@@ -535,38 +518,6 @@ class RX_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM"
     ]
-
-    @staticmethod
-    def finalTableOutputHeader():
-        """
-        Create SQL query of final table output header.  
-        """
-         
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTH
-        z = """
-                insert into taf_python.taf_rxh
-                select
-                    *
-                from RXH
-        """
-
-        return z
-
-    @staticmethod
-    def finalTableOutputLine():
-        """
-        Create SQL query of final table output line.  
-        """
-         
-        # INSERT INTO {self.runner.DA_SCHEMA}.TAF_LTL
-        z = """
-                insert into taf_python.taf_rxl
-                select
-                    *
-                from RXL
-        """
-
-        return z
 
 
 # -----------------------------------------------------------------------------

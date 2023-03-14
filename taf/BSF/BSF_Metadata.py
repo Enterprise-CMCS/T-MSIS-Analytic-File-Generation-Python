@@ -1699,7 +1699,7 @@ class BSF_Metadata:
         'ZND', 'ZAP', 'ZZA', 'ZEN', 'ZHA', 'ZUL', 'ZUN']
 
     output_columns = [
-        'cast(DA_RUN_ID as integer) AS DA_RUN_ID',
+        'DA_RUN_ID',
         'BSF_FIL_DT',
         'BSF_VRSN',
         'MSIS_IDENT_NUM',

@@ -167,7 +167,7 @@ class APL(TAF):
         #    that go into each annual {fil_typ} file
 
         z = f"""
-            insert into {self.apl.DA_SCHEMA}.TAF_ANN_{self.st_fil_type}_INP_SRC
+            insert into {self.apl.DA_SCHEMA}.TAF_ANN_INP_SRC
             select
                 {self.apl.DA_RUN_ID} as ann_da_run_id,
                 'apl' as ann_fil_type,
