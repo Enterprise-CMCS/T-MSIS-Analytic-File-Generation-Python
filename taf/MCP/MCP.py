@@ -146,7 +146,7 @@ class MCP(TAF):
                     (
                         (
                             upper(coalesce(s.submsn_type, 'X')) <> 'CSO'
-                            and a.TMSIS_RPTG_PRD >= to_date('{self.mcp.st_dt}')
+                            and T.tms_reporting_period >= to_date('{self.mcp.st_dt}')
                         )
                         or (upper(coalesce(s.submsn_type, 'X')) = 'CSO')
                     )
