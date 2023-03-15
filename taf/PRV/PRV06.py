@@ -158,7 +158,7 @@ class PRV06(PRV):
         return new_line.join(prmry_NPPES_tax0b)
 
 
-    def nppes_tax(self, DA_SCHEMA, id_intbl, tax_intbl, tax_outtbl):
+    def nppes_tax(self, id_intbl, tax_intbl, tax_outtbl):
         """
         Function to generate SQL query with multiple temporary views for nppes_tax.  
         """
@@ -410,7 +410,7 @@ class PRV06(PRV):
         """
         self.prv.append(type(self).__name__, z)
 
-        self.nppes_tax('{self.prv.DA_SCHEMA}', 'Prov05_Identifiers_CNST', 'Prov06_Taxonomies_CCD2', 'Prov06_Taxonomies_ALL')
+        self.nppes_tax('Prov05_Identifiers_CNST', 'Prov06_Taxonomies_CCD2', 'Prov06_Taxonomies_ALL')
 
         z = f"""
                 create or replace temporary view Prov06_Taxonomies_seg as

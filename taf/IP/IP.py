@@ -29,7 +29,7 @@ class IP(TAF):
         super().__init__(runner)
         self.st_fil_type = "IP"
 
-    def AWS_Extract_Line(self, TMSIS_SCHEMA, fl2, fl, tab_no, _2x_segment):
+    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment):
         """
         Pull line item records for header records linked with claims family table dataset.
         """
@@ -43,8 +43,7 @@ class IP(TAF):
                 { IP_Metadata.selectDataElements(tab_no, 'a') }
 
             from
-                {self.runner.DA_SCHEMA}.{_2x_segment}_TEMP_TAF A
-
+                {DA_SCHEMA}.{_2x_segment}_TEMP_TAF A
             where
                 a.TMSIS_ACTV_IND = 1
                 and concat(a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})

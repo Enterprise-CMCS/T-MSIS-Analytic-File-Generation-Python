@@ -61,10 +61,7 @@ class OT_Metadata:
         """
          
         return f"""
-            case
-                when {alias}.{colname} is not null then {alias}.{colname}
-                else null
-            end as SRVC_ENDG_DT_DRVD_H,
+            coalesce({alias}.{colname}, {alias}.SRVC_BGNNG_DT) as SRVC_ENDG_DT_DRVD_H,
             case
                 when {alias}.{colname} is not null then '2'
                 when {alias}.{colname} is null and {alias}.SRVC_BGNNG_DT is not null then '3'
@@ -462,7 +459,7 @@ class OT_Metadata:
     }
 
     header_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "OT_LINK_KEY",
         "OT_VRSN",
         "OT_FIL_DT",
@@ -597,7 +594,7 @@ class OT_Metadata:
     ]
 
     line_columns = [
-        "cast(DA_RUN_ID as integer) as DA_RUN_ID",
+        "DA_RUN_ID",
         "OT_LINK_KEY",
         "OT_VRSN",
         "OT_FIL_DT",

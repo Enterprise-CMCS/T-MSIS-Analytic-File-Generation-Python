@@ -1,5 +1,6 @@
 import logging
-import pandas as pd
+import sys
+
 from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
@@ -13,14 +14,22 @@ class TAF_Runner():
     PERFORMANCE = 11
     DA_SCHEMA = 'taf_python_v3'
 
-    def __init__(self, reporting_period: str, state_code: str, run_id: str, job_id: int):
+    def __init__(self,
+                 da_schema: str,
+                 reporting_period: str,
+                 state_code: str,
+                 run_id: str,
+                 job_id: int,
+                 file_version: str):
         """
         Constructs all the necessary attributes for the T-MSIS analytic file runner object.
 
             Parameters:
+                da_schema (str): Schema to be written to
                 reporting_period (str): Day of month to filter T-MSIS data on (in YYYY-MM-DD format)
                 state_code (str): Comma-separated list of T-MSIS state code(s) values to include
                 run_id (str): Comma-separated list of T-MSIS run identifier(s) values to include
+                job_id (int): Final data will use this for da_run_id
 
             Returns:
                 None
@@ -29,9 +38,13 @@ class TAF_Runner():
         from datetime import date, datetime, timedelta
 
         self.now = datetime.now()
-        self.version = '0A'
-
         self.initialize_logger(self.now)
+
+        if len(file_version) == 3:
+            self.version = file_version
+        else:
+            self.logger.error("ERROR: File Version must be 3 characters.")
+            sys.exit(1)
 
         # state submission type
         TAF_Metadata.getFormatsForValidationAndRecode()
@@ -39,8 +52,8 @@ class TAF_Runner():
         # This gets passed in from the runner and is the job_id from DataBricks
         self.state_code = state_code
         self.DA_RUN_ID = job_id
-        self.DA_SCHEMA = 'taf_python_v3'  # For using data from Redshift for testing DE and up
-        self.DA_SCHEMA_DC = 'taf_python_v3'
+        self.DA_SCHEMA = da_schema  # For using data from Redshift for testing DE and up
+        self.DA_SCHEMA_DC = da_schema
 
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
 
@@ -71,7 +84,7 @@ class TAF_Runner():
             self.combined_list = []
 
         # determine if national or state specific run
-        if set(list(eval(state_code))) == set(TAF_Metadata.submtgStates):
+        if len(list(eval(state_code))) > 1:
             self.national_run = 1
         else:
             self.national_run = 0
@@ -183,7 +196,7 @@ class TAF_Runner():
 
         logging.addLevelName(TAF_Runner.PERFORMANCE, 'PERFORMANCE')
 
-        self.logger = logging.getLogger('dqm_log')
+        self.logger = logging.getLogger('taf_log')
         self.logger.setLevel(logging.INFO)
 
         ch = logging.StreamHandler()
@@ -195,6 +208,12 @@ class TAF_Runner():
             self.logger.handlers.clear()
 
         self.logger.addHandler(ch)
+
+        # writing to stdout
+        stdout = logging.StreamHandler(sys.stdout)
+        stdout.setLevel(logging.ERROR)
+        stdout.setFormatter(formatter)
+        self.logger.addHandler(stdout)
 
     def fetch_combined_list(self):
         """
