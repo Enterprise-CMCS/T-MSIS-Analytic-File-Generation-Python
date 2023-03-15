@@ -12,7 +12,6 @@ class TAF_Runner():
     """
 
     PERFORMANCE = 11
-    DA_SCHEMA = 'taf_python_v3'
 
     def __init__(self,
                  da_schema: str,
