@@ -168,7 +168,7 @@ class BASE(APL):
         subcols4 = [
             f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_01', nslots='1') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_02', nslots='1') }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_03', nslots='1') }"""
+            f"""{ TAF_Closure.monthly_array(self, incol='ACRDTN_ORG_END_DT_03', nslots='1') }""",
             f"""{ TAF_Closure.any_month('MC_PLAN_ID MC_NAME','PLAN_ID_FLAG','IS NOT NULL')}"""
         ]
 
