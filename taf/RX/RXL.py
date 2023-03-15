@@ -50,12 +50,12 @@ class RXL:
                 , { TAF_Closure.var_set_type2('BRND_GNRC_IND', 0, cond1='0', cond2='1', cond3='2', cond4='3', cond5='4') }
                 , { TAF_Closure.var_set_type6('DSPNS_FEE_AMT', new='dspns_fee_amt', cond1='88888.88')  }
                 ,case when trim(DRUG_UTLZTN_CD) is not NULL then upper(DRUG_UTLZTN_CD)
-                    else typeof(NULL)
+                    else NULL
                     end as DRUG_UTLZTN_CD
 
                 , { TAF_Closure.var_set_type6('dtl_mtrc_dcml_qty', cond1='999999.999') }
 
-                ,case when lpad(CMPND_DSG_FORM_CD, 2, '0') in ('08','09') then typeof(NULL)
+                ,case when lpad(CMPND_DSG_FORM_CD, 2, '0') in ('08','09') then NULL
                     else { TAF_Closure.var_set_type5('CMPND_DSG_FORM_CD', lpad=2, lowerbound=1, upperbound=18, multiple_condition=True) }
 
                 , { TAF_Closure.var_set_type2('REBT_ELGBL_IND', 0, cond1='0', cond2='1', cond3='2') }
@@ -93,7 +93,7 @@ class RXL:
                     *,
                     case when LINE_ADJSTMT_IND is NOT NULL and
                     trim(LINE_ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
-                    then trim(LINE_ADJSTMT_IND) else typeof(NULL) end as LINE_ADJSTMT_IND_CLEAN
+                    then trim(LINE_ADJSTMT_IND) else NULL end as LINE_ADJSTMT_IND_CLEAN
                 from
                     RX_LINE
                 ) H

@@ -13,7 +13,7 @@ class ELG00018(ELG):
     def create(self):
 
         # de retired from TAF in quarter four 2021 ccb
-        created_vars = "typeof(null) as _1115A_PARTICIPANT_FLG"
+        created_vars = "null as _1115A_PARTICIPANT_FLG"
 
         #  Create temp table to determine which beneficiaries have multiple records
         z = f"""
