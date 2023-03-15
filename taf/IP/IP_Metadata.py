@@ -61,10 +61,7 @@ class IP_Metadata:
         """
 
         return f"""
-            case
-                when {alias}.{colname} is not null then {alias}.{colname}
-                else null
-            end as SRVC_ENDG_DT_DRVD_H,
+            {alias}.{colname} as SRVC_ENDG_DT_DRVD_H,
             case
                 when {alias}.{colname} is not null then '1'
                 else null
