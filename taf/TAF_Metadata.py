@@ -44,7 +44,7 @@ class TAF_Metadata:
                 )
             )
 
-        subDF.createOrReplaceTempView("state_submsn_type")
+            subDF.createOrReplaceTempView("state_submsn_type")
 
         pgmLkpData = [
             (385, '002_bsf_ELG00002', '0.1. create_initial_table', 'ELG00002', 'distinct msis_ident_num', 'submtg_state_cd'),
@@ -570,7 +570,7 @@ class TAF_Metadata:
         if spark is not None:
             pgmLkpDF = (spark.createDataFrame(data=pgmLkpData, schema=pgmLkpSchema))
 
-        pgmLkpDF.createOrReplaceTempView("pgm_audt_cnt_lkp")
+            pgmLkpDF.createOrReplaceTempView("pgm_audt_cnt_lkp")
 
 
     XIX_SRVC_CTGRY_CD_values = [

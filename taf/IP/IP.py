@@ -44,7 +44,6 @@ class IP(TAF):
 
             from
                 {DA_SCHEMA}.{_2x_segment} A
-
             where
                 a.TMSIS_ACTV_IND = 1
                 and concat(a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})

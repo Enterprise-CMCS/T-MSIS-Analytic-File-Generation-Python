@@ -34,10 +34,10 @@ class MCP04(MCP):
             "record_number",
             "submitting_state",
             "submitting_state as submtg_state_cd",
-            "%upper_case(state_plan_id_num) as state_plan_id_num",
-            "%upper_case(managed_care_service_area_name) as managed_care_service_area_name",
-            "%fix_old_dates(managed_care_service_area_eff_date)",
-            "%set_end_dt(managed_care_service_area_end_date) as managed_care_service_area_end_date",
+            f"""{ TAF_Closure.upper_case('state_plan_id_num')} as state_plan_id_num""",
+            f"""{ TAF_Closure.upper_case('managed_care_service_area_name')} as managed_care_service_area_name""",
+            f"""{ TAF_Closure.fix_old_dates('managed_care_service_area_eff_date')}""",
+            f"""{ TAF_Closure.set_end_dt('managed_care_service_area_end_date')} as managed_care_service_area_end_date"""
         ]
 
         whr04 = "upper(managed_care_service_area_name) is not null"
