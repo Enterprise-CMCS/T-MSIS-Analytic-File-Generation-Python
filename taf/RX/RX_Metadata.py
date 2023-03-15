@@ -1,11 +1,12 @@
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Runner import TAF_Runner
 
 
 class RX_Metadata:
     """
-    Create the RX metadata.  
+    Create the RX metadata.
     """
-     
+
     def selectDataElements(segment_id: str, alias: str):
         """
         Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
@@ -48,7 +49,7 @@ class RX_Metadata:
         """
         Function for final formatting.
         """
-         
+
         new_line_comma = "\n\t\t\t,"
 
         columns = output_columns.copy()
@@ -57,9 +58,9 @@ class RX_Metadata:
 
     def plan_id_num(colname: str, alias: str):
         """
-        Get alias of plan id num.  
+        Get alias of plan id num.
         """
-         
+
         return f"upper({alias}.{colname}) as mc_plan_id"
 
     cleanser = {
@@ -518,7 +519,6 @@ class RX_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM"
     ]
-
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

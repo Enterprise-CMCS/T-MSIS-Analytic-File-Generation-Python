@@ -410,7 +410,6 @@ class PRV06(PRV):
         """
         self.prv.append(type(self).__name__, z)
 
-
         self.nppes_tax('Prov05_Identifiers_CNST', 'Prov06_Taxonomies_CCD2', 'Prov06_Taxonomies_ALL')
 
         z = f"""
