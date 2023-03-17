@@ -1,11 +1,12 @@
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Runner import TAF_Runner
 
 
 class RX_Metadata:
     """
-    Create the RX metadata.  
+    Create the RX metadata.
     """
-     
+
     def selectDataElements(segment_id: str, alias: str):
         """
         Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
@@ -48,35 +49,18 @@ class RX_Metadata:
         """
         Function for final formatting.
         """
-         
+
         new_line_comma = "\n\t\t\t,"
 
         columns = output_columns.copy()
 
         return new_line_comma.join(columns)
 
-    def dates_of_service(colname: str, alias: str):
-        """
-        Return dates of service.  If column name is null, then set date to 01JAN1960.
-        """
-         
-        return f"""
-            case
-                when {alias}.{colname} is not null then {alias}.{colname}
-                else typeof(null)
-            end as SRVC_ENDG_DT_DRVD_H,
-            case
-                when {alias}.{colname} is not null then '1'
-                else typeof(null)
-            end as SRVC_ENDG_DT_CD_H,
-            coalesce({alias}.{colname}, '01JAN1960') as {colname}
-        """
-
     def plan_id_num(colname: str, alias: str):
         """
-        Get alias of plan id num.  
+        Get alias of plan id num.
         """
-         
+
         return f"upper({alias}.{colname}) as mc_plan_id"
 
     cleanser = {
@@ -535,7 +519,6 @@ class RX_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM"
     ]
-
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

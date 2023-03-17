@@ -7,14 +7,14 @@ class APR(TAF):
     Annual Provider (APR) TAF: The APR TAF contain information about each Medicaid and CHIP provider
     that had a qualifying T-MSIS provider attributes main record, as reflected by the effective and
     end dates, during the calendar year. The information contained in the APR TAF includes but is not
-    limited to: provider name, provider taxonomy, enrollment status, the provider group (if applicable), 
-    programs with which the provider is affiliated, addresses, license number(s), NPI and other providers, 
-    and facility-specific information (if applicable, e.g. bed count), and the various Medicaid/CHIP 
-    programs/waivers/demonstrations, locations, licenses, and identifiers (state-specific as well as national 
-    provider identifiers) associated with the provider. Each APR TAF is comprised of nine files: the Base file; 
-    Affiliated Groups file; Affiliated Programs file; Taxonomy file; Enrollment file; Location file; Licensing file; 
-    Identifiers file; and Bed-Type file. All nine files can be linked together using unique keys that are 
-    constructed based on various data elements. The nine APR TAF are generated for each calendar year 
+    limited to: provider name, provider taxonomy, enrollment status, the provider group (if applicable),
+    programs with which the provider is affiliated, addresses, license number(s), NPI and other providers,
+    and facility-specific information (if applicable, e.g. bed count), and the various Medicaid/CHIP
+    programs/waivers/demonstrations, locations, licenses, and identifiers (state-specific as well as national
+    provider identifiers) associated with the provider. Each APR TAF is comprised of nine files: the Base file;
+    Affiliated Groups file; Affiliated Programs file; Taxonomy file; Enrollment file; Location file; Licensing file;
+    Identifiers file; and Bed-Type file. All nine files can be linked together using unique keys that are
+    constructed based on various data elements. The nine APR TAF are generated for each calendar year
     in which the data are reported.
     """
 
@@ -31,7 +31,7 @@ class APR(TAF):
 
         APR.max_run_id(self, 'PRV', '', self.apr.reporting_period.year)
 
-   
+
     def create(self, tblname, FIL_4TH_NODE):
         """
         Function create_segment, which will be called for each of the segments to run the respective
@@ -60,7 +60,7 @@ class APR(TAF):
         """
         Function max_run_id to get the highest da_run_id for the given state for input monthly TAF. This
         table will then be merged back to the monthly TAF to pull all records for that state, month, and da_run_id.
-        It is also inserted into the metadata table to keep a record of the state/month DA_RUN_IDs that make up 
+        It is also inserted into the metadata table to keep a record of the state/month DA_RUN_IDs that make up
         each annual run.
         To get the max run ID, must go to the job control table and get the latest national run, and then also
         get the latest state-specific run. Determine the later by state and month and then pull those IDs.
@@ -187,7 +187,7 @@ class APR(TAF):
                 lower('{file}') as src_fil_type,
                 {file}_FIL_DT as src_fil_dt,
                 DA_RUN_ID as SRC_DA_RUN_ID,
-			    fil_cret_dt as src_fil_creat_dt
+                fil_cret_dt as src_fil_creat_dt
 
             from max_run_id_{file}_{inyear}
         """
@@ -214,19 +214,19 @@ class APR(TAF):
 
         # Create the backbone of unique state/msis_id to then left join each month back to
         fseg = f"""
-            (select 
+            (select
                 a.submtg_state_cd,
                 b.{self.main_id},
                 count(a.submtg_state_cd) as nmonths
-            from 
+            from
                 max_run_id_{file}_{inyear} a
-            inner join 
+            inner join
                 {self.apr.DA_SCHEMA}.taf_{fileseg} as b
-            on 
+            on
                 a.submtg_state_cd = b.submtg_state_cd and
                 a.{file}_fil_dt = b.{file}_fil_dt and
                 a.da_run_id = b.da_run_id
-            group by 
+            group by
                 a.submtg_state_cd,
                 b.{self.main_id}
             ) as fseg
@@ -248,23 +248,23 @@ class APR(TAF):
                         max_run_id_{file}_{inyear} a
                     inner join
                         {self.apr.DA_SCHEMA}.taf_{fileseg} b
-                    on 
+                    on
                         a.submtg_state_cd = b.submtg_state_cd and
                         a.{file}_fil_dt = b.{file}_fil_dt and
                         a.da_run_id = b.da_run_id
 
-                    where 
+                    where
                         substring(a.{file}_fil_dt,5,2)='{mm}'
                     ) as m{mm}
 
-                on 
+                on
                     fseg.submtg_state_cd=m{mm}.submtg_state_cd and
                     fseg.{self.main_id}=m{mm}.{self.main_id}
             """
             result.append(z.format())
 
         return "\n    ".join(result)
-    
+
     def all_monthly_segments(self, filet):
         """
         Function all_monthly_segment(intbl=, filet=) to join the records with max da_run_ids for the given state/month back to the monthly TAF and
@@ -292,17 +292,17 @@ class APR(TAF):
         if filet == 'PRV':
             b = f"{self.apr.DA_SCHEMA}.taf_{filet}_{self.fileseg}"
         else:
-            b = f"{self.apr.DA_SCHEMA}.taf_{self.fileseg}"            
+            b = f"{self.apr.DA_SCHEMA}.taf_{self.fileseg}"
 
         # Create file that includes state/id/submission type and other data elements for all records in the year for this segment
         z = f"""
-                select  
+                select
                     b.*
                 from
                     max_run_id_{filet}_{self.year} a
                 inner join
                     {b} b
-                on 
+                on
                     a.submtg_state_cd = b.submtg_state_cd and
                     a.{filet}_fil_dt = b.{filet}_fil_dt and
                     a.da_run_id = b.da_run_id
@@ -410,7 +410,7 @@ class APR(TAF):
 
         Function parms:
         incols=input columns
-        outcol=name of column to be output 
+        outcol=name of column to be output
         condition=monthly condition to be evaulated, where default is = 1
         """
 
@@ -470,7 +470,7 @@ class APR(TAF):
 
     def map_arrayvars(varnm='', N=1):
         """
-        Function to return the map array variables.  
+        Function to return the map array variables.
         """
 
         vars = []
@@ -508,7 +508,7 @@ class APR(TAF):
         """
         Function ind_nonmiss_month to loop through individual provider variables
         from month 12 to 1 and identify the month with the first non-missing value
-        for any of those variables. This will then be used to get those variables 
+        for any of those variables. This will then be used to get those variables
         from that month if needed. The month = 00 if NO non-missing month.
         """
 
@@ -546,9 +546,9 @@ class APR(TAF):
         for m in self.monthsb:
             cases.append(f"when {monthval1}='{m}' then {incol1}_{m}")
 
-            if monthval2 != '':
-                for m in self.monthsb:
-                    cases.append(f"when {monthval2}='{m}' then {incol2}_{m}")
+        if monthval2 != '':
+            for m in self.monthsb:
+                cases.append(f"when {monthval2}='{m}' then {incol2}_{m}")
 
         return f"case {' '.join(cases)} else null end as {outcol}"
 
@@ -562,15 +562,15 @@ class APR(TAF):
         z = f"""
             create or replace temporary view {segname}_SPLMTL_{self.year} as
 
-            select 
+            select
                 submtg_state_cd
                 ,{self.main_id}
                 ,count(submtg_state_cd) as {segname}_SPLMTL_CT
 
-            from 
+            from
                 {segfile}
 
-            group by 
+            group by
                 submtg_state_cd,
                 {self.main_id}
         """

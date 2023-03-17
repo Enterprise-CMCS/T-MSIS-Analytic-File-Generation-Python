@@ -55,23 +55,6 @@ class LT_Metadata:
 
         return new_line_comma.join(columns)
 
-    def dates_of_service(colname: str, alias: str):
-        """
-        Return dates of service.  If column name is null, then set date to 01JAN1960.
-        """
-         
-        return f"""
-            case
-                when {alias}.{colname} is not null then {alias}.{colname}
-                else null
-            end as SRVC_ENDG_DT_DRVD_H,
-            case
-                when {alias}.{colname} is not null then '1'
-                else null
-            end as SRVC_ENDG_DT_CD_H,
-            coalesce({alias}.{colname}, '01JAN1960') as {colname}
-        """
-
     cleanser = {
         "ADJDCTN_DT": TAF_Closure.coalesce_date,
         "ADJSTMT_CLM_NUM": TAF_Closure.coalesce_tilda,

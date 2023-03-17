@@ -83,7 +83,7 @@ class TAF_Runner():
             self.combined_list = []
 
         # determine if national or state specific run
-        if list(eval(state_code)).len() > 1:
+        if len(state_code) > 4:
             self.national_run = 1
         else:
             self.national_run = 0
@@ -321,6 +321,37 @@ class TAF_Runner():
             parms = f"{self.st_dt}"
         else:
             parms = f"{self.st_dt}" + ", " + "submtg_state_cd" + " " + "in" + " " + "(" + f"{self.state_code}" + ")"
+
+        print("DEBUG: " + f"""
+            INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
+                da_run_id
+               ,fil_type
+               ,schld_ordr_num
+               ,job_parms_txt
+               ,cd_spec_vrsn_name
+               ,job_strt_ts
+               ,job_end_ts
+               ,sucsfl_ind
+               ,rec_add_ts
+               ,rec_updt_ts
+               ,rfrsh_vw_flag
+               ,taf_cd_spec_vrsn_name
+            )
+            VALUES (
+                {self.DA_RUN_ID}
+               ,"{file_type}"
+               ,1
+               ,"{parms}"
+               ,concat("{self.version}", ",", "7.1")
+               ,NULL
+               ,NULL
+               ,False
+               ,from_utc_timestamp(current_timestamp(), "EST")
+               ,NULL
+               ,False
+               ,concat("{self.version}", ",", "7.1")
+            )
+        """)
 
         spark.sql(
             f"""

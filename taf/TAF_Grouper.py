@@ -933,33 +933,52 @@ class TAF_Grouper:
         """
         Helper function that generates case-when SQLs statements to fetch ccs.  
         """
-         
+
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ccs_proc AS
-            SELECT cd_rng
-                ,ccs
+            SELECT explode(split(regexp_replace(`Code Range`, "\'", ""), "-")) AS cd_rng
+                ,CCS
                 ,CASE
-                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
                         THEN 'Lab       '
-                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_Rad_CCS_Cat) }')
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Rad_CCS_Cat) }')
                         THEN 'Rad       '
-                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_DME_CCS_Cat) }')
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_DME_CCS_Cat) }')
                         THEN 'DME       '
-                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_transp_CCS_Cat) }')
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_transp_CCS_Cat) }')
                         THEN 'Transprt  '
                     ELSE NULL
                     END AS code_cat
-            FROM {self.runner.DA_SCHEMA_DC}.CCS_SRVCS_PRCDR_RFRNC
+            FROM hcup.ccs_sp_mapping
         """
         self.runner.append(filetyp, z)
 
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ccs_dx AS
-            SELECT icd_10_cm_cd
-                ,dflt_ccsr_ctgry_ip
-                ,dflt_ccsr_ctgry_ip AS dflt_ccsr_ctgry_lt
-                ,dflt_ccsr_ctgry_op AS dflt_ccsr_ctgry_ot
-            FROM {self.runner.DA_SCHEMA_DC}.DXCCSR_RFRNC
+            SELECT
+            `ICD-10-CM Code` AS icd_10_cm_cd,
+            max(
+                case
+                when `Inpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
+                else NULL
+                end
+            ) as dflt_ccsr_ctgry_ip,
+            max(
+                case
+                when `Inpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
+                else NULL
+                end
+            ) as dflt_ccsr_ctgry_lt,
+            max(
+                case
+                when `Outpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
+                else NULL
+                end
+            ) as dflt_ccsr_ctgry_ot
+            FROM
+            hcup.ccsr_dx_mapping
+            GROUP BY
+            `ICD-10-CM Code`
         """
         self.runner.append(filetyp, z)
 
