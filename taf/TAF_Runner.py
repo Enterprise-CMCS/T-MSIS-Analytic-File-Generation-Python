@@ -263,8 +263,7 @@ class TAF_Runner():
             tuples.append('concat' + str(j))
         return ','.join(tuples)
 
-    @staticmethod
-    def ssn_ind():
+    def ssn_ind(self):
         """
         Create a temporary view to determine if each submitting state uses social
         security numbers to identify members.
@@ -278,15 +277,13 @@ class TAF_Runner():
 
         return """
                 create or replace temporary view ssn_ind as
-                select distinct submtg_state_cd
-                    ,max(ssn_ind) as ssn_ind
-                    ,max(tmsis_run_id) as tmsis_run_id
+                select distinct submtg_state_cd, ssn_ind
                 from tmsis.tmsis_fhdr_rec_elgblty
                 where tmsis_actv_ind = 1
                     and tmsis_rptg_prd is not null
                     and tot_rec_cnt > 0
                     and ssn_ind IN ('1','0')
-                group by submtg_state_cd
+                    and concat(submtg_state_cd,tmsis_run_id) in ({self.get_combined_list()})
         """
 
     def job_control_rd(self, da_run_id: int, file_type: str):
