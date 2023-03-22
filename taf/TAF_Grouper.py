@@ -931,7 +931,10 @@ class TAF_Grouper:
 
     def fetch_ccs(self, filetyp: str):
         """
-        Helper function that generates case-when SQLs statements to fetch ccs.  
+        Helper function that generates case-when SQLs statements to fetch ccs.
+        The Clinical Classifications Software Refined (CCSR) aggregates diagnoses
+        into clinically meaningful categoires and includes the assignment of a
+        default category for both inpatient and outpatient data.
         """
 
         z = f"""
@@ -953,6 +956,9 @@ class TAF_Grouper:
         """
         self.runner.append(filetyp, z)
 
+        # the assignment of default ccsr categories to tmsis file types
+        # is consistent with the sas macro definiton
+        # https://github.com/CMSgov/T-MSIS-Analytic-File-Generation-Code/blob/c854e63a3bf692fd3751f65bb2cc22bfc87c24a1/AWS_Shared_Macros.sas#L1521
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ccs_dx AS
             SELECT
