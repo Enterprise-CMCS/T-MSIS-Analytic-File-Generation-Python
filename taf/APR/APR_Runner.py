@@ -58,6 +58,8 @@ class APR_Runner(TAF_Runner):
         from taf.APR.BED import BED
         from taf.APR.BASE import BASE
 
+        self.max_run_id('PRV', '', self.reporting_period.year)
+
         LOC(self).create()
         LIC(self).create()
         IDT(self).create()
@@ -67,6 +69,143 @@ class APR_Runner(TAF_Runner):
         PGM(self).create()
         BED(self).create()
         BASE(self).create()
+
+    def max_run_id(self, file: str, tbl: str, inyear):
+        """
+        Function max_run_id to get the highest da_run_id for the given state for input monthly TAF. This
+        table will then be merged back to the monthly TAF to pull all records for that state, month, and da_run_id.
+        It is also inserted into the metadata table to keep a record of the state/month DA_RUN_IDs that make up 
+        each annual run.
+        To get the max run ID, must go to the job control table and get the latest national run, and then also
+        get the latest state-specific run. Determine the later by state and month and then pull those IDs.
+
+        Function parms:
+            inyear=input year, set to the current year
+        """
+
+        filel = file.lower()
+        if tbl == '':
+            tbl = f"taf_{filel}"
+
+        # For NON state-specific runs (where job_parms_text does not include submtg_state_cd in),
+        #    pull highest da_run_id by time ;
+
+        z = f"""
+                CREATE OR REPLACE TEMPORARY VIEW max_run_id_{file}_{inyear}_nat AS
+                SELECT {file}_fil_dt
+                    ,max(da_run_id) AS da_run_id
+                FROM (
+                    SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
+                        ,da_run_id
+                    FROM {self.DA_SCHEMA}.job_cntl_parms
+                    WHERE upper(fil_type) = '{file}'
+                        AND sucsfl_ind = 1
+                        AND substring(job_parms_txt, 1, 4) = '{inyear}'
+                        AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) = 0
+                    )
+                GROUP BY {file}_fil_dt
+        """
+        self.prepend(z)
+
+        # For state-specific runs (where job_parms_text includes submtg_state_cd in),
+        #    pull highest da_run_id by time and state;
+
+        z = f"""
+                CREATE OR REPLACE TEMPORARY VIEW max_run_id_{file}_{inyear}_ss AS
+                SELECT {file}_fil_dt
+                    ,submtg_state_cd
+                    ,max(da_run_id) AS da_run_id
+                FROM (
+                    SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
+                        ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{{2}})') AS submtg_state_cd
+                        ,da_run_id
+                    FROM {self.DA_SCHEMA}.job_cntl_parms
+                    WHERE upper(fil_type) = '{file}'
+                        AND sucsfl_ind = 1
+                        AND substring(job_parms_txt, 1, 4) = '{inyear}'
+                        AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) > 0
+                    )
+                GROUP BY {file}_fil_dt
+                    ,submtg_state_cd
+        """
+        self.prepend(z)
+
+        # Now join the national and state lists by month - take the national run ID if higher than
+        #    the state-specific, otherwise take the state-specific.
+        #    Must ALSO stack with the national IDs so they are not lost.
+        #    In outer query, get a list of unique IDs to pull;
+
+        z = f"""
+                CREATE OR REPLACE TEMPORARY VIEW job_cntl_parms_both_{file}_{inyear} AS
+                SELECT DISTINCT {file}_fil_dt
+                    ,da_run_id
+                FROM (
+                    SELECT coalesce(a.{file}_fil_dt, b.{file}_fil_dt) AS {file}_fil_dt
+                        ,CASE
+                            WHEN a.da_run_id > b.da_run_id
+                                OR b.da_run_id IS NULL
+                                THEN a.da_run_id
+                            ELSE b.da_run_id
+                            END AS da_run_id
+                    FROM max_run_id_{file}_{inyear}_nat a
+                    FULL JOIN max_run_id_{file}_{inyear}_ss b ON a.{file}_fil_dt = b.{file}_fil_dt
+
+                    UNION ALL
+
+                    SELECT {file}_fil_dt
+                        ,da_run_id
+                    FROM max_run_id_{file}_{inyear}_nat
+                    )
+        """
+        self.prepend(z)
+
+        # Now join to EFTS data to get table of month/state/run IDs to use for data pull.
+        #    Note must then take the highest da_run_id by state/month (if any state-specific runs
+        #    were identified as being later than a national run):
+
+        z = f"""
+            create or replace temporary view max_run_id_{file}_{inyear} as
+            select a.{file}_fil_dt
+                ,b.submtg_state_cd
+                ,max(b.da_run_id) as da_run_id
+                ,max(b.fil_cret_dt) as fil_cret_dt
+
+            from job_cntl_parms_both_{file}_{inyear} a
+                inner join
+                (select da_run_id, incldd_state_cd as submtg_state_cd, fil_cret_dt
+                from {self.DA_SCHEMA}.efts_fil_meta where incldd_state_cd != 'Missing' ) b
+
+            on a.da_run_id = b.da_run_id
+        """
+
+        if (self.ST_FILTER().find("ALL") != -1):
+            z += f"""
+                 WHERE {self.ST_FILTER()}
+            """
+
+        z += f"""
+            group by a.{file}_fil_dt
+                    ,b.submtg_state_cd
+        """
+        self.prepend(z)
+
+        #    Insert into metadata table so we keep track of all monthly DA_RUN_IDs
+        #    that go into each annual {fil_typ} file
+
+        z = f"""
+            insert into {self.DA_SCHEMA}.TAF_ANN_INP_SRC
+            select
+                {self.DA_RUN_ID} as ANN_DA_RUN_ID,
+                'apr' as ann_fil_type,
+                SUBMTG_STATE_CD,
+                lower('{file}') as src_fil_type,
+                {file}_FIL_DT as src_fil_dt,
+                DA_RUN_ID as SRC_DA_RUN_ID,
+			    fil_cret_dt as src_fil_creat_dt
+
+            from max_run_id_{file}_{inyear}
+        """
+        self.prepend(z)
 
 
 # -----------------------------------------------------------------------------

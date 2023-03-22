@@ -89,6 +89,7 @@ class TAF_Runner():
             self.national_run = 0
 
         self.sql = {}
+        self.preplan = []
         self.plan = {}
 
     def print(self):
@@ -631,6 +632,13 @@ class TAF_Runner():
                 LIMIT {rtcnt}
             """)
 
+    def prepend(self, z: str):
+        """
+        Helper function to prepend segments to the query plan.
+        """
+
+        self.preplan.append(z)
+
     def append(self, segment: str, z: str):
         """
         Helper function to append segments to the query plan.
@@ -653,6 +661,10 @@ class TAF_Runner():
         Helper function to view the query plan.
         """
 
+        for sql in self.preplan:
+            print('-- preplan')
+            print(sql)
+
         for segment, chain in self.plan.items():
             for sql in chain:
                 print(f"-- {segment}")
@@ -664,6 +676,25 @@ class TAF_Runner():
         """
 
         print('Writing SQL Files ...')
+
+        for chain in self.preplan:
+
+            print('\tpreplan...')
+            for z in chain:
+
+                v = '\n'.join(z.split('\n')[0:2])
+                vs = v.split()
+
+                if len(vs) >= 5:
+                    # fn = './test/sql/python/' + 'preplan' + '/' + vs[5] + '.sql'
+                    if module != '':
+                        fn = '../../sql/python/' + module + '/' + 'preplan' + '/' + vs[5] + '.sql'
+                    else:
+                        fn = '../../sql/python/' + 'preplan' + '/' + vs[5] + '.sql'
+                    print(fn)
+                    f = open(fn, 'w')
+                    f.write(z)
+                    f.close()
 
         for segment, chain in self.plan.items():
 
@@ -710,6 +741,21 @@ class TAF_Runner():
 
         self.logger.info('Creating TAF Views...')
 
+        for chain in self.preplan:
+            self.logger.info('\tpreplan...')
+            for z in chain:
+                # self.logger.info('\n'.join(z.split('\n')[0:2]))
+
+                v = '\n'.join(z.split('\n')[0:2])
+                vs = v.split()
+
+                if len(vs) >= 5:
+                    print('\t\t' + vs[5])
+
+                # self.logger.info('\t\t' + v.split()[5])
+
+                spark.sql(z)
+
         for segment, chain in self.plan.items():
             self.logger.info('\t' + segment + '...')
             for z in chain:
@@ -748,6 +794,41 @@ class TAF_Runner():
             self.logger.info('Auditing  "0.1. create_initial_table" - "distinct msis_ident_num" ...')
 
             pdf = None
+            for chain in self.preplan:
+                self.logger.info('\tpreplan...')
+                for z in chain:
+                    v = '\n'.join(z.split('\n')[0:2])
+                    vs = v.split()
+
+                    if len(vs) >= 5:
+                        # print('\t\t' + vs[5])
+
+                        obj_name = v.split()[5]
+                        if obj_name in ['ELG00002', 'ELG00003', 'ELG00004', 'ELG00005', 'ELG00006', 'ELG00007', 'ELG00008', 'ELG00009', 'ELG00010',
+                                        'ELG00011', 'ELG00012', 'ELG00013', 'ELG00014', 'ELG00015', 'ELG00016', 'ELG00017', 'ELG00018', 'ELG00020',
+                                        'ELG00021', 'TPL00002']:
+                            sdf_audit_cnt = spark.sql(f"""
+                                select
+                                    '{obj_name}' as obj_name,
+                                    submtg_state_cd,
+                                    count(distinct msis_ident_num) as audt_cnt_val
+                                from
+                                    {obj_name}
+                                group by
+                                    obj_name,
+                                    submtg_state_cd
+                                order by
+                                    obj_name,
+                                    submtg_state_cd""")
+
+                            if pdf is None:
+                                print(obj_name)
+                                pdf = sdf_audit_cnt.toPandas()
+                            else:
+                                print("appending - " + obj_name)
+                                pdf = pdf.append(sdf_audit_cnt.toPandas())
+
+
             for segment, chain in self.plan.items():
                 self.logger.info('\t' + segment + '...')
                 for z in chain:

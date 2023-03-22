@@ -15,6 +15,7 @@ class MCP_Runner(TAF_Runner):
                  run_id: str,
                  job_id: int,
                  file_version: str):
+
         super().__init__(da_schema,
                          reporting_period,
                          state_code,
@@ -22,7 +23,7 @@ class MCP_Runner(TAF_Runner):
                          job_id,
                          file_version)
 
-        self.monyrout = self.reporting_period.strftime("%Y%m").upper()
+        self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 
     def ST_FILTER(self):
         """
