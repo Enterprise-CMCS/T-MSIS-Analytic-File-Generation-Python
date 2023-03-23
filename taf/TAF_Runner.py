@@ -276,7 +276,7 @@ class TAF_Runner():
                 z (str): SQL statement string to create a temporary view
         """
 
-        return """
+        return f"""
                 create or replace temporary view ssn_ind as
                 select distinct submtg_state_cd, ssn_ind
                 from tmsis.tmsis_fhdr_rec_elgblty
