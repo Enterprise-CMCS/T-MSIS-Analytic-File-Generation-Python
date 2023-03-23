@@ -48,7 +48,7 @@ class OTL:
                 , { TAF_Closure.fix_old_dates('PRCDR_CD_DT') }
                 , { TAF_Closure.var_set_proc('PRCDR_CD_IND') }
                 , { TAF_Closure.var_set_type1('PRCDR_1_MDFR_CD', lpad=2) }
-                , case when lpad(IMNZTN_TYPE_CD, 2, '0') = '88' then typeof(NULL)
+                , case when lpad(IMNZTN_TYPE_CD, 2, '0') = '88' then NULL
                     else { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound=29, multiple_condition='YES') }
                 , { TAF_Closure.var_set_type6('BILL_AMT', cond1='888888888.88', cond2='9999999999.99', cond3='999999.99', cond4='999999') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1='99999999.00', cond2='888888888.88', cond3='9999999999.99') }
@@ -99,7 +99,7 @@ class OTL:
                     *,
                     case when LINE_ADJSTMT_IND is NOT NULL and
                     trim(LINE_ADJSTMT_IND)  in ('0', '1', '2', '3', '4', '5', '6')
-                    then trim(LINE_ADJSTMT_IND) else typeof(NULL) end as LINE_ADJSTMT_IND_CLEAN
+                    then trim(LINE_ADJSTMT_IND) else NULL end as LINE_ADJSTMT_IND_CLEAN
                 from
                     OTHR_TOC_LINE
                 ) H

@@ -8,10 +8,23 @@ class MCP_Runner(TAF_Runner):
     These statements are intended to initialize the module.
     """
 
-    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int):
-        super().__init__(da_schema, reporting_period, state_code, run_id, job_id)
+    def __init__(self,
+                 da_schema: str,
+                 reporting_period: str,
+                 state_code: str,
+                 run_id: str,
+                 job_id: int,
+                 file_version: str):
 
-        self.monyrout = self.reporting_period.strftime("%Y%m").upper()
+        super().__init__(da_schema,
+                         reporting_period,
+                         state_code,
+                         run_id,
+                         job_id,
+                         file_version)
+
+        self.monyrout = self.reporting_period.strftime('%Y%m').upper()
+
 
     def ST_FILTER(self):
         """

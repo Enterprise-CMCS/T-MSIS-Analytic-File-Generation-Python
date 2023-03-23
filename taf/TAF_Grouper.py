@@ -263,7 +263,7 @@ class TAF_Grouper:
         select = []
         if IAP:
 
-            select.append(f"typeof(NULL) as IAP_CONDITION_IND")
+            select.append(f"NULL as IAP_CONDITION_IND")
 
         return "\n".join(select)
 
@@ -577,7 +577,7 @@ class TAF_Grouper:
         if IAP:
 
             # code IAP_CONDITION_IND
-            select.append(",typeof(NULL) as IAP_CONDITION_IND")
+            select.append(",NULL as IAP_CONDITION_IND")
 
         if PHC:
 
@@ -931,35 +931,60 @@ class TAF_Grouper:
 
     def fetch_ccs(self, filetyp: str):
         """
-        Helper function that generates case-when SQLs statements to fetch ccs.  
+        Helper function that generates case-when SQLs statements to fetch ccs.
+        The Clinical Classifications Software Refined (CCSR) aggregates diagnoses
+        into clinically meaningful categoires and includes the assignment of a
+        default category for both inpatient and outpatient data.
         """
-         
+
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ccs_proc AS
-            SELECT cd_rng
-                ,ccs
+            SELECT explode(split(regexp_replace(`Code Range`, "\'", ""), "-")) AS cd_rng
+                ,CCS
                 ,CASE
-                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
                         THEN 'Lab       '
-                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_Rad_CCS_Cat) }')
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Rad_CCS_Cat) }')
                         THEN 'Rad       '
-                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_DME_CCS_Cat) }')
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_DME_CCS_Cat) }')
                         THEN 'DME       '
-                    WHEN ccs IN ('{ "','".join(TAF_Metadata.vs_transp_CCS_Cat) }')
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_transp_CCS_Cat) }')
                         THEN 'Transprt  '
                     ELSE NULL
                     END AS code_cat
-            FROM {self.runner.DA_SCHEMA_DC}.CCS_SRVCS_PRCDR_RFRNC
+            FROM hcup.ccs_sp_mapping
         """
         self.runner.append(filetyp, z)
 
+        # the assignment of default ccsr categories to tmsis file types
+        # is consistent with the sas macro definiton
+        # https://github.com/CMSgov/T-MSIS-Analytic-File-Generation-Code/blob/c854e63a3bf692fd3751f65bb2cc22bfc87c24a1/AWS_Shared_Macros.sas#L1521
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ccs_dx AS
-            SELECT icd_10_cm_cd
-                ,dflt_ccsr_ctgry_ip
-                ,dflt_ccsr_ctgry_ip AS dflt_ccsr_ctgry_lt
-                ,dflt_ccsr_ctgry_op AS dflt_ccsr_ctgry_ot
-            FROM {self.runner.DA_SCHEMA_DC}.DXCCSR_RFRNC
+            SELECT
+            `ICD-10-CM Code` AS icd_10_cm_cd,
+            max(
+                case
+                when `Inpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
+                else NULL
+                end
+            ) as dflt_ccsr_ctgry_ip,
+            max(
+                case
+                when `Inpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
+                else NULL
+                end
+            ) as dflt_ccsr_ctgry_lt,
+            max(
+                case
+                when `Outpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
+                else NULL
+                end
+            ) as dflt_ccsr_ctgry_ot
+            FROM
+            hcup.ccsr_dx_mapping
+            GROUP BY
+            `ICD-10-CM Code`
         """
         self.runner.append(filetyp, z)
 

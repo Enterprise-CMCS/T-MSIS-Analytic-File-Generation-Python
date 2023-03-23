@@ -1,115 +1,15 @@
-from taf.TAF_Claims import TAF_Claims
-from taf.TAF_Grouper import TAF_Grouper
-from taf.TAF_Runner import TAF_Runner
+from taf.LT.LT_Runner import LT_Runner
 
+lt = LT_Runner(
+    da_schema="TAF_PYTHON",
+    reporting_period="2022-02-28",
+    state_code="'05'",
+    run_id="'4863'",
+    job_id="'99999'",
+)
+lt.init()
 
-class OT_Runner(TAF_Runner):
-    """
-    The TAF-specific module contains executable statements as well as function definitions to
-    generate and execute SQL to produce individual segment as well as final output.
-    These statements are intended to initialize the module.
-    """
-
-    def __init__(self,
-                 da_schema: str,
-                 reporting_period: str,
-                 state_code: str,
-                 run_id: str,
-                 job_id: int,
-                 file_version: str):
-        super().__init__(da_schema,
-                         reporting_period,
-                         state_code,
-                         run_id,
-                         job_id,
-                         file_version)
-
-    def init(self):
-        """
-        Import, create, and build out each segment for a given file type.
-        At this point, a dictionary has been created for each file segment containing
-        SQL queries that will be sequential executed by the run definition to produce output.
-        """
-
-        from taf.OT.OT import OT
-        from taf.OT.OTH import OTH
-        from taf.OT.OTL import OTL
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - TAXO_SWITCHES
-        #   2 - NPPES_NPI_STEP2
-        #   3 - NPPES_NPI
-        #   4 - CCS_PROC
-        #   5 - CCS_DX
-        # -------------------------------------------------
-        grouper = TAF_Grouper(self)
-        grouper.fetch_nppes("OTHR_TOC")
-        grouper.fetch_ccs("OTHR_TOC")
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - HEADER_OTHR_TOC
-        #   2 - HEADER2_OTHR_TOC
-        #   3 - NO_DISCHARGE_DATES
-        #   4 - CLM_FMLY_OTHR_TOC
-        #   5 - COMBINED_HEADER
-        #   6 - ALL_HEADER_OTHR_TOC
-        #   7 - FA_HDR_OTHR_TOC
-        # -------------------------------------------------
-        claims = TAF_Claims(self)
-        claims.AWS_Claims_Family_Table_Link(
-            "tmsis", "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
-        )
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - OTHR_TOC_LINE_IN
-        #   2 - OTHR_TOC_LINE
-        #   3 - RN_OTHR_TOC
-        #   4 - OTHR_TOC_HEADER
-        # -------------------------------------------------
-        ot = OT(self)
-        ot.AWS_Extract_Line(
-            "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
-        )
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - OTHR_TOC_HEADER_STEP1
-        #   2 - OTHR_TOC_TAXONOMY
-        #   3 - OTHR_TOC_HEADER_GROUPER
-        # -------------------------------------------------
-        grouper = TAF_Grouper(self)
-        grouper.AWS_Assign_Grouper_Data_Conv(
-            "OTHR_TOC",
-            "OTHR_TOC_HEADER",
-            "OTHR_TOC_LINE",
-            "a.SRVC_ENDG_DT_HEADER",
-            False,
-            True,
-            True,
-            True,
-            True,
-        )
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   - OTH
-        #   - TAF_OTH
-        # -------------------------------------------------
-        OTH().create(self)
-        OTL().create(self)
-
-        grouper.fasc_code("OTHR_TOC")
-
-        OTH().build(self)
-        OTL().build(self)
+lt.view_plan()
 
 
 # -----------------------------------------------------------------------------
@@ -120,7 +20,7 @@ class OT_Runner(TAF_Runner):
 # The laws of most jurisdictions throughout the world automatically confer
 # exclusive Copyright and Related Rights (defined below) upon the creator and
 # subsequent owner(s) (each and all, an "owner") of an original work of
-# authorshOT and/or a database (each, a "Work").
+# authorship and/or a database (each, a "Work").
 
 # Certain owners wish to permanently relinquish those rights to a Work for the
 # purpose of contributing to a commons of creative, cultural and scientific

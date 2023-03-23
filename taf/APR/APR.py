@@ -7,14 +7,14 @@ class APR(TAF):
     Annual Provider (APR) TAF: The APR TAF contain information about each Medicaid and CHIP provider
     that had a qualifying T-MSIS provider attributes main record, as reflected by the effective and
     end dates, during the calendar year. The information contained in the APR TAF includes but is not
-    limited to: provider name, provider taxonomy, enrollment status, the provider group (if applicable), 
-    programs with which the provider is affiliated, addresses, license number(s), NPI and other providers, 
-    and facility-specific information (if applicable, e.g. bed count), and the various Medicaid/CHIP 
-    programs/waivers/demonstrations, locations, licenses, and identifiers (state-specific as well as national 
-    provider identifiers) associated with the provider. Each APR TAF is comprised of nine files: the Base file; 
-    Affiliated Groups file; Affiliated Programs file; Taxonomy file; Enrollment file; Location file; Licensing file; 
-    Identifiers file; and Bed-Type file. All nine files can be linked together using unique keys that are 
-    constructed based on various data elements. The nine APR TAF are generated for each calendar year 
+    limited to: provider name, provider taxonomy, enrollment status, the provider group (if applicable),
+    programs with which the provider is affiliated, addresses, license number(s), NPI and other providers,
+    and facility-specific information (if applicable, e.g. bed count), and the various Medicaid/CHIP
+    programs/waivers/demonstrations, locations, licenses, and identifiers (state-specific as well as national
+    provider identifiers) associated with the provider. Each APR TAF is comprised of nine files: the Base file;
+    Affiliated Groups file; Affiliated Programs file; Taxonomy file; Enrollment file; Location file; Licensing file;
+    Identifiers file; and Bed-Type file. All nine files can be linked together using unique keys that are
+    constructed based on various data elements. The nine APR TAF are generated for each calendar year
     in which the data are reported.
     """
 
@@ -29,9 +29,6 @@ class APR(TAF):
         self.monthsb = ['12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01']
         self.year = self.apr.reporting_period.year
 
-        APR.max_run_id(self, 'PRV', '', self.apr.reporting_period.year)
-
-   
     def create(self, tblname, FIL_4TH_NODE):
         """
         Function create_segment, which will be called for each of the segments to run the respective
@@ -56,143 +53,6 @@ class APR(TAF):
         # %create_efts_metadata;
         pass
 
-    def max_run_id(self, file: str, tbl: str, inyear):
-        """
-        Function max_run_id to get the highest da_run_id for the given state for input monthly TAF. This
-        table will then be merged back to the monthly TAF to pull all records for that state, month, and da_run_id.
-        It is also inserted into the metadata table to keep a record of the state/month DA_RUN_IDs that make up 
-        each annual run.
-        To get the max run ID, must go to the job control table and get the latest national run, and then also
-        get the latest state-specific run. Determine the later by state and month and then pull those IDs.
-
-        Function parms:
-            inyear=input year, set to the current year
-        """
-
-        filel = file.lower()
-        if tbl == '':
-            tbl = f"taf_{filel}"
-
-        # For NON state-specific runs (where job_parms_text does not include submtg_state_cd in),
-        #    pull highest da_run_id by time ;
-
-        z = f"""
-                CREATE OR REPLACE TEMPORARY VIEW max_run_id_{file}_{inyear}_nat AS
-                SELECT {file}_fil_dt
-                    ,max(da_run_id) AS da_run_id
-                FROM (
-                    SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
-                        ,da_run_id
-                    FROM {self.apr.DA_SCHEMA}.job_cntl_parms
-                    WHERE upper(fil_type) = '{file}'
-                        AND sucsfl_ind = 1
-                        AND substring(job_parms_txt, 1, 4) = '{inyear}'
-                        AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) = 0
-                    )
-                GROUP BY {file}_fil_dt
-        """
-        self.apr.append(type(self).__name__, z)
-
-        # For state-specific runs (where job_parms_text includes submtg_state_cd in),
-        #    pull highest da_run_id by time and state;
-
-        z = f"""
-                CREATE OR REPLACE TEMPORARY VIEW max_run_id_{file}_{inyear}_ss AS
-                SELECT {file}_fil_dt
-                    ,submtg_state_cd
-                    ,max(da_run_id) AS da_run_id
-                FROM (
-                    SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
-                        ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{{2}})') AS submtg_state_cd
-                        ,da_run_id
-                    FROM {self.apr.DA_SCHEMA}.job_cntl_parms
-                    WHERE upper(fil_type) = '{file}'
-                        AND sucsfl_ind = 1
-                        AND substring(job_parms_txt, 1, 4) = '{inyear}'
-                        AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) > 0
-                    )
-                GROUP BY {file}_fil_dt
-                    ,submtg_state_cd
-        """
-        self.apr.append(type(self).__name__, z)
-
-        # Now join the national and state lists by month - take the national run ID if higher than
-        #    the state-specific, otherwise take the state-specific.
-        #    Must ALSO stack with the national IDs so they are not lost.
-        #    In outer query, get a list of unique IDs to pull;
-
-        z = f"""
-                CREATE OR REPLACE TEMPORARY VIEW job_cntl_parms_both_{file}_{inyear} AS
-                SELECT DISTINCT {file}_fil_dt
-                    ,da_run_id
-                FROM (
-                    SELECT coalesce(a.{file}_fil_dt, b.{file}_fil_dt) AS {file}_fil_dt
-                        ,CASE
-                            WHEN a.da_run_id > b.da_run_id
-                                OR b.da_run_id IS NULL
-                                THEN a.da_run_id
-                            ELSE b.da_run_id
-                            END AS da_run_id
-                    FROM max_run_id_{file}_{inyear}_nat a
-                    FULL JOIN max_run_id_{file}_{inyear}_ss b ON a.{file}_fil_dt = b.{file}_fil_dt
-
-                    UNION ALL
-
-                    SELECT {file}_fil_dt
-                        ,da_run_id
-                    FROM max_run_id_{file}_{inyear}_nat
-                    )
-        """
-        self.apr.append(type(self).__name__, z)
-
-        # Now join to EFTS data to get table of month/state/run IDs to use for data pull.
-        #    Note must then take the highest da_run_id by state/month (if any state-specific runs
-        #    were identified as being later than a national run):
-
-        z = f"""
-            create or replace temporary view max_run_id_{file}_{inyear} as
-            select a.{file}_fil_dt
-                ,b.submtg_state_cd
-                ,max(b.da_run_id) as da_run_id
-                ,max(b.fil_cret_dt) as fil_cret_dt
-
-            from job_cntl_parms_both_{file}_{inyear} a
-                inner join
-                (select da_run_id, incldd_state_cd as submtg_state_cd, fil_cret_dt
-                from {self.apr.DA_SCHEMA}.efts_fil_meta where incldd_state_cd != 'Missing' ) b
-
-            on a.da_run_id = b.da_run_id
-        """
-
-        if (str(self.apr.ST_FILTER).find("ALL") != -1):
-            z += f"""
-                 WHERE {self.apr.ST_FILTER}
-            """
-
-        z += f"""
-            group by a.{file}_fil_dt
-                    ,b.submtg_state_cd
-        """
-        self.apr.append(type(self).__name__, z)
-
-        #    Insert into metadata table so we keep track of all monthly DA_RUN_IDs
-        #    that go into each annual {fil_typ} file
-
-        z = f"""
-            insert into {self.apr.DA_SCHEMA}.TAF_ANN_INP_SRC
-            select
-                {self.apr.DA_RUN_ID} as ANN_DA_RUN_ID,
-                'apr' as ann_fil_type,
-                SUBMTG_STATE_CD,
-                lower('{file}') as src_fil_type,
-                {file}_FIL_DT as src_fil_dt,
-                DA_RUN_ID as SRC_DA_RUN_ID,
-			    fil_cret_dt as src_fil_creat_dt
-
-            from max_run_id_{file}_{inyear}
-        """
-        self.apr.append(type(self).__name__, z)
-
     def join_monthly(self, fileseg, fil_typ, inyear, main_id):
         """
         Function join_monthly to join the max da_run_ids for the given state/month back to the monthly TAF and
@@ -214,19 +74,19 @@ class APR(TAF):
 
         # Create the backbone of unique state/msis_id to then left join each month back to
         fseg = f"""
-            (select 
+            (select
                 a.submtg_state_cd,
                 b.{self.main_id},
                 count(a.submtg_state_cd) as nmonths
-            from 
+            from
                 max_run_id_{file}_{inyear} a
-            inner join 
+            inner join
                 {self.apr.DA_SCHEMA}.taf_{fileseg} as b
-            on 
+            on
                 a.submtg_state_cd = b.submtg_state_cd and
                 a.{file}_fil_dt = b.{file}_fil_dt and
                 a.da_run_id = b.da_run_id
-            group by 
+            group by
                 a.submtg_state_cd,
                 b.{self.main_id}
             ) as fseg
@@ -248,23 +108,23 @@ class APR(TAF):
                         max_run_id_{file}_{inyear} a
                     inner join
                         {self.apr.DA_SCHEMA}.taf_{fileseg} b
-                    on 
+                    on
                         a.submtg_state_cd = b.submtg_state_cd and
                         a.{file}_fil_dt = b.{file}_fil_dt and
                         a.da_run_id = b.da_run_id
 
-                    where 
+                    where
                         substring(a.{file}_fil_dt,5,2)='{mm}'
                     ) as m{mm}
 
-                on 
+                on
                     fseg.submtg_state_cd=m{mm}.submtg_state_cd and
                     fseg.{self.main_id}=m{mm}.{self.main_id}
             """
             result.append(z.format())
 
         return "\n    ".join(result)
-    
+
     def all_monthly_segments(self, filet):
         """
         Function all_monthly_segment(intbl=, filet=) to join the records with max da_run_ids for the given state/month back to the monthly TAF and
@@ -292,17 +152,17 @@ class APR(TAF):
         if filet == 'PRV':
             b = f"{self.apr.DA_SCHEMA}.taf_{filet}_{self.fileseg}"
         else:
-            b = f"{self.apr.DA_SCHEMA}.taf_{self.fileseg}"            
+            b = f"{self.apr.DA_SCHEMA}.taf_{self.fileseg}"
 
         # Create file that includes state/id/submission type and other data elements for all records in the year for this segment
         z = f"""
-                select  
+                select
                     b.*
                 from
                     max_run_id_{filet}_{self.year} a
                 inner join
                     {b} b
-                on 
+                on
                     a.submtg_state_cd = b.submtg_state_cd and
                     a.{filet}_fil_dt = b.{filet}_fil_dt and
                     a.da_run_id = b.da_run_id
@@ -410,7 +270,7 @@ class APR(TAF):
 
         Function parms:
         incols=input columns
-        outcol=name of column to be output 
+        outcol=name of column to be output
         condition=monthly condition to be evaulated, where default is = 1
         """
 
@@ -470,7 +330,7 @@ class APR(TAF):
 
     def map_arrayvars(varnm='', N=1):
         """
-        Function to return the map array variables.  
+        Function to return the map array variables.
         """
 
         vars = []
@@ -508,7 +368,7 @@ class APR(TAF):
         """
         Function ind_nonmiss_month to loop through individual provider variables
         from month 12 to 1 and identify the month with the first non-missing value
-        for any of those variables. This will then be used to get those variables 
+        for any of those variables. This will then be used to get those variables
         from that month if needed. The month = 00 if NO non-missing month.
         """
 
@@ -546,9 +406,9 @@ class APR(TAF):
         for m in self.monthsb:
             cases.append(f"when {monthval1}='{m}' then {incol1}_{m}")
 
-            if monthval2 != '':
-                for m in self.monthsb:
-                    cases.append(f"when {monthval2}='{m}' then {incol2}_{m}")
+        if monthval2 != '':
+            for m in self.monthsb:
+                cases.append(f"when {monthval2}='{m}' then {incol2}_{m}")
 
         return f"case {' '.join(cases)} else null end as {outcol}"
 
@@ -562,15 +422,15 @@ class APR(TAF):
         z = f"""
             create or replace temporary view {segname}_SPLMTL_{self.year} as
 
-            select 
+            select
                 submtg_state_cd
                 ,{self.main_id}
                 ,count(submtg_state_cd) as {segname}_SPLMTL_CT
 
-            from 
+            from
                 {segfile}
 
-            group by 
+            group by
                 submtg_state_cd,
                 {self.main_id}
         """

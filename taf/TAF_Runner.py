@@ -1,5 +1,6 @@
 import logging
-import pandas as pd
+import sys
+
 from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
@@ -12,7 +13,13 @@ class TAF_Runner():
 
     PERFORMANCE = 11
 
-    def __init__(self, da_schema: str, reporting_period: str, state_code: str, run_id: str, job_id: int):
+    def __init__(self,
+                 da_schema: str,
+                 reporting_period: str,
+                 state_code: str,
+                 run_id: str,
+                 job_id: int,
+                 file_version: str):
         """
         Constructs all the necessary attributes for the T-MSIS analytic file runner object.
 
@@ -30,9 +37,13 @@ class TAF_Runner():
         from datetime import date, datetime, timedelta
 
         self.now = datetime.now()
-        self.version = '0A'
-
         self.initialize_logger(self.now)
+
+        if len(file_version) == 3:
+            self.version = file_version
+        else:
+            self.logger.error("ERROR: File Version must be 3 characters.")
+            sys.exit(1)
 
         # state submission type
         TAF_Metadata.getFormatsForValidationAndRecode()
@@ -72,12 +83,13 @@ class TAF_Runner():
             self.combined_list = []
 
         # determine if national or state specific run
-        if len(list(eval(state_code))) > 1:
+        if len(state_code) > 4:
             self.national_run = 1
         else:
             self.national_run = 0
 
         self.sql = {}
+        self.preplan = []
         self.plan = {}
 
     def print(self):
@@ -184,7 +196,7 @@ class TAF_Runner():
 
         logging.addLevelName(TAF_Runner.PERFORMANCE, 'PERFORMANCE')
 
-        self.logger = logging.getLogger('dqm_log')
+        self.logger = logging.getLogger('taf_log')
         self.logger.setLevel(logging.INFO)
 
         ch = logging.StreamHandler()
@@ -196,6 +208,12 @@ class TAF_Runner():
             self.logger.handlers.clear()
 
         self.logger.addHandler(ch)
+
+        # writing to stdout
+        stdout = logging.StreamHandler(sys.stdout)
+        stdout.setLevel(logging.ERROR)
+        stdout.setFormatter(formatter)
+        self.logger.addHandler(stdout)
 
     def fetch_combined_list(self):
         """
@@ -246,8 +264,7 @@ class TAF_Runner():
             tuples.append('concat' + str(j))
         return ','.join(tuples)
 
-    @staticmethod
-    def ssn_ind():
+    def ssn_ind(self):
         """
         Create a temporary view to determine if each submitting state uses social
         security numbers to identify members.
@@ -261,15 +278,13 @@ class TAF_Runner():
 
         return """
                 create or replace temporary view ssn_ind as
-                select distinct submtg_state_cd
-                    ,max(ssn_ind) as ssn_ind
-                    ,max(tmsis_run_id) as tmsis_run_id
+                select distinct submtg_state_cd, ssn_ind
                 from tmsis.tmsis_fhdr_rec_elgblty
                 where tmsis_actv_ind = 1
                     and tmsis_rptg_prd is not null
                     and tot_rec_cnt > 0
                     and ssn_ind IN ('1','0')
-                group by submtg_state_cd
+                    and concat(submtg_state_cd,tmsis_run_id) in ({self.get_combined_list()})
         """
 
     def job_control_rd(self, da_run_id: int, file_type: str):
@@ -304,6 +319,37 @@ class TAF_Runner():
             parms = f"{self.st_dt}"
         else:
             parms = f"{self.st_dt}" + ", " + "submtg_state_cd" + " " + "in" + " " + "(" + f"{self.state_code}" + ")"
+
+        print("DEBUG: " + f"""
+            INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
+                da_run_id
+               ,fil_type
+               ,schld_ordr_num
+               ,job_parms_txt
+               ,cd_spec_vrsn_name
+               ,job_strt_ts
+               ,job_end_ts
+               ,sucsfl_ind
+               ,rec_add_ts
+               ,rec_updt_ts
+               ,rfrsh_vw_flag
+               ,taf_cd_spec_vrsn_name
+            )
+            VALUES (
+                {self.DA_RUN_ID}
+               ,"{file_type}"
+               ,1
+               ,"{parms}"
+               ,concat("{self.version}", ",", "7.1")
+               ,NULL
+               ,NULL
+               ,False
+               ,from_utc_timestamp(current_timestamp(), "EST")
+               ,NULL
+               ,False
+               ,concat("{self.version}", ",", "7.1")
+            )
+        """)
 
         spark.sql(
             f"""
@@ -460,7 +506,7 @@ class TAF_Runner():
                     ,t1.taf_cd_spec_vrsn_name
                     ,False as rfrsh_vw_flag
                     ,False as ltst_run_ind
-                    ,typeof(NULL) as ccb_qtr
+                    ,NULL as ccb_qtr
                     ,NULL as rif_finl_vrsn
                     ,NULL as rif_prelim_vrsn
                 FROM {self.DA_SCHEMA}.job_cntl_parms as t1
@@ -586,6 +632,13 @@ class TAF_Runner():
                 LIMIT {rtcnt}
             """)
 
+    def prepend(self, z: str):
+        """
+        Helper function to prepend segments to the query plan.
+        """
+
+        self.preplan.append(z)
+
     def append(self, segment: str, z: str):
         """
         Helper function to append segments to the query plan.
@@ -608,6 +661,10 @@ class TAF_Runner():
         Helper function to view the query plan.
         """
 
+        for sql in self.preplan:
+            print('-- preplan')
+            print(sql)
+
         for segment, chain in self.plan.items():
             for sql in chain:
                 print(f"-- {segment}")
@@ -619,6 +676,25 @@ class TAF_Runner():
         """
 
         print('Writing SQL Files ...')
+
+        for chain in self.preplan:
+
+            print('\tpreplan...')
+            for z in chain:
+
+                v = '\n'.join(z.split('\n')[0:2])
+                vs = v.split()
+
+                if len(vs) >= 5:
+                    # fn = './test/sql/python/' + 'preplan' + '/' + vs[5] + '.sql'
+                    if module != '':
+                        fn = '../../sql/python/' + module + '/' + 'preplan' + '/' + vs[5] + '.sql'
+                    else:
+                        fn = '../../sql/python/' + 'preplan' + '/' + vs[5] + '.sql'
+                    print(fn)
+                    f = open(fn, 'w')
+                    f.write(z)
+                    f.close()
 
         for segment, chain in self.plan.items():
 
@@ -665,6 +741,21 @@ class TAF_Runner():
 
         self.logger.info('Creating TAF Views...')
 
+        for chain in self.preplan:
+            self.logger.info('\tpreplan...')
+            for z in chain:
+                # self.logger.info('\n'.join(z.split('\n')[0:2]))
+
+                v = '\n'.join(z.split('\n')[0:2])
+                vs = v.split()
+
+                if len(vs) >= 5:
+                    print('\t\t' + vs[5])
+
+                # self.logger.info('\t\t' + v.split()[5])
+
+                spark.sql(z)
+
         for segment, chain in self.plan.items():
             self.logger.info('\t' + segment + '...')
             for z in chain:
@@ -703,6 +794,41 @@ class TAF_Runner():
             self.logger.info('Auditing  "0.1. create_initial_table" - "distinct msis_ident_num" ...')
 
             pdf = None
+            for chain in self.preplan:
+                self.logger.info('\tpreplan...')
+                for z in chain:
+                    v = '\n'.join(z.split('\n')[0:2])
+                    vs = v.split()
+
+                    if len(vs) >= 5:
+                        # print('\t\t' + vs[5])
+
+                        obj_name = v.split()[5]
+                        if obj_name in ['ELG00002', 'ELG00003', 'ELG00004', 'ELG00005', 'ELG00006', 'ELG00007', 'ELG00008', 'ELG00009', 'ELG00010',
+                                        'ELG00011', 'ELG00012', 'ELG00013', 'ELG00014', 'ELG00015', 'ELG00016', 'ELG00017', 'ELG00018', 'ELG00020',
+                                        'ELG00021', 'TPL00002']:
+                            sdf_audit_cnt = spark.sql(f"""
+                                select
+                                    '{obj_name}' as obj_name,
+                                    submtg_state_cd,
+                                    count(distinct msis_ident_num) as audt_cnt_val
+                                from
+                                    {obj_name}
+                                group by
+                                    obj_name,
+                                    submtg_state_cd
+                                order by
+                                    obj_name,
+                                    submtg_state_cd""")
+
+                            if pdf is None:
+                                print(obj_name)
+                                pdf = sdf_audit_cnt.toPandas()
+                            else:
+                                print("appending - " + obj_name)
+                                pdf = pdf.append(sdf_audit_cnt.toPandas())
+
+
             for segment, chain in self.plan.items():
                 self.logger.info('\t' + segment + '...')
                 for z in chain:
