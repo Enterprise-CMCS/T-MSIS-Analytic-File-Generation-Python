@@ -5,19 +5,19 @@ from taf.TAF_Closure import TAF_Closure
 
 class RXH:
     """
-    The RX TAF are comprised of two files – a claim header-level file and a claim line-level file. 
-    The claims included in these files are active, non-voided, non-denied (at the header level), 
-    non-duplicate final action claims. Only claim header records meeting these inclusion criteria, 
-    along with their associated claim line records, are incorporated. Both files can be linked together 
-    using unique keys that are constructed based on various claim header and claim line data elements. 
+    The RX TAF are comprised of two files – a claim header-level file and a claim line-level file.
+    The claims included in these files are active, non-voided, non-denied (at the header level),
+    non-duplicate final action claims. Only claim header records meeting these inclusion criteria,
+    along with their associated claim line records, are incorporated. Both files can be linked together
+    using unique keys that are constructed based on various claim header and claim line data elements.
     The two RX TAF are generated for each calendar month for which data are reported.
     """
-     
+
     def create(self, runner: RX_Runner):
         """
-        Create the claim header-level segment.  
+        Create the claim header-level segment.
         """
-         
+
         z = f"""
             create or replace temporary view RXH as
 
@@ -37,7 +37,12 @@ class RXH:
                 , ADJSTMT_IND_CLEAN as ADJSTMT_IND
                 , { TAF_Closure.var_set_rsn('ADJSTMT_RSN_CD') }
 
-                , case when (ADJDCTN_DT < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(ADJDCTN_DT, to_date('1960-01-01')) end as ADJDCTN_DT
+                , case
+                    when (ADJDCTN_DT < to_date('1600-01-01')) then to_date('1599-12-31')
+                    when ADJDCTN_DT=to_date('1960-01-01') then NULL
+                    else ADJDCTN_DT
+                  end as ADJDCTN_DT
+
                 , { TAF_Closure.fix_old_dates('mdcd_pd_dt') }
 
                 , rx_fill_dt
@@ -116,7 +121,7 @@ class RXH:
         """
         Build the claim header-level segment.
         """
-         
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_rxh
                 SELECT
