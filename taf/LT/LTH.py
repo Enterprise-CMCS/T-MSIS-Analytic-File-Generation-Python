@@ -5,19 +5,19 @@ from taf.TAF_Closure import TAF_Closure
 
 class LTH:
     """
-    Each LT TAF is comprised of two files – a claim-header level file and a claim-line level file. 
-    The claims included in these files are active, non-voided, non-denied (at the header level), 
-    non-duplicate final action claims. Only claim header records meeting these inclusion criteria, 
-    along with their associated claim line records, are incorporated. Both files can be linked together 
-    using unique keys that are constructed based on various claim header and claim line data elements. 
+    Each LT TAF is comprised of two files – a claim-header level file and a claim-line level file.
+    The claims included in these files are active, non-voided, non-denied (at the header level),
+    non-duplicate final action claims. Only claim header records meeting these inclusion criteria,
+    along with their associated claim line records, are incorporated. Both files can be linked together
+    using unique keys that are constructed based on various claim header and claim line data elements.
     The two LT TAF are generated for each calendar month in which the data are reported.
     """
-     
+
     def create(self, runner: LT_Runner):
         """
         Create the LT claim-header level segment.
         """
-        
+
         z = f"""
             create or replace temporary view LTH as
 
@@ -36,20 +36,31 @@ class LTH:
                 , { TAF_Closure.var_set_type3(var='ADJSTMT_CLM_NUM', cond1='~') }
                 , ADJSTMT_IND_CLEAN as ADJSTMT_IND
                 , { TAF_Closure.var_set_rsn('ADJSTMT_RSN_CD') }
-                , case when SRVC_BGNNG_DT < '1600-01-01' then '1599-12-31' else nullif('SRVC_BGNNG_DT', to_date('1960-01-01')) end as SRVC_BGNNG_DT
-                , nullif('SRVC_ENDG_DT', to_date('1960-01-01')) as SRVC_ENDG_DT
+                , case
+                    when (SRVC_BGNNG_DT < '1600-01-01') then '1599-12-31'
+                    when 'SRVC_BGNNG_DT' IS NULL then to_date('1960-01-01')
+                    else SRVC_BGNNG_DT
+                  end as SRVC_BGNNG_DT
+                , case
+                    when 'SRVC_ENDG_DT' IS NULL then to_date('1960-01-01')
+                    else SRVC_ENDG_DT
+                  end as SRVC_ENDG_DT
                 , { TAF_Closure.fix_old_dates('ADMSN_DT') }
                 , { TAF_Closure.var_set_type5(var='ADMSN_HR_NUM', lpad=2, lowerbound=0, upperbound=23) }
                 , { TAF_Closure.fix_old_dates('DSCHRG_DT') }
                 , { TAF_Closure.var_set_type5(var='DSCHRG_HR_NUM', lpad=2, lowerbound=0, upperbound=23) }
-                , case when ADJDCTN_DT < '1600-01-01' then '1599-12-31' else nullif('ADJDCTN_DT', to_date('1960-01-01')) end as ADJDCTN_DT
+                , case
+                    when ADJDCTN_DT < '1600-01-01' then '1599-12-31'
+                    when 'ADJDCTN_DT' IS NULL then to_date('1960-01-01')
+                    else ADJDCTN_DT
+                  end as ADJDCTN_DT
                 , { TAF_Closure.fix_old_dates('MDCD_PD_DT') }
                 , { TAF_Closure.var_set_type2(var='SECT_1115A_DEMO_IND', lpad=0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type1(var='BILL_TYPE_CD') }
                 , case
-                   when upper(CLM_TYPE_CD) in ('1', '2', '3', '4', '5', 'A', 'B', 'C', 'D', 'E', 'U', 'V', 'W', 'X', 'Y', 'Z') then upper(CLM_TYPE_CD)
-                   else NULL
-                   end as CLM_TYPE_CD
+                    when upper(CLM_TYPE_CD) in ('1', '2', '3', '4', '5', 'A', 'B', 'C', 'D', 'E', 'U', 'V', 'W', 'X', 'Y', 'Z') then upper(CLM_TYPE_CD)
+                    else NULL
+                  end as CLM_TYPE_CD
                 , case when lpad(pgm_type_cd, 2, '0') in ('06', '09') then NULL
                    else { TAF_Closure.var_set_type5(var='pgm_type_cd', lpad=2, lowerbound=0, upperbound=17, multiple_condition='YES') }
                 , { TAF_Closure.var_set_type1(var='MC_PLAN_ID') }
@@ -198,7 +209,7 @@ class LTH:
         """
         Build the SQL query for the LT claim-header level segment.
         """
-         
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_lth
                 SELECT
