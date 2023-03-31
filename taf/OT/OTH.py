@@ -5,17 +5,17 @@ from taf.TAF_Closure import TAF_Closure
 
 class OTH:
     """
-    Each OT TAF is comprised of two files – a claim-header level file and a claim-line level file. 
-    The claims included in these files are active, final-action, non-voided, and non-denied claims. 
-    Only header claims with a date in the TAF month/year, along with their associated claim line 
-    records, are included. Both files can be linked together using a unique key that is constructed 
-    based on various claim header and claim line data elements. The two OT TAF are produced for each 
+    Each OT TAF is comprised of two files – a claim-header level file and a claim-line level file.
+    The claims included in these files are active, final-action, non-voided, and non-denied claims.
+    Only header claims with a date in the TAF month/year, along with their associated claim line
+    records, are included. Both files can be linked together using a unique key that is constructed
+    based on various claim header and claim line data elements. The two OT TAF are produced for each
     calendar month in which the data are reported.
     """
 
     def create(self, runner: OT_Runner):
         """
-        Create the OT claim-header level segment.  
+        Create the OT claim-header level segment.
         """
 
         # ORDER VARIABLES AND UPCASE', LEFT PAD WITH ZEROS AND RESET COALESCE VALUES HEADER FILE }
@@ -40,9 +40,20 @@ class OTH:
                 , ADJSTMT_IND_CLEAN as ADJSTMT_IND
                 , { TAF_Closure.var_set_rsn('ADJSTMT_RSN_CD') }
 
-                , case when (SRVC_BGNNG_DT_HEADER < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(SRVC_BGNNG_DT_HEADER, to_date('1960-01-01')) end as SRVC_BGNNG_DT
-                , nullif(SRVC_ENDG_DT_HEADER, to_date('1960-01-01')) as SRVC_ENDG_DT
-                , case when (ADJDCTN_DT< to_date('1600-01-01')) then to_date('1599-12-31') else nullif(ADJDCTN_DT, to_date('1960-01-01')) end as ADJDCTN_DT
+                , case
+                    when (SRVC_BGNNG_DT_HEADER < to_date('1600-01-01')) then to_date('1599-12-31')
+                    when SRVC_BGNNG_DT_HEADER=to_date('1960-01-01') then NULL
+                    else SRVC_BGNNG_DT_HEADER
+                  end as SRVC_BGNNG_DT
+                , case
+                    when SRVC_ENDG_DT_HEADER=to_date('1960-01-01') then NULL
+                    else SRVC_ENDG_DT_HEADER
+                  end as SRVC_ENDG_DT
+                , case
+                    when (ADJDCTN_DT < to_date('1600-01-01')) then to_date('1599-12-31')
+                    when ADJDCTN_DT=to_date('1960-01-01') then NULL
+                    else ADJDCTN_DT
+                  end as ADJDCTN_DT
 
                 , { TAF_Closure.fix_old_dates('MDCD_PD_DT') }
                 , { TAF_Closure.var_set_type2('SECT_1115A_DEMO_IND', 0, cond1='0', cond2='1') }
@@ -182,9 +193,9 @@ class OTH:
 
     def build(self, runner: OT_Runner):
         """
-        Build the OT claim-header level segment. 
+        Build the OT claim-header level segment.
         """
-         
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA_DC}.taf_oth
                 SELECT
