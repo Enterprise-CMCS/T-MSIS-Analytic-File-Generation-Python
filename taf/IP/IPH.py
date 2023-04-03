@@ -1,4 +1,3 @@
-from pyspark.sql.functions import regexp_replace
 from taf.IP.IP_Runner import IP_Runner
 from taf.IP.IP_Metadata import IP_Metadata
 from taf.TAF_Closure import TAF_Closure
@@ -6,17 +5,17 @@ from taf.TAF_Closure import TAF_Closure
 
 class IPH:
     """
-    The IP TAF are comprised of two files – a claim header-level file and a claim line-level file. 
-    The claims included in these files are active, final-action, non-voided, non-denied claims. 
-    Only claim header records with a date in the TAF month/year, along with their associated claim 
-    line records, are included. Both files can be linked together using a unique key that is constructed 
-    based on various claim header and claim line data elements. The two IP TAF are produced for each 
+    The IP TAF are comprised of two files – a claim header-level file and a claim line-level file.
+    The claims included in these files are active, final-action, non-voided, non-denied claims.
+    Only claim header records with a date in the TAF month/year, along with their associated claim
+    line records, are included. Both files can be linked together using a unique key that is constructed
+    based on various claim header and claim line data elements. The two IP TAF are produced for each
     calendar month for which data are reported.
     """
 
     def create(self, runner: IP_Runner):
         """
-        Create the IP segment header.  
+        Create the IP segment header.
         """
 
         z = f"""
@@ -42,11 +41,18 @@ class IPH:
                 , { TAF_Closure.fix_old_dates('ADMSN_DT') }
                 , { TAF_Closure.var_set_type5('ADMSN_HR_NUM', lpad=2, lowerbound=0, upperbound=23) }
 
-                , nullif(DSCHRG_DT, to_date(to_date('1960-01-01'))) as DSCHRG_DT
+                , case
+                    when DSCHRG_DT=to_date('1960-01-01') then NULL
+                    else DSCHRG_DT
+                  end as DSCHRG_DT
 
                 , { TAF_Closure.var_set_type5('DSCHRG_HR_NUM', lpad=2, lowerbound=0, upperbound=23) }
 
-                , case when ADJDCTN_DT < to_date('1600-01-01') then to_date('1599-12-31') else nullif(ADJDCTN_DT, to_date('1960-01-01')) end as ADJDCTN_DT
+                , case
+                    when (ADJDCTN_DT < to_date('1600-01-01')) then to_date('1599-12-31')
+                    when ADJDCTN_DT=to_date('1960-01-01') then NULL
+                    else ADJDCTN_DT
+                  end as ADJDCTN_DT
 
                 , { TAF_Closure.fix_old_dates('MDCD_PD_DT') }
                 , { TAF_Closure.var_set_type2('ADMSN_TYPE_CD', 0, cond1='1', cond2='2', cond3='3', cond4='4', cond5='5') }
@@ -244,11 +250,11 @@ class IPH:
                 , cast(NULL as timestamp) as REC_UPDT_TS
 
                 , { TAF_Closure.fix_old_dates('SRVC_ENDG_DT_DRVD')}
-	            , { TAF_Closure.var_set_type2('SRVC_ENDG_DT_CD',0,cond1='1',cond2='2',cond3='3',cond4='4',cond5='5') }
-	            , { TAF_Closure.var_set_taxo('BLG_PRVDR_NPPES_TXNMY_CD',cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X',
-									  cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY')}
+                , { TAF_Closure.var_set_type2('SRVC_ENDG_DT_CD',0,cond1='1',cond2='2',cond3='3',cond4='4',cond5='5') }
+                , { TAF_Closure.var_set_taxo('BLG_PRVDR_NPPES_TXNMY_CD',cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X',
+                                    cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY')}
 
-	            , DGNS_1_CCSR_DFLT_CTGRY_CD
+                , DGNS_1_CCSR_DFLT_CTGRY_CD
             FROM (
                 select
                     *,
@@ -263,7 +269,7 @@ class IPH:
 
     def build(self, runner: IP_Runner):
         """
-        Build the SQL query for the IP header segment.  
+        Build the SQL query for the IP header segment.
         """
 
         z = f"""
