@@ -108,7 +108,7 @@ dt = datetime.now()
 
 
 fdate = dt.strftime("%y%m%d")
-ftime = dt.strftime("%H%M%S%f")[0:8]
+ftime = dt.strftime("%H%M%S%f")[0:7]
 
 
 # COMMAND ----------
