@@ -637,7 +637,7 @@ class TAF_Runner():
         Helper function to prepend segments to the query plan.
         """
 
-        self.preplan.append(z)
+        self.preplan.append(z + ";")
 
     def append(self, segment: str, z: str):
         """
@@ -740,34 +740,36 @@ class TAF_Runner():
         spark.sql(self.ssn_ind())
 
         self.logger.info('Creating TAF Views...')
-
+        self.logger.info('\trunning preplan...')
         for chain in self.preplan:
-            self.logger.info('\tpreplan...')
-            for z in chain:
-                # self.logger.info('\n'.join(z.split('\n')[0:2]))
+            # self.logger.debug(chain)
+            segment: str = chain.split(";")[0]
+            # self.logger.info(segment)
+            if segment.upper().find("CREATE") >= 0:
+                vs = segment.split()[0:6]
+            elif segment.upper().find("INSERT") >= 0:
+                vs = segment.split()[0:3]
+            else:
+                vs = ""
 
-                v = '\n'.join(z.split('\n')[0:2])
-                vs = v.split()
+            v = " ".join(vs)
+            self.logger.info(v)
 
-                if len(vs) >= 5:
-                    print('\t\t' + vs[5])
+            spark.sql(chain)
 
-                # self.logger.info('\t\t' + v.split()[5])
-
-                spark.sql(z)
-
+        self.logger.info("-- BEGIN SEGMENTS --")
         for segment, chain in self.plan.items():
             self.logger.info('\t' + segment + '...')
             for z in chain:
-                # self.logger.info('\n'.join(z.split('\n')[0:2]))
+                self.logger.debug(z)
+                self.logger.info('\n'.join(z.split('\n')[0:2]))
 
                 v = '\n'.join(z.split('\n')[0:2])
                 vs = v.split()
 
                 if len(vs) >= 5:
                     print('\t\t' + vs[5])
-
-                # self.logger.info('\t\t' + v.split()[5])
+                    self.logger.info('\t\t' + v.split()[5])
 
                 spark.sql(z)
 
