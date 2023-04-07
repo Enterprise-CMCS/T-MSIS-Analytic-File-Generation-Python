@@ -19,8 +19,9 @@ class TAF_Metadata:
         spark = SparkSession.getActiveSession()
 
         subData = [
-            ("35", "ELG", "CSO", "2018-04-01", "9999-12-31"),
-            ("35", "TPL", "CSO", "2018-04-01", "9999-12-31"),
+            ("35", "ELG", "CSO", "2018-04-01", "9999-12-01"),
+            ("35", "TPL", "CSO", "2018-04-01", "9999-12-01"),
+            ("48", "ELG", "CSO", "2023-04-05", "9999-12-01"),
         ]
 
         subSchema = StructType(
