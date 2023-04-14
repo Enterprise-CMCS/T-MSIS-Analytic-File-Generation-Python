@@ -27,7 +27,6 @@ class RX(TAF):
         """
          
         # Create a temporary line file
-        # FIXME: change base table or view when TMSIS changes are made
         z = f"""
             create or replace temporary view {fl2}_LINE_IN as
             select
@@ -35,7 +34,7 @@ class RX(TAF):
                 { RX_Metadata.selectDataElements(tab_no, 'a') }
 
             from
-                {DA_SCHEMA}.{_2x_segment} A
+                {TMSIS_SCHEMA}.{_2x_segment} A
             where
                 a.TMSIS_ACTV_IND = 1
                 and concat(a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})
