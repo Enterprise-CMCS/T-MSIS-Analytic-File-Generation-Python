@@ -273,7 +273,7 @@ class IPH:
         """
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA_DC}.taf_iph
+                INSERT INTO {runner.DA_SCHEMA}.taf_iph
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
                 FROM (

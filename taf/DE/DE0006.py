@@ -80,13 +80,13 @@ class DE0006(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create table if not exists {self.de.DA_SCHEMA_DC}.numbers_two
+        z = f"""create table if not exists {self.de.DA_SCHEMA}.numbers_two
                 (slot int, month string)
                 using parquet"""
         self.de.append(type(self).__name__, z)
 
         z = f"""
-                insert into {self.de.DA_SCHEMA_DC}.numbers_two
+                insert into {self.de.DA_SCHEMA}.numbers_two
                 values
             """
         for waiv in range(1, self.de.NWAIVSLOTS + 1):
@@ -157,7 +157,7 @@ class DE0006(DE):
 
                 from waiver_{self.de.YEAR} a
                     join
-                    {self.de.DA_SCHEMA_DC}.numbers_two b
+                    {self.de.DA_SCHEMA}.numbers_two b
                     on true) sub ) sub2
 
                 where WAIVER_CAT > 0
@@ -270,7 +270,7 @@ class DE0006(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA_DC}.TAF_ANN_DE_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
                 select
 
                     {DE.table_id_cols_pre(self)}

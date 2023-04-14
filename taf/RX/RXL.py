@@ -107,7 +107,7 @@ class RXL:
         """
          
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA_DC}.taf_rxl
+                INSERT INTO {runner.DA_SCHEMA}.taf_rxl
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.line_columns) }
                 FROM RXL

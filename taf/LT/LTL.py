@@ -105,7 +105,7 @@ class LTL:
         """
          
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA_DC}.taf_ltl
+                INSERT INTO {runner.DA_SCHEMA}.taf_ltl
                 SELECT
                     { LT_Metadata.finalFormatter(LT_Metadata.line_columns) }
                 FROM LTL

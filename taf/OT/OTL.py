@@ -113,7 +113,7 @@ class OTL:
         """
          
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA_DC}.taf_otl
+                INSERT INTO {runner.DA_SCHEMA}.taf_otl
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.line_columns) }
                 FROM OTL

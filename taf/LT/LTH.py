@@ -211,7 +211,7 @@ class LTH:
         """
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA_DC}.taf_lth
+                INSERT INTO {runner.DA_SCHEMA}.taf_lth
                 SELECT
                     { LT_Metadata.finalFormatter(LT_Metadata.header_columns) }
                 FROM (

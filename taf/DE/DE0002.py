@@ -59,12 +59,12 @@ class DE0002(DE):
         Create dummy table with one record per slot/month to join to dates and get to long form.
         """
 
-        z = f"""create table if not exists {self.de.DA_SCHEMA_DC}.numbers
+        z = f"""create table if not exists {self.de.DA_SCHEMA}.numbers
                 (slot int, month string)
                 using parquet"""
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA_DC}.numbers
+        z = f"""insert into {self.de.DA_SCHEMA}.numbers
                     values"""
         for s in range(1, 17):
             for m in range(1, 13):
@@ -126,7 +126,7 @@ class DE0002(DE):
                 ,b.month
             from eligibility_dates_{self.de.YEAR} a
                 join
-                {self.de.DA_SCHEMA_DC}.numbers b
+                {self.de.DA_SCHEMA}.numbers b
                 on true) sub ) sub2
 
         where {dtype}_ENRLMT_EFF_DT is not null

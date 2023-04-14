@@ -417,13 +417,13 @@ class TAF_Grouper:
         if MDC:
 
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF m12 on m12.LKP_VAL=a.drg_cd and {self.rep_yr} <= 2012 and m12.FRMT_NAME_TXT = 'MDC12FM'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m12 on m12.LKP_VAL=a.drg_cd and {self.rep_yr} <= 2012 and m12.FRMT_NAME_TXT = 'MDC12FM'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF m13 on m13.LKP_VAL=a.drg_cd and {self.rep_yr}  = 2013 and m13.FRMT_NAME_TXT = 'MDC13FM'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m13 on m13.LKP_VAL=a.drg_cd and {self.rep_yr}  = 2013 and m13.FRMT_NAME_TXT = 'MDC13FM'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF m14 on m14.LKP_VAL=a.drg_cd and {self.rep_yr} >= 2014 and m14.FRMT_NAME_TXT = 'MDC14FM'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m14 on m14.LKP_VAL=a.drg_cd and {self.rep_yr} >= 2014 and m14.FRMT_NAME_TXT = 'MDC14FM'"
             )
 
         return "\n".join(join)
@@ -437,25 +437,25 @@ class TAF_Grouper:
         if IAP:
 
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i93 on i93.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=3 and a.DGNS_1_CD_IND='1' and i93.FRMT_NAME_TXT = 'IAP93F'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i93 on i93.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=3 and a.DGNS_1_CD_IND='1' and i93.FRMT_NAME_TXT = 'IAP93F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i94 on i94.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='1' and i94.FRMT_NAME_TXT = 'IAP94F'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i94 on i94.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='1' and i94.FRMT_NAME_TXT = 'IAP94F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i95 on i95.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='1' and i95.FRMT_NAME_TXT = 'IAP95F'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i95 on i95.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='1' and i95.FRMT_NAME_TXT = 'IAP95F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i04 on i04.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='2' and i04.FRMT_NAME_TXT = 'IAP04F'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i04 on i04.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='2' and i04.FRMT_NAME_TXT = 'IAP04F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i05 on i05.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='2' and i05.FRMT_NAME_TXT = 'IAP05F'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i05 on i05.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='2' and i05.FRMT_NAME_TXT = 'IAP05F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i06 on i06.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=6 and a.DGNS_1_CD_IND='2' and i06.FRMT_NAME_TXT = 'IAP06F'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i06 on i06.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=6 and a.DGNS_1_CD_IND='2' and i06.FRMT_NAME_TXT = 'IAP06F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i07 on i07.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=7 and a.DGNS_1_CD_IND='2' and i07.FRMT_NAME_TXT = 'IAP07F'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i07 on i07.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=7 and a.DGNS_1_CD_IND='2' and i07.FRMT_NAME_TXT = 'IAP07F'"
             )
 
         return "\n".join(join)
@@ -469,17 +469,17 @@ class TAF_Grouper:
         if PHC:
 
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF h12 on h12.LKP_VAL=a.dgns_1_cd and {self.rep_yr} <= 2012 and h12.FRMT_NAME_TXT = 'HCC12FM'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h12 on h12.LKP_VAL=a.dgns_1_cd and {self.rep_yr} <= 2012 and h12.FRMT_NAME_TXT = 'HCC12FM'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF h13 on h13.LKP_VAL=a.dgns_1_cd and {self.rep_yr}  = 2013 and h13.FRMT_NAME_TXT = 'HCC13FM'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h13 on h13.LKP_VAL=a.dgns_1_cd and {self.rep_yr}  = 2013 and h13.FRMT_NAME_TXT = 'HCC13FM'"
             )
 
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF h14 on h14.LKP_VAL=a.dgns_1_cd and ({self.rep_yr}   = 2014  or ({self.rep_yr} = 2015 and {self.rep_mo} < 10)) and h14.FRMT_NAME_TXT = 'HCC14FM'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h14 on h14.LKP_VAL=a.dgns_1_cd and ({self.rep_yr}   = 2014  or ({self.rep_yr} = 2015 and {self.rep_mo} < 10)) and h14.FRMT_NAME_TXT = 'HCC14FM'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF h16 on h16.LKP_VAL=a.dgns_1_cd and (({self.rep_yr} >= 2016) or ({self.rep_yr} = 2015 and {self.rep_mo} >=10)) and h16.FRMT_NAME_TXT = 'HCC16FM'"
+                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h16 on h16.LKP_VAL=a.dgns_1_cd and (({self.rep_yr} >= 2016) or ({self.rep_yr} = 2015 and {self.rep_mo} >=10)) and h16.FRMT_NAME_TXT = 'HCC16FM'"
             )
 
         return "\n".join(join)

@@ -347,7 +347,7 @@ class BSF_Metadata:
         """
 
         z = f"""
-                INSERT INTO {bsf.DA_SCHEMA_DC}.taf_mon_bsf
+                INSERT INTO {bsf.DA_SCHEMA}.taf_mon_bsf
                 select
                     { BSF_Metadata.finalFormatter() }
                 from (

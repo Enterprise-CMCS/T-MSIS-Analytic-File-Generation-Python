@@ -78,7 +78,7 @@ class TOP(UP):
         """
          
         z = f"""
-            INSERT INTO {runner.DA_SCHEMA_DC}.taf_ann_up_top
+            INSERT INTO {runner.DA_SCHEMA}.taf_ann_up_top
             SELECT { self.table_id_cols() }
                 ,PGM_TYPE_CD
                 ,FILE_TYPE

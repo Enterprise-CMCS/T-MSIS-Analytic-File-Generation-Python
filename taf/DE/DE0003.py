@@ -200,7 +200,7 @@ class DE0003(DE):
                 """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA_DC}.taf_ann_de_{self.tbl_suffix}
+        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{self.tbl_suffix}
                 select
                     {DE.table_id_cols_pre(self)}
                     ,ELGBL_1ST_NAME
