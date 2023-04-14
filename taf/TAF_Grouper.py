@@ -825,7 +825,7 @@ class TAF_Grouper:
                 z += ","
 
         z += f"""
-            from nppes.npidata
+            from taf_python.npidata
         """
         self.runner.append(filetyp, z)
 
@@ -891,7 +891,7 @@ class TAF_Grouper:
             """
 
         z += f"""
-            from nppes.npidata a
+            from taf_python.npidata a
                 inner join
                 taxo_switches b
             on	   a.NPI=b.prvdr_npi
