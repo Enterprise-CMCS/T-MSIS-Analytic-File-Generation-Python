@@ -952,7 +952,7 @@ class TAF_Grouper:
                         THEN 'Transprt  '
                     ELSE NULL
                     END AS code_cat
-            FROM hcup.ccs_sp_mapping
+            FROM taf_python.ccs_sp_mapping
         """
         self.runner.append(filetyp, z)
 
@@ -982,7 +982,7 @@ class TAF_Grouper:
                 end
             ) as dflt_ccsr_ctgry_ot
             FROM
-            hcup.ccsr_dx_mapping
+            taf_python.ccsr_dx_mapping
             GROUP BY
             `ICD-10-CM Code`
         """
