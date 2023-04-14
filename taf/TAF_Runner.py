@@ -29,6 +29,7 @@ class TAF_Runner():
                 state_code (str): Comma-separated list of T-MSIS state code(s) values to include
                 run_id (str): Comma-separated list of T-MSIS run identifier(s) values to include
                 job_id (int): Final data will use this for da_run_id
+                file_version (str): Iteration or sequential counter for a given file's run
 
             Returns:
                 None
