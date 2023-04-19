@@ -43,16 +43,16 @@ class OTH:
                 , case
                     when (SRVC_BGNNG_DT_HEADER < to_date('1600-01-01')) then to_date('1599-12-31')
                     when SRVC_BGNNG_DT_HEADER=to_date('1960-01-01') then NULL
-                    else SRVC_BGNNG_DT_HEADER
+                    else to_date(SRVC_BGNNG_DT_HEADER, 'YYYY-MM-DD')
                   end as SRVC_BGNNG_DT
                 , case
                     when SRVC_ENDG_DT_HEADER=to_date('1960-01-01') then NULL
-                    else SRVC_ENDG_DT_HEADER
+                    else to_date(SRVC_ENDG_DT_HEADER, 'YYYY-MM-DD')
                   end as SRVC_ENDG_DT
                 , case
                     when (ADJDCTN_DT < to_date('1600-01-01')) then to_date('1599-12-31')
                     when ADJDCTN_DT=to_date('1960-01-01') then NULL
-                    else ADJDCTN_DT
+                    else to_date(ADJDCTN_DT, 'YYYY-MM-DD')
                   end as ADJDCTN_DT
 
                 , { TAF_Closure.fix_old_dates('MDCD_PD_DT') }

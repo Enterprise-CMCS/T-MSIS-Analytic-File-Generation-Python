@@ -37,13 +37,13 @@ class LTH:
                 , ADJSTMT_IND_CLEAN as ADJSTMT_IND
                 , { TAF_Closure.var_set_rsn('ADJSTMT_RSN_CD') }
                 , case
-                    when (SRVC_BGNNG_DT < '1600-01-01') then '1599-12-31'
+                    when (SRVC_BGNNG_DT < '1600-01-01') then to_date('1599-12-31')
                     when 'SRVC_BGNNG_DT' IS NULL then to_date('1960-01-01')
-                    else SRVC_BGNNG_DT
+                    else to_date(SRVC_BGNNG_DT, 'YYYY-MM-DD')
                   end as SRVC_BGNNG_DT
                 , case
                     when 'SRVC_ENDG_DT' IS NULL then to_date('1960-01-01')
-                    else SRVC_ENDG_DT
+                    else to_date(SRVC_ENDG_DT, 'YYYY-MM-DD')
                   end as SRVC_ENDG_DT
                 , { TAF_Closure.fix_old_dates('ADMSN_DT') }
                 , { TAF_Closure.var_set_type5(var='ADMSN_HR_NUM', lpad=2, lowerbound=0, upperbound=23) }
@@ -52,7 +52,7 @@ class LTH:
                 , case
                     when ADJDCTN_DT < '1600-01-01' then '1599-12-31'
                     when 'ADJDCTN_DT' IS NULL then to_date('1960-01-01')
-                    else ADJDCTN_DT
+                    else to_date(ADJDCTN_DT, 'YYYY-MM-DD')
                   end as ADJDCTN_DT
                 , { TAF_Closure.fix_old_dates('MDCD_PD_DT') }
                 , { TAF_Closure.var_set_type2(var='SECT_1115A_DEMO_IND', lpad=0, cond1='0', cond2='1') }
