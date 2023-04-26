@@ -160,7 +160,7 @@ class DE_Runner(TAF_Runner):
             FROM (
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
                     ,da_run_id
-                FROM {self.DA_SCHEMA_DC}.job_cntl_parms
+                FROM {self.DA_SCHEMA}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
@@ -187,7 +187,7 @@ class DE_Runner(TAF_Runner):
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
                     ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{{2}})') AS submtg_state_cd
                     ,da_run_id
-                FROM {self.DA_SCHEMA_DC}.job_cntl_parms
+                FROM {self.DA_SCHEMA}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
@@ -261,7 +261,7 @@ class DE_Runner(TAF_Runner):
                 SELECT da_run_id
                     ,incldd_state_cd AS submtg_state_cd
                     ,fil_cret_dt
-                FROM {self.DA_SCHEMA_DC}.efts_fil_meta
+                FROM {self.DA_SCHEMA}.efts_fil_meta
                 WHERE incldd_state_cd != 'Missing'
                 ) b ON a.da_run_id = b.da_run_id
         """
@@ -280,7 +280,7 @@ class DE_Runner(TAF_Runner):
         # that go into each annual UP file
 
         z = f"""
-            INSERT INTO {self.DA_SCHEMA_DC}.TAF_ANN_INP_SRC
+            INSERT INTO {self.DA_SCHEMA}.TAF_ANN_INP_SRC
             SELECT
                  {self.DA_RUN_ID} AS ANN_DA_RUN_ID
                 ,'ade' as ann_fil_type

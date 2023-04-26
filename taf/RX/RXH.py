@@ -123,7 +123,7 @@ class RXH:
         """
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA_DC}.taf_rxh
+                INSERT INTO {runner.DA_SCHEMA}.taf_rxh
                 SELECT
                     { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
                 FROM (

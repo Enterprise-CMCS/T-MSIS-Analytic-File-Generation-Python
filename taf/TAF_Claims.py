@@ -175,7 +175,6 @@ class TAF_Claims():
         #  HEADER_?
         #
         # -----------------------------------------------------------------------------
-        # FIXME: change base table or view when TMSIS changes are made
         z = f"""
             create or replace temporary view HEADER_{fl} as
 

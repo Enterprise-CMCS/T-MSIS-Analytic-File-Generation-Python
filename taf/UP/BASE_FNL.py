@@ -151,7 +151,7 @@ class BASE_FNL(UP):
         """
          
         z = f"""
-            INSERT INTO {runner.DA_SCHEMA_DC}.TAF_ANN_UP_BASE
+            INSERT INTO {runner.DA_SCHEMA}.TAF_ANN_UP_BASE
             SELECT 
                      { self.table_id_cols() }
                     ,{",".join(self.basecols)}

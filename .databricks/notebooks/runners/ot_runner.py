@@ -7,10 +7,12 @@ from taf.OT.OT_Metadata import OT_Metadata
 
 # COMMAND ----------
 
-otr = OT_Runner(reporting_period = dbutils.widgets.get("reporting_period")
+otr = OT_Runner(da_schema        = dbutils.widgets.get("da_schema")
+               ,reporting_period = dbutils.widgets.get("reporting_period")
                ,state_code       = dbutils.widgets.get("state_code")
                ,run_id           = dbutils.widgets.get("run_id")
-               ,job_id           = dbutils.widgets.get("job_id"))
+               ,job_id           = dbutils.widgets.get("job_id")
+               ,file_version     = dbutils.widgets.get("file_version"))
 
 # COMMAND ----------
 

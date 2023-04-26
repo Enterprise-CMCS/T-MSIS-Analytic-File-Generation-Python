@@ -784,7 +784,7 @@ class DE0001BASE(DE):
             """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA_DC}.taf_ann_de_{tblname}
+        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{tblname}
             (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
             select
                 cast ({self.de.DA_RUN_ID} || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||

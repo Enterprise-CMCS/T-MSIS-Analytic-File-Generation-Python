@@ -103,7 +103,7 @@ class IPL:
         """
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA_DC}.taf_ipl
+                INSERT INTO {runner.DA_SCHEMA}.taf_ipl
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.line_columns) }
                 FROM IPL

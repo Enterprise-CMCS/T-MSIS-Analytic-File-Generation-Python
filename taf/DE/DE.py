@@ -841,7 +841,7 @@ class DE(TAF):
             temptables=list of tables to drop
         """
 
-        z = f"""drop table {self.de.DA_SCHEMA_DC}.{tblname}"""
+        z = f"""drop table {self.de.DA_SCHEMA}.{tblname}"""
         self.de.append(type(self).__name__, z)
 
     # -----------------------------------------------------------------------------

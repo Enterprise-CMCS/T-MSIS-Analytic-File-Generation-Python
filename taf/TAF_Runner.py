@@ -29,6 +29,7 @@ class TAF_Runner():
                 state_code (str): Comma-separated list of T-MSIS state code(s) values to include
                 run_id (str): Comma-separated list of T-MSIS run identifier(s) values to include
                 job_id (int): Final data will use this for da_run_id
+                file_version (str): Iteration or sequential counter for a given file's run
 
             Returns:
                 None
@@ -51,8 +52,7 @@ class TAF_Runner():
         # This gets passed in from the runner and is the job_id from DataBricks
         self.state_code = state_code
         self.DA_RUN_ID = job_id
-        self.DA_SCHEMA = da_schema  # For using data from Redshift for testing DE and up
-        self.DA_SCHEMA_DC = da_schema
+        self.DA_SCHEMA = da_schema
 
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
 
@@ -113,7 +113,6 @@ class TAF_Runner():
         print('RPT_PRD:\t' + str(self.RPT_PRD))
         print('FILE_DT_END:\t' + str(self.FILE_DT_END))
         print('DA_SCHEMA:\t' + str(self.DA_SCHEMA))
-        print('DA_SCHEMA_DC:\t' + str(self.DA_SCHEMA_DC))
         print('COMBINED_LIST:\t' + str(self.combined_list))
 
     def get_link_key(self):
@@ -393,7 +392,7 @@ class TAF_Runner():
 
         spark.sql(
             f"""
-                UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
+                UPDATE {self.DA_SCHEMA}.job_cntl_parms
                 SET job_strt_ts = from_utc_timestamp(current_timestamp(), 'EST')
                 WHERE da_run_id = {self.DA_RUN_ID}
         """
@@ -408,7 +407,7 @@ class TAF_Runner():
 
         spark.sql(
             f"""
-                UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
+                UPDATE {self.DA_SCHEMA}.job_cntl_parms
                 SET job_end_ts = from_utc_timestamp(current_timestamp(), 'EST'),
                 sucsfl_ind = 1
                 WHERE da_run_id = {self.DA_RUN_ID}
@@ -442,11 +441,11 @@ class TAF_Runner():
 
         spark.sql(
             f"""
-                INSERT INTO {self.DA_SCHEMA_DC}.job_otpt_meta
+                INSERT INTO {self.DA_SCHEMA}.job_otpt_meta
                 SELECT {self.DA_RUN_ID} AS da_run_id
                     ,'TABLE' AS otpt_type
                     ,'{table_name}' AS otpt_name
-                    ,'{self.DA_SCHEMA_DC}' AS otpt_lctn_txt
+                    ,'{self.DA_SCHEMA}' AS otpt_lctn_txt
                     ,row_cnt AS rec_cnt
                     ,'{fil_4th_node}' AS fil_4th_node_txt
                     ,from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts
