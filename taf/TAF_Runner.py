@@ -1,5 +1,6 @@
 import logging
 import sys
+import re
 
 from pyspark.sql import SparkSession
 from datetime import datetime
@@ -29,7 +30,6 @@ class TAF_Runner():
                 state_code (str): Comma-separated list of T-MSIS state code(s) values to include
                 run_id (str): Comma-separated list of T-MSIS run identifier(s) values to include
                 job_id (int): Final data will use this for da_run_id
-                file_version (str): Iteration or sequential counter for a given file's run
 
             Returns:
                 None
@@ -52,7 +52,8 @@ class TAF_Runner():
         # This gets passed in from the runner and is the job_id from DataBricks
         self.state_code = state_code
         self.DA_RUN_ID = job_id
-        self.DA_SCHEMA = da_schema
+        self.DA_SCHEMA = da_schema  # For using data from Redshift for testing DE and up
+        self.DA_SCHEMA_DC = da_schema
 
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
 
@@ -113,6 +114,7 @@ class TAF_Runner():
         print('RPT_PRD:\t' + str(self.RPT_PRD))
         print('FILE_DT_END:\t' + str(self.FILE_DT_END))
         print('DA_SCHEMA:\t' + str(self.DA_SCHEMA))
+        print('DA_SCHEMA_DC:\t' + str(self.DA_SCHEMA_DC))
         print('COMBINED_LIST:\t' + str(self.combined_list))
 
     def get_link_key(self):
@@ -392,7 +394,7 @@ class TAF_Runner():
 
         spark.sql(
             f"""
-                UPDATE {self.DA_SCHEMA}.job_cntl_parms
+                UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
                 SET job_strt_ts = from_utc_timestamp(current_timestamp(), 'EST')
                 WHERE da_run_id = {self.DA_RUN_ID}
         """
@@ -407,7 +409,7 @@ class TAF_Runner():
 
         spark.sql(
             f"""
-                UPDATE {self.DA_SCHEMA}.job_cntl_parms
+                UPDATE {self.DA_SCHEMA_DC}.job_cntl_parms
                 SET job_end_ts = from_utc_timestamp(current_timestamp(), 'EST'),
                 sucsfl_ind = 1
                 WHERE da_run_id = {self.DA_RUN_ID}
@@ -441,11 +443,11 @@ class TAF_Runner():
 
         spark.sql(
             f"""
-                INSERT INTO {self.DA_SCHEMA}.job_otpt_meta
+                INSERT INTO {self.DA_SCHEMA_DC}.job_otpt_meta
                 SELECT {self.DA_RUN_ID} AS da_run_id
                     ,'TABLE' AS otpt_type
                     ,'{table_name}' AS otpt_name
-                    ,'{self.DA_SCHEMA}' AS otpt_lctn_txt
+                    ,'{self.DA_SCHEMA_DC}' AS otpt_lctn_txt
                     ,row_cnt AS rec_cnt
                     ,'{fil_4th_node}' AS fil_4th_node_txt
                     ,from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts
@@ -722,6 +724,7 @@ class TAF_Runner():
         from taf.BSF.BSF_Metadata import BSF_Metadata
         from pyspark.sql.types import StructType, StructField, StringType
         import pandas as pd
+        from pyspark.sql import DataFrame
 
         from pyspark.sql import SparkSession
         spark = SparkSession.getActiveSession()
@@ -733,6 +736,23 @@ class TAF_Runner():
 
         sdf = spark.createDataFrame(data=df, schema=schema)
         sdf.registerTempTable('prmry_lang_cd')
+
+        # Run CCS parsing during each run
+        self.logger.info("Parsing ccs proc codes...")
+        z = "select * from hcup.ccs_sp_mapping"
+        ccs_rows = []
+        rows = spark.sql(z)
+        for row in rows.collect():
+            ccs_rows.extend(self._get_fields_list(row))
+
+        # Massage the rows from hcup table and create a new list of rows for spark
+        # with expanded data as ccs_proc
+        df_schema = StructType([StructField("Code_Range", StringType(), True),
+                                StructField("CCS", StringType(), True),
+                                StructField("CCS_Label", StringType(), True)])
+        ccs_table: DataFrame = spark.createDataFrame(data=ccs_rows, schema=df_schema)
+        ccs_table.write.partitionBy("CCS_Label").format("delta").\
+            saveAsTable(name=f"{self.DA_SCHEMA}.ccs_proc", mode="overwrite")
 
         self.logger.info('Creating SSN Indicator View...')
 
@@ -771,6 +791,8 @@ class TAF_Runner():
                     self.logger.info('\t\t' + v.split()[5])
 
                 spark.sql(z)
+
+        self.logger.info("Done!")
 
     def audit(self):
         """
@@ -829,7 +851,6 @@ class TAF_Runner():
                                 print("appending - " + obj_name)
                                 pdf = pdf.append(sdf_audit_cnt.toPandas())
 
-
             for segment, chain in self.plan.items():
                 self.logger.info('\t' + segment + '...')
                 for z in chain:
@@ -869,6 +890,38 @@ class TAF_Runner():
             self.logger.info('No valid Spark Session')
             return None
 
+    def _get_fields_list(self, curr_row: list):
+        rows = []
+        exp = []
+        padzero = False
+        r = re.findall('\\d+', curr_row[0])
+        for num in range(int(r[0]), int(r[1]) + 1):
+            if re.match(r'0\d+', r[0]) is not None:
+                padzero = True
+            val = self._repack_code(curr_row[0], str(num), padzero)
+            exp.append(val)
+            for field in curr_row[1:]:
+                exp.append(field)
+            rows.append(exp)
+            exp = []
+
+        return rows
+
+    def _repack_code(self, code: str, str_num: str, padzero: bool):
+        dps = code.replace("'", '').split("-")[0]
+        strmatch = re.search('[a-zA-Z]', dps)
+        if padzero:
+            str_num = str('0') + str_num
+        if strmatch is None:
+            return str_num
+        else:
+            start = strmatch.start(0)
+            if not len(dps[:start]) == 0 and isinstance(int(dps[:start]), int):
+                repack = str(str_num) + dps[start:]
+            else:
+                repack = dps[:start + 1] + str(str_num)
+
+            return repack
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

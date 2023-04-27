@@ -1,4 +1,5 @@
-from taf.TAF import TAF
+import logging
+
 from taf.TAF_Metadata import TAF_Metadata
 from taf.TAF_Closure import TAF_Closure
 from taf.TAF_Runner import TAF_Runner
@@ -8,7 +9,7 @@ class TAF_Grouper:
     """
     Contains helper functions to facilitate TAF analysis.
     """
-     
+
     otmh9f = [
         "290",
         "291",
@@ -236,30 +237,31 @@ class TAF_Grouper:
         ]
 
     def __init__(self, runner: TAF_Runner):
-         
+
         self.runner = runner
         self.rep_yr = runner.reporting_period.year
         self.rep_mo = runner.reporting_period.month
+        self.logger = logging.getLogger('taf_log')
 
     def mdc(self, MDC: bool, filetyp: str):
         """
         Major diagnostic indicator
         """
-         
+
         select = []
         if MDC:
 
             select.append(
-                f",coalesce(m14.XREF_VAL, m13.XREF_VAL, m12.XREF_VAL, NULL) as MAJOR_DIAGNOSTIC_CATEGORY"
+                ",coalesce(m14.XREF_VAL, m13.XREF_VAL, m12.XREF_VAL, NULL) as MAJOR_DIAGNOSTIC_CATEGORY"
             )
 
         return "\n".join(select)
 
     def iap(self, IAP: bool, filetyp: str):
         """
-        Helper function to return the IAP_CONDITION_IND as part of a SQL query.  
+        Helper function to return the IAP_CONDITION_IND as part of a SQL query.
         """
-         
+
         select = []
         if IAP:
 
@@ -271,12 +273,12 @@ class TAF_Grouper:
         """
         Code primary hierarchial conditions.  These variables are mutually exclusive and it takes the first populated value
         """
-         
+
         select = []
         if PHC:
             # these columns are mutex and take on the first populated value
             select.append(
-                f",coalesce(h12.XREF_VAL, h13.XREF_VAL, h14.XREF_VAL, h16.XREF_VAL, NULL) as PRIMARY_HIERARCHICAL_CONDITION"
+                ",coalesce(h12.XREF_VAL, h13.XREF_VAL, h14.XREF_VAL, h16.XREF_VAL, NULL) as PRIMARY_HIERARCHICAL_CONDITION"
             )
 
         return "\n".join(select)
@@ -285,7 +287,7 @@ class TAF_Grouper:
         """
         dgns_cd_ind: 1-> ICD-9, 2-> ICD-10
         """
-         
+
         select = []
         if MH_SUD:
 
@@ -354,9 +356,9 @@ class TAF_Grouper:
 
     def select_taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        Create case-when SQL statements to select taxonomy.  
+        Create case-when SQL statements to select taxonomy.
         """
-         
+
         select = []
         if TAXONOMY:
 
@@ -371,9 +373,9 @@ class TAF_Grouper:
 
     def select_taxonomy_inner(self, TAXONOMY: bool, filetyp: str):
         """
-        Helper function to select taxonomy.  
+        Helper function to select taxonomy.
         """
-         
+
         select = []
         if TAXONOMY:
 
@@ -412,50 +414,50 @@ class TAF_Grouper:
         """
         Join MDC tables.
         """
-         
+
         join = []
         if MDC:
 
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m12 on m12.LKP_VAL=a.drg_cd and {self.rep_yr} <= 2012 and m12.FRMT_NAME_TXT = 'MDC12FM'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF m12 on m12.LKP_VAL=a.drg_cd and {self.rep_yr} <= 2012 and m12.FRMT_NAME_TXT = 'MDC12FM'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m13 on m13.LKP_VAL=a.drg_cd and {self.rep_yr}  = 2013 and m13.FRMT_NAME_TXT = 'MDC13FM'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF m13 on m13.LKP_VAL=a.drg_cd and {self.rep_yr}  = 2013 and m13.FRMT_NAME_TXT = 'MDC13FM'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF m14 on m14.LKP_VAL=a.drg_cd and {self.rep_yr} >= 2014 and m14.FRMT_NAME_TXT = 'MDC14FM'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF m14 on m14.LKP_VAL=a.drg_cd and {self.rep_yr} >= 2014 and m14.FRMT_NAME_TXT = 'MDC14FM'"
             )
 
         return "\n".join(join)
 
     def join_IAP(self, IAP: str):
         """
-        Join IAP tables.  
+        Join IAP tables.
         """
-         
+
         join = []
         if IAP:
 
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i93 on i93.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=3 and a.DGNS_1_CD_IND='1' and i93.FRMT_NAME_TXT = 'IAP93F'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i93 on i93.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=3 and a.DGNS_1_CD_IND='1' and i93.FRMT_NAME_TXT = 'IAP93F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i94 on i94.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='1' and i94.FRMT_NAME_TXT = 'IAP94F'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i94 on i94.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='1' and i94.FRMT_NAME_TXT = 'IAP94F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i95 on i95.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='1' and i95.FRMT_NAME_TXT = 'IAP95F'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i95 on i95.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='1' and i95.FRMT_NAME_TXT = 'IAP95F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i04 on i04.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='2' and i04.FRMT_NAME_TXT = 'IAP04F'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i04 on i04.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=4 and a.DGNS_1_CD_IND='2' and i04.FRMT_NAME_TXT = 'IAP04F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i05 on i05.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='2' and i05.FRMT_NAME_TXT = 'IAP05F'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i05 on i05.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=5 and a.DGNS_1_CD_IND='2' and i05.FRMT_NAME_TXT = 'IAP05F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i06 on i06.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=6 and a.DGNS_1_CD_IND='2' and i06.FRMT_NAME_TXT = 'IAP06F'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i06 on i06.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=6 and a.DGNS_1_CD_IND='2' and i06.FRMT_NAME_TXT = 'IAP06F'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF i07 on i07.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=7 and a.DGNS_1_CD_IND='2' and i07.FRMT_NAME_TXT = 'IAP07F'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF i07 on i07.LKP_VAL=a.DGNS_1_CD and length(trim(a.DGNS_1_CD))=7 and a.DGNS_1_CD_IND='2' and i07.FRMT_NAME_TXT = 'IAP07F'"
             )
 
         return "\n".join(join)
@@ -464,31 +466,31 @@ class TAF_Grouper:
         """
         Join PCC tables.
         """
-         
+
         join = []
         if PHC:
 
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h12 on h12.LKP_VAL=a.dgns_1_cd and {self.rep_yr} <= 2012 and h12.FRMT_NAME_TXT = 'HCC12FM'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF h12 on h12.LKP_VAL=a.dgns_1_cd and {self.rep_yr} <= 2012 and h12.FRMT_NAME_TXT = 'HCC12FM'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h13 on h13.LKP_VAL=a.dgns_1_cd and {self.rep_yr}  = 2013 and h13.FRMT_NAME_TXT = 'HCC13FM'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF h13 on h13.LKP_VAL=a.dgns_1_cd and {self.rep_yr}  = 2013 and h13.FRMT_NAME_TXT = 'HCC13FM'"
             )
 
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h14 on h14.LKP_VAL=a.dgns_1_cd and ({self.rep_yr}   = 2014  or ({self.rep_yr} = 2015 and {self.rep_mo} < 10)) and h14.FRMT_NAME_TXT = 'HCC14FM'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF h14 on h14.LKP_VAL=a.dgns_1_cd and ({self.rep_yr}   = 2014  or ({self.rep_yr} = 2015 and {self.rep_mo} < 10)) and h14.FRMT_NAME_TXT = 'HCC14FM'"
             )
             join.append(
-                f"left join {self.runner.DA_SCHEMA}.FRMT_NAME_XREF h16 on h16.LKP_VAL=a.dgns_1_cd and (({self.rep_yr} >= 2016) or ({self.rep_yr} = 2015 and {self.rep_mo} >=10)) and h16.FRMT_NAME_TXT = 'HCC16FM'"
+                f"left join {self.runner.DA_SCHEMA_DC}.FRMT_NAME_XREF h16 on h16.LKP_VAL=a.dgns_1_cd and (({self.rep_yr} >= 2016) or ({self.rep_yr} = 2015 and {self.rep_mo} >=10)) and h16.FRMT_NAME_TXT = 'HCC16FM'"
             )
 
         return "\n".join(join)
 
     def mh_sud(self, MH_SUD: bool, filetyp: str):
         """
-        Create case-when SQL statements for mh_sud.  
+        Create case-when SQL statements for mh_sud.
         """
-         
+
         select = []
         if MH_SUD:
 
@@ -514,9 +516,9 @@ class TAF_Grouper:
 
     def taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        Create case-when statements for taxonomy.  
+        Create case-when statements for taxonomy.
         """
-         
+
         select = []
         if TAXONOMY:
 
@@ -542,9 +544,9 @@ class TAF_Grouper:
 
     def join_taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        Join taxonomy tables.  
+        Join taxonomy tables.
         """
-         
+
         join = []
         if TAXONOMY:
 
@@ -563,9 +565,9 @@ class TAF_Grouper:
 
     def select_condition_category(self, MDC: str, IAP: str, PHC: str):
         """
-        Helper function to generate SQL code for selecting condition category.  
+        Helper function to generate SQL code for selecting condition category.
         """
-         
+
         select = []
         if MDC:
 
@@ -601,7 +603,7 @@ class TAF_Grouper:
         MH_SUD=True,
         TAXONOMY=True,
         ):
-  
+
         z = f"""
             create or replace temporary view {clm_tbl}_STEP1 as
             select
@@ -825,7 +827,7 @@ class TAF_Grouper:
                 z += ","
 
         z += f"""
-            from taf_python.npidata
+            from nppes.npidata
         """
         self.runner.append(filetyp, z)
 
@@ -891,7 +893,7 @@ class TAF_Grouper:
             """
 
         z += f"""
-            from taf_python.npidata a
+            from nppes.npidata a
                 inner join
                 taxo_switches b
             on	   a.NPI=b.prvdr_npi
@@ -937,25 +939,6 @@ class TAF_Grouper:
         default category for both inpatient and outpatient data.
         """
 
-        z = f"""
-            CREATE OR REPLACE TEMPORARY VIEW ccs_proc AS
-            SELECT explode(split(regexp_replace(`Code Range`, "\'", ""), "-")) AS cd_rng
-                ,CCS
-                ,CASE
-                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
-                        THEN 'Lab       '
-                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Rad_CCS_Cat) }')
-                        THEN 'Rad       '
-                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_DME_CCS_Cat) }')
-                        THEN 'DME       '
-                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_transp_CCS_Cat) }')
-                        THEN 'Transprt  '
-                    ELSE NULL
-                    END AS code_cat
-            FROM taf_python.ccs_sp_mapping
-        """
-        self.runner.append(filetyp, z)
-
         # the assignment of default ccsr categories to tmsis file types
         # is consistent with the sas macro definiton
         # https://github.com/CMSgov/T-MSIS-Analytic-File-Generation-Code/blob/c854e63a3bf692fd3751f65bb2cc22bfc87c24a1/AWS_Shared_Macros.sas#L1521
@@ -982,7 +965,7 @@ class TAF_Grouper:
                 end
             ) as dflt_ccsr_ctgry_ot
             FROM
-            taf_python.ccsr_dx_mapping
+            hcup.ccsr_dx_mapping
             GROUP BY
             `ICD-10-CM Code`
         """
@@ -992,7 +975,7 @@ class TAF_Grouper:
         """
         Federally assigned service category
         """
-         
+
         # claim header
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW {filetyp}_header_0 AS
@@ -1691,7 +1674,7 @@ class TAF_Grouper:
                 (clm_type_cd in ('4','X','5','Y') and
                     ever_dsh_xix_srvc_ctgry=1)
             """
-            
+
             if filetyp.casefold() == "ip":
                 z += f"""
                     or
