@@ -938,7 +938,23 @@ class TAF_Grouper:
         into clinically meaningful categoires and includes the assignment of a
         default category for both inpatient and outpatient data.
         """
-
+        z = f"""
+            CREATE OR REPLACE TEMPORARY VIEW ccs_proc AS
+            SELECT CCS
+                ,CASE
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
+                        THEN 'Lab       '
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Rad_CCS_Cat) }')
+                        THEN 'Rad       '
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_DME_CCS_Cat) }')
+                        THEN 'DME       '
+                    WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_transp_CCS_Cat) }')
+                        THEN 'Transprt  '
+                    ELSE NULL
+                    END AS code_cat
+            FROM taf_python.ccs_sp_mapping
+        """
+        self.runner.append(filetyp, z)
         # the assignment of default ccsr categories to tmsis file types
         # is consistent with the sas macro definiton
         # https://github.com/CMSgov/T-MSIS-Analytic-File-Generation-Code/blob/c854e63a3bf692fd3751f65bb2cc22bfc87c24a1/AWS_Shared_Macros.sas#L1521

@@ -750,7 +750,7 @@ class TAF_Runner():
                                 StructField("CCS_Label", StringType(), True)])
         ccs_table: DataFrame = spark.createDataFrame(data=ccs_rows, schema=df_schema)
         ccs_table.write.partitionBy("CCS_Label").format("delta").\
-            saveAsTable(name=f"{self.DA_SCHEMA}.ccs_proc", mode="overwrite")
+            saveAsTable(name=f"{self.DA_SCHEMA}.ccs_sp_mapping", mode="overwrite")
 
         self.logger.info('Creating SSN Indicator View...')
 
