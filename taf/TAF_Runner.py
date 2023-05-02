@@ -737,7 +737,7 @@ class TAF_Runner():
 
         # Run CCS parsing during each run
         self.logger.info("Parsing ccs proc codes...")
-        z = "select * from hcup.ccs_sp_mapping"
+        z = "select * from taf_python.ccs_sp_mapping_2021_1"
         ccs_rows = []
         rows = spark.sql(z)
         for row in rows.collect():
