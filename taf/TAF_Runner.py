@@ -910,7 +910,7 @@ class TAF_Runner():
 
         return rows
 
-    def repack_code(code: str, str_num: str, padzero: bool = False, num_length: int = 0):
+    def repack_code(self, code: str, str_num: str, padzero: bool = False, num_length: int = 0):
         dps = code.replace("'", '').split("-")[0]
         strmatch = re.search('[a-zA-Z]', dps)
         if padzero:
