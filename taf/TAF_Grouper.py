@@ -1,4 +1,5 @@
-from taf.TAF import TAF
+import logging
+
 from taf.TAF_Metadata import TAF_Metadata
 from taf.TAF_Closure import TAF_Closure
 from taf.TAF_Runner import TAF_Runner
@@ -8,7 +9,7 @@ class TAF_Grouper:
     """
     Contains helper functions to facilitate TAF analysis.
     """
-     
+
     otmh9f = [
         "290",
         "291",
@@ -236,30 +237,31 @@ class TAF_Grouper:
         ]
 
     def __init__(self, runner: TAF_Runner):
-         
+
         self.runner = runner
         self.rep_yr = runner.reporting_period.year
         self.rep_mo = runner.reporting_period.month
+        self.logger = logging.getLogger('taf_log')
 
     def mdc(self, MDC: bool, filetyp: str):
         """
         Major diagnostic indicator
         """
-         
+
         select = []
         if MDC:
 
             select.append(
-                f",coalesce(m14.XREF_VAL, m13.XREF_VAL, m12.XREF_VAL, NULL) as MAJOR_DIAGNOSTIC_CATEGORY"
+                ",coalesce(m14.XREF_VAL, m13.XREF_VAL, m12.XREF_VAL, NULL) as MAJOR_DIAGNOSTIC_CATEGORY"
             )
 
         return "\n".join(select)
 
     def iap(self, IAP: bool, filetyp: str):
         """
-        Helper function to return the IAP_CONDITION_IND as part of a SQL query.  
+        Helper function to return the IAP_CONDITION_IND as part of a SQL query.
         """
-         
+
         select = []
         if IAP:
 
@@ -271,12 +273,12 @@ class TAF_Grouper:
         """
         Code primary hierarchial conditions.  These variables are mutually exclusive and it takes the first populated value
         """
-         
+
         select = []
         if PHC:
             # these columns are mutex and take on the first populated value
             select.append(
-                f",coalesce(h12.XREF_VAL, h13.XREF_VAL, h14.XREF_VAL, h16.XREF_VAL, NULL) as PRIMARY_HIERARCHICAL_CONDITION"
+                ",coalesce(h12.XREF_VAL, h13.XREF_VAL, h14.XREF_VAL, h16.XREF_VAL, NULL) as PRIMARY_HIERARCHICAL_CONDITION"
             )
 
         return "\n".join(select)
@@ -285,7 +287,7 @@ class TAF_Grouper:
         """
         dgns_cd_ind: 1-> ICD-9, 2-> ICD-10
         """
-         
+
         select = []
         if MH_SUD:
 
@@ -354,9 +356,9 @@ class TAF_Grouper:
 
     def select_taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        Create case-when SQL statements to select taxonomy.  
+        Create case-when SQL statements to select taxonomy.
         """
-         
+
         select = []
         if TAXONOMY:
 
@@ -371,9 +373,9 @@ class TAF_Grouper:
 
     def select_taxonomy_inner(self, TAXONOMY: bool, filetyp: str):
         """
-        Helper function to select taxonomy.  
+        Helper function to select taxonomy.
         """
-         
+
         select = []
         if TAXONOMY:
 
@@ -412,7 +414,7 @@ class TAF_Grouper:
         """
         Join MDC tables.
         """
-         
+
         join = []
         if MDC:
 
@@ -430,9 +432,9 @@ class TAF_Grouper:
 
     def join_IAP(self, IAP: str):
         """
-        Join IAP tables.  
+        Join IAP tables.
         """
-         
+
         join = []
         if IAP:
 
@@ -464,7 +466,7 @@ class TAF_Grouper:
         """
         Join PCC tables.
         """
-         
+
         join = []
         if PHC:
 
@@ -486,9 +488,9 @@ class TAF_Grouper:
 
     def mh_sud(self, MH_SUD: bool, filetyp: str):
         """
-        Create case-when SQL statements for mh_sud.  
+        Create case-when SQL statements for mh_sud.
         """
-         
+
         select = []
         if MH_SUD:
 
@@ -514,9 +516,9 @@ class TAF_Grouper:
 
     def taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        Create case-when statements for taxonomy.  
+        Create case-when statements for taxonomy.
         """
-         
+
         select = []
         if TAXONOMY:
 
@@ -542,9 +544,9 @@ class TAF_Grouper:
 
     def join_taxonomy(self, TAXONOMY: bool, filetyp: str):
         """
-        Join taxonomy tables.  
+        Join taxonomy tables.
         """
-         
+
         join = []
         if TAXONOMY:
 
@@ -563,9 +565,9 @@ class TAF_Grouper:
 
     def select_condition_category(self, MDC: str, IAP: str, PHC: str):
         """
-        Helper function to generate SQL code for selecting condition category.  
+        Helper function to generate SQL code for selecting condition category.
         """
-         
+
         select = []
         if MDC:
 
@@ -601,7 +603,7 @@ class TAF_Grouper:
         MH_SUD=True,
         TAXONOMY=True,
         ):
-  
+
         z = f"""
             create or replace temporary view {clm_tbl}_STEP1 as
             select
@@ -936,10 +938,9 @@ class TAF_Grouper:
         into clinically meaningful categoires and includes the assignment of a
         default category for both inpatient and outpatient data.
         """
-
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ccs_proc AS
-            SELECT explode(split(regexp_replace(`Code Range`, "\'", ""), "-")) AS cd_rng
+            SELECT Code_Range AS cd_rng
                 ,CCS
                 ,CASE
                     WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
@@ -955,7 +956,6 @@ class TAF_Grouper:
             FROM taf_python.ccs_sp_mapping
         """
         self.runner.append(filetyp, z)
-
         # the assignment of default ccsr categories to tmsis file types
         # is consistent with the sas macro definiton
         # https://github.com/CMSgov/T-MSIS-Analytic-File-Generation-Code/blob/c854e63a3bf692fd3751f65bb2cc22bfc87c24a1/AWS_Shared_Macros.sas#L1521
@@ -992,7 +992,7 @@ class TAF_Grouper:
         """
         Federally assigned service category
         """
-         
+
         # claim header
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW {filetyp}_header_0 AS
@@ -1691,7 +1691,7 @@ class TAF_Grouper:
                 (clm_type_cd in ('4','X','5','Y') and
                     ever_dsh_xix_srvc_ctgry=1)
             """
-            
+
             if filetyp.casefold() == "ip":
                 z += f"""
                     or
