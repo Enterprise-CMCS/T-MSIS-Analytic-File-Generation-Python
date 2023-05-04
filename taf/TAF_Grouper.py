@@ -940,7 +940,8 @@ class TAF_Grouper:
         """
         z = f"""
             CREATE OR REPLACE TEMPORARY VIEW ccs_proc AS
-            SELECT CCS
+            SELECT Code_Range AS cd_rng
+                ,CCS
                 ,CASE
                     WHEN CCS IN ('{ "','".join(TAF_Metadata.vs_Lab_CCS_Cat) }')
                         THEN 'Lab       '

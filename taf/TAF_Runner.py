@@ -737,7 +737,7 @@ class TAF_Runner():
 
         # Run CCS parsing during each run
         self.logger.info("Parsing ccs proc codes...")
-        z = "select * from hcup.ccs_sp_mapping"
+        z = "select * from taf_python.ccs_sp_mapping_2021_1"
         ccs_rows = []
         rows = spark.sql(z)
         for row in rows.collect():
@@ -894,9 +894,14 @@ class TAF_Runner():
         padzero = False
         r = re.findall('\\d+', curr_row[0])
         for num in range(int(r[0]), int(r[1]) + 1):
-            if re.match(r'0\d+', r[0]) is not None:
+            m: re.Match = re.match(r'0\d+', r[0])
+
+            if m is not None:
                 padzero = True
-            val = self._repack_code(curr_row[0], str(num), padzero)
+                val = self.repack_code(curr_row[0], str(num), padzero, num_length=m.endpos)
+            else:
+                val = self.repack_code(curr_row[0], str(num))
+
             exp.append(val)
             for field in curr_row[1:]:
                 exp.append(field)
@@ -905,11 +910,11 @@ class TAF_Runner():
 
         return rows
 
-    def _repack_code(self, code: str, str_num: str, padzero: bool):
+    def repack_code(self, code: str, str_num: str, padzero: bool = False, num_length: int = 0):
         dps = code.replace("'", '').split("-")[0]
         strmatch = re.search('[a-zA-Z]', dps)
         if padzero:
-            str_num = str('0') + str_num
+            str_num = str_num.rjust(num_length, '0')
         if strmatch is None:
             return str_num
         else:
