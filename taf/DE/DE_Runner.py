@@ -103,10 +103,10 @@ class DE_Runner(TAF_Runner):
         if self.GETPRIOR == 1:
             for pyear in self.PYEARS:
                 self.max_run_id(file="DE", inyear=pyear)
+
         self.max_run_id(file="DE", inyear=self.YEAR)
-        self.max_run_id(file="BSF", inyear=self.YEAR)
+        self.max_run_id(file="BSF", tbl='taf_mon_bsf', inyear=self.YEAR)
         self.max_run_id(file="IP", inyear=self.YEAR)
-        self.max_run_id(file="IP", inyear=self.PYEAR)
         self.max_run_id(file="IP", inyear=self.FYEAR)
         self.max_run_id(file="LT", inyear=self.YEAR)
         self.max_run_id(file="OT", inyear=self.YEAR)
