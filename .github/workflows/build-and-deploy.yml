@@ -55,4 +55,4 @@ jobs:
 
     - name: Test aws s3 permissions
       run: |
-        aws s3 ls s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/*
+        aws s3 ls s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/
