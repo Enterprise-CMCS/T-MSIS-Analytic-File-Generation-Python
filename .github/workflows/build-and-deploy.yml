@@ -1,0 +1,58 @@
+name: Build and Deploy
+
+# CD runs on merge to main.
+on:
+  push:
+    branches:
+      - main
+      - MACDC-4955_action
+
+jobs:
+  Build-And-Deploy:
+    runs-on: ubuntu-latest
+
+    # 5 minutes should be plenty of time
+    timeout-minutes: 5
+
+    # Permissions needed to interact with credentials
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Assume the appropriate AWS role
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::810638926762:role/taf_github_actions_role
+        role-session-name: TAF_Build_Deploy
+
+    # Set python version
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9.5
+
+    # Install requirements
+    - name: Install Python requirements
+      run: |
+        pip install -r requirements.txt
+
+    # Build the wheel
+    - name: Build wheel
+      run: |
+        python setup.py bdist_wheel
+
+    # # Deploy the wheel to S3
+    # - name: Deploy wheel
+    #   run: |
+    #     aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/ --recursive'
+    #     aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-val/databricks-macbis-val/0/FileStore/shared_uploads/taf/ --recursive'
+    #     aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-prod/databricks-macbis-prod/0/FileStore/shared_uploads/taf/ --recursive'
+
+    - name: Test aws s3 permissions
+      run: |
+        aws s3 ls s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/
