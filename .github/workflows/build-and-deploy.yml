@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: TAF Build and Deploy
 
 # Build and Deploy is manual
 on:
