@@ -3,9 +3,6 @@ name: TAF Build and Deploy
 # Build and Deploy is manual
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - MACDC-4955_action
 
 jobs:
   Build-And-Deploy:
@@ -85,7 +82,7 @@ jobs:
       if: always()
       uses: slackapi/slack-github-action@v1.23.0
       with:
-        channel-id: 'jacktest'
+        channel-id: 'dc-deploy'
         slack-message: "${{ steps.set-emoji.outputs.emoji }} ${{ github.workflow }} #${{ github.run_number }}: ${{ job.status }}\n
           Version: ${{ steps.version.outputs.version }}\n
           Triggered by: ${{ github.event_name }}\n
