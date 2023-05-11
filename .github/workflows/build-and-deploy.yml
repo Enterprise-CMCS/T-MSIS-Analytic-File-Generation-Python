@@ -3,6 +3,9 @@ name: Build and Deploy
 # Build and Deploy is manual
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - MACDC-4955_action
 
 jobs:
   Build-And-Deploy:
