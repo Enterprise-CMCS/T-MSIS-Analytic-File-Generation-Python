@@ -55,9 +55,9 @@ jobs:
     # Deploy the wheel to S3
     - name: Deploy wheel
       run: |
-        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/ --recursive'
-        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-val/databricks-macbis-val/0/FileStore/shared_uploads/taf/ --recursive'
-        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-prod/databricks-macbis-prod/0/FileStore/shared_uploads/taf/ --recursive'
+        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/ --recursive
+        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-val/databricks-macbis-val/0/FileStore/shared_uploads/taf/ --recursive
+        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-prod/databricks-macbis-prod/0/FileStore/shared_uploads/taf/ --recursive
 
     # Set the emoji for Slack notification
     - name: Set Notification Emoji
