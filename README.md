@@ -59,6 +59,8 @@ The same steps as above are automated in the `Build and Deploy` GitHub Action in
 
 The Action is manually triggered and currently builds the wheel, names it according to the version specified in `taf/__init__.py`, and uploads it to the dev, val, and prod buckets.
 
+Running the `Build and Deploy` GitHub Action will post a message to the `dc-alerts` slack channel on the [DataConnect slack](dataconnect-workspace.slack.com).
+
 ## More technical documentation
 
 Supplementary information regarding the data quality of state T-MSIS Analytic Files (TAF) Research Identifiable Files (RIF) can be referenced [here](https://www.medicaid.gov/dq-atlas/welcome).
