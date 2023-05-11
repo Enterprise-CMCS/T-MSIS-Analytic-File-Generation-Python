@@ -45,7 +45,7 @@ jobs:
     - name: Set version variable
       id: version
       run: |
-        echo "version=$(grep -o '".*"' taf/__init__.py | sed 's/"//g') >> $GITHUB_ENV
+        echo "version=$(grep -o '".*"' taf/__init__.py | sed 's/"//g')" >> $GITHUB_ENV
 
     # Build the wheel
     - name: Build wheel
