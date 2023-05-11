@@ -26,7 +26,7 @@ class OTL:
 
                  {runner.DA_RUN_ID} as DA_RUN_ID,
                  {runner.get_link_key_line()} as OT_LINK_KEY,
-                '{runner.version}' as OT_VRSN,
+                '{runner.VERSION}' as OT_VRSN,
                 '{runner.TAF_FILE_DATE}' as OT_FIL_DT
 
                 , TMSIS_RUN_ID_LINE as TMSIS_RUN_ID
@@ -47,7 +47,7 @@ class OTL:
                 , { TAF_Closure.var_set_fillpr('PRCDR_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.fix_old_dates('PRCDR_CD_DT') }
                 , { TAF_Closure.var_set_proc('PRCDR_CD_IND') }
-                , { TAF_Closure.var_set_type1('PRCDR_1_MDFR_CD', lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_1_MDFR_CD', upper=True, lpad=2) }
                 , case when lpad(IMNZTN_TYPE_CD, 2, '0') = '88' then NULL
                     else { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound=29, multiple_condition='YES') }
                 , { TAF_Closure.var_set_type6('BILL_AMT', cond1='888888888.88', cond2='9999999999.99', cond3='999999.99', cond4='999999') }
@@ -81,9 +81,9 @@ class OTL:
                     else NULL end as XXI_SRVC_CTGRY_CD
                 , { TAF_Closure.var_set_type1('STATE_NOTN_TXT') }
                 , { TAF_Closure.var_set_fills('NDC_CD', cond1='0', cond2='8', cond3='9', cond4='#', spaces=True) }
-                , { TAF_Closure.var_set_type1('PRCDR_2_MDFR_CD', lpad=2) }
-                , { TAF_Closure.var_set_type1('PRCDR_3_MDFR_CD', lpad=2) }
-                , { TAF_Closure.var_set_type1('PRCDR_4_MDFR_CD', lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_2_MDFR_CD', upper=True, lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_3_MDFR_CD', upper=True, lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_4_MDFR_CD', upper=True, lpad=2) }
                 , { TAF_Closure.var_set_type3('HCPCS_RATE', cond1='0.0000000000', cond2='0.000000000000', spaces=False) }
                 , { TAF_Closure.var_set_type2('SELF_DRCTN_TYPE_CD', 3, cond1='000', cond2='001', cond3='002', cond4='003') }
                 , { TAF_Closure.var_set_type1('PRE_AUTHRZTN_NUM') }

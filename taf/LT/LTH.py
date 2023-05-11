@@ -25,7 +25,7 @@ class LTH:
 
                  {runner.DA_RUN_ID} as DA_RUN_ID,
                  {runner.get_link_key()} as LT_LINK_KEY,
-                '{runner.version}' as LT_VRSN,
+                '{runner.VERSION}' as LT_VRSN,
                 '{runner.TAF_FILE_DATE}' as LT_FIL_DT
 
                 , TMSIS_RUN_ID
@@ -38,21 +38,16 @@ class LTH:
                 , { TAF_Closure.var_set_rsn('ADJSTMT_RSN_CD') }
                 , case
                     when (SRVC_BGNNG_DT < '1600-01-01') then '1599-12-31'
-                    when 'SRVC_BGNNG_DT' IS NULL then to_date('1960-01-01')
-                    else SRVC_BGNNG_DT
+                    else nullif(SRVC_BGNNG_DT, '1960-01-01')
                   end as SRVC_BGNNG_DT
-                , case
-                    when 'SRVC_ENDG_DT' IS NULL then to_date('1960-01-01')
-                    else SRVC_ENDG_DT
-                  end as SRVC_ENDG_DT
+                , nullif(SRVC_ENDG_DT, '1960-01-01') as SRVC_ENDG_DT
                 , { TAF_Closure.fix_old_dates('ADMSN_DT') }
                 , { TAF_Closure.var_set_type5(var='ADMSN_HR_NUM', lpad=2, lowerbound=0, upperbound=23) }
                 , { TAF_Closure.fix_old_dates('DSCHRG_DT') }
                 , { TAF_Closure.var_set_type5(var='DSCHRG_HR_NUM', lpad=2, lowerbound=0, upperbound=23) }
                 , case
                     when ADJDCTN_DT < '1600-01-01' then '1599-12-31'
-                    when 'ADJDCTN_DT' IS NULL then to_date('1960-01-01')
-                    else ADJDCTN_DT
+                    else nullif(ADJDCTN_DT, '1960-01-01')
                   end as ADJDCTN_DT
                 , { TAF_Closure.fix_old_dates('MDCD_PD_DT') }
                 , { TAF_Closure.var_set_type2(var='SECT_1115A_DEMO_IND', lpad=0, cond1='0', cond2='1') }

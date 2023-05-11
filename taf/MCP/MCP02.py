@@ -235,7 +235,7 @@ class MCP02(MCP):
                 select { ','.join(self.srtlist) },
                     tms_run_id as TMSIS_RUN_ID,
                     '{self.mcp.TAF_FILE_DATE}' as MCP_FIL_DT,
-                    '{self.mcp.version}' as MCP_VRSN,
+                    '{self.mcp.VERSION}' as MCP_VRSN,
                     {self.mcp.DA_RUN_ID} as DA_RUN_ID,
                     SUBMTG_STATE_CD,
                     managed_care_contract_eff_date as MC_CNTRCT_EFCTV_DT,
@@ -252,7 +252,7 @@ class MCP02(MCP):
                     MC_plan_type_CAT,
                     reimbrsmt_arngmt_CAT,
                     SAREA_STATEWIDE_IND,
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32)) as MCP_LINK_KEY
+                    cast (('{self.mcp.VERSION}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32)) as MCP_LINK_KEY
                 from MC02_Main_PRC
                 order by { ','.join(self.srtlist) }
             """

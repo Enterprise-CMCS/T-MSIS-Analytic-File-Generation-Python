@@ -451,26 +451,26 @@ class APR(TAF):
         if loctype == 0 or loctype == 1:
 
             cols.append(f"""
-            cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
+            cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.VERSION}' || '-' ||
                     SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(56)) as {self.fil_typ}_LINK_KEY
                     """)
 
             if loctype == 1:
 
                 cols.append(f"""
-                cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
+                cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.VERSION}' || '-' ||
                         SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || coalesce(PRVDR_LCTN_ID, '**')) as varchar(74)) as {self.fil_typ}_LOC_LINK_KEY
                         """)
 
         elif loctype == 2:
 
             cols.append(f"""
-            cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.version}' || '-' ||
+            cast (('{self.apr.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apr.VERSION}' || '-' ||
                     SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || coalesce(PRVDR_LCTN_ID, '**')) as varchar(74)) as {self.fil_typ}_LOC_LINK_KEY
                     """)
 
         cols.append(f"""'{self.year}' as {self.fil_typ}_FIL_DT""")
-        cols.append(f"""'{self.apr.version}' as {self.fil_typ}_VRSN""")
+        cols.append(f"""'{self.apr.VERSION}' as {self.fil_typ}_VRSN""")
         cols.append(f"""SUBMTG_STATE_CD""")
         cols.append(f"""{self.main_id}""")
 
@@ -532,7 +532,7 @@ class APR(TAF):
                 ,'&FIL_4TH_NODE.' as fil_4th_node_txt
                 ,'TAF_ANN_{self.fil_typ}_{tblname}' as otpt_name
                 ,'{self.apr.YEAR}' as rptg_prd
-                ,'{self.apr.VERSION}' as itrtn_num
+                ,'{self.apr.ITERATION}' as itrtn_num
                 ,&rowcount. as tot_rec_cnt
                 ,to_char(date(c.rec_add_ts),'MM/DD/YYYY') as fil_cret_dt
                 ,submtg_state_cd as incldd_state_cd

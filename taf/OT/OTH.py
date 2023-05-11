@@ -27,7 +27,7 @@ class OTH:
 
                  {runner.DA_RUN_ID} as DA_RUN_ID,
                  {runner.get_link_key()} as OT_LINK_KEY,
-                '{runner.version}' as OT_VRSN,
+                '{runner.VERSION}' as OT_VRSN,
                 '{runner.TAF_FILE_DATE}' as OT_FIL_DT
 
                 , TMSIS_RUN_ID

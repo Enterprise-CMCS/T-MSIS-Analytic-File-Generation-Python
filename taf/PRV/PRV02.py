@@ -274,7 +274,7 @@ class PRV02(PRV):
                 select { ','.join(self.srtlist) },
                     tms_run_id as TMSIS_RUN_ID,
                     cast({self.prv.TAF_FILE_DATE} as string) as PRV_FIL_DT,
-                    '{self.prv.version}' as PRV_VRSN,
+                    '{self.prv.VERSION}' as PRV_VRSN,
                     {self.prv.DA_RUN_ID} as DA_RUN_ID,
                     SUBMTG_STATE_CD,
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
@@ -304,7 +304,7 @@ class PRV02(PRV):
                       when AGE_NUM > 125 then 125
                       else AGE_NUM
                     end as AGE_NUM,
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50)) as PRV_LINK_KEY
+                    cast (('{self.prv.VERSION}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*')) as varchar(50)) as PRV_LINK_KEY
                 from Prov02_Main_All
                 order by { ','.join(self.srtlist) }
             """

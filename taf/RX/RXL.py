@@ -26,7 +26,7 @@ class RXL:
 
                  {runner.DA_RUN_ID} as DA_RUN_ID,
                  {runner.get_link_key_line()} as RX_LINK_KEY,
-                '{runner.version}' as RX_VRSN,
+                '{runner.VERSION}' as RX_VRSN,
                 '{runner.TAF_FILE_DATE}' as RX_FIL_DT
 
                 ,TMSIS_RUN_ID_LINE as TMSIS_RUN_ID
