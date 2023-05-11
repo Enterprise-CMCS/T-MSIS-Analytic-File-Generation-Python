@@ -1,11 +1,8 @@
 name: Build and Deploy
 
-# CD runs on merge to main.
+# Build and Deploy is manual
 on:
-  push:
-    branches:
-      - main
-      - MACDC-4955_action
+  workflow_dispatch:
 
 jobs:
   Build-And-Deploy:
@@ -41,18 +38,54 @@ jobs:
       run: |
         pip install -r requirements.txt
 
+    # Set variable to the wheel version
+    - name: Set version variable
+      id: version
+      run: |
+        echo "version=$(grep -o '".*"' taf/__init__.py | sed 's/"//g') >> $GITHUB_ENV
+
     # Build the wheel
     - name: Build wheel
       run: |
         python setup.py bdist_wheel
 
-    # # Deploy the wheel to S3
-    # - name: Deploy wheel
-    #   run: |
-    #     aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/ --recursive'
-    #     aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-val/databricks-macbis-val/0/FileStore/shared_uploads/taf/ --recursive'
-    #     aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-prod/databricks-macbis-prod/0/FileStore/shared_uploads/taf/ --recursive'
-
-    - name: Test aws s3 permissions
+    # Deploy the wheel to S3
+    - name: Deploy wheel
       run: |
-        aws s3 ls s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/
+        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-dev/databricks-macbis-dev/0/FileStore/shared_uploads/taf/ --recursive'
+        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-val/databricks-macbis-val/0/FileStore/shared_uploads/taf/ --recursive'
+        aws s3 cp dist s3://aws-hhs-cms-cmcs-databricks-prod/databricks-macbis-prod/0/FileStore/shared_uploads/taf/ --recursive'
+
+    # Set the emoji for Slack notification
+    - name: Set Notification Emoji
+      if: always()
+      id: set-emoji
+      run: |
+        echo "Job status is: ${{ job.status }}"
+        EMOJI=$(
+          case "${{ job.status }}" in
+            ("success")
+              echo ":white_check_mark:"
+              ;;
+            ("cancelled")
+              echo ":no_entry_sign:"
+              ;;
+            ("failure")
+              echo ":x:"
+              ;;
+          esac
+        )
+        echo "emoji=$EMOJI" >> $GITHUB_OUTPUT
+
+    # Send Slack notification on every deployment
+    - name: Post to a Slack channel
+      uses: slackapi/slack-github-action@v1.23.0
+      with:
+        channel-id: 'jacktest'
+        slack-message: "${{ steps.set-emoji.outputs.emoji }} ${{ github.workflow }} #${{ github.run_number }}: ${{ job.status }}\n
+          Version: ${{ steps.version.outputs.version }}\n
+          Triggered by: ${{ github.event_name }}\n
+          ${{ env.BUILD_URL }}"
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.DATACONNECT_SLACK_BOT_TOKEN }}
+        BUILD_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
