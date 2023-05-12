@@ -26,7 +26,7 @@ class OTL:
 
                  {runner.DA_RUN_ID} as DA_RUN_ID,
                  {runner.get_link_key_line()} as OT_LINK_KEY,
-                '{runner.version}' as OT_VRSN,
+                '{runner.VERSION}' as OT_VRSN,
                 '{runner.TAF_FILE_DATE}' as OT_FIL_DT
 
                 , TMSIS_RUN_ID_LINE as TMSIS_RUN_ID

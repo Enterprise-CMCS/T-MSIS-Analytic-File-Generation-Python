@@ -110,9 +110,9 @@ class PRV05(PRV):
         z = f"""
             create or replace temporary view Prov05_Identifiers_CNST as
             select {self.prv.DA_RUN_ID} as DA_RUN_ID,
-                    cast (('{self.prv.version}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74)) as PRV_LOC_LINK_KEY,
+                    cast (('{self.prv.VERSION}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(submitting_state_prov_id, '*') || '-' || coalesce(prov_location_id, '**')) as varchar(74)) as PRV_LOC_LINK_KEY,
                     '{self.prv.TAF_FILE_DATE}' as PRV_FIL_DT,
-                    '{self.prv.version}' as PRV_VRSN,
+                    '{self.prv.VERSION}' as PRV_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
                     SUBMTG_STATE_CD,
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,

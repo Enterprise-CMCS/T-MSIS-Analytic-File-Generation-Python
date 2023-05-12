@@ -25,7 +25,7 @@ class LTH:
 
                  {runner.DA_RUN_ID} as DA_RUN_ID,
                  {runner.get_link_key()} as LT_LINK_KEY,
-                '{runner.version}' as LT_VRSN,
+                '{runner.VERSION}' as LT_VRSN,
                 '{runner.TAF_FILE_DATE}' as LT_FIL_DT
 
                 , TMSIS_RUN_ID

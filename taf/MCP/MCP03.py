@@ -133,9 +133,9 @@ class MCP03(MCP):
                 create or replace temporary view MC03_Location_CNST as
                 select
                     {self.mcp.DA_RUN_ID} as DA_RUN_ID,
-                    cast (('{self.mcp.version}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32)) as MCP_LINK_KEY,
+                    cast (('{self.mcp.VERSION}' || '-' || { self.mcp.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(state_plan_id_num, '*')) as varchar(32)) as MCP_LINK_KEY,
                     '{self.mcp.TAF_FILE_DATE}' as MCP_FIL_DT,
-                    '{self.mcp.version}' as MCP_VRSN,
+                    '{self.mcp.VERSION}' as MCP_VRSN,
                     tms_run_id as TMSIS_RUN_ID,
                     SUBMTG_STATE_CD,
                     state_plan_id_num as mc_plan_id,

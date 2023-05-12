@@ -324,7 +324,7 @@ class BSF_Metadata:
 
                 '{bsf.TAF_FILE_DATE}' as BSF_FIL_DT,
 
-                '{bsf.version}' as BSF_VRSN,
+                '{bsf.VERSION}' as BSF_VRSN,
 
                 {bsf.DA_RUN_ID} as DA_RUN_ID
 

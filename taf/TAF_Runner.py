@@ -40,10 +40,11 @@ class TAF_Runner():
         self.now = datetime.now()
         self.initialize_logger(self.now)
 
-        if len(file_version) == 3:
-            self.version = file_version
+        if len(file_version) == 2:
+            self.VERSION = file_version
+            self.ITERATION = "I" + self.VERSION
         else:
-            self.logger.error("ERROR: File Version must be 3 characters.")
+            self.logger.error("ERROR: File Version must be 2 characters.")
             sys.exit(1)
 
         # state submission type
@@ -102,7 +103,7 @@ class TAF_Runner():
             Returns:
                 None
         """
-        print('Version:\t' + self.version)
+        print('Version:\t' + str(self.VERSION))
         print('-----------------------------------------------------')
         print('')
         print('-----------------------------------------------------')
@@ -127,7 +128,7 @@ class TAF_Runner():
         """
 
         return f"""
-            cast ((concat('{self.version }',  '-',  {self.TAF_FILE_DATE},  '-',  NEW_SUBMTG_STATE_CD,  '-',
+            cast ((concat('{self.VERSION }',  '-',  {self.TAF_FILE_DATE},  '-',  NEW_SUBMTG_STATE_CD,  '-',
               trim(COALESCE(NULLIF(ORGNL_CLM_NUM,'~'),'0')), '-',  trim(COALESCE(NULLIF(ADJSTMT_CLM_NUM,'~'),'0')),  '-',
                 CAST(year(ADJDCTN_DT) AS CHAR(4)), CAST(DATE_PART('MONTH',ADJDCTN_DT) AS CHAR(2)),
                  CAST(DATE_PART('DAY',ADJDCTN_DT) AS CHAR(2)), '-',  COALESCE(ADJSTMT_IND_CLEAN,'X'))) as varchar(126))
@@ -145,7 +146,7 @@ class TAF_Runner():
         """
 
         return f"""
-            cast ((concat('{self.version }',  '-',  {self.TAF_FILE_DATE},  '-',  NEW_SUBMTG_STATE_CD_LINE,  '-',
+            cast ((concat('{self.VERSION }',  '-',  {self.TAF_FILE_DATE},  '-',  NEW_SUBMTG_STATE_CD_LINE,  '-',
               trim(COALESCE(NULLIF(ORGNL_CLM_NUM_LINE,'~'),'0')), '-',  trim(COALESCE(NULLIF(ADJSTMT_CLM_NUM_LINE,'~'),'0')),  '-',
                 CAST(year(ADJDCTN_DT_LINE) AS CHAR(4)), CAST(DATE_PART('MONTH',ADJDCTN_DT_LINE) AS CHAR(2)),
                  CAST(DATE_PART('DAY',ADJDCTN_DT_LINE) AS CHAR(2)), '-',  COALESCE(LINE_ADJSTMT_IND_CLEAN,'X'))) as varchar(126))
@@ -339,14 +340,14 @@ class TAF_Runner():
                ,"{file_type}"
                ,1
                ,"{parms}"
-               ,concat("{self.version}", ",", "7.1")
+               ,concat("{self.VERSION}", ",", "7.1")
                ,NULL
                ,NULL
                ,False
                ,from_utc_timestamp(current_timestamp(), "EST")
                ,NULL
                ,False
-               ,concat("{self.version}", ",", "7.1")
+               ,concat("{self.VERSION}", ",", "7.1")
             )
         """)
 
@@ -371,14 +372,14 @@ class TAF_Runner():
                ,"{file_type}"
                ,1
                ,"{parms}"
-               ,concat("{self.version}", ",", "7.1")
+               ,concat("{self.VERSION}", ",", "7.1")
                ,NULL
                ,NULL
                ,False
                ,from_utc_timestamp(current_timestamp(), "EST")
                ,NULL
                ,False
-               ,concat("{self.version}", ",", "7.1")
+               ,concat("{self.VERSION}", ",", "7.1")
             )
         """
         )

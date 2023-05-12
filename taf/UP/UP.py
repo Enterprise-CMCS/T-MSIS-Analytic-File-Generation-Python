@@ -603,9 +603,9 @@ class UP(TAF):
         
         return f"""
                {self.up.DA_RUN_ID} AS DA_RUN_ID
-                   ,cast(('{self.up.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.up.version}' || '-' || SUBMTG_STATE_CD || '-' || MSIS_IDENT_NUM) AS VARCHAR(40)) AS UP_LINK_KEY
+                   ,cast(('{self.up.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.up.VERSION}' || '-' || SUBMTG_STATE_CD || '-' || MSIS_IDENT_NUM) AS VARCHAR(40)) AS UP_LINK_KEY
                    ,'{self.year}' AS UP_FIL_DT
-                   ,'{self.up.version}' AS ANN_UP_VRSN
+                   ,'{self.up.VERSION}' AS ANN_UP_VRSN
                    ,SUBMTG_STATE_CD
                    ,MSIS_IDENT_NUM
         """

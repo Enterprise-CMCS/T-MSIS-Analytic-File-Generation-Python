@@ -465,7 +465,7 @@ class APL(TAF):
         cols = []
 
         cols.append(f"{self.apl.DA_RUN_ID} as DA_RUN_ID")
-        cols.append(f"""cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        cols.append(f"""cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
                      SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(32)) as {self.fil_typ}_LINK_KEY """)
 
         # if self.fil_typ == "PL":
@@ -473,10 +473,10 @@ class APL(TAF):
         #     cols.append(
         #         f"""case
         #     when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-        #     cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #     cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
         #             SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(32))
         #     else
-        #     cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #     cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
         #             SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(32))
         #     end as {self.fil_typ}_LINK_KEY"""
         #     )
@@ -488,10 +488,10 @@ class APL(TAF):
         #         cols.append(
         #             f"""case
         #         when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
         #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || splmtl_submsn_type) as varchar(56))
         #         else
-        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
         #                 SUBMTG_STATE_CD || '-' || {self.main_id}) as varchar(56))
         #         end as {self.fil_typ}_LINK_KEY"""
         #         )
@@ -501,10 +501,10 @@ class APL(TAF):
         #             cols.append(
         #                 f"""case
         #             when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-        #             cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #             cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
         #                     SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
         #             else
-        #             cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #             cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
         #                     SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
         #             end as {self.fil_typ}_LOC_LINK_KEY"""
         #             )
@@ -514,16 +514,16 @@ class APL(TAF):
         #         cols.append(
         #             f"""case
         #         when splmtl_submsn_type is not null and splmtl_submsn_type != ' ' then
-        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
         #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID || '-' || splmtl_submsn_type) as varchar(74))
         #         else
-        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.version}' || '-' ||
+        #         cast (('{self.apl.DA_RUN_ID}' || '-' || '{self.year}' || '-' || '{self.apl.VERSION}' || '-' ||
         #                 SUBMTG_STATE_CD || '-' || {self.main_id} || '-' || PRVDR_LCTN_ID) as varchar(74))
         #         end as {self.fil_typ}_LOC_LINK_KEY"""
         #         )
 
         cols.append(f"""'{self.year}' as {self.fil_typ}_FIL_DT""")
-        cols.append(f"""'{self.apl.version}' as {self.fil_typ}_VRSN""")
+        cols.append(f"""'{self.apl.VERSION}' as {self.fil_typ}_VRSN""")
         cols.append("SUBMTG_STATE_CD")
         cols.append(f"""{self.main_id}""")
 
@@ -585,7 +585,7 @@ class APL(TAF):
                 ,'&FIL_4TH_NODE.' as fil_4th_node_txt
                 ,'TAF_ANN_{self.fil_typ}_{tblname}' as otpt_name
                 ,'{self.apl.YEAR}' as rptg_prd
-                ,'{self.apl.VERSION}' as itrtn_num
+                ,'{self.apl.ITERATION}' as itrtn_num
                 ,&rowcount. as tot_rec_cnt
                 ,to_char(date(c.rec_add_ts),'MM/DD/YYYY') as fil_cret_dt
                 ,submtg_state_cd as incldd_state_cd
