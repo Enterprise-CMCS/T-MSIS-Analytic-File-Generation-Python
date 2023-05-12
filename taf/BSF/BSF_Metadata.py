@@ -910,9 +910,9 @@ class BSF_Metadata:
         Function that takes any date earlier than 1600-01-01 and defaults it to 1599-12-31.
         """
         return f"""case
-            when {column} < '1600-01-01' then '1599-12-31'
-            else {column} end as {column}
-        """
+              when {column} < '1600-01-01' then CAST('1599-12-31' AS DATE)
+              else CAST({column} AS DATE) 
+              end as {column}"""
 
     cleanser = {
         'SSN_NUM': cleanSSN,
@@ -941,6 +941,7 @@ class BSF_Metadata:
 
     epochal = [
         'BIRTH_DT',
+        'DEATH_DT',
         'IMGRTN_STUS_5_YR_BAR_END_DT'
     ]
 
@@ -1780,7 +1781,7 @@ class BSF_Metadata:
         'ELGBL_1ST_NAME',
         'ELGBL_LAST_NAME',
         'ELGBL_MDL_INITL_NAME',
-        'cast(BIRTH_DT as date) as BIRTH_DT',
+        'BIRTH_DT',
         'DEATH_DT',
         'cast(AGE_NUM as integer) as AGE_NUM',
         'AGE_GRP_FLAG',
@@ -1793,7 +1794,7 @@ class BSF_Metadata:
         'CTZNSHP_VRFCTN_IND',
         'IMGRTN_STUS_CD',
         'IMGRTN_VRFCTN_IND',
-        'cast(IMGRTN_STUS_5_YR_BAR_END_DT as DATE) as IMGRTN_STUS_5_YR_BAR_END_DT',
+        'IMGRTN_STUS_5_YR_BAR_END_DT',
         'OTHR_LANG_HOME_CD',
         'PRMRY_LANG_FLAG',
         'ENGLSH_PRFCNCY_CD as PRMRY_LANG_ENGLSH_PRFCNCY_CD',
