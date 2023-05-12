@@ -6,7 +6,7 @@ Background information about the TAF can be found on Medicaid.Gov at this link:
 https://www.medicaid.gov/medicaid/data-systems/macbis/medicaid-chip-research-files/transformed-medicaid-statistical-information-system-t-msis-analytic-files-taf/index.html
 
 
-### Python Implementation of T-MSIS Analytic File (TAF) Generation for Databricks
+## Python Implementation of T-MSIS Analytic File (TAF) Generation for Databricks
 
 This is a Python Library for the generation of the T-MSIS Analytic File (TAF) with distributed computing framework using Databricks.  File type(s) may be independently run within Notebooks, allowing them to be grouped into parallel processes based on state, data dependency, time interval, and T-MSIS run identifier(s).  Each process can be calibrated to optimally meet demand and deliverables. Custom Python libraries will be created to facilitate consistent management and execution of processes as well as simplify the creation of new analyses. This design is ideal for imposing best practices amongst distributed services which are appropriately granted resources and permit focus on test-driven development.
 
@@ -23,8 +23,9 @@ The library version is included the source code. It can be updated in ```_init_(
     __version__ = "7.1.16"    # deployed library version
 ```
 
+## Manual Build and Deploy
 
-## Build the library
+### Build the library
 
 The TAF Python Library is deployed as distributable WHL ("Wheel") file. WHL files are built using [_setuptools_](https://pypi.org/project/setuptools/)
 
@@ -48,10 +49,17 @@ This step uses the Databricks command-line interface (CLI) to interface with the
 7. > ```databricks --profile val fs cp ./dist/ dbfs:/FileStore/shared_uploads/TAF/lib/ --recursive --overwrite```
 
 
-## Deploy the library to the Databricks cluster
+### Deploy the library to the Databricks cluster
 
 Deploy the library WHL file to Databricks clusters using [these](https://docs.databricks.com/libraries/cluster-libraries.html) instructions where applicable. Once the library WHL file is saved to DBFS, update any job definitions to install the library WHL file to any job-based clusters at run time.
 
+## Automated Build and Deploy
+
+The same steps as above are automated in the `Build and Deploy` GitHub Action in this repo.
+
+The Action is manually triggered and currently builds the wheel, names it according to the version specified in `taf/__init__.py`, and uploads it to the dev, val, and prod buckets.
+
+Running the `Build and Deploy` GitHub Action will post a message to the `dc-alerts` slack channel on the [DataConnect slack](dataconnect-workspace.slack.com).
 
 ## More technical documentation
 
