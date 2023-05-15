@@ -12,13 +12,19 @@ class OT_Metadata:
         and masked if there are invalid values.
         """
 
+        lower_segment_id = segment_id.casefold()
+       
+        cleanser_to_use = OT_Metadata.cleanser.copy()
+        if lower_segment_id == 'cot00003':
+          cleanser_to_use['SRVC_ENDG_DT'] = OT_Metadata.line_dates_of_service
+
         new_line_comma = "\n\t\t\t,"
 
         columns = OT_Metadata.columns.get(segment_id).copy()
 
         for i, item in enumerate(columns):
-            if item in OT_Metadata.cleanser.keys():
-                columns[i] = OT_Metadata.cleanser.copy().get(item)(item, alias)
+            if item in cleanser_to_use.keys():
+                columns[i] = cleanser_to_use[item](item, alias)
             elif item in OT_Metadata.validator.keys():
                 columns[i] = OT_Metadata.maskInvalidValues(item, alias)
             elif item in OT_Metadata.upper:
@@ -68,6 +74,17 @@ class OT_Metadata:
                 else null
             end as SRVC_ENDG_DT_CD_H,
             coalesce({alias}.{colname}, '01JAN1960') as {colname}
+        """
+
+    def line_dates_of_service(colname: str, alias: str):
+        """
+        Return dates of service to use with segment COT00003
+        During the line_rename part, the second part after the " as "
+        will be stripped
+        """
+         
+        return f"""
+            coalesce({alias}.{colname}, to_date('1960-01-01')) as {colname}
         """
 
     cleanser = {
