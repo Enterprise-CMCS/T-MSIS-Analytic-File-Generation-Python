@@ -70,7 +70,7 @@ class OTL:
                 , { TAF_Closure.var_set_prtype('SRVCNG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty('SRVCNG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type4('TOOTH_DSGNTN_SYS_CD', 'YES', cond1='JO', cond2='JP') }
-                , { TAF_Closure.var_set_type1('TOOTH_NUM') }
+                , { TAF_Closure.var_set_type1('TOOTH_NUM', upper=True) }
                 , case when lpad(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD, 2, '0') in ('20', '30', '40') then lpad(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD, 2, '0')
                     else { TAF_Closure.var_set_type5('TOOTH_ORAL_CVTY_AREA_DSGNTD_CD', lpad=2, lowerbound=0, upperbound=10, multiple_condition='YES') }
                 , { TAF_Closure.var_set_type4('TOOTH_SRFC_CD', 'YES', cond1='B', cond2='D', cond3='F', cond4='I', cond5='L', cond6='M', cond7='O') }
