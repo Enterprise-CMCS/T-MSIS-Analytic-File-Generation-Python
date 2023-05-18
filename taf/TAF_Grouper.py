@@ -963,24 +963,24 @@ class TAF_Grouper:
             CREATE OR REPLACE TEMPORARY VIEW ccs_dx AS
             SELECT
             `ICD-10-CM Code` AS icd_10_cm_cd,
-            max(
+            coalesce(max(
                 case
                 when `Inpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
                 else NULL
                 end
-            ) as dflt_ccsr_ctgry_ip,
-            max(
+            ),'XXX000') as dflt_ccsr_ctgry_ip,
+            coalesce(max(
                 case
                 when `Inpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
                 else NULL
                 end
-            ) as dflt_ccsr_ctgry_lt,
-            max(
+            ),'XXX000') as dflt_ccsr_ctgry_lt,
+            coalesce(max(
                 case
                 when `Outpatient Default CCSR (Y/N/X)` = 'Y' then `CCSR Category`
                 else NULL
                 end
-            ) as dflt_ccsr_ctgry_ot
+            ),'XXX111') as dflt_ccsr_ctgry_ot
             FROM
             taf_python.ccsr_dx_mapping
             GROUP BY
