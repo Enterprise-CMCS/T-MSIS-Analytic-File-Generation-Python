@@ -104,7 +104,6 @@ class DE_Runner(TAF_Runner):
             for pyear in self.PYEARS:
                 self.max_run_id(file="DE", inyear=pyear)
 
-        self.max_run_id(file="DE", inyear=self.YEAR)
         self.max_run_id(file="BSF", inyear=self.YEAR)
         self.max_run_id(file="IP", inyear=self.YEAR)
         self.max_run_id(file="LT", inyear=self.YEAR)
