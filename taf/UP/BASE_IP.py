@@ -347,9 +347,9 @@ class BASE_IP(UP):
                         --          AND the prior patient status code indicates discharge, then create a second stay
 
                         ,CASE
-                            WHEN datediff(coalesce(claim_dschrg_dt_lag, claim_admsn_dt), claim_admsn_dt) > 1
+                            WHEN datediff(claim_admsn_dt, coalesce(claim_dschrg_dt_lag, claim_admsn_dt)) > 1
                                 OR (
-                                    datediff(coalesce(claim_dschrg_dt_lag, claim_admsn_dt), claim_admsn_dt) IN (
+                                    datediff(claim_admsn_dt, coalesce(claim_dschrg_dt_lag, claim_admsn_dt)) IN (
                                         0
                                         ,1
                                         )
