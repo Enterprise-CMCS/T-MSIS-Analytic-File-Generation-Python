@@ -345,11 +345,12 @@ class BASE_IP(UP):
                         -- Determine when to create a second stay - if the difference between current admission date and prior
                         --          discharge date is more than 1 day, OR the difference is 0 or 1 day (either same or contiguous days)
                         --          AND the prior patient status code indicates discharge, then create a second stay
+                        -- Note that parameters for datediff in Spark are opposite Redshift
 
                         ,CASE
-                            WHEN datediff(coalesce(claim_dschrg_dt_lag, claim_admsn_dt), claim_admsn_dt) > 1
+                            WHEN datediff(claim_admsn_dt, coalesce(claim_dschrg_dt_lag, claim_admsn_dt)) > 1
                                 OR (
-                                    datediff(coalesce(claim_dschrg_dt_lag, claim_admsn_dt), claim_admsn_dt) IN (
+                                    datediff(claim_admsn_dt, coalesce(claim_dschrg_dt_lag, claim_admsn_dt)) IN (
                                         0
                                         ,1
                                         )
