@@ -83,7 +83,7 @@ jobs:
       uses: slackapi/slack-github-action@v1.23.0
       with:
         channel-id: 'dc-deploy'
-        slack-message: "${{ steps.set-emoji.outputs.emoji }} <${{ env.BUILD_URL }}| ${{ github.repository }} ${{ github.workflow }} #${{ github.run_number }}>: ${{ job.status }}\n
+        slack-message: "${{ steps.set-emoji.outputs.emoji }} <${{ env.BUILD_URL }}| ${{ github.workflow }} #${{ github.run_number }}>: ${{ job.status }}\n
           Version: ${{ steps.version.outputs.version }}"
       env:
         SLACK_BOT_TOKEN: ${{ secrets.DATACONNECT_SLACK_BOT_TOKEN }}
