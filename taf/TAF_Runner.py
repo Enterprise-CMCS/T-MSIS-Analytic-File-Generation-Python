@@ -424,7 +424,7 @@ class TAF_Runner():
         spark.sql(
             f"""
                 CREATE OR REPLACE TEMPORARY VIEW record_count AS
-                SELECT count(tmsis_run_id) AS row_cnt
+                SELECT count(*) AS row_cnt
                 FROM {self.DA_SCHEMA}.{table_name}
                 WHERE da_run_id = {self.DA_RUN_ID}
         """
@@ -437,6 +437,7 @@ class TAF_Runner():
     ):
         """
         Helper function to create and inject meta info.
+        Used for monthly and annual types.
         """
         spark = SparkSession.getActiveSession()
 
@@ -468,6 +469,7 @@ class TAF_Runner():
     ):
         """
         Helper function to create and inject eftsmeta info.
+        Used for monthly types.
         """
         spark = SparkSession.getActiveSession()
 
@@ -501,7 +503,7 @@ class TAF_Runner():
                         cast(substring(t1.job_parms_txt, 1, 10) AS date),
                         "MMMM,yyyy"
                     ) AS rptg_prd,
-                    substring(t1.taf_cd_spec_vrsn_name, 2, 2) AS itrtn_num,
+                    substring(t1.taf_cd_spec_vrsn_name, 1, 2) AS itrtn_num,
                     t2.rec_cnt AS tot_rec_cnt,
                     date_format(cast(t2.rec_add_ts AS date), "MM/dd/yyyy") AS fil_cret_dt,
                     coalesce(t3.submtg_state_cd, 'Missing') AS incldd_state_cd,
@@ -530,6 +532,100 @@ class TAF_Runner():
                     AND t4.audt_cnt_of = '{audt_count}'
         """
         )
+
+    def create_efts_metadata(self, tblname, fil_4th_node):
+        """
+        Function create_efts_metadata to get the count of the given table by state and insert into the EFT
+        metadata table. Will be called in the get_segment Function.
+        Used for annual types.
+        """
+        spark = SparkSession.getActiveSession()
+
+        #  Create state counts and insert into metadata table
+
+        spark.sql(
+            f"""
+                create or replace temporary view state_counts as
+                select da_run_id,
+                    submtg_state_cd,
+                    count(submtg_state_cd) as rowcount_state
+
+                from {self.DA_SCHEMA}.{tblname}
+                where da_run_id = {self.DA_RUN_ID}
+                group by da_run_id,
+                         submtg_state_cd
+            """
+        )
+
+        #    Insert the following values into the table:
+        #     - DA_RUN_ID
+        #     - 4th node text value
+        #     - table name
+        #     - year
+        #     - version number (01)
+        #     - overall table count
+        #     - run date
+        #     - state code
+        #     - table count for given state
+        #     - fil_dt
+        #     - version
+
+        spark.sql(
+            f"""
+                insert into {self.DA_SCHEMA}.EFTS_FIL_META
+                (
+                     da_run_id
+                    ,fil_4th_node_txt
+                    ,otpt_name
+                    ,rptg_prd
+                    ,itrtn_num
+                    ,tot_rec_cnt
+                    ,fil_cret_dt
+                    ,incldd_state_cd
+                    ,rec_cnt_by_state_cd
+                    ,rec_add_ts
+                    ,rec_updt_ts
+                    ,fil_dt
+                    ,taf_cd_spec_vrsn_name
+                    ,rfrsh_vw_flag
+                    ,ltst_run_ind
+                    ,ccb_qtr
+                    ,rif_finl_vrsn
+                    ,rif_prelim_vrsn
+                )
+                select
+                     a.da_run_id
+                    ,'{fil_4th_node}' as fil_4th_node_txt
+                    ,'{tblname}' as otpt_name
+                    ,'{self.reporting_period.year}' as rptg_prd
+                    ,substring(b.taf_cd_spec_vrsn_name, 1, 2) AS itrtn_num
+                    ,(select row_cnt from record_count) as tot_rec_cnt
+                    ,date_format(cast(c.rec_add_ts AS date), "MM/dd/yyyy") AS fil_cret_dt
+                    ,submtg_state_cd as incldd_state_cd
+                    ,rowcount_state as rec_cnt_by_state_cd
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts
+                    ,null as rec_updt_ts
+                    ,'{self.reporting_period.year}' as fil_dt
+                    ,b.taf_cd_spec_vrsn_name
+                    ,false as rfrsh_vw_flag
+                    ,false as ltst_run_ind
+                    ,null as ccb_qtr
+                    ,null as rif_finl_vrsn
+                    ,null as rif_prelim_vrsn
+
+                from state_counts a
+                    inner join
+                    {self.DA_SCHEMA}.JOB_CNTL_PARMS b
+
+                    on a.da_run_id = b.da_run_id
+
+                    inner join
+                    (select * from {self.DA_SCHEMA}.JOB_OTPT_META where fil_4th_node_txt = '{fil_4th_node}' ) c
+
+                    on a.da_run_id = c.da_run_id
+        """
+        )
+
 
     def final_control_info(self):
         """

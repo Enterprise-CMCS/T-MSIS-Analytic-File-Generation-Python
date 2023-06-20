@@ -40,17 +40,19 @@ display(up.audit())
 
 # COMMAND ----------
 
-#TABLE_NAME = "BASE"
-#FIL_4TH_NODE = "BSU"
+TABLE_NAME = "TAF_ANN_UP_BASE"
+FIL_4TH_NODE = "BSU"
 
-#up.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+up.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+up.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "TOP"
-#FIL_4TH_NODE = "TOP"
+TABLE_NAME = "TAF_ANN_UP_TOP"
+FIL_4TH_NODE = "TOP"
 
-#up.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+up.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+up.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
