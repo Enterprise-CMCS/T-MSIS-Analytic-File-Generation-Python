@@ -47,22 +47,29 @@ rxr.job_control_updt2()
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Parameter names for prepping the meta table. These  replace the get_cnt and get_counts as they are internal to the this function now ### 
+# MAGIC ```taf_runner.prep_meta_table(self, pgm_name: str, step_name: str, filetyp: str = None, fl: str = None, fl2: str = None, rpt_out: str = None, clm_tbl: str = None, bsf_file_date: str = None): ```
+
+# COMMAND ----------
+
 TABLE_NAME = "TAF_RXH"
 FIL_4TH_NODE = "RXH"
- 
-rxr.get_cnt(TABLE_NAME)
-rxr.getcounts("AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX")
+FILETYP = "RX"
+
+rxr.prep_meta_table("AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", FILETYP, FILETYP, FILETYP, rxr.RPT_OUT, TABLE_NAME, rxr.BSF_FILE_DATE)
 rxr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
 rxr.create_eftsmeta_info(TABLE_NAME, "AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", "RX_HEADER", "new_submtg_state_cd")
 rxr.file_contents(TABLE_NAME)
+
 
 # COMMAND ----------
 
 TABLE_NAME = "TAF_RXL"
 FIL_4TH_NODE = "RXL"
+FILETYP = "RX"
  
-rxr.get_cnt(TABLE_NAME)
-rxr.getcounts("AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX")
+rxr.prep_meta_table("AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", FILETYP, FILETYP, FILETYP, rxr.RPT_OUT, TABLE_NAME, rxr.BSF_FILE_DATE)
 rxr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
 rxr.create_eftsmeta_info(TABLE_NAME, "AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", "RX_LINE", "new_submtg_state_cd_line")
 rxr.file_contents(TABLE_NAME)

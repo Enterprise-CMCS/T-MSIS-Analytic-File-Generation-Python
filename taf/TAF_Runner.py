@@ -79,7 +79,7 @@ class TAF_Runner():
             if (state_code.find(',') != -1) and (run_id.find(',') != -1):
                 self.combined_list = list(tuple(zip(eval(state_code), eval(run_id))))
             else:
-                self.combined_list = [(eval(state_code), eval(run_id)),]
+                self.combined_list = [(eval(state_code), eval(run_id)), ]
         else:
             self.combined_list = []
 
@@ -415,7 +415,7 @@ class TAF_Runner():
         """
         )
 
-    def get_cnt(self, table_name: str):
+    def __get_cnt(self, table_name: str):
         """
         Create a temporary view of the count of tmsis_run_id filtered by da_run_id.
         """
@@ -462,7 +462,7 @@ class TAF_Runner():
         pgm_name: str,
         step_name: str,
         object_name: str,
-        audt_count: int,
+        audt_count: str,
     ):
         """
         Helper function to create and inject eftsmeta info.
@@ -491,33 +491,36 @@ class TAF_Runner():
                    ,rif_finl_vrsn
                    ,rif_prelim_vrsn
                 )
-                SELECT t1.da_run_id
-                    ,t2.fil_4th_node_txt
-                    ,t2.otpt_name
-                    ,date_format(cast(substring(t1.job_parms_txt, 1, 10) AS date), "MMMM,yyyy") AS rptg_prd
-                    ,substring(t1.taf_cd_spec_vrsn_name, 2, 2) AS itrtn_num
-                    ,t2.rec_cnt AS tot_rec_cnt
-                    ,date_format(cast(t2.rec_add_ts AS date), "MM/dd/yyyy") AS fil_cret_dt
-                    ,coalesce(t3.submtg_state_cd, 'Missing') AS incldd_state_cd
-                    ,t3.audt_cnt_val AS rec_cnt_by_state_cd
-                    ,from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts
-                    ,NULL AS rec_updt_ts
-                    ,{self.TAF_FILE_DATE} AS fil_dt
-                    ,t1.taf_cd_spec_vrsn_name
-                    ,False as rfrsh_vw_flag
-                    ,False as ltst_run_ind
-                    ,NULL as ccb_qtr
-                    ,NULL as rif_finl_vrsn
-                    ,NULL as rif_prelim_vrsn
-                FROM {self.DA_SCHEMA}.job_cntl_parms as t1
-                    ,{self.DA_SCHEMA}.job_otpt_meta as t2
-                    ,{self.DA_SCHEMA}.pgm_audt_cnts as t3
-                    ,pgm_audt_cnt_lkp as t4
-                WHERE t1.da_run_id = {self.DA_RUN_ID}
-                    AND t1.da_run_id = t2.da_run_id
-                    AND t2.da_run_id = t3.da_run_id
+                SELECT
+                    t1.da_run_id,
+                    t2.fil_4th_node_txt,
+                    t2.otpt_name,
+                    date_format(
+                        cast(substring(t1.job_parms_txt, 1, 10) AS date),
+                        "MMMM,yyyy"
+                    ) AS rptg_prd,
+                    substring(t1.taf_cd_spec_vrsn_name, 2, 2) AS itrtn_num,
+                    t2.rec_cnt AS tot_rec_cnt,
+                    date_format(cast(t2.rec_add_ts AS date), "MM/dd/yyyy") AS fil_cret_dt,
+                    coalesce(t3.submtg_state_cd, 'Missing') AS incldd_state_cd,
+                    t3.audt_cnt_val AS rec_cnt_by_state_cd,
+                    from_utc_timestamp(current_timestamp(), 'EST') as rec_add_ts,
+                    NULL AS rec_updt_ts,
+                    { self.TAF_FILE_DATE } AS fil_dt,
+                    t1.taf_cd_spec_vrsn_name,
+                    False as rfrsh_vw_flag,
+                    False as ltst_run_ind,
+                    NULL as ccb_qtr,
+                    NULL as rif_finl_vrsn,
+                    NULL as rif_prelim_vrsn
+                FROM
+                    { self.DA_SCHEMA }.job_cntl_parms as t1
+                JOIN { self.DA_SCHEMA }.job_otpt_meta as t2 on t1.da_run_id = t2.da_run_id
+                JOIN { self.DA_SCHEMA }.pgm_audt_cnts as t3 on t2.da_run_id = t3.da_run_id
+                JOIN taf_python.pgm_audt_cnt_lkp as t4 on t3.pgm_audt_cnt_id = t4.pgm_audt_cnt_id
+                WHERE
+                    t1.da_run_id = { self.DA_RUN_ID }
                     AND t2.otpt_name = '{table_name}'
-                    AND t3.pgm_audt_cnt_id = t4.pgm_audt_cnt_id
                     AND t1.sucsfl_ind = True
                     AND t4.pgm_name = '{pgm_name}'
                     AND t4.step_name = '{step_name}'
@@ -563,15 +566,15 @@ class TAF_Runner():
         """
         )
 
-    def getcounts(self, pgm_name: str, step_name: str):
+    def __getcounts(self, pgm_name: str, step_name: str):
         """
-        Helper function to get counts of a table.
+        Private Helper function to get counts of a table.
         """
         spark = SparkSession.getActiveSession()
 
         df = spark.sql(f"""
             SELECT *
-            FROM pgm_audt_cnt_lkp
+            FROM taf_python.pgm_audt_cnt_lkp
             WHERE pgm_name = "{pgm_name}"
                 AND step_name = "{step_name}"
         """)
@@ -587,19 +590,19 @@ class TAF_Runner():
                     ,audt_cnt_val
                 FROM (
                     SELECT {self.DA_RUN_ID} AS da_run_id
-                        ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
+                        ,{i.get("PGM_AUDT_CNT_ID")} AS pgm_audt_cnt_id
                         ,t1.state AS submtg_state_cd
                         ,t1.cnt AS audt_cnt_val
                     FROM (
-                        SELECT {i.get("grp_by")} AS state
-                            ,count({i.get("audt_cnt_of")}) AS cnt
-                        FROM {i.get("obj_name")}
-                        GROUP BY {i.get("grp_by")}
+                        SELECT {i.get("GRP_BY")} AS state
+                            ,count({i.get("AUDT_CNT_OF")}) AS cnt
+                        FROM {i.get("OBJ_NAME")}
+                        GROUP BY {i.get("GRP_BY")}
                     ) AS t1
                 ) AS t2
                 UNION
                 SELECT {self.DA_RUN_ID} AS da_run_id
-                    ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
+                    ,{i.get("PGM_AUDT_CNT_ID")} AS pgm_audt_cnt_id
                     ,"xx" as submtg_state_cd
                     ,0 AS audt_cnt_val
             """)
@@ -888,6 +891,59 @@ class TAF_Runner():
         else:
             self.logger.info('No valid Spark Session')
             return None
+
+    # ----------------------------------------------------
+    # Should be called from the runner due to extra step
+    # ----------------------------------------------------
+    def prep_meta_table(self,
+                        pgm_name: str,
+                        step_name: str,
+                        filetyp: str = None,
+                        fl: str = None,
+                        fl2: str = None,
+                        rpt_out: str = None,
+                        clm_tbl: str = None,
+                        bsf_file_date: str = None):
+        # consider putting logging here and explain why value is needed.
+        if pgm_name is None:
+            pass
+
+        spark = SparkSession.getActiveSession()
+        if spark is not None:
+            pgmLkpDF = (spark.createDataFrame(data=TAF_Metadata.pgmLkpData, schema=TAF_Metadata.pgmLkpSchema))
+            pgmLkpDF.createOrReplaceTempView("audt_lkup_unfmt")
+            self.__create_formated_lkup(filetyp, fl, fl2, rpt_out, clm_tbl, bsf_file_date)
+
+        self.__getcounts(pgm_name=pgm_name, step_name=step_name)
+
+    # ---------------------------------------------------------
+    # private function to lookup and return the answer
+    # ---------------------------------------------------------
+    def __create_formated_lkup(self, filetyp: str, fl: str, fl2: str, rpt_out: str, clm_tbl: str, bsf_file_date: str):
+        from pyspark.sql import DataFrame
+        import pandas as pd
+
+        data: list = []
+        fmted_lookup_df: pd.DataFrame = pd.DataFrame(data=data, columns=TAF_Metadata.pgmLkpSchema)
+        spark = SparkSession.getActiveSession()
+
+        if spark is not None:
+            col_num = 0
+            for row in TAF_Metadata.pgmLkpData:
+                for field in row:
+                    if col_num == 3:
+                        fmt_fld = field.format(filetyp=filetyp, fl=fl, fl2=fl2, rpt_out=rpt_out, clm_tbl=clm_tbl, bsf_file_date=bsf_file_date)
+                        data.append(fmt_fld)
+                    else:
+                        data.append(field)
+                    col_num += 1
+                fmted_lookup_df.loc[len(fmted_lookup_df.index)] = data
+                data = []
+                col_num = 0
+            df_sp: DataFrame = spark.createDataFrame(data=fmted_lookup_df, schema=TAF_Metadata.pgmLkpSchema)
+
+            # df_sp.createOrReplaceTempView("pgm_audt_cnt_lkp")
+            df_sp.write.mode("overwrite").saveAsTable("taf_python.pgm_audt_cnt_lkp")
 
     def _get_fields_list(self, curr_row: list):
         rows = []

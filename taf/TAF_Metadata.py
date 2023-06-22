@@ -1,4 +1,4 @@
-import pandas as pd
+from pyspark.sql.types import StructType, StructField, StringType, DateType, IntegerType
 from pyspark.sql import SparkSession
 
 
@@ -6,48 +6,18 @@ class TAF_Metadata:
     """
     Contains helper functions to facilitate TAF analysis.
     """
-     
-    @staticmethod        
-    def getFormatsForValidationAndRecode():
-        """
-        Helper function to get formats for validation and recode.  
-        """
-
-        from pyspark.sql.types import StructType, StructField, StringType, DateType, IntegerType
-        from pyspark.sql.functions import col, to_date
-
-        spark = SparkSession.getActiveSession()
-
-        subData = [
-            ("35", "ELG", "CSO", "2018-04-01", "9999-12-01"),
-            ("35", "TPL", "CSO", "2018-04-01", "9999-12-01"),
-            ("48", "ELG", "CSO", "2023-04-05", "9999-12-01"),
-        ]
-
-        subSchema = StructType(
+    pgmLkpSchema = StructType(
             [
-                StructField("submtg_state_cd", StringType(), True),
-                StructField("fil_type", StringType(), True),
-                StructField("submsn_type", StringType(), True),
-                StructField("submsn_eff_dt_string", StringType(), True),
-                StructField("submsn_end_dt_string", StringType(), True),
+                StructField("pgm_audt_cnt_id", IntegerType(), False),
+                StructField("pgm_name", StringType(), True),
+                StructField("step_name", StringType(), True),
+                StructField("obj_name", StringType(), True),
+                StructField("audt_cnt_of", StringType(), True),
+                StructField("grp_by", StringType(), True)
             ]
         )
 
-        if spark is not None:
-            subDF = (
-                spark.createDataFrame(data=subData, schema=subSchema)
-                .withColumn(
-                    "submsn_eff_dt", to_date(col("submsn_eff_dt_string"), "yyyy-MM-dd")
-                )
-                .withColumn(
-                    "submsn_end_dt", to_date(col("submsn_end_dt_string"), "yyyy-MM-dd")
-                )
-            )
-
-            subDF.createOrReplaceTempView("state_submsn_type")
-
-        pgmLkpData = [
+    pgmLkpData: list = [
             (385, '002_bsf_ELG00002', '0.1. create_initial_table', 'ELG00002', 'distinct msis_ident_num', 'submtg_state_cd'),
             (386, '009_bsf_ELG00009', '0.1. create_initial_table', 'ELG00009_{bsf_file_date}_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
             (387, '015_bsf_ELG00015', '0.1. create_initial_table', 'ELG00015', 'distinct msis_ident_num', 'submtg_state_cd'),
@@ -557,23 +527,6 @@ class TAF_Metadata:
             (1429, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_{bsf_file_date}_uniq', 'distinct msis_ident_num', 'submtg_state_cd')
         ]
 
-        pgmLkpSchema = StructType(
-            [
-                StructField("pgm_audt_cnt_id", IntegerType(), True),
-                StructField("pgm_name", StringType(), True),
-                StructField("step_name", StringType(), True),
-                StructField("obj_name", StringType(), True),
-                StructField("audt_cnt_of", StringType(), True),
-                StructField("grp_by", StringType(), True)
-            ]
-        )
-
-        if spark is not None:
-            pgmLkpDF = (spark.createDataFrame(data=pgmLkpData, schema=pgmLkpSchema))
-
-            pgmLkpDF.createOrReplaceTempView("pgm_audt_cnt_lkp")
-
-
     XIX_SRVC_CTGRY_CD_values = [
         "001A",
         "001B",
@@ -1023,6 +976,44 @@ class TAF_Metadata:
     vs_DME_CCS_Cat = ["241", "242", "243"]
 
     vs_transp_CCS_Cat = ["239"]
+
+    @staticmethod
+    def getFormatsForValidationAndRecode():
+        """
+        Helper function to get formats for validation and recode.
+        """
+        from pyspark.sql.functions import col, to_date
+
+        spark = SparkSession.getActiveSession()
+
+        subData = [
+            ("35", "ELG", "CSO", "2018-04-01", "9999-12-01"),
+            ("35", "TPL", "CSO", "2018-04-01", "9999-12-01"),
+            ("48", "ELG", "CSO", "2023-04-05", "9999-12-01"),
+        ]
+
+        subSchema = StructType(
+            [
+                StructField("submtg_state_cd", StringType(), True),
+                StructField("fil_type", StringType(), True),
+                StructField("submsn_type", StringType(), True),
+                StructField("submsn_eff_dt_string", StringType(), True),
+                StructField("submsn_end_dt_string", StringType(), True),
+            ]
+        )
+
+        if spark is not None:
+            subDF = (
+                spark.createDataFrame(data=subData, schema=subSchema)
+                .withColumn(
+                    "submsn_eff_dt", to_date(col("submsn_eff_dt_string"), "yyyy-MM-dd")
+                )
+                .withColumn(
+                    "submsn_end_dt", to_date(col("submsn_end_dt_string"), "yyyy-MM-dd")
+                )
+            )
+
+            subDF.createOrReplaceTempView("state_submsn_type")
 
 
 # -----------------------------------------------------------------------------
