@@ -440,6 +440,8 @@ class TAF_Runner():
         """
         spark = SparkSession.getActiveSession()
 
+        self.__get_cnt(table_name=table_name)
+
         spark.sql(
             f"""
                 INSERT INTO {self.DA_SCHEMA}.job_otpt_meta
