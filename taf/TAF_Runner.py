@@ -930,18 +930,16 @@ class TAF_Runner():
         spark = SparkSession.getActiveSession()
 
         if spark is not None:
-            col_num = 0
-            for row in TAF_Metadata.pgmLkpData:
-                for field in row:
+            for _row_num, row in enumerate(TAF_Metadata.pgmLkpData):
+                for col_num, field in enumerate(row):
                     if col_num == 3:
                         fmt_fld = field.format(filetyp=filetyp, fl=fl, fl2=fl2, rpt_out=rpt_out, clm_tbl=clm_tbl, bsf_file_date=bsf_file_date)
                         data.append(fmt_fld)
                     else:
                         data.append(field)
-                    col_num += 1
                 fmted_lookup_df.loc[len(fmted_lookup_df.index)] = data
                 data = []
-                col_num = 0
+
             df_sp: DataFrame = spark.createDataFrame(data=fmted_lookup_df, schema=TAF_Metadata.pgmLkpSchema)
 
             # df_sp.createOrReplaceTempView("pgm_audt_cnt_lkp")
