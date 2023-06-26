@@ -48,11 +48,18 @@ ltr.job_control_updt2()
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Parameter names for prepping the meta table. These  replace the get_cnt and get_counts as they are internal to the this function now ### 
+# MAGIC ```taf_runner.prep_meta_table(self, pgm_name: str, step_name: str, filetyp: str = None, fl: str = None, fl2: str = None, rpt_out: str = None, clm_tbl: str = None, bsf_file_date: str = None): ```
+
+# COMMAND ----------
+
 TABLE_NAME = "TAF_LTH"
 FIL_4TH_NODE = "LTH"
+FILETYP = "LT"
+
  
-ltr.get_cnt(TABLE_NAME)
-ltr.getcounts("AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT")
+ltr.prep_meta_table("AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", FILETYP, FILETYP, FILETYP, ltr.RPT_OUT, TABLE_NAME, ltr.BSF_FILE_DATE)  
 ltr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
 ltr.create_eftsmeta_info(TABLE_NAME, "AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", "LT_HEADER", "new_submtg_state_cd")
 ltr.file_contents(TABLE_NAME)
@@ -61,9 +68,9 @@ ltr.file_contents(TABLE_NAME)
 
 TABLE_NAME = "TAF_LTL"
 FIL_4TH_NODE = "LTL"
+FILETYP = "LT"
  
-ltr.get_cnt(TABLE_NAME)
-ltr.getcounts("AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT")
+ltr.prep_meta_table("AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", FILETYP, FILETYP, FILETYP, ltr.RPT_OUT, TABLE_NAME, ltr.BSF_FILE_DATE)  
 ltr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
 ltr.create_eftsmeta_info(TABLE_NAME, "AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", "LT_LINE", "new_submtg_state_cd_line")
 ltr.file_contents(TABLE_NAME)

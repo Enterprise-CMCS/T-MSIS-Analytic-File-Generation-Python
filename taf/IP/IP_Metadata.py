@@ -3,7 +3,7 @@ from taf.TAF_Closure import TAF_Closure
 
 class IP_Metadata:
     """
-    Create the IP metadata.  
+    Create the IP metadata.
     """
 
     def selectDataElements(segment_id: str, alias: str):
@@ -71,7 +71,7 @@ class IP_Metadata:
 
     def plan_id_num(colname: str, alias: str):
         """
-        Return uppercased mc_plan_id.  
+        Return uppercased mc_plan_id.
         """
 
         return f"upper({alias}.{colname}) as mc_plan_id"
