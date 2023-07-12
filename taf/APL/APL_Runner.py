@@ -191,7 +191,9 @@ class APL_Runner(TAF_Runner):
                 '{file.lower()}' as src_fil_type,
                 {file}_fil_dt as src_fil_dt,
                 da_run_id as src_da_run_id,
-                fil_cret_dt as src_fil_creat_dt
+                fil_cret_dt as src_fil_creat_dt,
+                current_timestamp() as rec_add_ts,
+                null as rec_updt_ts
 
             from max_run_id_{file}_{inyear}
         """

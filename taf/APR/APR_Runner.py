@@ -201,7 +201,9 @@ class APR_Runner(TAF_Runner):
                 lower('{file}') as src_fil_type,
                 {file}_FIL_DT as src_fil_dt,
                 DA_RUN_ID as SRC_DA_RUN_ID,
-			    fil_cret_dt as src_fil_creat_dt
+                fil_cret_dt as src_fil_creat_dt,
+                current_timestamp() as rec_add_ts,
+                null as rec_updt_ts
 
             from max_run_id_{file}_{inyear}
         """
