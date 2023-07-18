@@ -46,7 +46,7 @@ class OTL:
                 , { TAF_Closure.var_set_type1('REV_CD', lpad=4) }
                 , { TAF_Closure.var_set_fillpr('PRCDR_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.fix_old_dates('PRCDR_CD_DT') }
-                , { TAF_Closure.var_set_proc('PRCDR_CD_IND') }
+                , { TAF_Closure.var_set_proc('PRCDR_CD_IND', upper=True) }
                 , { TAF_Closure.var_set_type1('PRCDR_1_MDFR_CD', upper=True, lpad=2) }
                 , case when lpad(IMNZTN_TYPE_CD, 2, '0') = '88' then NULL
                     else { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound=29, multiple_condition='YES') }
@@ -71,8 +71,8 @@ class OTL:
                 , { TAF_Closure.var_set_spclty('SRVCNG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type4('TOOTH_DSGNTN_SYS_CD', 'YES', cond1='JO', cond2='JP') }
                 , { TAF_Closure.var_set_type1('TOOTH_NUM', upper=True) }
-                , case when lpad(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD, 2, '0') in ('20', '30', '40') then lpad(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD, 2, '0')
-                    else { TAF_Closure.var_set_type5('TOOTH_ORAL_CVTY_AREA_DSGNTD_CD', lpad=2, lowerbound=0, upperbound=10, multiple_condition='YES') }
+                , case when lpad(upper(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD), 2, '0') in ('20', '30', '40') then lpad(upper(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD), 2, '0')
+                    else { TAF_Closure.var_set_type5('TOOTH_ORAL_CVTY_AREA_DSGNTD_CD', lpad=2, lowerbound=0, upperbound=10, multiple_condition='YES', upper=True) }
                 , { TAF_Closure.var_set_type4('TOOTH_SRFC_CD', 'YES', cond1='B', cond2='D', cond3='F', cond4='I', cond5='L', cond6='M', cond7='O') }
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01', cond2='02', cond3='03', cond4='04') }
                 , case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
