@@ -22,13 +22,6 @@ class TAF_Closure:
 
         return f"upper(lpad(trim({alias}.{colname}), 3, '0')) as {colname}"
 
-    def compress_dots(col):
-        """
-        Renames columns by removing dots from the string.
-        """
-
-        return "trim(translate(col, '.', ''))"
-
     def compress_dots(colname: str, alias: str):
         """
         Renames columns by removing dots from the string.
@@ -140,11 +133,10 @@ class TAF_Closure:
         cond6: str = "@",
         spaces: bool = True,
         new: str = "NO",
-        ):
+    ):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
-
 
         result = []
         result.append(f"case when {var} in ('{cond1}'")
@@ -198,7 +190,7 @@ class TAF_Closure:
         cond8: str = "@",
         cond9: str = "@",
         cond10: str = "@",
-        ):
+    ):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
@@ -286,7 +278,7 @@ class TAF_Closure:
         cond5: str = "@",
         cond6: str = "@",
         new: str = "NO",
-        ):
+    ):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
@@ -415,7 +407,7 @@ class TAF_Closure:
         cond6: str = "@",
         spaces: bool = True,
         new: str = "NO",
-        ):
+    ):
         """
         Helper function typically used for manipulating diagnostic codes.
         """
@@ -473,7 +465,7 @@ class TAF_Closure:
         cond6: str = "@",
         spaces: bool = True,
         new: str = "NO",
-        ):
+    ):
         """
         Helper function for filling procedures.
         """
@@ -621,10 +613,10 @@ class TAF_Closure:
 
         return f"""
                     case
-	                  when {enddt} is null then to_date('9999-12-31')
-	                  when {enddt} < to_date('1600-01-01') then to_date('1599-12-31')
-	                  else to_date( {enddt} )
-	                end
+                        when {enddt} is null then to_date('9999-12-31')
+                        when {enddt} < to_date('1600-01-01') then to_date('1599-12-31')
+                        else to_date( {enddt} )
+                    end
         """
 
     def upper_case(textst):
@@ -893,7 +885,7 @@ class TAF_Closure:
         condcol4="",
         cond4="=1",
         outcol="",
-        ):
+    ):
 
         """
         Count the number of recs where the given column equals the given condition.
@@ -930,7 +922,7 @@ class TAF_Closure:
         condcol4="",
         cond4="=1",
         outcol="",
-        ):
+    ):
         """
         Create an indicator for ANY rec where the given column equals the given condition.
         """
@@ -968,16 +960,13 @@ class TAF_Closure:
         cond4="=1",
         paidcol="tot_mdcd_pd_amt",
         outcol="",
-        ):
+    ):
         """
         Sum tot_mdcd_pd_amt on the headers OR mdcd_pd_amt on the lines where the given column equals the given condition.
         """
 
-
         if not outcol:
-            _outcol = condcol1
-        else:
-            _outcol = outcol
+            outcol = condcol1
 
         z = f"""
             SUM(CASE WHEN {condcol1} {cond1}
