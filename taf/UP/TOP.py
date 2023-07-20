@@ -85,7 +85,7 @@ class TOP(UP):
                 ,CLM_TYPE_CD
                 ,CLM_TOT
                 ,SUM_TOT_MDCD_PD
-                ,current_timestamp() as REC_ADD_TS
+                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 ,cast(NULL as timestamp) as REC_UPDT_TS
             FROM top_fnl_{self.year}
         """
