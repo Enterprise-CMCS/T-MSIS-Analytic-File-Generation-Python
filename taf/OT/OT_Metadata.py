@@ -3,9 +3,9 @@ from taf.TAF_Closure import TAF_Closure
 
 class OT_Metadata:
     """
-    Create OT metadata.  
+    Create OT metadata.
     """
-     
+
     def selectDataElements(segment_id: str, alias: str):
         """
         Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
@@ -13,7 +13,7 @@ class OT_Metadata:
         """
 
         lower_segment_id = segment_id.casefold()
-       
+
         cleanser_to_use = OT_Metadata.cleanser.copy()
         if lower_segment_id == 'cot00003':
           cleanser_to_use['SRVC_ENDG_DT'] = OT_Metadata.line_dates_of_service
@@ -25,7 +25,7 @@ class OT_Metadata:
         for i, item in enumerate(columns):
             if item in cleanser_to_use.keys():
                 columns[i] = cleanser_to_use[item](item, alias)
-            elif item in OT_Metadata.validator.keys():
+            elif item in OT_Metadata.validator.keys(): # This is empty so it will not currently run. Leaving in for placeholder
                 columns[i] = OT_Metadata.maskInvalidValues(item, alias)
             elif item in OT_Metadata.upper:
                 columns[i] = f"upper({alias}.{item}) as {str(item).lower()}"
@@ -43,29 +43,44 @@ class OT_Metadata:
             # qualify line columns
             if segment_id.casefold() == "cot00003":
                 if item in OT_Metadata.line_renames.keys():
-                    columns[i] = (
-                        columns[i].lower().split(" as ")[0]
-                        + f" as {OT_Metadata.line_renames.get(item).lower()}"
-                    )
+                    if item in OT_Metadata.upper:
+                        columns[i] = (
+                            "upper(" + columns[i].lower().split(" as ")[0]
+                            + f") as {OT_Metadata.line_renames.get(item).lower()}"
+                        )
+                    else:
+                        columns[i] = (
+                            columns[i].lower().split(" as ")[0]
+                            + f" as {OT_Metadata.line_renames.get(item).lower()}"
+                        )
 
         return new_line_comma.join(columns)
 
     def finalFormatter(output_columns):
         """
-        Function for final formatting.  
+        Function for final formatting.
         """
-         
+
         new_line_comma = "\n\t\t\t,"
 
-        columns = output_columns.copy()
+        columns: list = output_columns.copy()
+        rpl_columns: list = []
 
-        return new_line_comma.join(columns)
+        # need to check for whether these fields are part of the upper list
+        # which means they are required to be uppercase for safety
+        for fld in columns:
+            if fld in OT_Metadata.upper:
+                rpl_columns.append(f"upper({fld})")
+            else:
+                rpl_columns.append(fld)
+
+        return new_line_comma.join(rpl_columns)
 
     def dates_of_service(colname: str, alias: str):
         """
         Return dates of service.  If column name is null, then set date to 01JAN1960.
         """
-         
+
         return f"""
             coalesce({alias}.{colname}, {alias}.SRVC_BGNNG_DT) as SRVC_ENDG_DT_DRVD_H,
             case
@@ -82,7 +97,7 @@ class OT_Metadata:
         During the line_rename part, the second part after the " as "
         will be stripped
         """
-         
+
         return f"""
             coalesce({alias}.{colname}, to_date('1960-01-01')) as {colname}
         """
@@ -313,7 +328,7 @@ class OT_Metadata:
     }
 
     class OTH:
-        
+
         columns = []
 
         renames = {
@@ -386,6 +401,8 @@ class OT_Metadata:
         "FRCD_CLM_CD",
         "FUNDNG_CD",
         "FUNDNG_SRC_NON_FED_SHR_CD",
+        "HCBS_SRVC_CD",
+        "HCBS_TXNMY",
         "HCPCS_RATE",
         "HH_ENT_NAME",
         "HH_PRVDR_IND",
@@ -420,8 +437,13 @@ class OT_Metadata:
         "PRCDR_CD",
         "PRE_AUTHRZTN_NUM",
         "PRSCRBNG_PRVDR_NPI_NUM",
+        "PRCDR_CD_IND",
         "PRVDR_FAC_TYPE_CD",
         "PRVDR_LCTN_ID",
+        "PRVDR_UNDER_DRCTN_NPI_NUM",
+        "PRVDR_UNDER_DRCTN_TXNMY_CD",
+        "PRVDR_UNDER_SPRVSN_NPI_NUM",
+        "PRVDR_UNDER_SPRVSN_TXNMY_CD",
         "PTNT_CNTL_NUM",
         "PTNT_STUS_CD",
         "PYMT_LVL_IND",
@@ -448,6 +470,7 @@ class OT_Metadata:
         "STC_CD",
         "SUBMTG_STATE_CD",
         "TMSIS_FIL_NAME",
+        "TOOTH_ORAL_CVTY_AREA_DSGNTD_CD",
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
