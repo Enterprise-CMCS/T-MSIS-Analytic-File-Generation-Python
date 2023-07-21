@@ -87,7 +87,7 @@ class OTH:
                 , { TAF_Closure.var_set_fills('DGNS_2_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.var_set_type2('DGNS_2_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_2_CD_IND') }
-                , { TAF_Closure.var_set_type1('SRVC_PLC_CD', lpad=2) }
+                , { TAF_Closure.var_set_type1('SRVC_PLC_CD', upper=True, lpad=2) }
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }
                 , { TAF_Closure.var_set_type1('BLG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('BLG_PRVDR_NPI_NUM') }
@@ -99,10 +99,10 @@ class OTH:
                 , { TAF_Closure.var_set_taxo('RFRG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 , { TAF_Closure.var_set_prtype('rfrg_prvdr_type_cd') }
                 , { TAF_Closure.var_set_spclty('RFRG_PRVDR_SPCLTY_CD') }
-                , { TAF_Closure.var_set_type1('PRVDR_UNDER_DRCTN_NPI_NUM') }
-                , { TAF_Closure.var_set_taxo('PRVDR_UNDER_DRCTN_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
-                , { TAF_Closure.var_set_type1('PRVDR_UNDER_SPRVSN_NPI_NUM') }
-                , { TAF_Closure.var_set_taxo('PRVDR_UNDER_SPRVSN_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
+                , { TAF_Closure.var_set_type1('PRVDR_UNDER_DRCTN_NPI_NUM', upper=True) }
+                , { TAF_Closure.var_set_taxo('PRVDR_UNDER_DRCTN_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY', upper=True) }
+                , { TAF_Closure.var_set_type1('PRVDR_UNDER_SPRVSN_NPI_NUM', upper=True) }
+                , { TAF_Closure.var_set_taxo('PRVDR_UNDER_SPRVSN_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY', upper=True) }
                 , { TAF_Closure.var_set_type2('HH_PRVDR_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type1('HH_PRVDR_NPI_NUM') }
                 , { TAF_Closure.var_set_type1('HH_ENT_NAME') }

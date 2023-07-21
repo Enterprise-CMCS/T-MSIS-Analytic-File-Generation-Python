@@ -2,55 +2,48 @@ class TAF_Closure:
     """
     Contains helper functions to facilitate TAF analysis.
     """
-     
+
     def coalesce_date(colname: str, alias: str):
         """
-        Helper function to coalesce null dates to a default date of 1960-01-01.  
+        Helper function to coalesce null dates to a default date of 1960-01-01.
         """
-         
+
         return f"coalesce({alias}.{colname}, to_date('1960-01-01')) as {colname}"
 
     def cleanADJSTMT_IND(colname: str, alias: str):
-         
+
         return f"COALESCE(upper({alias}.{colname}), 'X') AS {colname}"
 
     def cleanXIX_SRVC_CTGRY_CD(colname: str, alias: str):
-         
+
         return f"upper(lpad(trim({alias}.{colname}), 4, '0')) as {colname}"
 
     def cleanXXI_SRVC_CTGRY_CD(colname: str, alias: str):
-         
-        return f"upper(lpad(trim({alias}.{colname}), 3, '0')) as {colname}"
 
-    def compress_dots(col):
-        """
-        Renames columns by removing dots from the string.   
-        """
-         
-        return "trim(translate(col, '.', ''))"
+        return f"upper(lpad(trim({alias}.{colname}), 3, '0')) as {colname}"
 
     def compress_dots(colname: str, alias: str):
         """
-        Renames columns by removing dots from the string. 
+        Renames columns by removing dots from the string.
         """
-         
+
         return (
             f"trim(translate(upper({alias}.{colname}), '.', '')) as {colname.lower()}"
         )
 
     def coalesce_tilda(colname: str, alias: str):
-         
+
         return f"coalesce(upper({alias}.{colname}), '~') as {colname}"
 
     def cast_as_dollar(colname: str, alias: str):
-         
+
         return f"cast({alias}.{colname} as decimal(13, 2)) as {colname}"
 
     def var_set_type1(var: str, upper: bool = False, lpad: int = 0, new: str = "NO"):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
-         
+
         result = []
         if lpad == 0:
             if upper:
@@ -71,22 +64,26 @@ class TAF_Closure:
         return "\n    ".join(result)
 
     def var_set_type2(var: str,
-        lpad: int = 0,
-        cond1: str = "@",
-        cond2: str = "@",
-        cond3: str = "@",
-        cond4: str = "@",
-        cond5: str = "@",
-        cond6: str = "@",
-        cond7: str = "@",
-        cond8: str = "@",
-        cond9: str = "@",
-        cond10: str = "@",
-        ):
+                      lpad: int = 0,
+                      cond1: str = "@",
+                      cond2: str = "@",
+                      cond3: str = "@",
+                      cond4: str = "@",
+                      cond5: str = "@",
+                      cond6: str = "@",
+                      cond7: str = "@",
+                      cond8: str = "@",
+                      cond9: str = "@",
+                      cond10: str = "@",
+                      upper: bool = False
+                      ):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
-         
+
+        if upper:
+            var = var.upper()
+
         result = []
         result.append(f"case when {var} is NOT NULL and")
         if lpad == 0:
@@ -136,11 +133,10 @@ class TAF_Closure:
         cond6: str = "@",
         spaces: bool = True,
         new: str = "NO",
-        ):
+    ):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
-         
 
         result = []
         result.append(f"case when {var} in ('{cond1}'")
@@ -194,7 +190,7 @@ class TAF_Closure:
         cond8: str = "@",
         cond9: str = "@",
         cond10: str = "@",
-        ):
+    ):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
@@ -246,11 +242,14 @@ class TAF_Closure:
         lowerbound: int = 1,
         upperbound: int = 10,
         multiple_condition: bool = False,
-        ):
+        upper: bool = False
+    ):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
-         
+
+        if upper:
+            var = var.upper()
 
         result = []
 
@@ -279,7 +278,7 @@ class TAF_Closure:
         cond5: str = "@",
         cond6: str = "@",
         new: str = "NO",
-        ):
+    ):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
         """
@@ -308,11 +307,14 @@ class TAF_Closure:
 
         return "\n    ".join(result)
 
-    def var_set_proc(var):
+    def var_set_proc(var: str, upper: bool = False):
         """
-        Helper function for left paddiing the procedure code indicators.  
+        Helper function for left paddiing the procedure code indicators.
         """
-         
+
+        if upper:
+            var = var.upper()
+
         return f"""
             case when lpad({var},2,'0')
              in('01','02','06','07','10','11','12','13','14','15','16','17','18','19',
@@ -327,7 +329,7 @@ class TAF_Closure:
 
     def var_set_ptstatus(var):
         """
-        Helper function for left padding patient status.  
+        Helper function for left padding patient status.
         """
 
         return f"""
@@ -343,7 +345,7 @@ class TAF_Closure:
 
     def var_set_tos(var):
         """
-        Helper function for left padding TOS.  
+        Helper function for left padding TOS.
         """
 
         return f"""
@@ -358,7 +360,7 @@ class TAF_Closure:
 
     def var_set_prtype(var):
         """
-        Helper function for left padding provider type.   
+        Helper function for left padding provider type.
         """
 
         return f"""
@@ -370,7 +372,7 @@ class TAF_Closure:
 
     def var_set_spclty(var):
         """
-        Helper function for left padding specialty.  
+        Helper function for left padding specialty.
         """
 
         return f"""
@@ -386,7 +388,7 @@ class TAF_Closure:
 
     def var_set_poa(var):
         """
-        Helper function for setting POA.   
+        Helper function for setting POA.
         """
 
         return f"""
@@ -405,9 +407,9 @@ class TAF_Closure:
         cond6: str = "@",
         spaces: bool = True,
         new: str = "NO",
-        ):
+    ):
         """
-        Helper function typically used for manipulating diagnostic codes.    
+        Helper function typically used for manipulating diagnostic codes.
         """
 
         result = []
@@ -463,11 +465,11 @@ class TAF_Closure:
         cond6: str = "@",
         spaces: bool = True,
         new: str = "NO",
-        ):
+    ):
         """
-        Helper function for filling procedures.  
+        Helper function for filling procedures.
         """
-         
+
 
         result = []
 
@@ -514,7 +516,7 @@ class TAF_Closure:
 
     def var_set_rsn(var):
         """
-        Helper function for manipulating adjustment reason.  
+        Helper function for manipulating adjustment reason.
         """
 
         return f"""
@@ -537,11 +539,16 @@ class TAF_Closure:
         cond7: str = "@",
         spaces: bool = True,
         new: str = "NO",
-        ):
+        upper: bool = False
+    ):
         """
-        Helper function for manipulating taxonomy.  
+        Helper function for manipulating taxonomy.
+
         """
-         
+
+        if upper:
+            var = var.upper()
+
         result = []
 
         result.append(
@@ -593,46 +600,46 @@ class TAF_Closure:
 
     def fix_old_dates(date_var):
         """
-        For dates older than 1600-01-01, default the dates to 1599-12-31.  
+        For dates older than 1600-01-01, default the dates to 1599-12-31.
         """
-         
+
         return f"case when ({date_var} < to_date('1600-01-01')) then to_date('1599-12-31') else {date_var} end as {date_var}"
 
     def set_end_dt(enddt):
         """
-        For dates older than 1600-01-01, default the dates to 1599-12-31. 
-        For null dates, set dates to 9999-12-31.  
+        For dates older than 1600-01-01, default the dates to 1599-12-31.
+        For null dates, set dates to 9999-12-31.
         """
 
         return f"""
                     case
-	                  when {enddt} is null then to_date('9999-12-31')
-	                  when {enddt} < to_date('1600-01-01') then to_date('1599-12-31')
-	                  else to_date( {enddt} )
-	                end
+                        when {enddt} is null then to_date('9999-12-31')
+                        when {enddt} < to_date('1600-01-01') then to_date('1599-12-31')
+                        else to_date( {enddt} )
+                    end
         """
 
     def upper_case(textst):
         """
-        Uppercase the name.   
+        Uppercase the name.
         """
-         
+
         return f"nullif(trim(upper({textst})),'')"
 
     zpad = {"XIX_SRVC_CTGRY_CD": 4, "XXI_SRVC_CTGRY_CD": 3}
 
     def zpad(col):
         """
-        Zero pad the column name.  
+        Zero pad the column name.
         """
 
         return "lpad(trim(col), 4, '0')"
 
     def zero_pad(var_cd, var_len):
         """
-        Another zero pad function.  
+        Another zero pad function.
         """
-         
+
         return f"""case
                      when length(trim({var_cd}))<{var_len} and length(trim({var_cd}))>0 and {var_cd} is not null
                      then lpad(trim(upper({var_cd})),{var_len},'0')
@@ -655,7 +662,7 @@ class TAF_Closure:
             outcol=name of column to be output, where default is the same name of the
             incol
         """
-         
+
         if outcol == "":
             outcol = incol
 
@@ -676,7 +683,7 @@ class TAF_Closure:
             nslots=# of slots (used for columns like MC or waiver where we have multiple slots) - default is 1, and for those with
                     slots>1, we will add slot # before _MO suffix
         """
-         
+
         z = ""
         if outcol == "":
             outcol = incol
@@ -735,7 +742,7 @@ class TAF_Closure:
             usenulls=indicator to determine whether to use the nullif function to compare both nulls AND another value,
                     where default is = 0
             nullcond=additional value to look for when usenulls=1
-        """  
+        """
 
         if outcol == "":
             outcol = incol
@@ -860,7 +867,7 @@ class TAF_Closure:
         """
         Get the sum of the incol
         """
-         
+
         if not outcol:
             _outcol = incol
         else:
@@ -878,7 +885,7 @@ class TAF_Closure:
         condcol4="",
         cond4="=1",
         outcol="",
-        ):
+    ):
 
         """
         Count the number of recs where the given column equals the given condition.
@@ -915,11 +922,11 @@ class TAF_Closure:
         condcol4="",
         cond4="=1",
         outcol="",
-        ):
+    ):
         """
         Create an indicator for ANY rec where the given column equals the given condition.
         """
-         
+
 
         z = f"""MAX(CASE WHEN {condcol1} {cond1}
         """
@@ -953,16 +960,13 @@ class TAF_Closure:
         cond4="=1",
         paidcol="tot_mdcd_pd_amt",
         outcol="",
-        ):
+    ):
         """
         Sum tot_mdcd_pd_amt on the headers OR mdcd_pd_amt on the lines where the given column equals the given condition.
         """
-         
 
         if not outcol:
-            _outcol = condcol1
-        else:
-            _outcol = outcol
+            outcol = condcol1
 
         z = f"""
             SUM(CASE WHEN {condcol1} {cond1}
@@ -990,9 +994,9 @@ class TAF_Closure:
 
     def misslogic(var, length):
         """
-        Helper function containing msis logic.  
+        Helper function containing msis logic.
         """
-         
+
         return f"""
                {var} LIKE '8{{{length}}}'
                OR {var} LIKE '9{{{length}}}'
@@ -1023,7 +1027,7 @@ class TAF_Closure:
         """
         Lexical Analysis for a Closure
         """
-         
+
         oplen = len(var)
         i = 0
         pos = [0]

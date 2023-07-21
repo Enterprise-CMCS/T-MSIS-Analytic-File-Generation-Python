@@ -6,17 +6,17 @@ from taf.TAF_Metadata import TAF_Metadata
 
 class OTL:
     """
-    Each OT TAF is comprised of two files – a claim-header level file and a claim-line level file. 
-    The claims included in these files are active, final-action, non-voided, and non-denied claims. 
-    Only header claims with a date in the TAF month/year, along with their associated claim line 
-    records, are included. Both files can be linked together using a unique key that is constructed 
-    based on various claim header and claim line data elements. The two OT TAF are produced for each 
+    Each OT TAF is comprised of two files – a claim-header level file and a claim-line level file.
+    The claims included in these files are active, final-action, non-voided, and non-denied claims.
+    Only header claims with a date in the TAF month/year, along with their associated claim line
+    records, are included. Both files can be linked together using a unique key that is constructed
+    based on various claim header and claim line data elements. The two OT TAF are produced for each
     calendar month in which the data are reported.
     """
-     
+
     def create(self, runner: OT_Runner):
         """
-        Create the OT claim-line level segment. 
+        Create the OT claim-line level segment.
         """
 
         z = f"""
@@ -46,7 +46,7 @@ class OTL:
                 , { TAF_Closure.var_set_type1('REV_CD', lpad=4) }
                 , { TAF_Closure.var_set_fillpr('PRCDR_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.fix_old_dates('PRCDR_CD_DT') }
-                , { TAF_Closure.var_set_proc('PRCDR_CD_IND') }
+                , { TAF_Closure.var_set_proc('PRCDR_CD_IND', upper=True) }
                 , { TAF_Closure.var_set_type1('PRCDR_1_MDFR_CD', upper=True, lpad=2) }
                 , case when lpad(IMNZTN_TYPE_CD, 2, '0') = '88' then NULL
                     else { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound=29, multiple_condition='YES') }
@@ -62,17 +62,17 @@ class OTL:
                 , { TAF_Closure.var_set_type6('OTHR_TOC_RX_CLM_ALOWD_QTY', new='ALOWD_SRVC_QTY', cond1='999999.000', cond2='888888.000', cond3='888888.880', cond4='99999.999', cond5='99999') }
                 , { TAF_Closure.var_set_tos('TOS_CD') }
                 , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
-                , { TAF_Closure.var_set_type2('HCBS_SRVC_CD', 0, cond1=1, cond2=2, cond3=3, cond4=4, cond5=5, cond6=6, cond7=7) }
-                , { TAF_Closure.var_set_type1('HCBS_TXNMY', lpad=5) }
+                , { TAF_Closure.var_set_type2('HCBS_SRVC_CD', 0, cond1=1, cond2=2, cond3=3, cond4=4, cond5=5, cond6=6, cond7=7, upper=True) }
+                , { TAF_Closure.var_set_type1('HCBS_TXNMY', upper=True, lpad=5) }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('PRSCRBNG_PRVDR_NPI_NUM', new='SRVCNG_PRVDR_NPI_NUM') }
                 , { TAF_Closure.var_set_taxo('SRVCNG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 , { TAF_Closure.var_set_prtype('SRVCNG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty('SRVCNG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type4('TOOTH_DSGNTN_SYS_CD', 'YES', cond1='JO', cond2='JP') }
-                , { TAF_Closure.var_set_type1('TOOTH_NUM', upper=True) }
-                , case when lpad(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD, 2, '0') in ('20', '30', '40') then lpad(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD, 2, '0')
-                    else { TAF_Closure.var_set_type5('TOOTH_ORAL_CVTY_AREA_DSGNTD_CD', lpad=2, lowerbound=0, upperbound=10, multiple_condition='YES') }
+                , { TAF_Closure.var_set_type1('TOOTH_NUM') }
+                , case when lpad(upper(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD), 2, '0') in ('20', '30', '40') then lpad(upper(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD), 2, '0')
+                    else { TAF_Closure.var_set_type5('TOOTH_ORAL_CVTY_AREA_DSGNTD_CD', lpad=2, lowerbound=0, upperbound=10, multiple_condition='YES', upper=True) }
                 , { TAF_Closure.var_set_type4('TOOTH_SRFC_CD', 'YES', cond1='B', cond2='D', cond3='F', cond4='I', cond5='L', cond6='M', cond7='O') }
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01', cond2='02', cond3='03', cond4='04') }
                 , case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
@@ -109,9 +109,9 @@ class OTL:
 
     def build(self, runner: OT_Runner):
         """
-        Build the OT claim-line level segment. 
+        Build the OT claim-line level segment.
         """
-         
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_otl
                 SELECT
