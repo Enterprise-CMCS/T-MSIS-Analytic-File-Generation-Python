@@ -503,7 +503,7 @@ class TAF_Runner():
                         cast(substring(t1.job_parms_txt, 1, 10) AS date),
                         "MMMM,yyyy"
                     ) AS rptg_prd,
-                    substring(t1.taf_cd_spec_vrsn_name, 1, 2) AS itrtn_num,
+                    substring(t1.taf_cd_spec_vrsn_name, 2, 2) AS itrtn_num,
                     t2.rec_cnt AS tot_rec_cnt,
                     date_format(cast(t2.rec_add_ts AS date), "MM/dd/yyyy") AS fil_cret_dt,
                     coalesce(t3.submtg_state_cd, 'Missing') AS incldd_state_cd,
@@ -598,7 +598,7 @@ class TAF_Runner():
                     ,'{fil_4th_node}' as fil_4th_node_txt
                     ,'{tblname}' as otpt_name
                     ,'{self.reporting_period.year}' as rptg_prd
-                    ,substring(b.taf_cd_spec_vrsn_name, 1, 2) AS itrtn_num
+                    ,substring(b.taf_cd_spec_vrsn_name, 2, 2) AS itrtn_num
                     ,(select row_cnt from record_count) as tot_rec_cnt
                     ,date_format(cast(c.rec_add_ts AS date), "MM/dd/yyyy") AS fil_cret_dt
                     ,submtg_state_cd as incldd_state_cd
