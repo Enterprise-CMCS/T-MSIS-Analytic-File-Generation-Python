@@ -217,6 +217,7 @@ class TAF_Grouper:
         "364SP0813X",
         "385HR2055X",
         "385HR2060X",
+        "101200000X"
         ]
 
     otstax = [
