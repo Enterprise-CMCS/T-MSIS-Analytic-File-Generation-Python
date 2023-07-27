@@ -3,9 +3,9 @@ from taf.TAF_Closure import TAF_Closure
 
 class LT_Metadata:
     """
-    Create LT metadata.  
+    Create LT metadata.
     """
-    
+
     def selectDataElements(segment_id: str, alias: str):
         """
         Function to select data elements.  Selected data elements will be cleansed, checked against a validator,
@@ -19,7 +19,7 @@ class LT_Metadata:
         for i, item in enumerate(columns):
             if item in LT_Metadata.cleanser.keys():
                 columns[i] = LT_Metadata.cleanser.copy().get(item)(item, alias)
-            elif item in LT_Metadata.validator.keys():
+            elif item in LT_Metadata.validator.keys():  # this is a placeholder. It's not currently implemented
                 columns[i] = LT_Metadata.maskInvalidValues(item, alias)
             elif item in LT_Metadata.upper:
                 columns[i] = f"upper({alias}.{item}) as {str(item).lower()}"
@@ -29,18 +29,30 @@ class LT_Metadata:
             # qualify header columns
             if segment_id.casefold() == "clt00002":
                 if item in LT_Metadata.header_renames.keys():
-                    columns[i] = (
-                        columns[i].lower().split(" as ")[0]
-                        + f" as {LT_Metadata.header_renames.get(item).lower()}"
-                    )
+                    if item in LT_Metadata.upper:
+                        columns[i] = (
+                            "upper(" + columns[i].lower().split(" as ")[0]
+                            + f") as {LT_Metadata.header_renames.get(item).lower()}"
+                        )
+                    else:
+                        columns[i] = (
+                            columns[i].lower().split(" as ")[0]
+                            + f" as {LT_Metadata.header_renames.get(item).lower()}"
+                        )
 
             # qualify line columns
             if segment_id.casefold() == "clt00003":
                 if item in LT_Metadata.line_renames.keys():
-                    columns[i] = (
-                        columns[i].lower().split(" as ")[0]
-                        + f" as {LT_Metadata.line_renames.get(item).lower()}"
-                    )
+                    if item in LT_Metadata.upper:
+                        columns[i] = (
+                            "upper(" + columns[i].lower().split(" as ")[0]
+                            + f") as {LT_Metadata.line_renames.get(item).lower()}"
+                        )
+                    else:
+                        columns[i] = (
+                            columns[i].lower().split(" as ")[0]
+                            + f" as {LT_Metadata.line_renames.get(item).lower()}"
+                        )
 
         return new_line_comma.join(columns)
 
@@ -359,12 +371,14 @@ class LT_Metadata:
     upper = [
         "ADJSTMT_LINE_NUM",
         "ADJSTMT_LINE_RSN_CD",
+        "ADJSTMT_IND",
         "BLG_UNIT_CD",
         "BNFT_TYPE_CD",
         "CLL_STUS_CD",
         "CMS_64_FED_REIMBRSMT_CTGRY_CD",
         "HCPCS_RATE",
         "IMNZTN_TYPE_CD",
+        "LINE_ADJSTMT_IND",
         "MSIS_IDENT_NUM",
         "NDC_CD",
         "NDC_UOM_CD",

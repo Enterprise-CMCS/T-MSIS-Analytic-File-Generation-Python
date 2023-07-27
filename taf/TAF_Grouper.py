@@ -558,7 +558,7 @@ class TAF_Grouper:
                 and l.ORGNL_CLM_NUM_LINE = a.ORGNL_CLM_NUM
                 and l.ADJSTMT_CLM_NUM_LINE = a.ADJSTMT_CLM_NUM
                 and l.ADJDCTN_DT_LINE = a.ADJDCTN_DT
-                and l.LINE_ADJSTMT_IND = a.ADJSTMT_IND"""
+                and upper(l.LINE_ADJSTMT_IND) = upper(a.ADJSTMT_IND)"""
             )
 
         return "\n".join(join)
@@ -653,7 +653,7 @@ class TAF_Grouper:
                     ORGNL_CLM_NUM_LINE,
                     ADJSTMT_CLM_NUM_LINE,
                     ADJDCTN_DT_LINE,
-                    LINE_ADJSTMT_IND
+                    UPPER(LINE_ADJSTMT_IND) as LINE_ADJSTMT_IND
 
                     ,max(case when TEMP_TAXONMY_LINE is null
             """
