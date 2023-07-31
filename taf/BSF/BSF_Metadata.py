@@ -1925,7 +1925,7 @@ class BSF_Metadata:
         '_1932A_SPO_FLAG',
         '_1915A_SPO_FLAG',
         '_1937_ABP_SPO_FLAG',
-        'cast(_1115A_PRTCPNT_FLAG as integer) as _1115A_PRTCPNT_FLAG,'
+        'cast(_1115A_PRTCPNT_FLAG as integer) as _1115A_PRTCPNT_FLAG',
         'WVR_ID1',
         'WVR_TYPE_CD1',
         'WVR_ID2',
