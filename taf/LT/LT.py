@@ -47,6 +47,7 @@ class LT(TAF):
         self.runner.append(self.st_fil_type, z)
 
         z = f"""
+            --- will this fail?
             create or replace temporary view {fl2}_LINE_PRE_NPPES as
             select
                 a.*,
@@ -79,7 +80,7 @@ class LT(TAF):
                 H.ORGNL_CLM_NUM = a.ORGNL_CLM_NUM_LINE and
                 H.ADJSTMT_CLM_NUM = a.ADJSTMT_CLM_NUM_LINE and
                 H.ADJDCTN_DT = a.ADJDCTN_DT_LINE and
-                H.ADJSTMT_IND = a.LINE_ADJSTMT_IND
+                upper(H.ADJSTMT_IND) = upper(a.LINE_ADJSTMT_IND)
         """
         self.runner.append(self.st_fil_type, z)
 
@@ -107,7 +108,7 @@ class LT(TAF):
                 , ORGNL_CLM_NUM_LINE
                 , ADJSTMT_CLM_NUM_LINE
                 , ADJDCTN_DT_LINE
-                , LINE_ADJSTMT_IND
+                , upper(LINE_ADJSTMT_IND) as LINE_ADJSTMT_IND
                 , max(RN) as NUM_CLL
                 , sum (case when substring(lpad(REV_CD,4,'0'),1,2)='01' or substring(lpad(REV_CD,4,'0'),1,3) in ('020', '021')
                         then MDCD_PD_AMT
@@ -168,7 +169,7 @@ class LT(TAF):
                 HEADER.ORGNL_CLM_NUM = CONSTR.ORGNL_CLM_NUM_LINE and
                 HEADER.ADJSTMT_CLM_NUM = CONSTR.ADJSTMT_CLM_NUM_LINE and
                 HEADER.ADJDCTN_DT = CONSTR.ADJDCTN_DT_LINE and
-                HEADER.ADJSTMT_IND = CONSTR.LINE_ADJSTMT_IND
+                upper(HEADER.ADJSTMT_IND) = upper(CONSTR.LINE_ADJSTMT_IND)
         """
         self.runner.append(self.st_fil_type, z)
 

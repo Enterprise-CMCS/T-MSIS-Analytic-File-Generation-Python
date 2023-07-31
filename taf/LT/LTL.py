@@ -39,7 +39,7 @@ class LTL:
                 , { TAF_Closure.var_set_type1('ORGNL_LINE_NUM') }
 
                 , case when (ADJDCTN_DT_LINE < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(ADJDCTN_DT_LINE, to_date('1960-01-01')) end as ADJDCTN_DT
-                ,LINE_ADJSTMT_IND_CLEAN as LINE_ADJSTMT_IND
+                ,upper(LINE_ADJSTMT_IND_CLEAN) as LINE_ADJSTMT_IND
 
                 , { TAF_Closure.var_set_tos('TOS_CD') }
 
@@ -90,8 +90,8 @@ class LTL:
                 select
                     *,
                     case when LINE_ADJSTMT_IND is NOT NULL and
-                    trim(LINE_ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
-                    then trim(LINE_ADJSTMT_IND) else NULL end as LINE_ADJSTMT_IND_CLEAN
+                    trim(upper(LINE_ADJSTMT_IND)) in ('0', '1', '2', '3', '4', '5', '6')
+                    then trim(upper(LINE_ADJSTMT_IND)) else NULL end as LINE_ADJSTMT_IND_CLEAN
                 from
                     LT_LINE
                 ) H

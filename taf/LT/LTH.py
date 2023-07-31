@@ -191,8 +191,8 @@ class LTH:
                 select
                     *,
                     case when ADJSTMT_IND is NOT NULL and
-                    trim(ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
-                    then trim(ADJSTMT_IND) else NULL end as ADJSTMT_IND_CLEAN
+                    trim(upper(ADJSTMT_IND)) in ('0', '1', '2', '3', '4', '5', '6')
+                    then trim(upper(ADJSTMT_IND)) else NULL end as ADJSTMT_IND_CLEAN
                 from
                     LT_HEADER_GROUPER
                 ) H

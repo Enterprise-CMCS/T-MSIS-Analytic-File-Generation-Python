@@ -211,7 +211,7 @@ class TAF_Claims():
                 ,A.ADJSTMT_CLM_NUM
                 ,A.SUBMTG_STATE_CD
                 ,coalesce(A.ADJDCTN_DT, to_date('1960-01-01')) as ADJDCTN_DT
-                ,A.ADJSTMT_IND
+                ,upper(A.ADJSTMT_IND) as ADJSTMT_IND
                 {self.select_date(fl)}
 
             from
@@ -258,7 +258,7 @@ class TAF_Claims():
                         ,H.ADJSTMT_CLM_NUM
                         ,H.SUBMTG_STATE_CD
                         ,H.ADJDCTN_DT
-                        ,H.ADJSTMT_IND
+                        ,UPPER(H.ADJSTMT_IND) as ADJSTMT_IND
                         ,MAX(L.SRVC_ENDG_DT) as SRVC_ENDG_DT
                         ,MAX(L.SRVC_BGNNG_DT) as SRVC_BGNNG_DT
 
@@ -324,7 +324,7 @@ class TAF_Claims():
                    ,coalesce(upper(ADJSTMT_CLM_NUM), '~') as ADJSTMT_CLM_NUM
                    ,SUBMTG_STATE_CD
                    ,coalesce(ADJDCTN_DT, to_date('1960-01-01')) as ADJDCTN_DT
-                   ,COALESCE(ADJSTMT_IND,'X') as ADJSTMT_IND
+                   ,COALESCE(UPPER(ADJSTMT_IND),'X') as ADJSTMT_IND
 
                 --- {TMSIS_SCHEMA}.TMSIS_CLM_FMLY_{fl} F
                 --- subquery contains the claim family view definition
@@ -386,7 +386,7 @@ class TAF_Claims():
                         A.ADJSTMT_CLM_NUM,
                         A.SUBMTG_STATE_CD,
                         A.ADJDCTN_DT,
-                        A.ADJSTMT_IND,
+                        upper(A.ADJSTMT_IND) as ADJSTMT_IND,
 
                         null as SRVC_ENDG_DT_DRVD_L,
                         null as SRVC_ENDG_DT_CD_L
@@ -405,7 +405,7 @@ class TAF_Claims():
                         B.ADJSTMT_CLM_NUM,
                         B.SUBMTG_STATE_CD,
                         B.ADJDCTN_DT,
-                        B.ADJSTMT_IND,
+                        upper(B.ADJSTMT_IND) as ADJSTMT_IND,
                         case
                             when nullif(B.SRVC_ENDG_DT, '01JAN1960') is null
                             or SRVC_ENDG_DT is null then SRVC_BGNNG_DT
