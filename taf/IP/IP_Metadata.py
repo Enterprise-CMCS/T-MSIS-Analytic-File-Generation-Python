@@ -523,6 +523,9 @@ class IP_Metadata:
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
+        "STC_CD",
+        "SUBMTG_STATE_CD",
+        "NDC_UOM_CD"
     ]
 
     # ---------------------------------------------------------------------------------
