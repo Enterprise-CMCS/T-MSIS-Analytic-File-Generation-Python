@@ -1,24 +1,21 @@
-## What is this?
+## What is this and why are we doing it?
 
-## How would you classify this change (feature, bug, maintenance, etc.)?
 
-## How did I test this (if code change)?
+* Link to the Jira ticket for this change: https://jiraent.cms.gov/browse/DBDAART-####
 
-## Is there accompanying documentation for this change?
 
-## Issues Encountered
+## What are the security implications from this change?
 
-*Optional section to include any challenges encountered, options considered, and the approach chosen.*
+
+## How did I test this?
+
+
+## Should there be new or updated documentation for this change? (Be specific.)
+
 
 ## PR Checklist
-- [ ] Is the issue number and a short description in the subject line?
-- [ ] My code follows the style guidelines of this project
+- [ ] The JIRA ticket number and a short description is in the subject line
+- [ ] My code follows any applicable [style guides](https://cms-dataconnect.atlassian.net/wiki/search?text=style%20guide)
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published in downstream modules
-
-_Credit to TMSIS PR template and https://embeddedartistry.com/blog/2017/8/4/a-github-pull-request-template-for-your-projects_
