@@ -361,6 +361,20 @@ class RX_Metadata:
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
+        "DSPNSNG_PD_PRVDR_NPI_NUM",
+        "DSPNSNG_PD_PRVDR_NUM",
+        "PRSCRBNG_PRVDR_NUM",
+        "SRVCNG_PRVDR_NPI_NUM",
+        "SUBMTG_STATE_CD",
+        "BRND_GNRC_IND",
+        "CMPND_DRUG_IND",
+        "CMPND_DSG_FORM_CD",
+        "NEW_REFL_IND",
+        "REBT_ELGBL_IND",
+        "STC_CD",
+        "DRUG_UTLZTN_CD",
+        "UOM_CD",
+        "CLM_STUS_CTGRY_CD"
     ]
 
     renames = {}
