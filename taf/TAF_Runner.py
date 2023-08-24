@@ -466,6 +466,7 @@ class TAF_Runner():
         step_name: str,
         object_name: str,
         audt_count: str,
+        meta_view_name: str
     ):
         """
         Helper function to create and inject eftsmeta info.
@@ -521,7 +522,7 @@ class TAF_Runner():
                     { self.DA_SCHEMA }.job_cntl_parms as t1
                 JOIN { self.DA_SCHEMA }.job_otpt_meta as t2 on t1.da_run_id = t2.da_run_id
                 JOIN { self.DA_SCHEMA }.pgm_audt_cnts as t3 on t2.da_run_id = t3.da_run_id
-                JOIN taf_python.pgm_audt_cnt_lkp as t4 on t3.pgm_audt_cnt_id = t4.pgm_audt_cnt_id
+                JOIN {meta_view_name} as t4 on t3.pgm_audt_cnt_id = t4.pgm_audt_cnt_id
                 WHERE
                     t1.da_run_id = { self.DA_RUN_ID }
                     AND t2.otpt_name = '{table_name}'
@@ -626,7 +627,6 @@ class TAF_Runner():
         """
         )
 
-
     def final_control_info(self):
         """
         Create the final control info table.
@@ -664,7 +664,7 @@ class TAF_Runner():
         """
         )
 
-    def __getcounts(self, pgm_name: str, step_name: str):
+    def __getcounts(self, pgm_name: str, step_name: str, tmp_view_nm: str):
         """
         Private Helper function to get counts of a table.
         """
@@ -672,7 +672,7 @@ class TAF_Runner():
 
         df = spark.sql(f"""
             SELECT *
-            FROM taf_python.pgm_audt_cnt_lkp
+            FROM {tmp_view_nm}
             WHERE pgm_name = "{pgm_name}"
                 AND step_name = "{step_name}"
         """)
@@ -839,7 +839,7 @@ class TAF_Runner():
 
         # Run CCS parsing during each run
         self.logger.info("Parsing ccs proc codes...")
-        z = "select * from taf_python.ccs_sp_mapping_2021_1"
+        z = f"select * from {self.DA_SCHEMA}.ccs_sp_mapping_2021_1"
         ccs_rows = []
         rows = spark.sql(z)
         for row in rows.collect():
@@ -1010,9 +1010,10 @@ class TAF_Runner():
         if spark is not None:
             pgmLkpDF = (spark.createDataFrame(data=TAF_Metadata.pgmLkpData, schema=TAF_Metadata.pgmLkpSchema))
             pgmLkpDF.createOrReplaceTempView("audt_lkup_unfmt")
-            self.__create_formated_lkup(filetyp, fl, fl2, rpt_out, clm_tbl, bsf_file_date)
+            tmp_view_nm = self.__create_formated_lkup(filetyp, fl, fl2, rpt_out, clm_tbl, bsf_file_date)
 
-        self.__getcounts(pgm_name=pgm_name, step_name=step_name)
+        self.__getcounts(pgm_name=pgm_name, step_name=step_name, tmp_view_nm=tmp_view_nm)
+        return tmp_view_nm
 
     # ---------------------------------------------------------
     # private function to lookup and return the answer
@@ -1020,6 +1021,7 @@ class TAF_Runner():
     def __create_formated_lkup(self, filetyp: str, fl: str, fl2: str, rpt_out: str, clm_tbl: str, bsf_file_date: str):
         from pyspark.sql import DataFrame
         import pandas as pd
+        import time
 
         data: list = []
         fmted_lookup_df: pd.DataFrame = pd.DataFrame(data=data, columns=TAF_Metadata.pgmLkpSchema)
@@ -1038,8 +1040,10 @@ class TAF_Runner():
 
             df_sp: DataFrame = spark.createDataFrame(data=fmted_lookup_df, schema=TAF_Metadata.pgmLkpSchema)
 
-            # df_sp.createOrReplaceTempView("pgm_audt_cnt_lkp")
-            df_sp.write.mode("overwrite").saveAsTable("taf_python.pgm_audt_cnt_lkp")
+            rstr = hash(time.time())
+            df_sp.createOrReplaceTempView(f"pgm_audt_cnt_lkp_{rstr}")
+
+            return f"pgm_audt_cnt_lkp_{rstr}"
 
     def _get_fields_list(self, curr_row: list):
         rows = []

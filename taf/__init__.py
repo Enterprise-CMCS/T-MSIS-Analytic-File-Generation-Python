@@ -1,1 +1,1 @@
-__version__ = "PI02.05"
+__version__ = "PI02.06"
