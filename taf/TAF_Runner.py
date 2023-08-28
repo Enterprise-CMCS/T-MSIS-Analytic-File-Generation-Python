@@ -665,6 +665,7 @@ class TAF_Runner():
         )
 
     def __getcounts(self, pgm_name: str, step_name: str, tmp_view_nm: str):
+        import time
         """
         Private Helper function to get counts of a table.
         """
@@ -680,8 +681,9 @@ class TAF_Runner():
         dict_audt = df.toPandas().to_dict(orient="records")
 
         for i in dict_audt:
+            rstr = hash(time.time())
             spark.sql(f"""
-                CREATE OR REPLACE TEMPORARY VIEW row_count AS
+                CREATE OR REPLACE TEMPORARY VIEW row_count_{rstr} AS
                 SELECT da_run_id
                     ,pgm_audt_cnt_id
                     ,submtg_state_cd
@@ -705,7 +707,7 @@ class TAF_Runner():
                     ,0 AS audt_cnt_val
             """)
 
-            rtCntDF = spark.sql("""
+            rtCntDF = spark.sql(f"""
                 SELECT CASE
                         WHEN t1.cnt = 1
                             THEN 1
@@ -714,7 +716,7 @@ class TAF_Runner():
                         END AS rcnt
                 FROM (
                     SELECT count(*) AS cnt
-                    FROM row_count
+                    FROM row_count_{rstr}
                     ) AS t1
             """)
 
@@ -728,7 +730,7 @@ class TAF_Runner():
                     ,audt_cnt_val
                     ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                     ,NULL as rec_updt_ts
-                FROM row_count
+                FROM row_count_{rstr}
                 ORDER BY audt_cnt_val DESC
                 LIMIT {rtcnt}
             """)
