@@ -2,15 +2,20 @@ from setuptools import find_packages, setup
 
 from taf import __version__
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
-
 setup(
     name="taf",
     python_requires=">=3.8",
     packages=find_packages(exclude=["tests", "tests.*"]),
     setup_requires=["wheel"],
-    long_description=long_description,
+    long_description=(
+        "This project aims to provide transparency to state "
+        "Medicaid agencies and other stakeholders who are interested in "
+        "the logic and processes that are used to create CMS’ interim "
+        "T-MSIS Analytic Files (TAF). These new TAF data sets exist "
+        "alongside T-MSIS and serve as an alternate data source tailored to "
+        "meet the broad research needs of the Medicaid and CHIP data user "
+        "community."
+    ),
     long_description_content_type="text/markdown",
     version=__version__,
     description="A package to generate T-MSIS analytic files using Databricks",
