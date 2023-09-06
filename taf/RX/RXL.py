@@ -39,7 +39,7 @@ class RXL:
                 , { TAF_Closure.var_set_type1('ORGNL_LINE_NUM')  }
                 , { TAF_Closure.var_set_type1('ADJSTMT_LINE_NUM') }
 
-                ,case when ADJDCTN_DT_LINE < to_date('1600-01-01') then to_date('1599-12-31') else nullif(ADJDCTN_DT_LINE, to_date('01JAN1960')) end as ADJDCTN_DT
+                ,case when ADJDCTN_DT_LINE < to_date('1600-01-01') then to_date('1599-12-31') else nullif(ADJDCTN_DT_LINE, to_date('1960-01-01')) end as ADJDCTN_DT
                 ,LINE_ADJSTMT_IND_CLEAN as LINE_ADJSTMT_IND
 
                 , { TAF_Closure.var_set_tos('TOS_CD') }
