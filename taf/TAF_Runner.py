@@ -320,7 +320,7 @@ class TAF_Runner():
         else:
             parms = f"{self.st_dt}" + ", " + "submtg_state_cd" + " " + "in" + " " + "(" + f"{self.state_code}" + ")"
 
-        print("DEBUG: " + f"""
+        insert_query = f"""
             INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
                 da_run_id
                ,fil_type
@@ -337,51 +337,23 @@ class TAF_Runner():
             )
             VALUES (
                 {self.DA_RUN_ID}
-               ,"{file_type}"
+               ,lower("{file_type}")
                ,1
                ,"{parms}"
-               ,concat("{self.VERSION}", ",", "7.1")
+               ,concat("{self.ITERATION}", ",", "7.1")
                ,NULL
                ,NULL
                ,False
                ,from_utc_timestamp(current_timestamp(), "EST")
                ,NULL
                ,False
-               ,concat("{self.VERSION}", ",", "7.1")
-            )
-        """)
-
-        spark.sql(
-            f"""
-            INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
-                da_run_id
-               ,fil_type
-               ,schld_ordr_num
-               ,job_parms_txt
-               ,cd_spec_vrsn_name
-               ,job_strt_ts
-               ,job_end_ts
-               ,sucsfl_ind
-               ,rec_add_ts
-               ,rec_updt_ts
-               ,rfrsh_vw_flag
-               ,taf_cd_spec_vrsn_name
-            )
-            VALUES (
-                {self.DA_RUN_ID}
-               ,"{file_type}"
-               ,1
-               ,"{parms}"
-               ,concat("{self.VERSION}", ",", "7.1")
-               ,NULL
-               ,NULL
-               ,False
-               ,from_utc_timestamp(current_timestamp(), "EST")
-               ,NULL
-               ,False
-               ,concat("{self.VERSION}", ",", "7.1")
+               ,concat("{self.ITERATION}", ",", "7.1")
             )
         """
+        print("DEBUG: " + insert_query)
+
+        spark.sql(
+            insert_query
         )
 
     def job_control_updt(self):
