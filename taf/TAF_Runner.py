@@ -2,7 +2,7 @@ import logging
 import sys
 import re
 
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, DataFrame
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
 
@@ -646,14 +646,15 @@ class TAF_Runner():
         df = spark.sql(f"""
             SELECT *
             FROM {tmp_view_nm}
-            WHERE pgm_name = "{pgm_name}"
-                AND step_name = "{step_name}"
+            WHERE LOWER(pgm_name) = "{pgm_name.casefold()}"
+                AND LOWER(step_name) = "{step_name.casefold()}"
         """)
 
         dict_audt = df.toPandas().to_dict(orient="records")
 
         for i in dict_audt:
             rstr = hash(time.time())
+            
             spark.sql(f"""
                 CREATE OR REPLACE TEMPORARY VIEW row_count_{rstr} AS
                 SELECT da_run_id
@@ -662,19 +663,19 @@ class TAF_Runner():
                     ,audt_cnt_val
                 FROM (
                     SELECT {self.DA_RUN_ID} AS da_run_id
-                        ,{i.get("PGM_AUDT_CNT_ID")} AS pgm_audt_cnt_id
+                        ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
                         ,t1.state AS submtg_state_cd
                         ,t1.cnt AS audt_cnt_val
                     FROM (
-                        SELECT {i.get("GRP_BY")} AS state
-                            ,count({i.get("AUDT_CNT_OF")}) AS cnt
-                        FROM {i.get("OBJ_NAME")}
-                        GROUP BY {i.get("GRP_BY")}
+                        SELECT {i.get("grp_by")} AS state
+                            ,count({i.get("audt_cnt_of")}) AS cnt
+                        FROM {i.get("obj_name")}
+                        GROUP BY {i.get("grp_by")}
                     ) AS t1
                 ) AS t2
                 UNION
                 SELECT {self.DA_RUN_ID} AS da_run_id
-                    ,{i.get("PGM_AUDT_CNT_ID")} AS pgm_audt_cnt_id
+                    ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
                     ,"xx" as submtg_state_cd
                     ,0 AS audt_cnt_val
             """)
@@ -978,12 +979,11 @@ class TAF_Runner():
                         bsf_file_date: str = None):
         # consider putting logging here and explain why value is needed.
         if pgm_name is None:
-            pass
+            raise Exception()
 
         spark = SparkSession.getActiveSession()
+
         if spark is not None:
-            pgmLkpDF = (spark.createDataFrame(data=TAF_Metadata.pgmLkpData, schema=TAF_Metadata.pgmLkpSchema))
-            pgmLkpDF.createOrReplaceTempView("audt_lkup_unfmt")
             tmp_view_nm = self.__create_formated_lkup(filetyp, fl, fl2, rpt_out, clm_tbl, bsf_file_date)
 
         self.__getcounts(pgm_name=pgm_name, step_name=step_name, tmp_view_nm=tmp_view_nm)
@@ -993,7 +993,6 @@ class TAF_Runner():
     # private function to lookup and return the answer
     # ---------------------------------------------------------
     def __create_formated_lkup(self, filetyp: str, fl: str, fl2: str, rpt_out: str, clm_tbl: str, bsf_file_date: str):
-        from pyspark.sql import DataFrame
         import pandas as pd
         import time
 
