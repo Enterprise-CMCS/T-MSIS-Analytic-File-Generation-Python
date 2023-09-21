@@ -643,6 +643,9 @@ class TAF_Runner():
         """
         spark = SparkSession.getActiveSession()
 
+        # We're matching pgm_name and step_name with casefold() params so we can
+        # ignore any case issues since this ultimately comes from user input in the
+        # job runner notebook.
         df = spark.sql(f"""
             SELECT *
             FROM {tmp_view_nm}
@@ -654,7 +657,7 @@ class TAF_Runner():
 
         for i in dict_audt:
             rstr = hash(time.time())
-            
+
             spark.sql(f"""
                 CREATE OR REPLACE TEMPORARY VIEW row_count_{rstr} AS
                 SELECT da_run_id
