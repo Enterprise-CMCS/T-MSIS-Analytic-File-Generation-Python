@@ -587,7 +587,7 @@ class APL(TAF):
                 ,'{self.apl.YEAR}' as rptg_prd
                 ,'{self.apl.ITERATION}' as itrtn_num
                 ,&rowcount. as tot_rec_cnt
-                ,to_char(date(c.rec_add_ts),'MM/DD/YYYY') as fil_cret_dt
+                ,date_format(date(c.rec_add_ts),'MM/dd/yyyy') as fil_cret_dt
                 ,submtg_state_cd as incldd_state_cd
                 ,rowcount_state as rec_cnt_by_state_cd
                 ,'{self.apl.YEAR}' as fil_dt
