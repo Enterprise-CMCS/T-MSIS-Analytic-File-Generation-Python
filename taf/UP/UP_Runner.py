@@ -269,7 +269,7 @@ class UP_Runner(TAF_Runner):
                 ,lower('{file}') as src_fil_type
                 ,{file}_FIL_DT as src_fil_dt
                 ,DA_RUN_ID AS SRC_DA_RUN_ID
-                ,to_char(date(fil_cret_dt),'MM/DD/YYYY') as src_fil_creat_dt
+                ,date_format(date(fil_cret_dt),'MM/dd/yyyy') as src_fil_creat_dt
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 ,null as REC_UPDT_TS
             FROM max_run_id_{file}_{inyear}
