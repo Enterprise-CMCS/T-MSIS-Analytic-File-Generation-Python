@@ -5,9 +5,9 @@ from taf.UP.UP_Runner import UP_Runner
 class BASE_FNL(UP):
     """
     Description:    Join all the bene-level tables created in prior programs to create the final bene-level
-                    UP BASE and insert into the permanent table 
+                    UP BASE and insert into the permanent table
     """
-     
+
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -17,9 +17,9 @@ class BASE_FNL(UP):
 
     def create(self):
         """
-        Create the BASE_FNL segment.  
+        Create the BASE_FNL segment.
         """
-         
+
         # Using the header-aggregated bene-level table from 002 as the base, join to that:
         # - DE bene-level table (b)
         # - line-aggregated bene-level table (c)
@@ -71,7 +71,7 @@ class BASE_FNL(UP):
                      ,coalesce(c.{ind1}_{ind2}_OTHR_CLM, 0) AS {ind1}_{ind2}_OTHR_CLM
                      ,c.{ind1}_{ind2}_OTHR_PD
                      ,coalesce(c.{ind1}_{ind2}_HH_CLM, 0) AS {ind1}_{ind2}_HH_CLM
-                     ,c.{ind1}_{ind2}_HH_PD                                         
+                     ,c.{ind1}_{ind2}_HH_PD
                 """
 
         for hcbsval in self.hcbsvals:
@@ -147,12 +147,17 @@ class BASE_FNL(UP):
 
     def build(self, runner: UP_Runner):
         """
-        Build the BASE_FNL segment.  
+        Build the BASE_FNL segment.
         """
-         
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         z = f"""
             INSERT INTO {runner.DA_SCHEMA}.TAF_ANN_UP_BASE
-            SELECT 
+            SELECT
                      { self.table_id_cols() }
                     ,{",".join(self.basecols)}
                     ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS

@@ -6,14 +6,14 @@ from taf.TAF_Metadata import TAF_Metadata
 
 class LTL:
     """
-    Each LT TAF is comprised of two files – a claim-header level file and a claim-line level file. 
-    The claims included in these files are active, non-voided, non-denied (at the header level), 
-    non-duplicate final action claims. Only claim header records meeting these inclusion criteria, 
-    along with their associated claim line records, are incorporated. Both files can be linked together 
-    using unique keys that are constructed based on various claim header and claim line data elements. 
+    Each LT TAF is comprised of two files – a claim-header level file and a claim-line level file.
+    The claims included in these files are active, non-voided, non-denied (at the header level),
+    non-duplicate final action claims. Only claim header records meeting these inclusion criteria,
+    along with their associated claim line records, are incorporated. Both files can be linked together
+    using unique keys that are constructed based on various claim header and claim line data elements.
     The two LT TAF are generated for each calendar month in which the data are reported.
     """
-     
+
     def create(self, runner: LT_Runner):
         """
         Create the LT claim-line level segment.
@@ -103,7 +103,12 @@ class LTL:
         """
         Build the LT claim-line level segment.
         """
-         
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_ltl
                 SELECT

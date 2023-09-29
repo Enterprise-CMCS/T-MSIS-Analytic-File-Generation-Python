@@ -16,13 +16,15 @@ class IP_Runner(TAF_Runner):
                  state_code: str,
                  run_id: str,
                  job_id: int,
-                 file_version: str):
+                 file_version: str,
+                 run_stats_only: bool = False):
         super().__init__(da_schema,
                          reporting_period,
                          state_code,
                          run_id,
                          job_id,
                          file_version)
+        self.run_stats_only = run_stats_only
 
     def init(self):
         """

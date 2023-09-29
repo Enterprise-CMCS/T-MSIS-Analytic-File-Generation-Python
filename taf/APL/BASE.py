@@ -2,13 +2,14 @@ from taf.APL.APL import APL
 from taf.APL.APL_Runner import APL_Runner
 from taf.TAF_Closure import TAF_Closure
 
+
 class BASE(APL):
     """
-    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area, 
+    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area,
     a population enrolled file, and operating authority/waiver file.  A unique TAF APL link key is used to link the five APL files.
     The TAF APL includes records for any managed cared plan with an active record in one of the twelve monthly TAF MCP files.
     """
-     
+
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "BASE"
@@ -135,7 +136,7 @@ class BASE(APL):
             f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915AK_CONC_IND')}""",
             f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1932A_1915K_IND')}""",
             f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1915BK_CONC_IND')}""",
-            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1115_1915K_IND')}""",           
+            f"""{TAF_Closure.ever_year('OPRTG_AUTHRTY_1115_1915K_IND')}""",
             f"""{TAF_Closure.ever_year('POP_MDCD_MAND_COV_ADLT_IND')}""",
             f"""{TAF_Closure.ever_year('POP_MDCD_MAND_COV_ABD_IND')}""",
             f"""{TAF_Closure.ever_year('POP_MDCD_OPTN_COV_ADLT_IND')}""",
@@ -220,7 +221,7 @@ class BASE(APL):
                 z += f"""
                     SELECT SUBMTG_STATE_CD
                            ,MC_PLAN_ID
-											  
+
                            ,ACRDTN_ORG_{aa}_{mm} as ACRDTN_ORG
                            ,ACRDTN_ORG_ACHVMT_DT_{aa}_{mm} as ACRDTN_ORG_ACHVMT_DT
                            ,ACRDTN_ORG_END_DT_{aa}_{mm} as ACRDTN_ORG_END_DT
@@ -306,7 +307,7 @@ class BASE(APL):
                 create or replace temporary view cntrct_vert_month_{mm} AS
                 select SUBMTG_STATE_CD
                      , MC_PLAN_ID
-										 
+
                      , MC_EFF_DT
                      , MC_CNTRCT_END_DT
                      , MC_CNTRCT_EFCTV_DT_{mm} AS mc_mnth_eff_dt
@@ -454,6 +455,11 @@ class BASE(APL):
         """
         Insert into permanent table
         """
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.apl.run_stats_only:
+            self.apl.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
 
         z = f"""
             INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_BASE

@@ -4,7 +4,7 @@ from taf.PRV.PRV import PRV
 
 
 class PRV06(PRV):
-     
+
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
@@ -12,7 +12,7 @@ class PRV06(PRV):
         """
         000-06 taxonomy segment
         """
-         
+
         # screen out all but the latest(selected) run id - provider id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -115,7 +115,7 @@ class PRV06(PRV):
         """
         Function to generate strings needed for creating case when for prvdr_clsfctn_cd col
         """
-         
+
         hc_prvdr_sw_pos_y = []
         new_line = '\n\t\t\t'
         for i in list(range(1, 15 + 1)):
@@ -127,7 +127,7 @@ class PRV06(PRV):
         """
         Function to generate strings needed for creating case when for prvdr_clsfctn_cd col
         """
-         
+
         hc_prvdr_sw_pos_x = []
         new_line = '\n\t\t\t'
         for i in list(range(1, 15 + 1)):
@@ -139,47 +139,47 @@ class PRV06(PRV):
         """
         Function to generate strings needed for creating sql for nppes_tax0b table
         """
-         
+
         prmry_NPPES_tax0b = []
         new_line = '\n\n \t\tUNION ALL \n\t\t\t'
         for i in list(range(1, 15 + 1)):
             if i <= max_keep:
                 prmry_NPPES_tax0b.append(f"""
                     (SELECT
-                        prvdr_npi, 
+                        prvdr_npi,
                         prvdr_id as prvdr_id_chr,
                         hc_prvdr_txnmy_cd_{i} as prvdr_clsfctn_cd
                     FROM
                         nppes_tax_flags
                     WHERE
-                        taxo_switches > 1 and 
-                        nvl(hc_prvdr_txnmy_cd_{i},' ') <> ' ' and 
+                        taxo_switches > 1 and
+                        nvl(hc_prvdr_txnmy_cd_{i},' ') <> ' ' and
                         hc_prvdr_prmry_txnmy_sw_{i}='Y')""".format())
         return new_line.join(prmry_NPPES_tax0b)
 
 
     def nppes_tax(self, id_intbl, tax_intbl, tax_outtbl):
         """
-        Function to generate SQL query with multiple temporary views for nppes_tax.  
+        Function to generate SQL query with multiple temporary views for nppes_tax.
         """
 
         # get NPPES taxonomy codes using NPI from PRV identifier segment
         z = f"""
             create or replace temporary view nppes_id1 as
-            select 
-                submtg_state_cd, 
-                submtg_state_cd as submitting_state, 
-                tmsis_run_id as tms_run_id, 
-                submtg_state_prvdr_id as submitting_state_prov_id, 
+            select
+                submtg_state_cd,
+                submtg_state_cd as submitting_state,
+                tmsis_run_id as tms_run_id,
+                submtg_state_prvdr_id as submitting_state_prov_id,
                 prvdr_id
-            from 
+            from
                 {id_intbl}
             where
                 prvdr_id_type_cd='2'
             group by
-                submtg_state_cd, 
-                tmsis_run_id, 
-                submtg_state_prvdr_id, 
+                submtg_state_cd,
+                tmsis_run_id,
+                submtg_state_prvdr_id,
                 prvdr_id
             order by
                 prvdr_id
@@ -192,13 +192,13 @@ class PRV06(PRV):
             create or replace temporary view nppes_id2 as
             select
                 prvdr_id
-            from 
+            from
                 nppes_id1
             group by
                 prvdr_id
             order by
-                prvdr_id            
-            """ 
+                prvdr_id
+            """
         self.prv.append(type(self).__name__, z)
 
         # link on NPI in NPPES set flags to identify primary taxonomy codes
@@ -260,14 +260,14 @@ class PRV06(PRV):
             from
                 nppes_tax_flags_temp
             """
-        self.prv.append(type(self).__name__, z)       
+        self.prv.append(type(self).__name__, z)
 
         z = f"""
                 create or replace temporary view nppes_tax0 as
                 select
-                    distinct prvdr_npi, 
+                    distinct prvdr_npi,
                     prvdr_id as prvdr_id_chr,
-                    case 
+                    case
                         { self.hc_prvdr_sw_pos_y(max_keep) }
                         { self.hc_prvdr_sw_pos_x(max_keep) }
                         else null
@@ -275,7 +275,7 @@ class PRV06(PRV):
                 FROM
                     nppes_tax_flags
                 WHERE
-                    taxo_switches = 1 or 
+                    taxo_switches = 1 or
                     (taxo_switches = 0 and taxo_cnt = 1)
         """
         self.prv.append(type(self).__name__, z)
@@ -289,8 +289,8 @@ class PRV06(PRV):
         z = f"""
             create or replace temporary view nppes_tax1 as
             (select
-                prvdr_npi, 
-                prvdr_id_chr, 
+                prvdr_npi,
+                prvdr_id_chr,
                 prvdr_clsfctn_cd
             from
                 nppes_tax0)
@@ -298,25 +298,25 @@ class PRV06(PRV):
             union
 
             (select
-                prvdr_npi, 
-                prvdr_id_chr, 
+                prvdr_npi,
+                prvdr_id_chr,
                 prvdr_clsfctn_cd
             from
                 nppes_tax0b)
 
-            order by 
+            order by
                 prvdr_npi
             """
         self.prv.append(type(self).__name__, z)
 
         z = f"""
             create or replace temporary view nppes_tax_final as
-            select 
-                distinct i.tms_run_id, 
-                i.submtg_state_cd, 
-                i.submitting_state, 
-                i.submitting_state_prov_id, 
-                'N' as prvdr_clsfctn_type_cd, 
+            select
+                distinct i.tms_run_id,
+                i.submtg_state_cd,
+                i.submitting_state,
+                i.submitting_state_prov_id,
+                'N' as prvdr_clsfctn_type_cd,
                 n.prvdr_clsfctn_cd
             from
                 nppes_id1 i
@@ -326,31 +326,31 @@ class PRV06(PRV):
                 i.prvdr_id=n.prvdr_id_chr
             where
                 n.prvdr_npi is not null
-            order by 
+            order by
                 5
             """
         self.prv.append(type(self).__name__, z)
 
         z = f"""
             create or replace temporary view {tax_outtbl} as
-            (select 
-                tms_run_id, 
-                submtg_state_cd, 
-                submitting_state, 
-                submitting_state_prov_id, 
-                prvdr_clsfctn_type_cd, 
+            (select
+                tms_run_id,
+                submtg_state_cd,
+                submitting_state,
+                submitting_state_prov_id,
+                prvdr_clsfctn_type_cd,
                 prvdr_clsfctn_cd
-            from 
+            from
                 {tax_intbl})
 
             union
 
             (select
-                tms_run_id, 
-                submtg_state_cd, 
-                submitting_state, 
-                submitting_state_prov_id, 
-                prvdr_clsfctn_type_cd, 
+                tms_run_id,
+                submtg_state_cd,
+                submitting_state,
+                submitting_state_prov_id,
+                prvdr_clsfctn_type_cd,
                 prvdr_clsfctn_cd
             from
                 nppes_tax_final
@@ -358,12 +358,12 @@ class PRV06(PRV):
                 { ','.join(self.srtlist) })
             """
         self.prv.append(type(self).__name__, z)
-        
+
     def create(self):
         """
-        Create the PRV06 taxonomy segment.  
+        Create the PRV06 taxonomy segment.
         """
-         
+
         self.process_06_taxonomy('Prov02_Main',
                                  'Prov06_Taxonomies')
 
@@ -639,7 +639,7 @@ class PRV06(PRV):
                         else 0
                         end as MH_SRVC_PRVDR_IND,
                         case
-                        when (PRVDR_CLSFCTN_TYPE_CD='1' or PRVDR_CLSFCTN_TYPE_CD='N') and PRVDR_CLSFCTN_SME=3 then 1 
+                        when (PRVDR_CLSFCTN_TYPE_CD='1' or PRVDR_CLSFCTN_TYPE_CD='N') and PRVDR_CLSFCTN_SME=3 then 1
                         when PRVDR_CLSFCTN_TYPE_CD='2' and PRVDR_CLSFCTN_SME=6 then 1
                         when PRVDR_CLSFCTN_TYPE_CD='4' and PRVDR_CLSFCTN_SME=9 then 1
                         when PRVDR_CLSFCTN_CD='.' or PRVDR_CLSFCTN_CD is null or PRVDR_CLSFCTN_TYPE_CD='.' or PRVDR_CLSFCTN_TYPE_CD is null then null
@@ -695,9 +695,14 @@ class PRV06(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        Build the PRV06 taxonomy segment.  
+        Build the PRV06 taxonomy segment.
         """
-         
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_tax
                 SELECT
