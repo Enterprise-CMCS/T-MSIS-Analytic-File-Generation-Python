@@ -4,17 +4,17 @@ import pandas as pd
 
 class MCP_Metadata:
     """
-    Create MCP metadata.  
+    Create MCP metadata.
     """
-     
+
     SPCLlst = {"93": "CHIP", "94": "TPA", "96": "CHIP", "97": "CHIP"}
 
     @staticmethod
     def getFormatsForValidationAndRecode():
         """
-        Function to get formats for validation and recode.  
+        Function to get formats for validation and recode.
         """
-         
+
         MC_formats_sm = pd.DataFrame(
             [
                 ["ACRAAHC", "1", "1", "0", "C", "2022-01-22 09:59:34", ""],
