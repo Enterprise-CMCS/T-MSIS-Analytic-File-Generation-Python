@@ -33,7 +33,7 @@ class BSF_Runner(TAF_Runner):
                          job_id,
                          file_version)
 
-        self.run_stats_only = run_stats_only
+        self.run_stats_only = self.__forceBool__(run_stats_only)
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 
     def init(self):

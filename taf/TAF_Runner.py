@@ -1057,6 +1057,15 @@ class TAF_Runner():
 
             return repack
 
+    # Private function to make sure runtime param is forced to boolean.
+    # Python evaluates everything to True except 0 and True
+    # so we're forcing it to False otherwise for safety reasons
+    @staticmethod
+    def __forceBool__(_boolean_: bool = False):
+        if _boolean_ is not True or _boolean_ != 1:
+            _boolean_ = False
+
+        return _boolean_
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
 

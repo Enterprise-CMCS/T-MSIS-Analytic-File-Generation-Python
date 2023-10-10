@@ -27,7 +27,7 @@ class LT_Runner(TAF_Runner):
                          file_version)
 
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
-        self.run_stats_only = run_stats_only
+        self.run_stats_only = self.__forceBool__(run_stats_only)
 
     def init(self):
         """
