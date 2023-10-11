@@ -43,29 +43,36 @@ class GRP(APR):
 
         # Insert into permanent table
 
-        basecols = [ 'SUBMTG_STATE_AFLTD_PRVDR_ID'
-                    ,'PRVDR_GRP_FLAG_01'
-                    ,'PRVDR_GRP_FLAG_02'
-                    ,'PRVDR_GRP_FLAG_03'
-                    ,'PRVDR_GRP_FLAG_04'
-                    ,'PRVDR_GRP_FLAG_05'
-                    ,'PRVDR_GRP_FLAG_06'
-                    ,'PRVDR_GRP_FLAG_07'
-                    ,'PRVDR_GRP_FLAG_08'
-                    ,'PRVDR_GRP_FLAG_09'
-                    ,'PRVDR_GRP_FLAG_10'
-                    ,'PRVDR_GRP_FLAG_11'
-                    ,'PRVDR_GRP_FLAG_12']
+        basecols = ['SUBMTG_STATE_AFLTD_PRVDR_ID',
+                    'PRVDR_GRP_FLAG_01',
+                    'PRVDR_GRP_FLAG_02',
+                    'PRVDR_GRP_FLAG_03',
+                    'PRVDR_GRP_FLAG_04',
+                    'PRVDR_GRP_FLAG_05',
+                    'PRVDR_GRP_FLAG_06',
+                    'PRVDR_GRP_FLAG_07',
+                    'PRVDR_GRP_FLAG_08',
+                    'PRVDR_GRP_FLAG_09',
+                    'PRVDR_GRP_FLAG_10',
+                    'PRVDR_GRP_FLAG_11',
+                    'PRVDR_GRP_FLAG_12']
 
-        z = f"""
-            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_GRP
-            SELECT
-                {self.table_id_cols()}
-                ,{ ', '.join(basecols) }
-                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,cast(NULL as timestamp) as REC_UPDT_TS
-            FROM grp_pr_{self.year}"""
-        self.apr.append(type(self).__name__, z)
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.apr.run_stats_only:
+            self.apr.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+        else:
+            z = f"""
+                INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_GRP
+                SELECT
+                    {self.table_id_cols()}
+                    ,{ ', '.join(basecols) }
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
+                FROM grp_pr_{self.year}"""
+            self.apr.append(type(self).__name__, z)
+            return
 
 
 # -----------------------------------------------------------------------------

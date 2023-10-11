@@ -687,7 +687,7 @@ class DE0001BASE(DE):
 
         z += f""",coalesce(b.MDCD_ENRLMT_DAYS_YR,0) as MDCD_ENRLMT_DAYS_YR
                  ,coalesce(b.CHIP_ENRLMT_DAYS_YR,0) as CHIP_ENRLMT_DAYS_YR
-                 ,coalesce(b.EL_DTS_SPLMTL,0) as EL_DTS_SPLMTL
+                 ,coalesce(b.EL_DTS_SPLMTL,0) as EL_self.run_stats_only = self.__forceBool__(run_stats_only)_SPLMTL
 
                 ,c.MNGD_CARE_SPLMTL
 
@@ -784,24 +784,31 @@ class DE0001BASE(DE):
             """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{tblname}
-            (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
-            select
-                cast ({self.de.DA_RUN_ID} || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
-                SUBMTG_STATE_CD_comb || '-' || MSIS_IDENT_NUM_comb as varchar(40)) as DE_LINK_KEY
-                ,'{self.de.YEAR}' as DE_FIL_DT
-                ,'{self.de.VERSION}' as ANN_DE_VRSN
-                ,MSIS_IDENT_NUM_comb
-                {self.basecols()}
-                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,cast(NULL as timestamp) as REC_UPDT_TS
-                ,{self.de.DA_RUN_ID} as DA_RUN_ID
-                ,SUBMTG_STATE_CD_comb
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.de.run_stats_only:
+            self.de.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
 
-            from base_{self.de.YEAR}_final
-            """
+        else:
+            z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{tblname}
+                (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
+                select
+                    cast ({self.de.DA_RUN_ID} || '-' || '{self.de.YEAR}' || '-' || '{self.de.VERSION}' || '-' ||
+                    SUBMTG_STATE_CD_comb || '-' || MSIS_IDENT_NUM_comb as varchar(40)) as DE_LINK_KEY
+                    ,'{self.de.YEAR}' as DE_FIL_DT
+                    ,'{self.de.VERSION}' as ANN_DE_VRSN
+                    ,MSIS_IDENT_NUM_comb
+                    {self.basecols()}
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
+                    ,{self.de.DA_RUN_ID} as DA_RUN_ID
+                    ,SUBMTG_STATE_CD_comb
 
-        self.de.append(type(self).__name__, z)
+                from base_{self.de.YEAR}_final
+                """
+
+            self.de.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

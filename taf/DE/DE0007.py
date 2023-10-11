@@ -75,35 +75,42 @@ class DE0007(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
-                select
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.de.run_stats_only:
+            self.de.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+        else:
 
-                    {DE.table_id_cols_pre(self)}
-                    ,MFP_PRTCPTN_ENDD_RSN_CD
-                    ,MFP_LVS_WTH_FMLY_CD
-                    ,MFP_QLFYD_INSTN_CD
-                    ,MFP_RINSTLZD_RSN_CD
-                    ,MFP_QLFYD_RSDNC_CD
-                    ,MFP_PRTCPNT_FLAG_01
-                    ,MFP_PRTCPNT_FLAG_02
-                    ,MFP_PRTCPNT_FLAG_03
-                    ,MFP_PRTCPNT_FLAG_04
-                    ,MFP_PRTCPNT_FLAG_05
-                    ,MFP_PRTCPNT_FLAG_06
-                    ,MFP_PRTCPNT_FLAG_07
-                    ,MFP_PRTCPNT_FLAG_08
-                    ,MFP_PRTCPNT_FLAG_09
-                    ,MFP_PRTCPNT_FLAG_10
-                    ,MFP_PRTCPNT_FLAG_11
-                    ,MFP_PRTCPNT_FLAG_12
-                    ,MFP_PRTCPNT_FLAG_LTST
-                    {DE.table_id_cols_sfx(self)}
+            z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+                    select
 
-                from mfp_{self.de.YEAR}
-                where MFP_SPLMTL=1"""
+                        {DE.table_id_cols_pre(self)}
+                        ,MFP_PRTCPTN_ENDD_RSN_CD
+                        ,MFP_LVS_WTH_FMLY_CD
+                        ,MFP_QLFYD_INSTN_CD
+                        ,MFP_RINSTLZD_RSN_CD
+                        ,MFP_QLFYD_RSDNC_CD
+                        ,MFP_PRTCPNT_FLAG_01
+                        ,MFP_PRTCPNT_FLAG_02
+                        ,MFP_PRTCPNT_FLAG_03
+                        ,MFP_PRTCPNT_FLAG_04
+                        ,MFP_PRTCPNT_FLAG_05
+                        ,MFP_PRTCPNT_FLAG_06
+                        ,MFP_PRTCPNT_FLAG_07
+                        ,MFP_PRTCPNT_FLAG_08
+                        ,MFP_PRTCPNT_FLAG_09
+                        ,MFP_PRTCPNT_FLAG_10
+                        ,MFP_PRTCPNT_FLAG_11
+                        ,MFP_PRTCPNT_FLAG_12
+                        ,MFP_PRTCPNT_FLAG_LTST
+                        {DE.table_id_cols_sfx(self)}
 
-        self.de.append(type(self).__name__, z)
-        return
+                    from mfp_{self.de.YEAR}
+                    where MFP_SPLMTL=1"""
+
+            self.de.append(type(self).__name__, z)
+            return
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

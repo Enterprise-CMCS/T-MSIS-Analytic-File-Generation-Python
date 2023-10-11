@@ -6,10 +6,10 @@ from taf.TAF_Closure import TAF_Closure
 class BASE(APR):
     """
     The TAF Annual Provider (APR) is comprised of nine files: base, affiliated group, affiliated program,
-    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.  
+    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.
     A unique TAF APR link key is used to link the first six APR files listed.  The last three files are linked
     to the location file with a unique TAF APR location link key.  The TAF APR includes records for any provider
-    with an active record in one of the twelve monthly TAF PRV files.  
+    with an active record in one of the twelve monthly TAF PRV files.
 
     Description: Generate the annual PRR segment for base.
 
@@ -229,16 +229,22 @@ class BASE(APR):
             'ENRLMT_SPLMTL',
             'BED_SPLMTL']
 
-        z = f"""
-            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BASE
-            SELECT
-                 { self.table_id_cols() }
-                ,{ ','.join(basecols) }
-                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,cast(NULL as timestamp) as REC_UPDT_TS
-            FROM base_{self.year}_final"""
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.apr.run_stats_only:
+            self.apr.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+        else:
+            z = f"""
+                INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BASE
+                SELECT
+                    { self.table_id_cols() }
+                    ,{ ','.join(basecols) }
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
+                FROM base_{self.year}_final"""
 
-        self.apr.append(type(self).__name__, z)
+            self.apr.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

@@ -11,18 +11,18 @@ from taf.APR.APR_Runner import APR_Runner
 class IDT(APR):
     """
     The TAF Annual Provider (APR) is comprised of nine files: base, affiliated group, affiliated program,
-    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.  
+    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.
     A unique TAF APR link key is used to link the first six APR files listed.  The last three files are linked
     to the location file with a unique TAF APR location link key.  The TAF APR includes records for any provider
-    with an active record in one of the twelve monthly TAF PRV files. 
+    with an active record in one of the twelve monthly TAF PRV files.
 
     Description:  Generate the annual PR segment for identifiers
 
     Note:   This program aggregates unique values across the CY year for variables in collist.
             It creates _SPLMTL flag for base.
             Then inserts identifiers records into the permanent TAF table.
-            A separate table with NPI information is also created which has one record per 
-            provider(submtg_state_cd, submtg_state_prvdr_id)and is used 
+            A separate table with NPI information is also created which has one record per
+            provider(submtg_state_cd, submtg_state_prvdr_id)and is used
             to linking prvdr_npi_01 prvdr_npi_02 prvdr_npi_cnt back to the PR base segment.
     """
 
@@ -39,21 +39,21 @@ class IDT(APR):
 
         z = f"""
             create or replace temporary view npi_main as
-            select 
-                b.submtg_state_cd, 
-                b.submtg_state_prvdr_id, 
-                b.prvdr_id, 
+            select
+                b.submtg_state_cd,
+                b.submtg_state_prvdr_id,
+                b.prvdr_id,
                 substring(a.prv_fil_dt,5,2) as month
-            from 
-                max_run_id_prv_{self.year} a 
-            inner join 
-                {self.apr.DA_SCHEMA}.taf_PRV_IDT b 
+            from
+                max_run_id_prv_{self.year} a
+            inner join
+                {self.apr.DA_SCHEMA}.taf_PRV_IDT b
             on
-                a.submtg_state_cd = b.submtg_state_cd and 
-                a.prv_fil_dt = b.prv_fil_dt and 
+                a.submtg_state_cd = b.submtg_state_cd and
+                a.prv_fil_dt = b.prv_fil_dt and
                 a.da_run_id = b.da_run_id
-            where 
-                b.prvdr_id_type_cd='2' and 
+            where
+                b.prvdr_id_type_cd='2' and
                 b.prvdr_id is not null
         """
         self.apr.append(type(self).__name__, z)
@@ -64,44 +64,44 @@ class IDT(APR):
 
         z = f"""
             create or replace temporary view npi_all as
-            select 
-                a.submtg_state_cd, 
-                a.submtg_state_prvdr_id, 
-                a.maxmo, 
-                a.prvdr_id as prvdr_npi, 
+            select
+                a.submtg_state_cd,
+                a.submtg_state_prvdr_id,
+                a.maxmo,
+                a.prvdr_id as prvdr_npi,
                 b.prvdr_npi_cnt,
             /* grouping code */
                 row_number() over (
-                    partition by 
-                        a.submtg_state_cd, 
+                    partition by
+                        a.submtg_state_cd,
                         a.submtg_state_prvdr_id
-                    order by 
-                        a.maxmo desc, 
+                    order by
+                        a.maxmo desc,
                         a.prvdr_id desc
                         ) as _ndx
-            from (select 
-                    submtg_state_cd, 
-                    submtg_state_prvdr_id, 
-                    prvdr_id, 
+            from (select
+                    submtg_state_cd,
+                    submtg_state_prvdr_id,
+                    prvdr_id,
                     max(month) as maxmo
-                from 
-                    npi_main 
-                group by 
-                    submtg_state_cd, 
-                    submtg_state_prvdr_id, 
+                from
+                    npi_main
+                group by
+                    submtg_state_cd,
+                    submtg_state_prvdr_id,
                     prvdr_id) as a
             left join
-                (select 
-                    submtg_state_cd, 
-                    submtg_state_prvdr_id, 
+                (select
+                    submtg_state_cd,
+                    submtg_state_prvdr_id,
                     count(distinct(prvdr_id)) as prvdr_npi_cnt
-                from 
-                    npi_main 
-                group by 
-                    submtg_state_cd, 
+                from
+                    npi_main
+                group by
+                    submtg_state_cd,
                     submtg_state_prvdr_id) as b
-            on 
-                a.submtg_state_cd=b.submtg_state_cd and 
+            on
+                a.submtg_state_cd=b.submtg_state_cd and
                 a.submtg_state_prvdr_id=b.submtg_state_prvdr_id
         """
         self.apr.append(type(self).__name__, z)
@@ -110,25 +110,25 @@ class IDT(APR):
 
         z = f"""
             create or replace temporary view npi_final as
-            select 
-                submtg_state_cd, 
-                submtg_state_prvdr_id, 
+            select
+                submtg_state_cd,
+                submtg_state_prvdr_id,
                 prvdr_npi_cnt
                 { APR.map_arrayvars(varnm='prvdr_npi', N=3) }
-            from 
+            from
                 npi_all
-            group by 
-                submtg_state_cd, 
-                submtg_state_prvdr_id, 
+            group by
+                submtg_state_cd,
+                submtg_state_prvdr_id,
                 prvdr_npi_cnt
         """
         self.apr.append(type(self).__name__, z)
 
     def create(self):
         """
-        Create the identifiers segment.  
+        Create the identifiers segment.
         """
-         
+
         # Create identifiers segment. Select records and select or create data elements
 
         collist_s = ['PRVDR_LCTN_ID',
@@ -144,32 +144,39 @@ class IDT(APR):
 
         # Insert into permanent table
 
-        basecols = [ 'PRVDR_LCTN_ID'
-                    ,'PRVDR_ID_TYPE_CD'
-                    ,'PRVDR_ID'
-                    ,'PRVDR_ID_ISSG_ENT_ID_TXT'
-                    ,'PRVDR_ID_FLAG_01'
-                    ,'PRVDR_ID_FLAG_02'
-                    ,'PRVDR_ID_FLAG_03'
-                    ,'PRVDR_ID_FLAG_04'
-                    ,'PRVDR_ID_FLAG_05'
-                    ,'PRVDR_ID_FLAG_06'
-                    ,'PRVDR_ID_FLAG_07'
-                    ,'PRVDR_ID_FLAG_08'
-                    ,'PRVDR_ID_FLAG_09'
-                    ,'PRVDR_ID_FLAG_10'
-                    ,'PRVDR_ID_FLAG_11'
-                    ,'PRVDR_ID_FLAG_12']
+        basecols = ['PRVDR_LCTN_ID',
+                    'PRVDR_ID_TYPE_CD',
+                    'PRVDR_ID',
+                    'PRVDR_ID_ISSG_ENT_ID_TXT',
+                    'PRVDR_ID_FLAG_01',
+                    'PRVDR_ID_FLAG_02',
+                    'PRVDR_ID_FLAG_03',
+                    'PRVDR_ID_FLAG_04',
+                    'PRVDR_ID_FLAG_05',
+                    'PRVDR_ID_FLAG_06',
+                    'PRVDR_ID_FLAG_07',
+                    'PRVDR_ID_FLAG_08',
+                    'PRVDR_ID_FLAG_09',
+                    'PRVDR_ID_FLAG_10',
+                    'PRVDR_ID_FLAG_11',
+                    'PRVDR_ID_FLAG_12']
 
-        z = f"""
-            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_ID
-            SELECT
-                {self.table_id_cols(loctype=2)}
-                ,{ ', '.join(basecols) }
-                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,cast(NULL as timestamp) as REC_UPDT_TS
-            FROM id_pr_{self.year}"""
-        self.apr.append(type(self).__name__, z)
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.apr.run_stats_only:
+            self.apr.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+        else:
+            z = f"""
+                INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_ID
+                SELECT
+                    {self.table_id_cols(loctype=2)}
+                    ,{ ', '.join(basecols) }
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
+                FROM id_pr_{self.year}"""
+            self.apr.append(type(self).__name__, z)
+            return
 
 
 # -----------------------------------------------------------------------------

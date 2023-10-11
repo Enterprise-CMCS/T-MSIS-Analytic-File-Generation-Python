@@ -11,10 +11,10 @@ from taf.APR.APR_Runner import APR_Runner
 class ENR(APR):
     """
     The TAF Annual Provider (APR) is comprised of nine files: base, affiliated group, affiliated program,
-    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.  
+    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.
     A unique TAF APR link key is used to link the first six APR files listed.  The last three files are linked
     to the location file with a unique TAF APR location link key.  The TAF APR includes records for any provider
-    with an active record in one of the twelve monthly TAF PRV files. 
+    with an active record in one of the twelve monthly TAF PRV files.
 
     Description:  Generate the annual PR segment for enrollment
 
@@ -29,9 +29,9 @@ class ENR(APR):
 
     def create(self):
         """
-        Create the enrollment segment.  
+        Create the enrollment segment.
         """
-         
+
         # Create enrollment segment. Select records and select or create data elements
         collist_e = ['PRVDR_MDCD_EFCTV_DT',
                      'PRVDR_MDCD_END_DT',
@@ -47,35 +47,43 @@ class ENR(APR):
         self.create_splmlt(segname='ENRLMT', segfile="enrlmt_pr_" + str(self.year))
         # Insert into permanent table
 
-        basecols = [ 'PRVDR_MDCD_EFCTV_DT'
-                    ,'PRVDR_MDCD_END_DT'
-                    ,'PRVDR_MDCD_ENRLMT_STUS_CD'
-                    ,'STATE_PLAN_ENRLMT_CD'
-                    ,'PRVDR_MDCD_ENRLMT_MTHD_CD'
-                    ,'APLCTN_DT'
-                    ,'PRVDR_MDCD_ENRLMT_STUS_CTGRY'
-                    ,'PRVDR_ENRLMT_FLAG_01'
-                    ,'PRVDR_ENRLMT_FLAG_02'
-                    ,'PRVDR_ENRLMT_FLAG_03'
-                    ,'PRVDR_ENRLMT_FLAG_04'
-                    ,'PRVDR_ENRLMT_FLAG_05'
-                    ,'PRVDR_ENRLMT_FLAG_06'
-                    ,'PRVDR_ENRLMT_FLAG_07'
-                    ,'PRVDR_ENRLMT_FLAG_08'
-                    ,'PRVDR_ENRLMT_FLAG_09'
-                    ,'PRVDR_ENRLMT_FLAG_10'
-                    ,'PRVDR_ENRLMT_FLAG_11'
-                    ,'PRVDR_ENRLMT_FLAG_12']
+        basecols = ['PRVDR_MDCD_EFCTV_DT',
+                    'PRVDR_MDCD_END_DT',
+                    'PRVDR_MDCD_ENRLMT_STUS_CD',
+                    'STATE_PLAN_ENRLMT_CD',
+                    'PRVDR_MDCD_ENRLMT_MTHD_CD',
+                    'APLCTN_DT',
+                    'PRVDR_MDCD_ENRLMT_STUS_CTGRY',
+                    'PRVDR_ENRLMT_FLAG_01',
+                    'PRVDR_ENRLMT_FLAG_02',
+                    'PRVDR_ENRLMT_FLAG_03',
+                    'PRVDR_ENRLMT_FLAG_04',
+                    'PRVDR_ENRLMT_FLAG_05',
+                    'PRVDR_ENRLMT_FLAG_06',
+                    'PRVDR_ENRLMT_FLAG_07',
+                    'PRVDR_ENRLMT_FLAG_08',
+                    'PRVDR_ENRLMT_FLAG_09',
+                    'PRVDR_ENRLMT_FLAG_10',
+                    'PRVDR_ENRLMT_FLAG_11',
+                    'PRVDR_ENRLMT_FLAG_12']
 
-        z = f"""
-            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_ENRLMT
-            SELECT
-                {self.table_id_cols()}
-                ,{ ', '.join(basecols) }
-                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,cast(NULL as timestamp) as REC_UPDT_TS
-            FROM enrlmt_pr_{self.year}"""
-        self.apr.append(type(self).__name__, z)
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.apr.run_stats_only:
+            self.apr.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+        else:
+
+            z = f"""
+                INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_ENRLMT
+                SELECT
+                    {self.table_id_cols()}
+                    ,{ ', '.join(basecols) }
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
+                FROM enrlmt_pr_{self.year}"""
+            self.apr.append(type(self).__name__, z)
+            return
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

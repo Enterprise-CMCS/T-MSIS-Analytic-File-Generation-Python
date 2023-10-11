@@ -200,26 +200,33 @@ class DE0003(DE):
                 """
         self.de.append(type(self).__name__, z)
 
-        z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{self.tbl_suffix}
-                select
-                    {DE.table_id_cols_pre(self)}
-                    ,ELGBL_1ST_NAME
-                    ,ELGBL_LAST_NAME
-                    ,ELGBL_MDL_INITL_NAME
-                    ,ELGBL_ADR_MAIL_FLAG
-                    ,ELGBL_LINE_1_ADR
-                    ,ELGBL_LINE_2_ADR
-                    ,ELGBL_LINE_3_ADR
-                    ,ELGBL_CITY_NAME
-                    ,ELGBL_ZIP_CD
-                    ,ELGBL_CNTY_CD
-                    ,ELGBL_STATE_CD
-                    ,ELGBL_PHNE_NUM_HOME
-                    {DE.table_id_cols_sfx(self)}
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.de.run_stats_only:
+            self.de.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+        else:
 
-                from name_address_phone_{self.de.YEAR}
-            """
-        self.de.append(type(self).__name__, z)
+            z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{self.tbl_suffix}
+                    select
+                        {DE.table_id_cols_pre(self)}
+                        ,ELGBL_1ST_NAME
+                        ,ELGBL_LAST_NAME
+                        ,ELGBL_MDL_INITL_NAME
+                        ,ELGBL_ADR_MAIL_FLAG
+                        ,ELGBL_LINE_1_ADR
+                        ,ELGBL_LINE_2_ADR
+                        ,ELGBL_LINE_3_ADR
+                        ,ELGBL_CITY_NAME
+                        ,ELGBL_ZIP_CD
+                        ,ELGBL_CNTY_CD
+                        ,ELGBL_STATE_CD
+                        ,ELGBL_PHNE_NUM_HOME
+                        {DE.table_id_cols_sfx(self)}
+
+                    from name_address_phone_{self.de.YEAR}
+                """
+            self.de.append(type(self).__name__, z)
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
