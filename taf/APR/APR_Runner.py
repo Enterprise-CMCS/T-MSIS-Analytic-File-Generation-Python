@@ -15,7 +15,7 @@ class APR_Runner(TAF_Runner):
                  run_id: str,
                  job_id: int,
                  file_version: str,
-                 run_stats_only: bool = False):
+                 run_stats_only: int = 0):
         """
         Users interact with the TAF-specific module by creating a TAF runner object.
         This object may be instantiated with three parameters to control what data is captured at run time:

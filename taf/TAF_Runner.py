@@ -1015,7 +1015,6 @@ class TAF_Runner():
 
             rstr = hash(time.time())
             df_sp.createOrReplaceTempView(f"pgm_audt_cnt_lkp_{rstr}")
-            print(df_sp)
 
             return f"pgm_audt_cnt_lkp_{rstr}"
 
@@ -1058,12 +1057,10 @@ class TAF_Runner():
             return repack
 
     # Private function to make sure runtime param is forced to boolean.
-    # Python evaluates everything to True except 0 and True
-    # so we're forcing it to False otherwise for safety reasons
+    # Restricting to 0 for False and 1 for True. Otherwise we're raise a ValueError
     def __forceBool__(self, _boolean_: int = 0):
         if str(_boolean_) not in ('0', '1'):
-            self.logger.warning(f"'run_stats_only' parameter is passed as '{_boolean_}' but converted to False. If you meant 'True' please pass '1'")
-            _boolean_ = 0
+            raise ValueError(f"'run_stats_only' parameter is passed as {_boolean_} but must be integer, e.g. 0 for False or 1 for True")
 
         return bool(int(_boolean_))
 # -----------------------------------------------------------------------------

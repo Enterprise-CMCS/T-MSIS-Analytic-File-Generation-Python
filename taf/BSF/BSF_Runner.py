@@ -24,7 +24,7 @@ class BSF_Runner(TAF_Runner):
                  run_id: str,
                  job_id: int,
                  file_version: str,
-                 run_stats_only: bool = False):
+                 run_stats_only: int = 0):
 
         super().__init__(da_schema,
                          reporting_period,

@@ -44,7 +44,7 @@ class OT(TAF):
         # Create a temporary line file
         z = f"""
             create or replace temporary view {fl2}_LINE_IN as
-            cache select
+            select
                 SUBMTG_STATE_CD,
                 { OT_Metadata.selectDataElements(tab_no, 'a') }
 

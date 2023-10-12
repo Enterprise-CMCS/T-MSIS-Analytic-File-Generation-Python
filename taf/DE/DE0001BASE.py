@@ -687,7 +687,7 @@ class DE0001BASE(DE):
 
         z += f""",coalesce(b.MDCD_ENRLMT_DAYS_YR,0) as MDCD_ENRLMT_DAYS_YR
                  ,coalesce(b.CHIP_ENRLMT_DAYS_YR,0) as CHIP_ENRLMT_DAYS_YR
-                 ,coalesce(b.EL_DTS_SPLMTL,0) as EL_self.run_stats_only = self.__forceBool__(run_stats_only)_SPLMTL
+                 ,coalesce(b.EL_DTS_SPLMTL,0) as EL_DTS_SPLMTL
 
                 ,c.MNGD_CARE_SPLMTL
 
