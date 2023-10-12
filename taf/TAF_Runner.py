@@ -1060,12 +1060,12 @@ class TAF_Runner():
     # Private function to make sure runtime param is forced to boolean.
     # Python evaluates everything to True except 0 and True
     # so we're forcing it to False otherwise for safety reasons
-    def __forceBool__(self, _boolean_: bool = False):
-        if _boolean_ is not True or _boolean_ != 1:
-            self.logger.warning(f"'run_stats_only' parameter is passed as '{_boolean_}' but converted to False. If you meant 'True' please pass True or 1")
+    def __forceBool__(self, _boolean_: int = 0):
+        if str(_boolean_) not in ('0', '1'):
+            self.logger.warning(f"'run_stats_only' parameter is passed as '{_boolean_}' but converted to False. If you meant 'True' please pass '1'")
             _boolean_ = False
 
-        return _boolean_
+        return bool(int(_boolean_))
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
 
