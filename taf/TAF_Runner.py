@@ -1063,7 +1063,7 @@ class TAF_Runner():
     def __forceBool__(self, _boolean_: int = 0):
         if str(_boolean_) not in ('0', '1'):
             self.logger.warning(f"'run_stats_only' parameter is passed as '{_boolean_}' but converted to False. If you meant 'True' please pass '1'")
-            _boolean_ = False
+            _boolean_ = 0
 
         return bool(int(_boolean_))
 # -----------------------------------------------------------------------------
