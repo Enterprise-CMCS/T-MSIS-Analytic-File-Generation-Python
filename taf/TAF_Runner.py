@@ -55,6 +55,7 @@ class TAF_Runner():
         self.DA_RUN_ID = job_id
         self.DA_SCHEMA = da_schema  # For using data from Redshift for testing DE and up
 
+        self.reporting_period_parameter = reporting_period
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
 
         begmon = self.reporting_period
@@ -316,9 +317,9 @@ class TAF_Runner():
         spark = SparkSession.getActiveSession()
 
         if (self.national_run):
-            parms = f"{self.st_dt}"
+            parms = f"{self.reporting_period_parameter}"
         else:
-            parms = f"{self.st_dt}" + ", " + "submtg_state_cd" + " " + "in" + " " + "(" + f"{self.state_code}" + ")"
+            parms = f"{self.reporting_period_parameter}" + ", " + "submtg_state_cd" + " " + "in" + " " + "(" + f"{self.state_code}" + ")"
 
         insert_query = f"""
             INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
