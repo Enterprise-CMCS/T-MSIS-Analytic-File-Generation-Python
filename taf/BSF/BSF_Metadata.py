@@ -807,6 +807,13 @@ class BSF_Metadata:
             else upper(nullif(trim({alias}.IMGRTN_STUS_CD),'')) end as IMGRTN_STUS_CD
         """
 
+    def cleanRaceCd(alias):
+        """
+        Clean race code values by left padding to a total length of 3 characters.
+        """
+
+        return f"lpad(trim({alias}.race_cd), 3, '0') AS race_cd"
+
     # ---------------------------------------------------------------------------------
     #
     #  'C' Chinese
@@ -919,7 +926,8 @@ class BSF_Metadata:
         'PRMRY_LANG_CD': cleanPrimaryLangCd,
         'DSBLTY_TYPE_CD': cleanDisabilityTypeCd,
         'NDC_UOM_CHRNC_NON_HH_CD': cleanNDC_UOM_CHRNC_NON_HH_CD,
-        'IMGRTN_STUS_CD': cleanImmigrationStatusCd
+        'IMGRTN_STUS_CD': cleanImmigrationStatusCd,
+        'RACE_CD': cleanRaceCd,
     }
 
     absent = [
