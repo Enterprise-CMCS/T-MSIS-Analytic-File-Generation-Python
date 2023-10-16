@@ -468,7 +468,7 @@ class BSF_Metadata:
                         t1.ELGBL_ZIP_CD_MAIL,
                         t1.ELGBL_CNTY_CD_MAIL,
                         t1.ELGBL_STATE_CD_MAIL,
-                        t1.CARE_LVL_STUS_CD,
+                        t1.CARE_LVL_STUS_CODE as CARE_LVL_STUS_CD,
                         t1.DEAF_DISAB_FLAG as DEAF_DSBL_FLAG,
                         t1.BLIND_DISAB_FLAG as BLND_DSBL_FLAG,
                         t1.DIFF_CONC_DISAB_FLAG as DFCLTY_CONC_DSBL_FLAG,
