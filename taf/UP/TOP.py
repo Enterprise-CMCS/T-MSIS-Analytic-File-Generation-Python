@@ -5,9 +5,9 @@ from taf.UP.UP_Runner import UP_Runner
 class TOP(UP):
     """
     Description:    For each claims file separately, sum the total number of claims and tot paid amount
-                    from the headers by bene, pgm_type_cd, and clm_type_cd.   
+                    from the headers by bene, pgm_type_cd, and clm_type_cd.
     """
-         
+
     def __init__(self, up: UP_Runner):
         UP.__init__(self, up)
         self.up = up
@@ -17,9 +17,9 @@ class TOP(UP):
 
     def create(self):
         """
-        Create the TOP segment.  
+        Create the TOP segment.
         """
-         
+
         # Roll up all header level columns for all file types
 
         # distkey (msis_ident_num)
@@ -74,9 +74,14 @@ class TOP(UP):
 
     def build(self, runner: UP_Runner):
         """
-        Build the TOP segment.  
+        Build the TOP segment.
         """
-         
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         z = f"""
             INSERT INTO {runner.DA_SCHEMA}.taf_ann_up_top
             SELECT { self.table_id_cols() }

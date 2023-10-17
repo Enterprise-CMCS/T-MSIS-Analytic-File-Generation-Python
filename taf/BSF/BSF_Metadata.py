@@ -345,6 +345,11 @@ class BSF_Metadata:
         A formatted SQL string is returned, printed, then passed to spark.sql() to be executed.
         These steps could be combined, but were intentionally left separate for traceability.
         """
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if bsf.run_stats_only:
+            bsf.logger.info(f"** {bsf.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
 
         z = f"""
                 INSERT INTO {bsf.DA_SCHEMA}.taf_mon_bsf

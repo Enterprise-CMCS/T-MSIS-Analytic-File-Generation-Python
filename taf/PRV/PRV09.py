@@ -4,7 +4,7 @@ from taf.PRV.PRV import PRV
 
 
 class PRV09(PRV):
-     
+
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
@@ -12,7 +12,7 @@ class PRV09(PRV):
         """
         000-09 affiliated programs segment
         """
-         
+
         # screen out all but the latest(selected) run id - provider id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -82,9 +82,9 @@ class PRV09(PRV):
 
     def create(self):
         """
-        Create the PRV09 affiliated programs segment.  
+        Create the PRV09 affiliated programs segment.
         """
-         
+
         self.process_09_affpgms('Prov02_Main',
                                 'Prov09_AffPgms')
 
@@ -136,9 +136,14 @@ class PRV09(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        Build the PRV09 affiliated programs segment.  
+        Build the PRV09 affiliated programs segment.
         """
-         
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_pgm
                 SELECT

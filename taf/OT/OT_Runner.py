@@ -16,13 +16,16 @@ class OT_Runner(TAF_Runner):
                  state_code: str,
                  run_id: str,
                  job_id: int,
-                 file_version: str):
+                 file_version: str,
+                 run_stats_only: int = 0):
         super().__init__(da_schema,
                          reporting_period,
                          state_code,
                          run_id,
                          job_id,
                          file_version)
+
+        self.run_stats_only = self.__forceBool__(run_stats_only)
 
     def init(self):
         """

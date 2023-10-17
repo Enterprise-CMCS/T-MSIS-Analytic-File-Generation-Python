@@ -3,7 +3,7 @@ from taf.PRV import PRV_Runner
 from taf.PRV.PRV import PRV
 
 class PRV10(PRV):
-     
+
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
@@ -11,7 +11,7 @@ class PRV10(PRV):
         """
         000-10 bed type segment
         """
-         
+
         # screen out all but the latest(selected) run id - provider id - location id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -85,9 +85,9 @@ class PRV10(PRV):
 
     def create(self):
         """
-        Create the PRV10 bed type segment.  
+        Create the PRV10 bed type segment.
         """
-         
+
         # row count
         # self.prv.countrows(&outtbl, cnt_final, PRV10_Final)
 
@@ -128,94 +128,94 @@ class PRV10(PRV):
         z = f"""
             create or replace temporary view loc__g as
                 select
-                    DA_RUN_ID, 
-                    PRV_LOC_LINK_KEY, 
-                    PRV_FIL_DT, 
-                    PRV_VRSN, 
-                    TMSIS_RUN_ID, 
-                    SUBMTG_STATE_CD, 
-                    SUBMTG_STATE_PRVDR_ID, 
+                    DA_RUN_ID,
+                    PRV_LOC_LINK_KEY,
+                    PRV_FIL_DT,
+                    PRV_VRSN,
+                    TMSIS_RUN_ID,
+                    SUBMTG_STATE_CD,
+                    SUBMTG_STATE_PRVDR_ID,
                     PRVDR_LCTN_ID
                 from
-                    (select 
-                        DA_RUN_ID, 
-                        PRV_LOC_LINK_KEY, 
-                        PRV_FIL_DT, 
-                        PRV_VRSN, 
-                        TMSIS_RUN_ID, 
-                        SUBMTG_STATE_CD, 
-                        SUBMTG_STATE_PRVDR_ID, 
-                        PRVDR_LCTN_ID 
-                    from 
-                        Prov04_Licensing_CNST 
-                    where 
-                        PRVDR_LCTN_ID='000'
-
-				    union all
-
-				    select 
-                        DA_RUN_ID, 
-                        PRV_LOC_LINK_KEY, 
-                        PRV_FIL_DT, 
-                        PRV_VRSN, 
-                        TMSIS_RUN_ID, 
-                        SUBMTG_STATE_CD, 
-                        SUBMTG_STATE_PRVDR_ID, 
-                        PRVDR_LCTN_ID 
-                    from 
-                        Prov05_Identifiers_CNST 
-                    where 
-                        PRVDR_LCTN_ID='000'
-
-				    union all
-
-				    select 
-                        DA_RUN_ID, 
+                    (select
+                        DA_RUN_ID,
                         PRV_LOC_LINK_KEY,
-                        PRV_FIL_DT, 
-                        PRV_VRSN, 
-                        TMSIS_RUN_ID, 
-                        SUBMTG_STATE_CD, 
-                        SUBMTG_STATE_PRVDR_ID, 
-                        PRVDR_LCTN_ID 
-                    from 
-                        Prov10_BedType_CNST 
-                    where 
+                        PRV_FIL_DT,
+                        PRV_VRSN,
+                        TMSIS_RUN_ID,
+                        SUBMTG_STATE_CD,
+                        SUBMTG_STATE_PRVDR_ID,
+                        PRVDR_LCTN_ID
+                    from
+                        Prov04_Licensing_CNST
+                    where
+                        PRVDR_LCTN_ID='000'
+
+				    union all
+
+				    select
+                        DA_RUN_ID,
+                        PRV_LOC_LINK_KEY,
+                        PRV_FIL_DT,
+                        PRV_VRSN,
+                        TMSIS_RUN_ID,
+                        SUBMTG_STATE_CD,
+                        SUBMTG_STATE_PRVDR_ID,
+                        PRVDR_LCTN_ID
+                    from
+                        Prov05_Identifiers_CNST
+                    where
+                        PRVDR_LCTN_ID='000'
+
+				    union all
+
+				    select
+                        DA_RUN_ID,
+                        PRV_LOC_LINK_KEY,
+                        PRV_FIL_DT,
+                        PRV_VRSN,
+                        TMSIS_RUN_ID,
+                        SUBMTG_STATE_CD,
+                        SUBMTG_STATE_PRVDR_ID,
+                        PRVDR_LCTN_ID
+                    from
+                        Prov10_BedType_CNST
+                    where
                         PRVDR_LCTN_ID='000'
 
 				    except
 
-				    select 
-                        DA_RUN_ID, 
-                        PRV_LOC_LINK_KEY, 
-                        PRV_FIL_DT, 
-                        PRV_VRSN, 
-                        TMSIS_RUN_ID, 
-                        SUBMTG_STATE_CD, 
-                        SUBMTG_STATE_PRVDR_ID, 
-                        PRVDR_LCTN_ID 
-                    from 
-                        Prov03_Location_CNST 
-                    where 
+				    select
+                        DA_RUN_ID,
+                        PRV_LOC_LINK_KEY,
+                        PRV_FIL_DT,
+                        PRV_VRSN,
+                        TMSIS_RUN_ID,
+                        SUBMTG_STATE_CD,
+                        SUBMTG_STATE_PRVDR_ID,
+                        PRVDR_LCTN_ID
+                    from
+                        Prov03_Location_CNST
+                    where
                         PRVDR_LCTN_ID='000')
 
-                group by 
-                    DA_RUN_ID, 
-                    PRV_LOC_LINK_KEY, 
-                    PRV_FIL_DT, 
-                    PRV_VRSN, 
-                    TMSIS_RUN_ID, 
-                    SUBMTG_STATE_CD, 
-                    SUBMTG_STATE_PRVDR_ID, 
+                group by
+                    DA_RUN_ID,
+                    PRV_LOC_LINK_KEY,
+                    PRV_FIL_DT,
+                    PRV_VRSN,
+                    TMSIS_RUN_ID,
+                    SUBMTG_STATE_CD,
+                    SUBMTG_STATE_PRVDR_ID,
                     PRVDR_LCTN_ID
 
-                order by 
-                    DA_RUN_ID, 
-                    PRV_LOC_LINK_KEY, 
+                order by
+                    DA_RUN_ID,
+                    PRV_LOC_LINK_KEY,
                     PRV_FIL_DT,
-                    PRV_VRSN, 
-                    TMSIS_RUN_ID, 
-                    SUBMTG_STATE_CD, 
+                    PRV_VRSN,
+                    TMSIS_RUN_ID,
+                    SUBMTG_STATE_CD,
                     SUBMTG_STATE_PRVDR_ID,
                     PRVDR_LCTN_ID
             """
@@ -230,12 +230,12 @@ class PRV10(PRV):
                 select
                     DA_RUN_ID,
                     cast (('{self.prv.VERSION}' || '-' || { self.prv.monyrout } || '-' || SUBMTG_STATE_CD || '-' || coalesce(SUBMTG_STATE_PRVDR_ID, '*')) as varchar(50)) as PRV_LINK_KEY,
-                    PRV_LOC_LINK_KEY, 
-                    PRV_FIL_DT, 
-                    PRV_VRSN, 
-                    TMSIS_RUN_ID, 
-                    SUBMTG_STATE_CD, 
-                    SUBMTG_STATE_PRVDR_ID, 
+                    PRV_LOC_LINK_KEY,
+                    PRV_FIL_DT,
+                    PRV_VRSN,
+                    TMSIS_RUN_ID,
+                    SUBMTG_STATE_CD,
+                    SUBMTG_STATE_PRVDR_ID,
                     PRVDR_LCTN_ID,
                     NULL AS PRVDR_ADR_BLG_IND,
                     NULL AS PRVDR_ADR_PRCTC_IND,
@@ -258,9 +258,14 @@ class PRV10(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        Build the PRV10 bed type segment.  
+        Build the PRV10 bed type segment.
         """
-         
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_bed
                 SELECT
@@ -277,7 +282,7 @@ class PRV10(PRV):
                 FROM
                     loc__g2
         """
-        self.prv.append(type(self).__name__, z)        
+        self.prv.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

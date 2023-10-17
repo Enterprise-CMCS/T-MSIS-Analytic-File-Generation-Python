@@ -14,7 +14,8 @@ class PRV_Runner(TAF_Runner):
                  state_code: str,
                  run_id: str,
                  job_id: int,
-                 file_version: str):
+                 file_version: str,
+                 run_stats_only: int = 0):
         super().__init__(da_schema,
                          reporting_period,
                          state_code,
@@ -22,6 +23,7 @@ class PRV_Runner(TAF_Runner):
                          job_id,
                          file_version)
 
+        self.run_stats_only = self.__forceBool__(run_stats_only)
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 
     def AWS_MAXID_pull_non_claim(self, TMSIS_SCHEMA, table, hdrtable):

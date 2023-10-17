@@ -4,7 +4,7 @@ from taf.PRV.PRV import PRV
 
 
 class PRV03(PRV):
-     
+
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
@@ -12,7 +12,7 @@ class PRV03(PRV):
         """
         000-03 location data extract
         """
-         
+
         # screen out all but the latest(selected) run id - provider id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -91,105 +91,105 @@ class PRV03(PRV):
 
         z = f"""
             create or replace temporary view loc_g as
-            select 
-                M.tms_run_id, 
-                M.submitting_state, 
-                M.submitting_state_prov_id, 
+            select
+                M.tms_run_id,
+                M.submitting_state,
+                M.submitting_state_prov_id,
                 '000' as prov_location_id
             from
                 {maintbl} M
 
             left join
                 (select
-                    tms_run_id, 
-                    submitting_state, 
-                    submitting_state_prov_id, 
-                    prov_location_id 
-                from 
-                    TMSIS.Prov_Licensing_Info 
-                where 
+                    tms_run_id,
+                    submitting_state,
+                    submitting_state_prov_id,
+                    prov_location_id
+                from
+                    TMSIS.Prov_Licensing_Info
+                where
                     prov_location_id='000') L
             on
-                M.tms_run_id=L.tms_run_id and 
-                M.submitting_state=L.submitting_state and 
+                M.tms_run_id=L.tms_run_id and
+                M.submitting_state=L.submitting_state and
                 M.submitting_state_prov_id=upper(L.submitting_state_prov_id)
 
-             left join 
-                (select 
-                    tms_run_id, 
-                    submitting_state, 
-                    submitting_state_prov_id, 
-                    prov_location_id 
-                from 
-                    TMSIS.Prov_Identifiers 
-                where 
-                    prov_location_id='000') I 
-			 on 
-                M.tms_run_id=I.tms_run_id and 
-                M.submitting_state=I.submitting_state and 
+             left join
+                (select
+                    tms_run_id,
+                    submitting_state,
+                    submitting_state_prov_id,
+                    prov_location_id
+                from
+                    TMSIS.Prov_Identifiers
+                where
+                    prov_location_id='000') I
+			 on
+                M.tms_run_id=I.tms_run_id and
+                M.submitting_state=I.submitting_state and
                 M.submitting_state_prov_id=upper(I.submitting_state_prov_id)
-			 
-             left join 
-                (select 
-                    tms_run_id, 
-                    submitting_state, 
-                    submitting_state_prov_id, 
-                    prov_location_id 
-                from 
-                    TMSIS.Prov_Bed_Type_Info 
-                where 
-                    prov_location_id='000') B 
-			 on 
-                M.tms_run_id=B.tms_run_id and 
-                M.submitting_state=B.submitting_state and 
+
+             left join
+                (select
+                    tms_run_id,
+                    submitting_state,
+                    submitting_state_prov_id,
+                    prov_location_id
+                from
+                    TMSIS.Prov_Bed_Type_Info
+                where
+                    prov_location_id='000') B
+			 on
+                M.tms_run_id=B.tms_run_id and
+                M.submitting_state=B.submitting_state and
                 M.submitting_state_prov_id=upper(B.submitting_state_prov_id)
-		
+
             where
-                L.prov_location_id='000' or 
-                I.prov_location_id='000' or 
+                L.prov_location_id='000' or
+                I.prov_location_id='000' or
                 B.prov_location_id='000'
-            group by 
-                M.tms_run_id, 
-                M.submitting_state, 
+            group by
+                M.tms_run_id,
+                M.submitting_state,
                 M.submitting_state_prov_id
-            order by 
-                M.tms_run_id, 
-                M.submitting_state, 
+            order by
+                M.tms_run_id,
+                M.submitting_state,
                 M.submitting_state_prov_id
         """
         self.prv.append(type(self).__name__, z)
 
         z = f"""
             create or replace temporary view Prov03_Locations_g0 as
-            select 
-                tms_run_id, 
-                submitting_state, 
-                submitting_state_prov_id, 
+            select
+                tms_run_id,
+                submitting_state,
+                submitting_state_prov_id,
                 prov_location_id
             from
-                (select 
-                    tms_run_id, 
-                    submitting_state, 
-                    submitting_state_prov_id, 
-                    prov_location_id 
-                from 
+                (select
+                    tms_run_id,
+                    submitting_state,
+                    submitting_state_prov_id,
+                    prov_location_id
+                from
                     {outtbl}
 
 			    union all
 
-			    select 
-                    * 
-                from   
+			    select
+                    *
+                from
                     loc_g)
-            group by 
-                tms_run_id, 
-                submitting_state, 
-                submitting_state_prov_id, 
+            group by
+                tms_run_id,
+                submitting_state,
+                submitting_state_prov_id,
                 prov_location_id
-            order by 
-                tms_run_id, 
-                submitting_state, 
-                submitting_state_prov_id, 
+            order by
+                tms_run_id,
+                submitting_state,
+                submitting_state_prov_id,
                 prov_location_id
         """
         self.prv.append(type(self).__name__, z)
@@ -198,7 +198,7 @@ class PRV03(PRV):
         """
         Create the PRV03 location data extract
         """
-         
+
         keyl = 'PRV_LOC_LINK_KEY'
 
         self.process_03_locations('Prov02_Main',
@@ -359,9 +359,14 @@ class PRV03(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        Build the PRV03 location data extract.  
+        Build the PRV03 location data extract.
         """
-         
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_loc
                 SELECT

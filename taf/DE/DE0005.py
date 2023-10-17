@@ -4,525 +4,527 @@ from taf.TAF_Closure import TAF_Closure
 
 
 class DE0005(DE):
-	"""
-	Description:  Generate the annual BSF segment 005: Managed Care
+    """
+    Description:  Generate the annual BSF segment 005: Managed Care
 
-	Note:  	This program arrays out all MC slots for every month. Also, it creates counts of
-			enrolled months for each type of MC (based on a given type in ANY of the monthly slots
-			for each month). It then inserts this temp table into the permanent table and deletes
-			the temp table.
-			It also creates the flag MNGD_CARE_SPLMTL which = 1 if ANY ID or type in the year is
-			non-null, which will be kept in a temp table to be joined to the base segment.
-	"""
-	
-	tblname: str = "managed_care"
-	tbl_suffix: str = "mc"
+    Note:  	This program arrays out all MC slots for every month. Also, it creates counts of
+        enrolled months for each type of MC (based on a given type in ANY of the monthly slots
+        for each month). It then inserts this temp table into the permanent table and deletes
+        the temp table.
+        It also creates the flag MNGD_CARE_SPLMTL which = 1 if ANY ID or type in the year is
+        non-null, which will be kept in a temp table to be joined to the base segment.
+    """
 
-	def __init__(self, runner: DE_Runner):
-		DE.__init__(self, runner)
-		self.de = runner
+    tblname: str = "managed_care"
+    tbl_suffix: str = "mc"
 
-	#def __init__(self, de: DE_Runner):
-		#super().__init__(de)
+    def __init__(self, runner: DE_Runner):
+        DE.__init__(self, runner)
+        self.de = runner
 
-	def create(self):
-		"""
-		Create the segment.  
-		"""
+    def create(self):
+        """
+        Create the segment.
+        """
+        self.create_temp()
+        self.create_mc_suppl_table()
 
-		#super().create()
-		self.create_temp()
-		self.create_mc_suppl_table()
+    def basecols(self):
+        """
+        Insert into the permanent table, subset to EITHER MNGD_CARE_SPLMTL=1
+        """
 
-	def basecols(self):
-		"""
-		Insert into the permanent table, subset to EITHER MNGD_CARE_SPLMTL=1
-		"""
+        z = """
+            ,CMPRHNSV_MC_PLAN_MOS
+            ,TRDTNL_PCCM_MC_PLAN_MOS
+            ,ENHNCD_PCCM_MC_PLAN_MOS
+            ,HIO_MC_PLAN_MOS
+            ,PIHP_MC_PLAN_MOS
+            ,PAHP_MC_PLAN_MOS
+            ,LTC_PIHP_MC_PLAN_MOS
+            ,MH_PIHP_MC_PLAN_MOS
+            ,MH_PAHP_MC_PLAN_MOS
+            ,SUD_PIHP_MC_PLAN_MOS
+            ,SUD_PAHP_MC_PLAN_MOS
+            ,MH_SUD_PIHP_MC_PLAN_MOS
+            ,MH_SUD_PAHP_MC_PLAN_MOS
+            ,DNTL_PAHP_MC_PLAN_MOS
+            ,TRANSPRTN_PAHP_MC_PLAN_MOS
+            ,DEASE_MGMT_MC_PLAN_MOS
+            ,PACE_MC_PLAN_MOS
+            ,PHRMCY_PAHP_MC_PLAN_MOS
+            ,ACNTBL_MC_PLAN_MOS
+            ,HM_HOME_MC_PLAN_MOS
+            ,IC_DUALS_MC_PLAN_MOS
+            ,MC_PLAN_ID1_01
+            ,MC_PLAN_ID1_02
+            ,MC_PLAN_ID1_03
+            ,MC_PLAN_ID1_04
+            ,MC_PLAN_ID1_05
+            ,MC_PLAN_ID1_06
+            ,MC_PLAN_ID1_07
+            ,MC_PLAN_ID1_08
+            ,MC_PLAN_ID1_09
+            ,MC_PLAN_ID1_10
+            ,MC_PLAN_ID1_11
+            ,MC_PLAN_ID1_12
+            ,MC_PLAN_TYPE_CD1_01
+            ,MC_PLAN_TYPE_CD1_02
+            ,MC_PLAN_TYPE_CD1_03
+            ,MC_PLAN_TYPE_CD1_04
+            ,MC_PLAN_TYPE_CD1_05
+            ,MC_PLAN_TYPE_CD1_06
+            ,MC_PLAN_TYPE_CD1_07
+            ,MC_PLAN_TYPE_CD1_08
+            ,MC_PLAN_TYPE_CD1_09
+            ,MC_PLAN_TYPE_CD1_10
+            ,MC_PLAN_TYPE_CD1_11
+            ,MC_PLAN_TYPE_CD1_12
+            ,MC_PLAN_ID2_01
+            ,MC_PLAN_ID2_02
+            ,MC_PLAN_ID2_03
+            ,MC_PLAN_ID2_04
+            ,MC_PLAN_ID2_05
+            ,MC_PLAN_ID2_06
+            ,MC_PLAN_ID2_07
+            ,MC_PLAN_ID2_08
+            ,MC_PLAN_ID2_09
+            ,MC_PLAN_ID2_10
+            ,MC_PLAN_ID2_11
+            ,MC_PLAN_ID2_12
+            ,MC_PLAN_TYPE_CD2_01
+            ,MC_PLAN_TYPE_CD2_02
+            ,MC_PLAN_TYPE_CD2_03
+            ,MC_PLAN_TYPE_CD2_04
+            ,MC_PLAN_TYPE_CD2_05
+            ,MC_PLAN_TYPE_CD2_06
+            ,MC_PLAN_TYPE_CD2_07
+            ,MC_PLAN_TYPE_CD2_08
+            ,MC_PLAN_TYPE_CD2_09
+            ,MC_PLAN_TYPE_CD2_10
+            ,MC_PLAN_TYPE_CD2_11
+            ,MC_PLAN_TYPE_CD2_12
+            ,MC_PLAN_ID3_01
+            ,MC_PLAN_ID3_02
+            ,MC_PLAN_ID3_03
+            ,MC_PLAN_ID3_04
+            ,MC_PLAN_ID3_05
+            ,MC_PLAN_ID3_06
+            ,MC_PLAN_ID3_07
+            ,MC_PLAN_ID3_08
+            ,MC_PLAN_ID3_09
+            ,MC_PLAN_ID3_10
+            ,MC_PLAN_ID3_11
+            ,MC_PLAN_ID3_12
+            ,MC_PLAN_TYPE_CD3_01
+            ,MC_PLAN_TYPE_CD3_02
+            ,MC_PLAN_TYPE_CD3_03
+            ,MC_PLAN_TYPE_CD3_04
+            ,MC_PLAN_TYPE_CD3_05
+            ,MC_PLAN_TYPE_CD3_06
+            ,MC_PLAN_TYPE_CD3_07
+            ,MC_PLAN_TYPE_CD3_08
+            ,MC_PLAN_TYPE_CD3_09
+            ,MC_PLAN_TYPE_CD3_10
+            ,MC_PLAN_TYPE_CD3_11
+            ,MC_PLAN_TYPE_CD3_12
+            ,MC_PLAN_ID4_01
+            ,MC_PLAN_ID4_02
+            ,MC_PLAN_ID4_03
+            ,MC_PLAN_ID4_04
+            ,MC_PLAN_ID4_05
+            ,MC_PLAN_ID4_06
+            ,MC_PLAN_ID4_07
+            ,MC_PLAN_ID4_08
+            ,MC_PLAN_ID4_09
+            ,MC_PLAN_ID4_10
+            ,MC_PLAN_ID4_11
+            ,MC_PLAN_ID4_12
+            ,MC_PLAN_TYPE_CD4_01
+            ,MC_PLAN_TYPE_CD4_02
+            ,MC_PLAN_TYPE_CD4_03
+            ,MC_PLAN_TYPE_CD4_04
+            ,MC_PLAN_TYPE_CD4_05
+            ,MC_PLAN_TYPE_CD4_06
+            ,MC_PLAN_TYPE_CD4_07
+            ,MC_PLAN_TYPE_CD4_08
+            ,MC_PLAN_TYPE_CD4_09
+            ,MC_PLAN_TYPE_CD4_10
+            ,MC_PLAN_TYPE_CD4_11
+            ,MC_PLAN_TYPE_CD4_12
+            ,MC_PLAN_ID5_01
+            ,MC_PLAN_ID5_02
+            ,MC_PLAN_ID5_03
+            ,MC_PLAN_ID5_04
+            ,MC_PLAN_ID5_05
+            ,MC_PLAN_ID5_06
+            ,MC_PLAN_ID5_07
+            ,MC_PLAN_ID5_08
+            ,MC_PLAN_ID5_09
+            ,MC_PLAN_ID5_10
+            ,MC_PLAN_ID5_11
+            ,MC_PLAN_ID5_12
+            ,MC_PLAN_TYPE_CD5_01
+            ,MC_PLAN_TYPE_CD5_02
+            ,MC_PLAN_TYPE_CD5_03
+            ,MC_PLAN_TYPE_CD5_04
+            ,MC_PLAN_TYPE_CD5_05
+            ,MC_PLAN_TYPE_CD5_06
+            ,MC_PLAN_TYPE_CD5_07
+            ,MC_PLAN_TYPE_CD5_08
+            ,MC_PLAN_TYPE_CD5_09
+            ,MC_PLAN_TYPE_CD5_10
+            ,MC_PLAN_TYPE_CD5_11
+            ,MC_PLAN_TYPE_CD5_12
+            ,MC_PLAN_ID6_01
+            ,MC_PLAN_ID6_02
+            ,MC_PLAN_ID6_03
+            ,MC_PLAN_ID6_04
+            ,MC_PLAN_ID6_05
+            ,MC_PLAN_ID6_06
+            ,MC_PLAN_ID6_07
+            ,MC_PLAN_ID6_08
+            ,MC_PLAN_ID6_09
+            ,MC_PLAN_ID6_10
+            ,MC_PLAN_ID6_11
+            ,MC_PLAN_ID6_12
+            ,MC_PLAN_TYPE_CD6_01
+            ,MC_PLAN_TYPE_CD6_02
+            ,MC_PLAN_TYPE_CD6_03
+            ,MC_PLAN_TYPE_CD6_04
+            ,MC_PLAN_TYPE_CD6_05
+            ,MC_PLAN_TYPE_CD6_06
+            ,MC_PLAN_TYPE_CD6_07
+            ,MC_PLAN_TYPE_CD6_08
+            ,MC_PLAN_TYPE_CD6_09
+            ,MC_PLAN_TYPE_CD6_10
+            ,MC_PLAN_TYPE_CD6_11
+            ,MC_PLAN_TYPE_CD6_12
+            ,MC_PLAN_ID7_01
+            ,MC_PLAN_ID7_02
+            ,MC_PLAN_ID7_03
+            ,MC_PLAN_ID7_04
+            ,MC_PLAN_ID7_05
+            ,MC_PLAN_ID7_06
+            ,MC_PLAN_ID7_07
+            ,MC_PLAN_ID7_08
+            ,MC_PLAN_ID7_09
+            ,MC_PLAN_ID7_10
+            ,MC_PLAN_ID7_11
+            ,MC_PLAN_ID7_12
+            ,MC_PLAN_TYPE_CD7_01
+            ,MC_PLAN_TYPE_CD7_02
+            ,MC_PLAN_TYPE_CD7_03
+            ,MC_PLAN_TYPE_CD7_04
+            ,MC_PLAN_TYPE_CD7_05
+            ,MC_PLAN_TYPE_CD7_06
+            ,MC_PLAN_TYPE_CD7_07
+            ,MC_PLAN_TYPE_CD7_08
+            ,MC_PLAN_TYPE_CD7_09
+            ,MC_PLAN_TYPE_CD7_10
+            ,MC_PLAN_TYPE_CD7_11
+            ,MC_PLAN_TYPE_CD7_12
+            ,MC_PLAN_ID8_01
+            ,MC_PLAN_ID8_02
+            ,MC_PLAN_ID8_03
+            ,MC_PLAN_ID8_04
+            ,MC_PLAN_ID8_05
+            ,MC_PLAN_ID8_06
+            ,MC_PLAN_ID8_07
+            ,MC_PLAN_ID8_08
+            ,MC_PLAN_ID8_09
+            ,MC_PLAN_ID8_10
+            ,MC_PLAN_ID8_11
+            ,MC_PLAN_ID8_12
+            ,MC_PLAN_TYPE_CD8_01
+            ,MC_PLAN_TYPE_CD8_02
+            ,MC_PLAN_TYPE_CD8_03
+            ,MC_PLAN_TYPE_CD8_04
+            ,MC_PLAN_TYPE_CD8_05
+            ,MC_PLAN_TYPE_CD8_06
+            ,MC_PLAN_TYPE_CD8_07
+            ,MC_PLAN_TYPE_CD8_08
+            ,MC_PLAN_TYPE_CD8_09
+            ,MC_PLAN_TYPE_CD8_10
+            ,MC_PLAN_TYPE_CD8_11
+            ,MC_PLAN_TYPE_CD8_12
+            ,MC_PLAN_ID9_01
+            ,MC_PLAN_ID9_02
+            ,MC_PLAN_ID9_03
+            ,MC_PLAN_ID9_04
+            ,MC_PLAN_ID9_05
+            ,MC_PLAN_ID9_06
+            ,MC_PLAN_ID9_07
+            ,MC_PLAN_ID9_08
+            ,MC_PLAN_ID9_09
+            ,MC_PLAN_ID9_10
+            ,MC_PLAN_ID9_11
+            ,MC_PLAN_ID9_12
+            ,MC_PLAN_TYPE_CD9_01
+            ,MC_PLAN_TYPE_CD9_02
+            ,MC_PLAN_TYPE_CD9_03
+            ,MC_PLAN_TYPE_CD9_04
+            ,MC_PLAN_TYPE_CD9_05
+            ,MC_PLAN_TYPE_CD9_06
+            ,MC_PLAN_TYPE_CD9_07
+            ,MC_PLAN_TYPE_CD9_08
+            ,MC_PLAN_TYPE_CD9_09
+            ,MC_PLAN_TYPE_CD9_10
+            ,MC_PLAN_TYPE_CD9_11
+            ,MC_PLAN_TYPE_CD9_12
+            ,MC_PLAN_ID10_01
+            ,MC_PLAN_ID10_02
+            ,MC_PLAN_ID10_03
+            ,MC_PLAN_ID10_04
+            ,MC_PLAN_ID10_05
+            ,MC_PLAN_ID10_06
+            ,MC_PLAN_ID10_07
+            ,MC_PLAN_ID10_08
+            ,MC_PLAN_ID10_09
+            ,MC_PLAN_ID10_10
+            ,MC_PLAN_ID10_11
+            ,MC_PLAN_ID10_12
+            ,MC_PLAN_TYPE_CD10_01
+            ,MC_PLAN_TYPE_CD10_02
+            ,MC_PLAN_TYPE_CD10_03
+            ,MC_PLAN_TYPE_CD10_04
+            ,MC_PLAN_TYPE_CD10_05
+            ,MC_PLAN_TYPE_CD10_06
+            ,MC_PLAN_TYPE_CD10_07
+            ,MC_PLAN_TYPE_CD10_08
+            ,MC_PLAN_TYPE_CD10_09
+            ,MC_PLAN_TYPE_CD10_10
+            ,MC_PLAN_TYPE_CD10_11
+            ,MC_PLAN_TYPE_CD10_12
+            ,MC_PLAN_ID11_01
+            ,MC_PLAN_ID11_02
+            ,MC_PLAN_ID11_03
+            ,MC_PLAN_ID11_04
+            ,MC_PLAN_ID11_05
+            ,MC_PLAN_ID11_06
+            ,MC_PLAN_ID11_07
+            ,MC_PLAN_ID11_08
+            ,MC_PLAN_ID11_09
+            ,MC_PLAN_ID11_10
+            ,MC_PLAN_ID11_11
+            ,MC_PLAN_ID11_12
+            ,MC_PLAN_TYPE_CD11_01
+            ,MC_PLAN_TYPE_CD11_02
+            ,MC_PLAN_TYPE_CD11_03
+            ,MC_PLAN_TYPE_CD11_04
+            ,MC_PLAN_TYPE_CD11_05
+            ,MC_PLAN_TYPE_CD11_06
+            ,MC_PLAN_TYPE_CD11_07
+            ,MC_PLAN_TYPE_CD11_08
+            ,MC_PLAN_TYPE_CD11_09
+            ,MC_PLAN_TYPE_CD11_10
+            ,MC_PLAN_TYPE_CD11_11
+            ,MC_PLAN_TYPE_CD11_12
+            ,MC_PLAN_ID12_01
+            ,MC_PLAN_ID12_02
+            ,MC_PLAN_ID12_03
+            ,MC_PLAN_ID12_04
+            ,MC_PLAN_ID12_05
+            ,MC_PLAN_ID12_06
+            ,MC_PLAN_ID12_07
+            ,MC_PLAN_ID12_08
+            ,MC_PLAN_ID12_09
+            ,MC_PLAN_ID12_10
+            ,MC_PLAN_ID12_11
+            ,MC_PLAN_ID12_12
+            ,MC_PLAN_TYPE_CD12_01
+            ,MC_PLAN_TYPE_CD12_02
+            ,MC_PLAN_TYPE_CD12_03
+            ,MC_PLAN_TYPE_CD12_04
+            ,MC_PLAN_TYPE_CD12_05
+            ,MC_PLAN_TYPE_CD12_06
+            ,MC_PLAN_TYPE_CD12_07
+            ,MC_PLAN_TYPE_CD12_08
+            ,MC_PLAN_TYPE_CD12_09
+            ,MC_PLAN_TYPE_CD12_10
+            ,MC_PLAN_TYPE_CD12_11
+            ,MC_PLAN_TYPE_CD12_12
+            ,MC_PLAN_ID13_01
+            ,MC_PLAN_ID13_02
+            ,MC_PLAN_ID13_03
+            ,MC_PLAN_ID13_04
+            ,MC_PLAN_ID13_05
+            ,MC_PLAN_ID13_06
+            ,MC_PLAN_ID13_07
+            ,MC_PLAN_ID13_08
+            ,MC_PLAN_ID13_09
+            ,MC_PLAN_ID13_10
+            ,MC_PLAN_ID13_11
+            ,MC_PLAN_ID13_12
+            ,MC_PLAN_TYPE_CD13_01
+            ,MC_PLAN_TYPE_CD13_02
+            ,MC_PLAN_TYPE_CD13_03
+            ,MC_PLAN_TYPE_CD13_04
+            ,MC_PLAN_TYPE_CD13_05
+            ,MC_PLAN_TYPE_CD13_06
+            ,MC_PLAN_TYPE_CD13_07
+            ,MC_PLAN_TYPE_CD13_08
+            ,MC_PLAN_TYPE_CD13_09
+            ,MC_PLAN_TYPE_CD13_10
+            ,MC_PLAN_TYPE_CD13_11
+            ,MC_PLAN_TYPE_CD13_12
+            ,MC_PLAN_ID14_01
+            ,MC_PLAN_ID14_02
+            ,MC_PLAN_ID14_03
+            ,MC_PLAN_ID14_04
+            ,MC_PLAN_ID14_05
+            ,MC_PLAN_ID14_06
+            ,MC_PLAN_ID14_07
+            ,MC_PLAN_ID14_08
+            ,MC_PLAN_ID14_09
+            ,MC_PLAN_ID14_10
+            ,MC_PLAN_ID14_11
+            ,MC_PLAN_ID14_12
+            ,MC_PLAN_TYPE_CD14_01
+            ,MC_PLAN_TYPE_CD14_02
+            ,MC_PLAN_TYPE_CD14_03
+            ,MC_PLAN_TYPE_CD14_04
+            ,MC_PLAN_TYPE_CD14_05
+            ,MC_PLAN_TYPE_CD14_06
+            ,MC_PLAN_TYPE_CD14_07
+            ,MC_PLAN_TYPE_CD14_08
+            ,MC_PLAN_TYPE_CD14_09
+            ,MC_PLAN_TYPE_CD14_10
+            ,MC_PLAN_TYPE_CD14_11
+            ,MC_PLAN_TYPE_CD14_12
+            ,MC_PLAN_ID15_01
+            ,MC_PLAN_ID15_02
+            ,MC_PLAN_ID15_03
+            ,MC_PLAN_ID15_04
+            ,MC_PLAN_ID15_05
+            ,MC_PLAN_ID15_06
+            ,MC_PLAN_ID15_07
+            ,MC_PLAN_ID15_08
+            ,MC_PLAN_ID15_09
+            ,MC_PLAN_ID15_10
+            ,MC_PLAN_ID15_11
+            ,MC_PLAN_ID15_12
+            ,MC_PLAN_TYPE_CD15_01
+            ,MC_PLAN_TYPE_CD15_02
+            ,MC_PLAN_TYPE_CD15_03
+            ,MC_PLAN_TYPE_CD15_04
+            ,MC_PLAN_TYPE_CD15_05
+            ,MC_PLAN_TYPE_CD15_06
+            ,MC_PLAN_TYPE_CD15_07
+            ,MC_PLAN_TYPE_CD15_08
+            ,MC_PLAN_TYPE_CD15_09
+            ,MC_PLAN_TYPE_CD15_10
+            ,MC_PLAN_TYPE_CD15_11
+            ,MC_PLAN_TYPE_CD15_12
+            ,MC_PLAN_ID16_01
+            ,MC_PLAN_ID16_02
+            ,MC_PLAN_ID16_03
+            ,MC_PLAN_ID16_04
+            ,MC_PLAN_ID16_05
+            ,MC_PLAN_ID16_06
+            ,MC_PLAN_ID16_07
+            ,MC_PLAN_ID16_08
+            ,MC_PLAN_ID16_09
+            ,MC_PLAN_ID16_10
+            ,MC_PLAN_ID16_11
+            ,MC_PLAN_ID16_12
+            ,MC_PLAN_TYPE_CD16_01
+            ,MC_PLAN_TYPE_CD16_02
+            ,MC_PLAN_TYPE_CD16_03
+            ,MC_PLAN_TYPE_CD16_04
+            ,MC_PLAN_TYPE_CD16_05
+            ,MC_PLAN_TYPE_CD16_06
+            ,MC_PLAN_TYPE_CD16_07
+            ,MC_PLAN_TYPE_CD16_08
+            ,MC_PLAN_TYPE_CD16_09
+            ,MC_PLAN_TYPE_CD16_10
+            ,MC_PLAN_TYPE_CD16_11
+            ,MC_PLAN_TYPE_CD16_12
+            ,LTSS_PIHP_MC_PLAN_MOS
+            ,OTHR_MC_PLAN_MOS
+        """
+        return z
 
-		z = """
-			,CMPRHNSV_MC_PLAN_MOS
-			,TRDTNL_PCCM_MC_PLAN_MOS
-			,ENHNCD_PCCM_MC_PLAN_MOS
-			,HIO_MC_PLAN_MOS
-			,PIHP_MC_PLAN_MOS
-			,PAHP_MC_PLAN_MOS
-			,LTC_PIHP_MC_PLAN_MOS
-			,MH_PIHP_MC_PLAN_MOS
-			,MH_PAHP_MC_PLAN_MOS
-			,SUD_PIHP_MC_PLAN_MOS
-			,SUD_PAHP_MC_PLAN_MOS
-			,MH_SUD_PIHP_MC_PLAN_MOS
-			,MH_SUD_PAHP_MC_PLAN_MOS
-			,DNTL_PAHP_MC_PLAN_MOS
-			,TRANSPRTN_PAHP_MC_PLAN_MOS
-			,DEASE_MGMT_MC_PLAN_MOS
-			,PACE_MC_PLAN_MOS
-			,PHRMCY_PAHP_MC_PLAN_MOS
-			,ACNTBL_MC_PLAN_MOS
-			,HM_HOME_MC_PLAN_MOS
-			,IC_DUALS_MC_PLAN_MOS
-			,MC_PLAN_ID1_01
-			,MC_PLAN_ID1_02
-			,MC_PLAN_ID1_03
-			,MC_PLAN_ID1_04
-			,MC_PLAN_ID1_05
-			,MC_PLAN_ID1_06
-			,MC_PLAN_ID1_07
-			,MC_PLAN_ID1_08
-			,MC_PLAN_ID1_09
-			,MC_PLAN_ID1_10
-			,MC_PLAN_ID1_11
-			,MC_PLAN_ID1_12
-			,MC_PLAN_TYPE_CD1_01
-			,MC_PLAN_TYPE_CD1_02
-			,MC_PLAN_TYPE_CD1_03
-			,MC_PLAN_TYPE_CD1_04
-			,MC_PLAN_TYPE_CD1_05
-			,MC_PLAN_TYPE_CD1_06
-			,MC_PLAN_TYPE_CD1_07
-			,MC_PLAN_TYPE_CD1_08
-			,MC_PLAN_TYPE_CD1_09
-			,MC_PLAN_TYPE_CD1_10
-			,MC_PLAN_TYPE_CD1_11
-			,MC_PLAN_TYPE_CD1_12
-			,MC_PLAN_ID2_01
-			,MC_PLAN_ID2_02
-			,MC_PLAN_ID2_03
-			,MC_PLAN_ID2_04
-			,MC_PLAN_ID2_05
-			,MC_PLAN_ID2_06
-			,MC_PLAN_ID2_07
-			,MC_PLAN_ID2_08
-			,MC_PLAN_ID2_09
-			,MC_PLAN_ID2_10
-			,MC_PLAN_ID2_11
-			,MC_PLAN_ID2_12
-			,MC_PLAN_TYPE_CD2_01
-			,MC_PLAN_TYPE_CD2_02
-			,MC_PLAN_TYPE_CD2_03
-			,MC_PLAN_TYPE_CD2_04
-			,MC_PLAN_TYPE_CD2_05
-			,MC_PLAN_TYPE_CD2_06
-			,MC_PLAN_TYPE_CD2_07
-			,MC_PLAN_TYPE_CD2_08
-			,MC_PLAN_TYPE_CD2_09
-			,MC_PLAN_TYPE_CD2_10
-			,MC_PLAN_TYPE_CD2_11
-			,MC_PLAN_TYPE_CD2_12
-			,MC_PLAN_ID3_01
-			,MC_PLAN_ID3_02
-			,MC_PLAN_ID3_03
-			,MC_PLAN_ID3_04
-			,MC_PLAN_ID3_05
-			,MC_PLAN_ID3_06
-			,MC_PLAN_ID3_07
-			,MC_PLAN_ID3_08
-			,MC_PLAN_ID3_09
-			,MC_PLAN_ID3_10
-			,MC_PLAN_ID3_11
-			,MC_PLAN_ID3_12
-			,MC_PLAN_TYPE_CD3_01
-			,MC_PLAN_TYPE_CD3_02
-			,MC_PLAN_TYPE_CD3_03
-			,MC_PLAN_TYPE_CD3_04
-			,MC_PLAN_TYPE_CD3_05
-			,MC_PLAN_TYPE_CD3_06
-			,MC_PLAN_TYPE_CD3_07
-			,MC_PLAN_TYPE_CD3_08
-			,MC_PLAN_TYPE_CD3_09
-			,MC_PLAN_TYPE_CD3_10
-			,MC_PLAN_TYPE_CD3_11
-			,MC_PLAN_TYPE_CD3_12
-			,MC_PLAN_ID4_01
-			,MC_PLAN_ID4_02
-			,MC_PLAN_ID4_03
-			,MC_PLAN_ID4_04
-			,MC_PLAN_ID4_05
-			,MC_PLAN_ID4_06
-			,MC_PLAN_ID4_07
-			,MC_PLAN_ID4_08
-			,MC_PLAN_ID4_09
-			,MC_PLAN_ID4_10
-			,MC_PLAN_ID4_11
-			,MC_PLAN_ID4_12
-			,MC_PLAN_TYPE_CD4_01
-			,MC_PLAN_TYPE_CD4_02
-			,MC_PLAN_TYPE_CD4_03
-			,MC_PLAN_TYPE_CD4_04
-			,MC_PLAN_TYPE_CD4_05
-			,MC_PLAN_TYPE_CD4_06
-			,MC_PLAN_TYPE_CD4_07
-			,MC_PLAN_TYPE_CD4_08
-			,MC_PLAN_TYPE_CD4_09
-			,MC_PLAN_TYPE_CD4_10
-			,MC_PLAN_TYPE_CD4_11
-			,MC_PLAN_TYPE_CD4_12
-			,MC_PLAN_ID5_01
-			,MC_PLAN_ID5_02
-			,MC_PLAN_ID5_03
-			,MC_PLAN_ID5_04
-			,MC_PLAN_ID5_05
-			,MC_PLAN_ID5_06
-			,MC_PLAN_ID5_07
-			,MC_PLAN_ID5_08
-			,MC_PLAN_ID5_09
-			,MC_PLAN_ID5_10
-			,MC_PLAN_ID5_11
-			,MC_PLAN_ID5_12
-			,MC_PLAN_TYPE_CD5_01
-			,MC_PLAN_TYPE_CD5_02
-			,MC_PLAN_TYPE_CD5_03
-			,MC_PLAN_TYPE_CD5_04
-			,MC_PLAN_TYPE_CD5_05
-			,MC_PLAN_TYPE_CD5_06
-			,MC_PLAN_TYPE_CD5_07
-			,MC_PLAN_TYPE_CD5_08
-			,MC_PLAN_TYPE_CD5_09
-			,MC_PLAN_TYPE_CD5_10
-			,MC_PLAN_TYPE_CD5_11
-			,MC_PLAN_TYPE_CD5_12
-			,MC_PLAN_ID6_01
-			,MC_PLAN_ID6_02
-			,MC_PLAN_ID6_03
-			,MC_PLAN_ID6_04
-			,MC_PLAN_ID6_05
-			,MC_PLAN_ID6_06
-			,MC_PLAN_ID6_07
-			,MC_PLAN_ID6_08
-			,MC_PLAN_ID6_09
-			,MC_PLAN_ID6_10
-			,MC_PLAN_ID6_11
-			,MC_PLAN_ID6_12
-			,MC_PLAN_TYPE_CD6_01
-			,MC_PLAN_TYPE_CD6_02
-			,MC_PLAN_TYPE_CD6_03
-			,MC_PLAN_TYPE_CD6_04
-			,MC_PLAN_TYPE_CD6_05
-			,MC_PLAN_TYPE_CD6_06
-			,MC_PLAN_TYPE_CD6_07
-			,MC_PLAN_TYPE_CD6_08
-			,MC_PLAN_TYPE_CD6_09
-			,MC_PLAN_TYPE_CD6_10
-			,MC_PLAN_TYPE_CD6_11
-			,MC_PLAN_TYPE_CD6_12
-			,MC_PLAN_ID7_01
-			,MC_PLAN_ID7_02
-			,MC_PLAN_ID7_03
-			,MC_PLAN_ID7_04
-			,MC_PLAN_ID7_05
-			,MC_PLAN_ID7_06
-			,MC_PLAN_ID7_07
-			,MC_PLAN_ID7_08
-			,MC_PLAN_ID7_09
-			,MC_PLAN_ID7_10
-			,MC_PLAN_ID7_11
-			,MC_PLAN_ID7_12
-			,MC_PLAN_TYPE_CD7_01
-			,MC_PLAN_TYPE_CD7_02
-			,MC_PLAN_TYPE_CD7_03
-			,MC_PLAN_TYPE_CD7_04
-			,MC_PLAN_TYPE_CD7_05
-			,MC_PLAN_TYPE_CD7_06
-			,MC_PLAN_TYPE_CD7_07
-			,MC_PLAN_TYPE_CD7_08
-			,MC_PLAN_TYPE_CD7_09
-			,MC_PLAN_TYPE_CD7_10
-			,MC_PLAN_TYPE_CD7_11
-			,MC_PLAN_TYPE_CD7_12
-			,MC_PLAN_ID8_01
-			,MC_PLAN_ID8_02
-			,MC_PLAN_ID8_03
-			,MC_PLAN_ID8_04
-			,MC_PLAN_ID8_05
-			,MC_PLAN_ID8_06
-			,MC_PLAN_ID8_07
-			,MC_PLAN_ID8_08
-			,MC_PLAN_ID8_09
-			,MC_PLAN_ID8_10
-			,MC_PLAN_ID8_11
-			,MC_PLAN_ID8_12
-			,MC_PLAN_TYPE_CD8_01
-			,MC_PLAN_TYPE_CD8_02
-			,MC_PLAN_TYPE_CD8_03
-			,MC_PLAN_TYPE_CD8_04
-			,MC_PLAN_TYPE_CD8_05
-			,MC_PLAN_TYPE_CD8_06
-			,MC_PLAN_TYPE_CD8_07
-			,MC_PLAN_TYPE_CD8_08
-			,MC_PLAN_TYPE_CD8_09
-			,MC_PLAN_TYPE_CD8_10
-			,MC_PLAN_TYPE_CD8_11
-			,MC_PLAN_TYPE_CD8_12
-			,MC_PLAN_ID9_01
-			,MC_PLAN_ID9_02
-			,MC_PLAN_ID9_03
-			,MC_PLAN_ID9_04
-			,MC_PLAN_ID9_05
-			,MC_PLAN_ID9_06
-			,MC_PLAN_ID9_07
-			,MC_PLAN_ID9_08
-			,MC_PLAN_ID9_09
-			,MC_PLAN_ID9_10
-			,MC_PLAN_ID9_11
-			,MC_PLAN_ID9_12
-			,MC_PLAN_TYPE_CD9_01
-			,MC_PLAN_TYPE_CD9_02
-			,MC_PLAN_TYPE_CD9_03
-			,MC_PLAN_TYPE_CD9_04
-			,MC_PLAN_TYPE_CD9_05
-			,MC_PLAN_TYPE_CD9_06
-			,MC_PLAN_TYPE_CD9_07
-			,MC_PLAN_TYPE_CD9_08
-			,MC_PLAN_TYPE_CD9_09
-			,MC_PLAN_TYPE_CD9_10
-			,MC_PLAN_TYPE_CD9_11
-			,MC_PLAN_TYPE_CD9_12
-			,MC_PLAN_ID10_01
-			,MC_PLAN_ID10_02
-			,MC_PLAN_ID10_03
-			,MC_PLAN_ID10_04
-			,MC_PLAN_ID10_05
-			,MC_PLAN_ID10_06
-			,MC_PLAN_ID10_07
-			,MC_PLAN_ID10_08
-			,MC_PLAN_ID10_09
-			,MC_PLAN_ID10_10
-			,MC_PLAN_ID10_11
-			,MC_PLAN_ID10_12
-			,MC_PLAN_TYPE_CD10_01
-			,MC_PLAN_TYPE_CD10_02
-			,MC_PLAN_TYPE_CD10_03
-			,MC_PLAN_TYPE_CD10_04
-			,MC_PLAN_TYPE_CD10_05
-			,MC_PLAN_TYPE_CD10_06
-			,MC_PLAN_TYPE_CD10_07
-			,MC_PLAN_TYPE_CD10_08
-			,MC_PLAN_TYPE_CD10_09
-			,MC_PLAN_TYPE_CD10_10
-			,MC_PLAN_TYPE_CD10_11
-			,MC_PLAN_TYPE_CD10_12
-			,MC_PLAN_ID11_01
-			,MC_PLAN_ID11_02
-			,MC_PLAN_ID11_03
-			,MC_PLAN_ID11_04
-			,MC_PLAN_ID11_05
-			,MC_PLAN_ID11_06
-			,MC_PLAN_ID11_07
-			,MC_PLAN_ID11_08
-			,MC_PLAN_ID11_09
-			,MC_PLAN_ID11_10
-			,MC_PLAN_ID11_11
-			,MC_PLAN_ID11_12
-			,MC_PLAN_TYPE_CD11_01
-			,MC_PLAN_TYPE_CD11_02
-			,MC_PLAN_TYPE_CD11_03
-			,MC_PLAN_TYPE_CD11_04
-			,MC_PLAN_TYPE_CD11_05
-			,MC_PLAN_TYPE_CD11_06
-			,MC_PLAN_TYPE_CD11_07
-			,MC_PLAN_TYPE_CD11_08
-			,MC_PLAN_TYPE_CD11_09
-			,MC_PLAN_TYPE_CD11_10
-			,MC_PLAN_TYPE_CD11_11
-			,MC_PLAN_TYPE_CD11_12
-			,MC_PLAN_ID12_01
-			,MC_PLAN_ID12_02
-			,MC_PLAN_ID12_03
-			,MC_PLAN_ID12_04
-			,MC_PLAN_ID12_05
-			,MC_PLAN_ID12_06
-			,MC_PLAN_ID12_07
-			,MC_PLAN_ID12_08
-			,MC_PLAN_ID12_09
-			,MC_PLAN_ID12_10
-			,MC_PLAN_ID12_11
-			,MC_PLAN_ID12_12
-			,MC_PLAN_TYPE_CD12_01
-			,MC_PLAN_TYPE_CD12_02
-			,MC_PLAN_TYPE_CD12_03
-			,MC_PLAN_TYPE_CD12_04
-			,MC_PLAN_TYPE_CD12_05
-			,MC_PLAN_TYPE_CD12_06
-			,MC_PLAN_TYPE_CD12_07
-			,MC_PLAN_TYPE_CD12_08
-			,MC_PLAN_TYPE_CD12_09
-			,MC_PLAN_TYPE_CD12_10
-			,MC_PLAN_TYPE_CD12_11
-			,MC_PLAN_TYPE_CD12_12
-			,MC_PLAN_ID13_01
-			,MC_PLAN_ID13_02
-			,MC_PLAN_ID13_03
-			,MC_PLAN_ID13_04
-			,MC_PLAN_ID13_05
-			,MC_PLAN_ID13_06
-			,MC_PLAN_ID13_07
-			,MC_PLAN_ID13_08
-			,MC_PLAN_ID13_09
-			,MC_PLAN_ID13_10
-			,MC_PLAN_ID13_11
-			,MC_PLAN_ID13_12
-			,MC_PLAN_TYPE_CD13_01
-			,MC_PLAN_TYPE_CD13_02
-			,MC_PLAN_TYPE_CD13_03
-			,MC_PLAN_TYPE_CD13_04
-			,MC_PLAN_TYPE_CD13_05
-			,MC_PLAN_TYPE_CD13_06
-			,MC_PLAN_TYPE_CD13_07
-			,MC_PLAN_TYPE_CD13_08
-			,MC_PLAN_TYPE_CD13_09
-			,MC_PLAN_TYPE_CD13_10
-			,MC_PLAN_TYPE_CD13_11
-			,MC_PLAN_TYPE_CD13_12
-			,MC_PLAN_ID14_01
-			,MC_PLAN_ID14_02
-			,MC_PLAN_ID14_03
-			,MC_PLAN_ID14_04
-			,MC_PLAN_ID14_05
-			,MC_PLAN_ID14_06
-			,MC_PLAN_ID14_07
-			,MC_PLAN_ID14_08
-			,MC_PLAN_ID14_09
-			,MC_PLAN_ID14_10
-			,MC_PLAN_ID14_11
-			,MC_PLAN_ID14_12
-			,MC_PLAN_TYPE_CD14_01
-			,MC_PLAN_TYPE_CD14_02
-			,MC_PLAN_TYPE_CD14_03
-			,MC_PLAN_TYPE_CD14_04
-			,MC_PLAN_TYPE_CD14_05
-			,MC_PLAN_TYPE_CD14_06
-			,MC_PLAN_TYPE_CD14_07
-			,MC_PLAN_TYPE_CD14_08
-			,MC_PLAN_TYPE_CD14_09
-			,MC_PLAN_TYPE_CD14_10
-			,MC_PLAN_TYPE_CD14_11
-			,MC_PLAN_TYPE_CD14_12
-			,MC_PLAN_ID15_01
-			,MC_PLAN_ID15_02
-			,MC_PLAN_ID15_03
-			,MC_PLAN_ID15_04
-			,MC_PLAN_ID15_05
-			,MC_PLAN_ID15_06
-			,MC_PLAN_ID15_07
-			,MC_PLAN_ID15_08
-			,MC_PLAN_ID15_09
-			,MC_PLAN_ID15_10
-			,MC_PLAN_ID15_11
-			,MC_PLAN_ID15_12
-			,MC_PLAN_TYPE_CD15_01
-			,MC_PLAN_TYPE_CD15_02
-			,MC_PLAN_TYPE_CD15_03
-			,MC_PLAN_TYPE_CD15_04
-			,MC_PLAN_TYPE_CD15_05
-			,MC_PLAN_TYPE_CD15_06
-			,MC_PLAN_TYPE_CD15_07
-			,MC_PLAN_TYPE_CD15_08
-			,MC_PLAN_TYPE_CD15_09
-			,MC_PLAN_TYPE_CD15_10
-			,MC_PLAN_TYPE_CD15_11
-			,MC_PLAN_TYPE_CD15_12
-			,MC_PLAN_ID16_01
-			,MC_PLAN_ID16_02
-			,MC_PLAN_ID16_03
-			,MC_PLAN_ID16_04
-			,MC_PLAN_ID16_05
-			,MC_PLAN_ID16_06
-			,MC_PLAN_ID16_07
-			,MC_PLAN_ID16_08
-			,MC_PLAN_ID16_09
-			,MC_PLAN_ID16_10
-			,MC_PLAN_ID16_11
-			,MC_PLAN_ID16_12
-			,MC_PLAN_TYPE_CD16_01
-			,MC_PLAN_TYPE_CD16_02
-			,MC_PLAN_TYPE_CD16_03
-			,MC_PLAN_TYPE_CD16_04
-			,MC_PLAN_TYPE_CD16_05
-			,MC_PLAN_TYPE_CD16_06
-			,MC_PLAN_TYPE_CD16_07
-			,MC_PLAN_TYPE_CD16_08
-			,MC_PLAN_TYPE_CD16_09
-			,MC_PLAN_TYPE_CD16_10
-			,MC_PLAN_TYPE_CD16_11
-			,MC_PLAN_TYPE_CD16_12
-			,LTSS_PIHP_MC_PLAN_MOS
-			,OTHR_MC_PLAN_MOS
-		"""
-		return z        
+    def create_temp(self):
+        """
+        Create temp table with just MNGD_CARE_SPLMTL (must create as ANY=1 from the four above) to join to base.
+        """
 
-	def create_temp(self):
-		"""
-		Create temp table with just MNGD_CARE_SPLMTL (must create as ANY=1 from the four above) to join to base.
-		"""
+        s = f"""{DE.run_mc_slots(self, 1, 3)}
+                ,{TAF_Closure.monthly_array(self, incol='MC_PLAN_ID', nslots=self.de.NMCSLOTS)}
+                ,{TAF_Closure.monthly_array(self, incol='MC_PLAN_TYPE_CD', nslots=self.de.NMCSLOTS)}"""
+        s2 = f"""{DE.run_mc_slots(self, 4, 6)}"""
+        s3 = f"""{DE.run_mc_slots(self, 7, 9)}"""
+        s4 = f"""{DE.run_mc_slots(self, 10, 12)}"""
+        s5 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 1, 3)}"""
+        s6 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 4, 6)}"""
+        s7 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 7, 9)}"""
+        s8 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 10, 12)}"""
+        os = f"""{DE.sum_months(self, 'CMPRHNSV_MC_PLAN')}
+                {DE.sum_months(self, 'TRDTNL_PCCM_MC_PLAN')}
+                {DE.sum_months(self, 'ENHNCD_PCCM_MC_PLAN')}
+                {DE.sum_months(self, 'HIO_MC_PLAN')}
+                {DE.sum_months(self, 'PIHP_MC_PLAN')}
+                {DE.sum_months(self, 'PAHP_MC_PLAN')}
+                {DE.sum_months(self, 'LTC_PIHP_MC_PLAN')}
+                {DE.sum_months(self, 'MH_PIHP_MC_PLAN')}
+                {DE.sum_months(self, 'MH_PAHP_MC_PLAN')}
+                {DE.sum_months(self, 'SUD_PIHP_MC_PLAN')}
+                {DE.sum_months(self, 'SUD_PAHP_MC_PLAN')}
+                {DE.sum_months(self, 'MH_SUD_PIHP_MC_PLAN')}
+                {DE.sum_months(self, 'MH_SUD_PAHP_MC_PLAN')}
+                {DE.sum_months(self, 'DNTL_PAHP_MC_PLAN')}
+                {DE.sum_months(self, 'TRANSPRTN_PAHP_MC_PLAN')}
+                {DE.sum_months(self, 'DEASE_MGMT_MC_PLAN')}
+                {DE.sum_months(self, 'PACE_MC_PLAN')}
+                {DE.sum_months(self, 'PHRMCY_PAHP_MC_PLAN')}
+                {DE.sum_months(self, 'ACNTBL_MC_PLAN')}
+                {DE.sum_months(self, 'HM_HOME_MC_PLAN')}
+                {DE.sum_months(self, 'IC_DUALS_MC_PLAN')}
+                {DE.sum_months(self, 'LTSS_PIHP_MC_PLAN')}
+                {DE.sum_months(self, 'OTHR_MC_PLAN')}
+            """
+        DE.create_temp_table(self, tblname=self.tblname, inyear=self.de.YEAR, subcols=s, subcols2=s2, subcols3=s3,
+                            subcols4=s4, subcols5=s5, subcols6=s6, subcols7=s7, subcols8=s8, outercols=os)
+        return
 
-		s = f"""{DE.run_mc_slots(self, 1, 3)}
-				,{TAF_Closure.monthly_array(self, incol='MC_PLAN_ID', nslots=self.de.NMCSLOTS)}
-				,{TAF_Closure.monthly_array(self, incol='MC_PLAN_TYPE_CD', nslots=self.de.NMCSLOTS)}"""
-		s2 = f"""{DE.run_mc_slots(self, 4, 6)}"""
-		s3 = f"""{DE.run_mc_slots(self, 7, 9)}"""
-		s4 = f"""{DE.run_mc_slots(self, 10, 12)}"""
-		s5 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 1, 3)}"""
-		s6 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 4, 6)}"""
-		s7 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 7, 9)}"""
-		s8 = f"""{DE.mc_nonnull_zero(self, 'MNGD_CARE_SPLMTL', 10, 12)}"""
-		os = f"""{DE.sum_months(self, 'CMPRHNSV_MC_PLAN')}
-				{DE.sum_months(self, 'TRDTNL_PCCM_MC_PLAN')}
-				{DE.sum_months(self, 'ENHNCD_PCCM_MC_PLAN')}
-				{DE.sum_months(self, 'HIO_MC_PLAN')}
-				{DE.sum_months(self, 'PIHP_MC_PLAN')}
-				{DE.sum_months(self, 'PAHP_MC_PLAN')}
-				{DE.sum_months(self, 'LTC_PIHP_MC_PLAN')}
-				{DE.sum_months(self, 'MH_PIHP_MC_PLAN')}
-				{DE.sum_months(self, 'MH_PAHP_MC_PLAN')}
-				{DE.sum_months(self, 'SUD_PIHP_MC_PLAN')}
-				{DE.sum_months(self, 'SUD_PAHP_MC_PLAN')}
-				{DE.sum_months(self, 'MH_SUD_PIHP_MC_PLAN')}
-				{DE.sum_months(self, 'MH_SUD_PAHP_MC_PLAN')}
-				{DE.sum_months(self, 'DNTL_PAHP_MC_PLAN')}
-				{DE.sum_months(self, 'TRANSPRTN_PAHP_MC_PLAN')}
-				{DE.sum_months(self, 'DEASE_MGMT_MC_PLAN')}
-				{DE.sum_months(self, 'PACE_MC_PLAN')}
-				{DE.sum_months(self, 'PHRMCY_PAHP_MC_PLAN')}
-				{DE.sum_months(self, 'ACNTBL_MC_PLAN')}
-				{DE.sum_months(self, 'HM_HOME_MC_PLAN')}
-				{DE.sum_months(self, 'IC_DUALS_MC_PLAN')}
-				{DE.sum_months(self, 'LTSS_PIHP_MC_PLAN')}
-				{DE.sum_months(self, 'OTHR_MC_PLAN')}                 
-			"""
-		DE.create_temp_table(self, tblname=self.tblname, inyear=self.de.YEAR, subcols=s, subcols2=s2, subcols3=s3,
-							subcols4=s4, subcols5=s5, subcols6=s6, subcols7=s7, subcols8=s8, outercols=os)
-		return
+    def create_mc_suppl_table(self):
+        """
+        Create the annual BSF segment 005: Managed Care.
+        """
 
-	def create_mc_suppl_table(self):
-		"""
-		Create the annual BSF segment 005: Managed Care.
-		"""
+        z = f"""create or replace temporary view MNGD_CARE_SPLMTL_{self.de.YEAR} as
+            select submtg_state_cd
+                ,msis_ident_num
+                ,case when MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
+                            MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1
+                        then 1 else 0 end
+                        as MNGD_CARE_SPLMTL
 
-		z = f"""create or replace temporary view MNGD_CARE_SPLMTL_{self.de.YEAR} as
-		select submtg_state_cd
-				,msis_ident_num
-				,case when MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
-							MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1
-						then 1 else 0 end
-						as MNGD_CARE_SPLMTL
+        from managed_care_{self.de.YEAR}"""
 
-		from managed_care_{self.de.YEAR}"""
+        self.de.append(type(self).__name__, z)
 
-		self.de.append(type(self).__name__, z)
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.de.run_stats_only:
+            self.de.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+        else:
 
-		z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
-				select
+            z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+                    select
 
-					{DE.table_id_cols_pre(self)}
-					{self.basecols()}
-					{DE.table_id_cols_sfx(self)}
+                        {DE.table_id_cols_pre(self)}
+                        {self.basecols()}
+                        {DE.table_id_cols_sfx(self)}
 
-				from managed_care_{self.de.YEAR}
-				where MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
-					MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1"""
+                    from managed_care_{self.de.YEAR}
+                    where MNGD_CARE_SPLMTL_1_3=1 or MNGD_CARE_SPLMTL_4_6=1 or
+                        MNGD_CARE_SPLMTL_7_9=1 or MNGD_CARE_SPLMTL_10_12=1"""
 
-		self.de.append(type(self).__name__, z)
-		return
+            self.de.append(type(self).__name__, z)
+            return
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

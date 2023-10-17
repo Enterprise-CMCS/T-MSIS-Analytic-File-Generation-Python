@@ -14,7 +14,8 @@ class APR_Runner(TAF_Runner):
                  state_code: str,
                  run_id: str,
                  job_id: int,
-                 file_version: str):
+                 file_version: str,
+                 run_stats_only: int = 0):
         """
         Users interact with the TAF-specific module by creating a TAF runner object.
         This object may be instantiated with three parameters to control what data is captured at run time:
@@ -32,6 +33,7 @@ class APR_Runner(TAF_Runner):
                          job_id,
                          file_version)
 
+        self.run_stats_only = self.__forceBool__(run_stats_only)
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
 
     def ST_FILTER(self):

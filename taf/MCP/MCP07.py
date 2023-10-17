@@ -7,7 +7,7 @@ class MCP07(MCP):
     """
     Description:  Selection macros for the T-MSIS MC segments
     """
-     
+
     def __init__(self, mcp: MCP_Runner):
         super().__init__(mcp)
 
@@ -15,7 +15,7 @@ class MCP07(MCP):
         """
         000-07 Accreditation segment
         """
-         
+
         # screen out all but the latest run id
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
@@ -91,9 +91,9 @@ class MCP07(MCP):
 
     def create(self):
         """
-        Create the MCP07 accreditation segment.  
+        Create the MCP07 accreditation segment.
         """
-         
+
         self.process_07_accreditation("MC02_Main_RAW", "MC07_Accreditation")
 
         self.recode_lookup(
@@ -189,7 +189,7 @@ class MCP07(MCP):
             "ACRDTN_JCAHO",
             "MC07_Accreditation_JCAHO",
             "N",
-        )        
+        )
 
         # diststyle key distkey(state_plan_id_num)
         z = f"""
@@ -329,10 +329,15 @@ class MCP07(MCP):
 
     def build(self, runner: MCP_Runner):
         """
-        Build the MCP07 accreditation segment.  
+        Build the MCP07 accreditation segment.
         """
-         
-        base_col_list = [   
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
+        base_col_list = [
                             "DA_RUN_ID",
                             "MCP_LINK_KEY",
                             "MCP_FIL_DT",

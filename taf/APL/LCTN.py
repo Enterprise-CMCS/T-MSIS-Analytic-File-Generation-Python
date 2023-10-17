@@ -3,11 +3,11 @@ from taf.APL.APL_Runner import APL_Runner
 
 class LCTN(APL):
     """
-    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area, 
+    The TAF Annual Plan (APL) is comprised of five files - a base, a location, a managed care service area,
     a population enrolled file, and operating authority/waiver file.  A unique TAF APL link key is used to link the five APL files.
     The TAF APL includes records for any managed cared plan with an active record in one of the twelve monthly TAF MCP files.
     """
-     
+
     def __init__(self, apl: APL_Runner):
         super().__init__(apl)
         self.fileseg = "LCTN"
@@ -33,7 +33,7 @@ class LCTN(APL):
 			"MC_LCTN_FLAG_11",
 			"MC_LCTN_FLAG_12",
             ]
-   
+
     def create(self):
         """
         Create location segment. Select records and select or create data elements.
@@ -65,7 +65,12 @@ class LCTN(APL):
         """
         insert into permanent table
         """
-        
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.apl.run_stats_only:
+            self.apl.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         # z = f"""
             # INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_LCTN
             # SELECT
@@ -102,7 +107,7 @@ class LCTN(APL):
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 ,cast(NULL as timestamp) as REC_UPDT_TS
             FROM lctn_pl_{self.year}
-            """            
+            """
         self.apl.append(type(self).__name__, z)
 
 

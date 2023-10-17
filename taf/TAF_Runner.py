@@ -498,12 +498,12 @@ class TAF_Runner():
                 JOIN {meta_view_name} as t4 on t3.pgm_audt_cnt_id = t4.pgm_audt_cnt_id
                 WHERE
                     t1.da_run_id = { self.DA_RUN_ID }
-                    AND t2.otpt_name = '{table_name}'
+                    AND lower(t2.otpt_name) = '{table_name.casefold()}'
                     AND t1.sucsfl_ind = True
-                    AND t4.pgm_name = '{pgm_name}'
-                    AND t4.step_name = '{step_name}'
-                    AND t4.obj_name = '{object_name}'
-                    AND t4.audt_cnt_of = '{audt_count}'
+                    AND lower(t4.pgm_name) = '{pgm_name.casefold()}'
+                    AND lower(t4.step_name) = '{step_name.casefold()}'
+                    AND lower(t4.obj_name) = '{object_name.casefold()}'
+                    AND lower(t4.audt_cnt_of) = '{audt_count.casefold()}'
         """
         )
 
@@ -643,12 +643,11 @@ class TAF_Runner():
         Private Helper function to get counts of a table.
         """
         spark = SparkSession.getActiveSession()
-
         df = spark.sql(f"""
             SELECT *
             FROM {tmp_view_nm}
-            WHERE pgm_name = "{pgm_name}"
-                AND step_name = "{step_name}"
+            WHERE LOWER(pgm_name) = "{pgm_name.casefold()}"
+                AND LOWER(step_name) = "{step_name.casefold()}"
         """)
 
         dict_audt = df.toPandas().to_dict(orient="records")
@@ -663,19 +662,19 @@ class TAF_Runner():
                     ,audt_cnt_val
                 FROM (
                     SELECT {self.DA_RUN_ID} AS da_run_id
-                        ,{i.get("PGM_AUDT_CNT_ID")} AS pgm_audt_cnt_id
+                        ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
                         ,t1.state AS submtg_state_cd
                         ,t1.cnt AS audt_cnt_val
                     FROM (
-                        SELECT {i.get("GRP_BY")} AS state
-                            ,count({i.get("AUDT_CNT_OF")}) AS cnt
-                        FROM {i.get("OBJ_NAME")}
-                        GROUP BY {i.get("GRP_BY")}
+                        SELECT {i.get("grp_by")} AS state
+                            ,count({i.get("audt_cnt_of")}) AS cnt
+                        FROM {i.get("obj_name")}
+                        GROUP BY {i.get("grp_by")}
                     ) AS t1
                 ) AS t2
                 UNION
                 SELECT {self.DA_RUN_ID} AS da_run_id
-                    ,{i.get("PGM_AUDT_CNT_ID")} AS pgm_audt_cnt_id
+                    ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
                     ,"xx" as submtg_state_cd
                     ,0 AS audt_cnt_val
             """)
@@ -732,6 +731,7 @@ class TAF_Runner():
         # self.log(f"{self.tab_no}", z)
         self.plan[segment].append(z)
 
+    # view plan
     def view_plan(self):
         """
         Helper function to view the query plan.
@@ -977,14 +977,13 @@ class TAF_Runner():
                         rpt_out: str = None,
                         clm_tbl: str = None,
                         bsf_file_date: str = None):
+
         # consider putting logging here and explain why value is needed.
         if pgm_name is None:
             pass
 
         spark = SparkSession.getActiveSession()
         if spark is not None:
-            pgmLkpDF = (spark.createDataFrame(data=TAF_Metadata.pgmLkpData, schema=TAF_Metadata.pgmLkpSchema))
-            pgmLkpDF.createOrReplaceTempView("audt_lkup_unfmt")
             tmp_view_nm = self.__create_formated_lkup(filetyp, fl, fl2, rpt_out, clm_tbl, bsf_file_date)
 
         self.__getcounts(pgm_name=pgm_name, step_name=step_name, tmp_view_nm=tmp_view_nm)
@@ -1058,6 +1057,13 @@ class TAF_Runner():
 
             return repack
 
+    # Private function to make sure runtime param is forced to boolean.
+    # Restricting to 0 for False and 1 for True. Otherwise we're raise a ValueError
+    def __forceBool__(self, _boolean_: int = 0):
+        if str(_boolean_) not in ('0', '1'):
+            raise ValueError(f"'run_stats_only' parameter is passed as {_boolean_} but must be integer, e.g. 0 for False or 1 for True")
+
+        return bool(int(_boolean_))
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
 

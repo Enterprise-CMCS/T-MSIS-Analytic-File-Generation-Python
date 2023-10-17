@@ -11,15 +11,15 @@ from taf.APR.APR_Runner import APR_Runner
 class BED(APR):
     """
     The TAF Annual Provider (APR) is comprised of nine files: base, affiliated group, affiliated program,
-    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.  
+    taxonomy, Medicaid enrollment, location, license or accreditation, identifier, and bed type.
     A unique TAF APR link key is used to link the first six APR files listed.  The last three files are linked
     to the location file with a unique TAF APR location link key.  The TAF APR includes records for any provider
-    with an active record in one of the twelve monthly TAF PRV files.  
-    
+    with an active record in one of the twelve monthly TAF PRV files.
+
 
     Description: Generate the annual PRR segment for bed type
 
-    Note:   This program aggregates unique values across the CY year for variables in collist.  
+    Note:   This program aggregates unique values across the CY year for variables in collist.
             It creates _SPLMTL flag for base.
             Then inserts bed type records into the permanent TAF table
     """
@@ -30,9 +30,9 @@ class BED(APR):
 
     def create(self):
         """
-        Create the bed segment.     
+        Create the bed segment.
         """
-         
+
         # Create bed type segment. Select records and select or create data elements
 
         collist_s = ['PRVDR_LCTN_ID', 'BED_TYPE_CD', 'BED_CNT']
@@ -45,32 +45,38 @@ class BED(APR):
 
         # Insert into permanent table
 
-        basecols = [ 'PRVDR_LCTN_ID'
-                    ,'BED_TYPE_CD'
-                    ,'BED_CNT'
-                    ,'PRVDR_BED_FLAG_01'
-                    ,'PRVDR_BED_FLAG_02'
-                    ,'PRVDR_BED_FLAG_03'
-                    ,'PRVDR_BED_FLAG_04'
-                    ,'PRVDR_BED_FLAG_05'
-                    ,'PRVDR_BED_FLAG_06'
-                    ,'PRVDR_BED_FLAG_07'
-                    ,'PRVDR_BED_FLAG_08'
-                    ,'PRVDR_BED_FLAG_09'
-                    ,'PRVDR_BED_FLAG_10'
-                    ,'PRVDR_BED_FLAG_11'
-                    ,'PRVDR_BED_FLAG_12']        
+        basecols = ['PRVDR_LCTN_ID',
+                    'BED_TYPE_CD',
+                    'BED_CNT',
+                    'PRVDR_BED_FLAG_01',
+                    'PRVDR_BED_FLAG_02',
+                    'PRVDR_BED_FLAG_03',
+                    'PRVDR_BED_FLAG_04',
+                    'PRVDR_BED_FLAG_05',
+                    'PRVDR_BED_FLAG_06',
+                    'PRVDR_BED_FLAG_07',
+                    'PRVDR_BED_FLAG_08',
+                    'PRVDR_BED_FLAG_09',
+                    'PRVDR_BED_FLAG_10',
+                    'PRVDR_BED_FLAG_11',
+                    'PRVDR_BED_FLAG_12']
 
-        z = f"""
-            INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BED
-            SELECT
-                {self.table_id_cols(loctype=2)}
-                ,{ ', '.join(basecols) }
-                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,cast(NULL as timestamp) as REC_UPDT_TS
-            FROM bed_pr_{self.year}"""
-        self.apr.append(type(self).__name__, z)
-
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if self.apr.run_stats_only:
+            self.apr.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+        else:
+            z = f"""
+                INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BED
+                SELECT
+                    {self.table_id_cols(loctype=2)}
+                    ,{ ', '.join(basecols) }
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
+                FROM bed_pr_{self.year}"""
+            self.apr.append(type(self).__name__, z)
+            return
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

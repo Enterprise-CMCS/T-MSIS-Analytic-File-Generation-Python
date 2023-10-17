@@ -4,7 +4,7 @@ from taf.PRV.PRV import PRV
 
 
 class PRV05(PRV):
-     
+
     def __init__(self, prv: PRV_Runner):
         super().__init__(prv)
 
@@ -12,7 +12,7 @@ class PRV05(PRV):
         """
         000-05 identifiers segment
         """
-         
+
         # screen out all but the latest(selected) run id - provider id - location id
         runlist = ['tms_run_id',
                    'submitting_state',
@@ -91,9 +91,9 @@ class PRV05(PRV):
 
     def create(self):
         """
-        Create the PRV05 identifiers segment.  
+        Create the PRV05 identifiers segment.
         """
-         
+
         self.process_05_identifiers('Prov03_Locations_g0',
                                     'Prov05_Identifiers')
 
@@ -130,9 +130,14 @@ class PRV05(PRV):
 
     def build(self, runner: PRV_Runner):
         """
-        Build the PRV05 identifiers segment.  
+        Build the PRV05 identifiers segment.
         """
-         
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_idt
                 SELECT

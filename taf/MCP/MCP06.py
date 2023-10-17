@@ -232,6 +232,11 @@ class MCP06(MCP):
         """
         Build the MCP06 population segment.
         """
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
 
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mce
