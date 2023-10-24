@@ -96,7 +96,7 @@ class PRV08(PRV):
                     tms_run_id as TMSIS_RUN_ID,
                     SUBMTG_STATE_CD,
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
-                    cast (submitting_state_prov_id_of_affiliated_entity as varchar(12)) as SUBMTG_STATE_AFLTD_PRVDR_ID,
+                    substr(submitting_state_prov_id_of_affiliated_entity from 1 for 12) as SUBMTG_STATE_AFLTD_PRVDR_ID,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
                     cast(NULL as timestamp) as REC_UPDT_TS
                     from Prov08_Groups
