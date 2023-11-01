@@ -78,7 +78,10 @@ class LT_Metadata:
         "DGNS_4_CD": TAF_Closure.compress_dots,
         "DGNS_5_CD": TAF_Closure.compress_dots,
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
+        "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
+        "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND
+
     }
 
     validator = {}
@@ -371,14 +374,12 @@ class LT_Metadata:
     upper = [
         "ADJSTMT_LINE_NUM",
         "ADJSTMT_LINE_RSN_CD",
-        "ADJSTMT_IND",
         "BLG_UNIT_CD",
         "BNFT_TYPE_CD",
         "CLL_STUS_CD",
         "CMS_64_FED_REIMBRSMT_CTGRY_CD",
         "HCPCS_RATE",
         "IMNZTN_TYPE_CD",
-        "LINE_ADJSTMT_IND",
         "MSIS_IDENT_NUM",
         "NDC_CD",
         "NDC_UOM_CD",

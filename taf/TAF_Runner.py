@@ -813,24 +813,29 @@ class TAF_Runner():
         sdf.registerTempTable('prmry_lang_cd')
 
         # Run CCS parsing during each run
-        self.logger.info("Parsing ccs proc codes...")
-        z = f"select * from {self.DA_SCHEMA}.ccs_sp_mapping_2021_1"
+        # the ccs_sp_mapping_input table contains rolled up ccs codes
+        # in the follow several lines of code we will unroll or normalize 
+        # the mapping codes so they are expanded to one row per code even
+        # if the primary description is the same.
+        self.logger.info("Parsing ccs proc codes using ccs_sp_mapping_input table...")
+        z = f"select * from {self.DA_SCHEMA}.ccs_sp_mapping_input"
         ccs_rows = []
         rows = spark.sql(z)
         for row in rows.collect():
             ccs_rows.extend(self._get_fields_list(row))
 
         # Massage the rows from hcup table and create a new list of rows for spark
-        # with expanded data as ccs_proc
+        # with expanded data as ccs_sp_mapping table
+        # Even though this doesn't change regularly we have no indication when it might
+        # and since the table is small we'll parse out and overwrite it once during it run
         df_schema = StructType([StructField("Code_Range", StringType(), True),
                                 StructField("CCS", StringType(), True),
                                 StructField("CCS_Label", StringType(), True)])
         ccs_table: DataFrame = spark.createDataFrame(data=ccs_rows, schema=df_schema)
         ccs_table.write.partitionBy("CCS_Label").format("delta").\
-            saveAsTable(name=f"{self.DA_SCHEMA}.ccs_sp_mapping", mode="ignore")
+            saveAsTable(name=f"{self.DA_SCHEMA}.ccs_sp_mapping", mode="overwrite")
 
         self.logger.info('Creating SSN Indicator View...')
-
         spark.sql(self.ssn_ind())
 
         self.logger.info('Creating TAF Views...')
@@ -1019,6 +1024,9 @@ class TAF_Runner():
 
             return f"pgm_audt_cnt_lkp_{rstr}"
 
+    # this is an protected helper function for the ccs_sp_mapping table
+    # it gets called at the beginning of the runner where we
+    # expand and normalize the mapping table
     def _get_fields_list(self, curr_row: list):
         rows = []
         exp = []
