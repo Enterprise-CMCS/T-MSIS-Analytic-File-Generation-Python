@@ -46,7 +46,7 @@ class BASE_HDR_COMB(UP):
                 z += f"""
                      ,{ TAF_Closure.getmax(incol=f"{ind1}_rcpnt_{ind2}_FFS_FLAG") }
                      ,{ TAF_Closure.getmax(incol=f"{ind1}_rcpnt_{ind2}_MC_FLAG") }
-                     ,{ TAF_Closure.getmax(incol=f"TOT_{ind1}_{ind2}_PD") }
+                     ,{ TAF_Closure.sumrecs(incol=f"TOT_{ind1}_{ind2}_PD") }
                 """
 
                 if ind2.casefold() == "non_xovr":
