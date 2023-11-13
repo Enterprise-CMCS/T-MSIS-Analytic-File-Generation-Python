@@ -1015,6 +1015,17 @@ class TAF_Metadata:
 
             subDF.createOrReplaceTempView("state_submsn_type")
 
+    # match 01JAN1960
+    @staticmethod
+    def parse_date_null(strdate: str, fuzzy: False):
+        from dateutil.parser import parse
+
+        datetime = parse(strdate, fuzzy=fuzzy)
+
+        if datetime.month == 1 and datetime.day == 1 and datetime.year == 1960:
+            return True
+        else:
+            return False
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

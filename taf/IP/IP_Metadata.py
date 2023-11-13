@@ -66,7 +66,7 @@ class IP_Metadata:
                 when {alias}.{colname} is not null then '1'
                 else null
             end as SRVC_ENDG_DT_CD_H,
-            coalesce({alias}.{colname}, '01JAN1960') as {colname}
+            coalesce({alias}.{colname}, '01-01-1960') as {colname}
         """
 
     def plan_id_num(colname: str, alias: str):
@@ -355,11 +355,11 @@ class IP_Metadata:
     }
 
     coalesce = {
-        "ADJDCTN_DT": "01JAN1960",
-        "ADJDCTN_DT": "01JAN1960",
-        "DSCHRG_DT": "01JAN1960",
-        "SRVC_BGNNG_DT": "01JAN1960",
-        "SRVC_ENDG_DT": "01JAN1960",
+        "ADJDCTN_DT": "01-01-1960",
+        "ADJDCTN_DT": "01-01-1960",
+        "DSCHRG_DT": "01-01-1960",
+        "SRVC_BGNNG_DT": "01-01-1960",
+        "SRVC_ENDG_DT": "01-01-1960",
         "ADJSTMT_CLM_NUM": "~",
         "ADJSTMT_CLM_NUM": "~",
         "ADJSTMT_IND": "X",
