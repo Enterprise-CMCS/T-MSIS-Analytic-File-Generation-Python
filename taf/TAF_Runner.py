@@ -20,7 +20,8 @@ class TAF_Runner():
                  state_code: str,
                  run_id: str,
                  job_id: int,
-                 file_version: str):
+                 file_version: str,
+                 run_stats_only: str):
         """
         Constructs all the necessary attributes for the T-MSIS analytic file runner object.
 
@@ -39,6 +40,7 @@ class TAF_Runner():
 
         self.now = datetime.now()
         self.initialize_logger(self.now)
+        self.run_stats_only = run_stats_only
 
         if len(file_version) == 2:
             self.VERSION = file_version
@@ -321,72 +323,75 @@ class TAF_Runner():
         else:
             parms = f"{self.reporting_period_parameter}" + ", " + "submtg_state_cd" + " " + "in" + " " + "(" + f"{self.state_code}" + ")"
 
-        insert_query = f"""
-            INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
-                da_run_id
-               ,fil_type
-               ,schld_ordr_num
-               ,job_parms_txt
-               ,cd_spec_vrsn_name
-               ,job_strt_ts
-               ,job_end_ts
-               ,sucsfl_ind
-               ,rec_add_ts
-               ,rec_updt_ts
-               ,rfrsh_vw_flag
-               ,taf_cd_spec_vrsn_name
-            )
-            VALUES (
-                {self.DA_RUN_ID}
-               ,lower("{file_type}")
-               ,1
-               ,"{parms}"
-               ,concat("{self.ITERATION}", ",", "7.1")
-               ,NULL
-               ,NULL
-               ,False
-               ,from_utc_timestamp(current_timestamp(), "EST")
-               ,NULL
-               ,False
-               ,concat("{self.ITERATION}", ",", "7.1")
-            )
-        """
-        print("DEBUG: " + insert_query)
+        if not self.run_stats_only:
+            insert_query = f"""
+                INSERT INTO {self.DA_SCHEMA}.job_cntl_parms (
+                    da_run_id
+                ,fil_type
+                ,schld_ordr_num
+                ,job_parms_txt
+                ,cd_spec_vrsn_name
+                ,job_strt_ts
+                ,job_end_ts
+                ,sucsfl_ind
+                ,rec_add_ts
+                ,rec_updt_ts
+                ,rfrsh_vw_flag
+                ,taf_cd_spec_vrsn_name
+                )
+                VALUES (
+                    {self.DA_RUN_ID}
+                ,lower("{file_type}")
+                ,1
+                ,"{parms}"
+                ,concat("{self.ITERATION}", ",", "7.1")
+                ,NULL
+                ,NULL
+                ,False
+                ,from_utc_timestamp(current_timestamp(), "EST")
+                ,NULL
+                ,False
+                ,concat("{self.ITERATION}", ",", "7.1")
+                )
+            """
+            self.logger.debug(insert_query)
 
-        spark.sql(
-            insert_query
-        )
+            spark.sql(
+                insert_query
+            )
 
     def job_control_updt(self):
         """
         Update the job control parameters.
         """
 
-        spark = SparkSession.getActiveSession()
+        if not self.run_stats_only:
+            spark = SparkSession.getActiveSession()
 
-        spark.sql(
-            f"""
-                UPDATE {self.DA_SCHEMA}.job_cntl_parms
-                SET job_strt_ts = from_utc_timestamp(current_timestamp(), 'EST')
-                WHERE da_run_id = {self.DA_RUN_ID}
-        """
-        )
+            spark.sql(
+                f"""
+                    UPDATE {self.DA_SCHEMA}.job_cntl_parms
+                    SET job_strt_ts = from_utc_timestamp(current_timestamp(), 'EST')
+                    WHERE da_run_id = {self.DA_RUN_ID}
+            """
+            )
 
     def job_control_updt2(self):
         """
         Helper function to update the job control parameters with the da_run_id.
         """
 
-        spark = SparkSession.getActiveSession()
+        if not self.run_stats_only:
+            spark = SparkSession.getActiveSession()
 
-        spark.sql(
-            f"""
-                UPDATE {self.DA_SCHEMA}.job_cntl_parms
-                SET job_end_ts = from_utc_timestamp(current_timestamp(), 'EST'),
-                sucsfl_ind = 1
-                WHERE da_run_id = {self.DA_RUN_ID}
-        """
-        )
+            spark.sql(
+                f"""
+                    UPDATE {self.DA_SCHEMA}.job_cntl_parms
+                    SET job_end_ts = from_utc_timestamp(current_timestamp(), 'EST'),
+                    sucsfl_ind = 1
+                    WHERE da_run_id = {self.DA_RUN_ID}
+            """
+            )
 
     def __get_cnt(self, table_name: str):
         """
@@ -447,8 +452,7 @@ class TAF_Runner():
         """
         spark = SparkSession.getActiveSession()
 
-        spark.sql(
-            f"""
+        efts_sql = f"""
                 INSERT INTO {self.DA_SCHEMA}.efts_fil_meta (
                     da_run_id
                    ,fil_4th_node_txt
@@ -505,7 +509,11 @@ class TAF_Runner():
                     AND lower(t4.obj_name) = '{object_name.casefold()}'
                     AND lower(t4.audt_cnt_of) = '{audt_count.casefold()}'
         """
-        )
+
+        # Log this statement as its important to help us determine if post job statistics are running correctly
+        self.logger.debug(efts_sql)
+
+        spark.sql(efts_sql)
 
     def create_efts_metadata(self, tblname, fil_4th_node):
         """
@@ -643,18 +651,20 @@ class TAF_Runner():
         Private Helper function to get counts of a table.
         """
         spark = SparkSession.getActiveSession()
-        df = spark.sql(f"""
+        cnt_sql = f"""
             SELECT *
             FROM {tmp_view_nm}
             WHERE LOWER(pgm_name) = "{pgm_name.casefold()}"
                 AND LOWER(step_name) = "{step_name.casefold()}"
-        """)
+        """
+        df = spark.sql(cnt_sql)
+        self.logger.debug(cnt_sql)
 
         dict_audt = df.toPandas().to_dict(orient="records")
 
         for i in dict_audt:
             rstr = hash(time.time())
-            spark.sql(f"""
+            row_sql = f"""
                 CREATE OR REPLACE TEMPORARY VIEW row_count_{rstr} AS
                 SELECT da_run_id
                     ,pgm_audt_cnt_id
@@ -677,9 +687,11 @@ class TAF_Runner():
                     ,{i.get("pgm_audt_cnt_id")} AS pgm_audt_cnt_id
                     ,"xx" as submtg_state_cd
                     ,0 AS audt_cnt_val
-            """)
+            """
+            spark.sql(row_sql)
+            self.logger.debug(row_sql)
 
-            rtCntDF = spark.sql(f"""
+            row_df_sql = f"""
                 SELECT CASE
                         WHEN t1.cnt = 1
                             THEN 1
@@ -690,7 +702,9 @@ class TAF_Runner():
                     SELECT count(*) AS cnt
                     FROM row_count_{rstr}
                     ) AS t1
-            """)
+            """
+            rtCntDF = spark.sql(row_df_sql)
+            self.logger.debug(row_df_sql)
 
             rtcnt = rtCntDF.select(max(["rcnt"])).distinct().collect()[0][0]
 
@@ -814,7 +828,7 @@ class TAF_Runner():
 
         # Run CCS parsing during each run
         # the ccs_sp_mapping_input table contains rolled up ccs codes
-        # in the follow several lines of code we will unroll or normalize 
+        # in the follow several lines of code we will unroll or normalize
         # the mapping codes so they are expanded to one row per code even
         # if the primary description is the same.
         self.logger.info("Parsing ccs proc codes using ccs_sp_mapping_input table...")

@@ -22,7 +22,8 @@ class MCP_Runner(TAF_Runner):
                          state_code,
                          run_id,
                          job_id,
-                         file_version)
+                         file_version,
+                         run_stats_only)
 
         self.run_stats_only = self.__forceBool__(run_stats_only)
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
