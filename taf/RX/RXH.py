@@ -103,7 +103,7 @@ class RXH:
                 , cll_cnt
                 , num_cll
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                ,cast(NULL as timestamp) as REC_UPDT_TS
+                ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
             from (
                 select
                     *,
