@@ -209,11 +209,11 @@ class RX_Metadata:
         }
 
     coalesce = {
-        "ADJDCTN_DT": "01-01-1960",
-        "ADJDCTN_DT": "01-01-1960",
-        "DSCHRG_DT": "01-01-1960",
-        "SRVC_BGNNG_DT": "01-01-1960",
-        "SRVC_ENDG_DT": "01-01-1960",
+        "ADJDCTN_DT": "1960-01-01",
+        "ADJDCTN_DT": "1960-01-01",
+        "DSCHRG_DT": "1960-01-01",
+        "SRVC_BGNNG_DT": "1960-01-01",
+        "SRVC_ENDG_DT": "1960-01-01",
         "ADJSTMT_CLM_NUM": "~",
         "ADJSTMT_CLM_NUM": "~",
         "ADJSTMT_IND": "X",

@@ -57,7 +57,7 @@ class IP_Metadata:
 
     def dates_of_service(colname: str, alias: str):
         """
-        Return dates of service.  If column name is null, then set date to 01JAN1960.
+        Return dates of service.  If column name is null, then set date to 1960-01-01.
         """
 
         return f"""
@@ -66,7 +66,7 @@ class IP_Metadata:
                 when {alias}.{colname} is not null then '1'
                 else null
             end as SRVC_ENDG_DT_CD_H,
-            coalesce({alias}.{colname}, '01-01-1960') as {colname}
+            coalesce({alias}.{colname}, '1960-01-01') as {colname}
         """
 
     def plan_id_num(colname: str, alias: str):
@@ -355,11 +355,11 @@ class IP_Metadata:
     }
 
     coalesce = {
-        "ADJDCTN_DT": "01-01-1960",
-        "ADJDCTN_DT": "01-01-1960",
-        "DSCHRG_DT": "01-01-1960",
-        "SRVC_BGNNG_DT": "01-01-1960",
-        "SRVC_ENDG_DT": "01-01-1960",
+        "ADJDCTN_DT": "1960-01-01",
+        "ADJDCTN_DT": "1960-01-01",
+        "DSCHRG_DT": "1960-01-01",
+        "SRVC_BGNNG_DT": "1960-01-01",
+        "SRVC_ENDG_DT": "1960-01-01",
         "ADJSTMT_CLM_NUM": "~",
         "ADJSTMT_CLM_NUM": "~",
         "ADJSTMT_IND": "X",
