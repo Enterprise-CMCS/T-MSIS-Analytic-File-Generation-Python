@@ -579,7 +579,7 @@ class IP_Metadata:
         "PTNT_CNTL_NUM",
         "HLTH_CARE_ACQRD_COND_CD",
         "PTNT_STUS_CD",
-        "cast(BIRTH_WT_GRMS_QTY as decimal(12,3)) as BIRTH_WT_GRMS_QTY",
+        "cast(BIRTH_WT_GRMS_QTY as numeric(12,3)) as BIRTH_WT_GRMS_QTY",
         "ADMTG_DGNS_CD",
         "ADMTG_DGNS_CD_IND",
         "DGNS_1_CD",
