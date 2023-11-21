@@ -62,7 +62,7 @@ sqlInsert = BSF_Metadata.finalTableOutput(bsf)
 # COMMAND ----------
 
 # Only run this insert cell if we're doing a normal run. Otherwise, skip it
-if run_stats_only_flg == 0:
+if run_stats_only == 0:
     spark.sql(sqlInsert)
 
 # COMMAND ----------
