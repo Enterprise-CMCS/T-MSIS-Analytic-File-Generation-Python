@@ -11,8 +11,9 @@ ltr = LT_Runner(da_schema        = dbutils.widgets.get("da_schema")
                ,reporting_period = dbutils.widgets.get("reporting_period")
                ,state_code       = dbutils.widgets.get("state_code")
                ,run_id           = dbutils.widgets.get("run_id")
-               ,job_id           = dbutils.widgets.get("job_id"))
-
+               ,job_id           = dbutils.widgets.get("job_id")
+               ,file_version     = dbutils.widgets.get("file_version")
+               ,run_stats_only   = dbutils.widgets.get("run_stats_only"))
 
 # COMMAND ----------
 
@@ -54,23 +55,24 @@ ltr.job_control_updt2()
 
 # COMMAND ----------
 
-TABLE_NAME = "TAF_LTH"
-FIL_4TH_NODE = "LTH"
-FILETYP = "LT"
+#TABLE_NAME = "TAF_LTH"
+#FIL_4TH_NODE = "LTH"
+#FILETYP = "LT"
 
- 
-ltr.prep_meta_table("AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", FILETYP, FILETYP, FILETYP, ltr.RPT_OUT, TABLE_NAME, ltr.BSF_FILE_DATE)  
-ltr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-ltr.create_eftsmeta_info(TABLE_NAME, "AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", "LT_HEADER", "new_submtg_state_cd")
-ltr.file_contents(TABLE_NAME)
+# prep table returns temporary view name to read to eliminate collisions of runs
+#meta_view_nm = ltr.prep_meta_table("AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", FILETYP, FILETYP, FILETYP, ltr.RPT_OUT, TABLE_NAME, ltr.BSF_FILE_DATE)
+#ltr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+#ltr.create_eftsmeta_info(TABLE_NAME, "AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", "LT_HEADER", "new_submtg_state_cd", meta_view_name=meta_view_nm)
+#ltr.file_contents(TABLE_NAME)
 
 # COMMAND ----------
 
-TABLE_NAME = "TAF_LTL"
-FIL_4TH_NODE = "LTL"
-FILETYP = "LT"
- 
-ltr.prep_meta_table("AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", FILETYP, FILETYP, FILETYP, ltr.RPT_OUT, TABLE_NAME, ltr.BSF_FILE_DATE)  
-ltr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-ltr.create_eftsmeta_info(TABLE_NAME, "AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", "LT_LINE", "new_submtg_state_cd_line")
-ltr.file_contents(TABLE_NAME)
+#TABLE_NAME = "TAF_LTL"
+#FIL_4TH_NODE = "LTL"
+#FILETYP = "LT"
+
+# prep table returns temporary view name to read to eliminate collisions of runs
+#meta_view_nm = ltr.prep_meta_table("AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", FILETYP, FILETYP, FILETYP, ltr.RPT_OUT, TABLE_NAME, ltr.BSF_FILE_DATE)
+#ltr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+#ltr.create_eftsmeta_info(TABLE_NAME, "AWS_LT_MACROS", "1.1 AWS_Extract_Line_LT", "LT_LINE", "new_submtg_state_cd_line", meta_view_name=meta_view_nm)
+#ltr.file_contents(TABLE_NAME)

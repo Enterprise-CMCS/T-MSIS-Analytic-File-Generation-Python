@@ -12,7 +12,8 @@ otr = OT_Runner(da_schema        = dbutils.widgets.get("da_schema")
                ,state_code       = dbutils.widgets.get("state_code")
                ,run_id           = dbutils.widgets.get("run_id")
                ,job_id           = dbutils.widgets.get("job_id")
-               ,file_version     = dbutils.widgets.get("file_version"))
+               ,file_version     = dbutils.widgets.get("file_version")
+               ,run_stats_only   = dbutils.widgets.get("run_stats_only"))
 
 # COMMAND ----------
 
@@ -54,24 +55,22 @@ otr.job_control_updt2()
 
 # COMMAND ----------
 
-TABLE_NAME = "TAF_OTH"
-FIL_4TH_NODE = "OTH"
-FILETYP = "OT"
- 
-otr.prep_meta_table("AWS_OT_MACROS", "1.1 AWS_Extract_Line_OT", FILETYP, FILETYP, FILETYP, otr.RPT_OUT, TABLE_NAME, otr.BSF_FILE_DATE)  
-otr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-otr.create_eftsmeta_info(TABLE_NAME, "AWS_OT_MACROS", "1.1 AWS_Extract_Line_OT", "OT_HEADER", "new_submtg_state_cd")
-otr.file_contents(TABLE_NAME)
+#TABLE_NAME = "TAF_OTH"
+#FIL_4TH_NODE = "OTH"
+#FILETYP = "OTHR_TOC"
 
-
+#meta_view_nm = otr.prep_meta_table("AWS_OT_MACROS", "1.1 AWS_Extract_Line_OT", FILETYP, FILETYP, FILETYP, otr.RPT_OUT, TABLE_NAME, otr.BSF_FILE_DATE)
+#otr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+#otr.create_eftsmeta_info(TABLE_NAME, "AWS_OT_MACROS", "1.1 AWS_Extract_Line_OT", "OT_HEADER", "new_submtg_state_cd", #meta_view_name=meta_view_nm)
+#otr.file_contents(TABLE_NAME)
 
 # COMMAND ----------
 
-TABLE_NAME = "TAF_OTL"
-FIL_4TH_NODE = "OTL"
-FILETYP = "OT"
+#TABLE_NAME = "TAF_OTL"
+#FIL_4TH_NODE = "OTL"
+#FILETYP = "OTHR_TOC"
 
-otr.prep_meta_table("AWS_OT_MACROS", "1.1 AWS_Extract_Line_OT", FILETYP, FILETYP, FILETYP, otr.RPT_OUT, TABLE_NAME, otr.BSF_FILE_DATE) 
-otr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)  
-otr.create_eftsmeta_info(TABLE_NAME, "AWS_OT_MACROS", "1.1 AWS_Extract_Line_OT", "OT_LINE", "new_submtg_state_cd_line")
-otr.file_contents(TABLE_NAME)
+#meta_view_nm = otr.prep_meta_table("AWS_OT_MACROS", "1.1 AWS_Extract_Line_OT", FILETYP, FILETYP, FILETYP, otr.RPT_OUT, TABLE_NAME, otr.BSF_FILE_DATE)
+#otr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+#otr.create_eftsmeta_info(TABLE_NAME, "AWS_OT_MACROS", "1.1 AWS_Extract_Line_OT", "OT_LINE", "new_submtg_state_cd_line", meta_view_name=meta_view_nm)
+#otr.file_contents(TABLE_NAME)

@@ -11,7 +11,9 @@ rxr = RX_Runner(da_schema        = dbutils.widgets.get("da_schema")
                ,reporting_period = dbutils.widgets.get("reporting_period")
                ,state_code       = dbutils.widgets.get("state_code")
                ,run_id           = dbutils.widgets.get("run_id")
-               ,job_id           = dbutils.widgets.get("job_id"))
+               ,job_id           = dbutils.widgets.get("job_id")
+               ,file_version     = dbutils.widgets.get("file_version")
+               ,run_stats_only   = dbutils.widgets.get("run_stats_only"))
 
 # COMMAND ----------
 
@@ -57,19 +59,20 @@ TABLE_NAME = "TAF_RXH"
 FIL_4TH_NODE = "RXH"
 FILETYP = "RX"
 
-rxr.prep_meta_table("AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", FILETYP, FILETYP, FILETYP, rxr.RPT_OUT, TABLE_NAME, rxr.BSF_FILE_DATE)
+# prep table returns temporary view name to read to eliminate collisions of runs
+meta_view_nm = rxr.prep_meta_table("AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", FILETYP, FILETYP, FILETYP, rxr.RPT_OUT, TABLE_NAME, rxr.BSF_FILE_DATE)
 rxr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-rxr.create_eftsmeta_info(TABLE_NAME, "AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", "RX_HEADER", "new_submtg_state_cd")
+rxr.create_eftsmeta_info(TABLE_NAME, "AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", "RX_HEADER", "new_submtg_state_cd", meta_view_name=meta_view_nm)
 rxr.file_contents(TABLE_NAME)
-
 
 # COMMAND ----------
 
 TABLE_NAME = "TAF_RXL"
 FIL_4TH_NODE = "RXL"
 FILETYP = "RX"
- 
-rxr.prep_meta_table("AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", FILETYP, FILETYP, FILETYP, rxr.RPT_OUT, TABLE_NAME, rxr.BSF_FILE_DATE)
+
+# prep table returns temporary view name to read to eliminate collisions of runs
+meta_view_nm = rxr.prep_meta_table("AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", FILETYP, FILETYP, FILETYP, rxr.RPT_OUT, TABLE_NAME, rxr.BSF_FILE_DATE)
 rxr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-rxr.create_eftsmeta_info(TABLE_NAME, "AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", "RX_LINE", "new_submtg_state_cd_line")
+rxr.create_eftsmeta_info(TABLE_NAME, "AWS_RX_MACROS", "1.1 AWS_Extract_Line_RX", "RX_LINE", "new_submtg_state_cd_line", meta_view_name=meta_view_nm)
 rxr.file_contents(TABLE_NAME)

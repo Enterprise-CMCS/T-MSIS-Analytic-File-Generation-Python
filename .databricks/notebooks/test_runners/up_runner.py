@@ -8,7 +8,8 @@ up = UP_Runner(da_schema        = dbutils.widgets.get("da_schema")
               ,state_code       = dbutils.widgets.get("state_code")
               ,run_id           = dbutils.widgets.get("run_id")
               ,job_id           = dbutils.widgets.get("job_id")
-              ,file_version     = dbutils.widgets.get("file_version"))
+              ,file_version     = dbutils.widgets.get("file_version")
+              ,run_stats_only   = dbutils.widgets.get("run_stats_only"))
 
 # COMMAND ----------
 

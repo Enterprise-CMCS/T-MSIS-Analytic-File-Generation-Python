@@ -12,7 +12,8 @@ ipr = IP_Runner(da_schema        = dbutils.widgets.get("da_schema")
                ,state_code       = dbutils.widgets.get("state_code")
                ,run_id           = dbutils.widgets.get("run_id")
                ,job_id           = dbutils.widgets.get("job_id")
-               ,file_version     = dbutils.widgets.get("file_version"))
+               ,file_version     = dbutils.widgets.get("file_version")
+               ,run_stats_only   = dbutils.widgets.get("run_stats_only"))
 
 # COMMAND ----------
 
@@ -54,22 +55,24 @@ ipr.job_control_updt2()
 
 # COMMAND ----------
 
-TABLE_NAME = "TAF_IPH"
-FIL_4TH_NODE = "IPH"
-FILETYP = "IP"
+#TABLE_NAME = "TAF_IPH"
+#FIL_4TH_NODE = "IPH"
+#FILETYP = "IP"
 
-ipr.prep_meta_table("AWS_IP_Macros", "1.1 AWS_Extract_Line_IP", FILETYP, FILETYP, FILETYP, ipr.RPT_OUT, TABLE_NAME, ipr.BSF_FILE_DATE)  
-ipr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-ipr.create_eftsmeta_info(TABLE_NAME, "AWS_IP_Macros", "1.1 AWS_Extract_Line_IP", "IP_HEADER", "new_submtg_state_cd")
-ipr.file_contents(TABLE_NAME)
+# prep table returns temporary view name to read to eliminate collisions of runs
+#meta_view_nm = ipr.prep_meta_table("AWS_IP_Macros", "1.1 AWS_Extract_Line_IP", FILETYP, FILETYP, FILETYP, ipr.RPT_OUT, TABLE_NAME, ipr.BSF_FILE_DATE)
+#ipr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+#ipr.create_eftsmeta_info(TABLE_NAME, "AWS_IP_Macros", "1.1 AWS_Extract_Line_IP", "IP_HEADER", "new_submtg_state_cd", meta_view_name=meta_view_nm)
+#ipr.file_contents(TABLE_NAME)
 
 # COMMAND ----------
 
-TABLE_NAME = "TAF_IPL"
-FIL_4TH_NODE = "IPL"
-FILETYP = "IP"
+#TABLE_NAME = "TAF_IPL"
+#FIL_4TH_NODE = "IPL"
+#FILETYP = "IP"
 
-ipr.prep_meta_table("AWS_IP_Macros", "1.1 AWS_Extract_Line_IP", FILETYP, FILETYP, FILETYP, ipr.RPT_OUT, TABLE_NAME, ipr.BSF_FILE_DATE) 
-ipr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)  
-ipr.create_eftsmeta_info(TABLE_NAME, "AWS_IP_Macros", "1.1 AWS_Extract_Line_IP", "IP_LINE", "new_submtg_state_cd_line")
-ipr.file_contents(TABLE_NAME)
+# prep table returns temporary view name to read to eliminate collisions of runs
+#meta_view_nm = ipr.prep_meta_table("AWS_IP_Macros", "1.1 AWS_Extract_Line_IP", FILETYP, FILETYP, FILETYP, ipr.RPT_OUT, TABLE_NAME, ipr.BSF_FILE_DATE)
+#ipr.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+#ipr.create_eftsmeta_info(TABLE_NAME, "AWS_IP_Macros", "1.1 AWS_Extract_Line_IP", "IP_LINE", "new_submtg_state_cd_line", meta_view_name=meta_view_nm)
+#ipr.file_contents(TABLE_NAME)

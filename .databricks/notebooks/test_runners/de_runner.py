@@ -7,7 +7,9 @@ de = DE_Runner(da_schema        = dbutils.widgets.get("da_schema")
               ,reporting_period = dbutils.widgets.get("reporting_period")
               ,state_code       = dbutils.widgets.get("state_code")
               ,run_id           = dbutils.widgets.get("run_id")
-              ,job_id           = dbutils.widgets.get("job_id"))
+              ,job_id           = dbutils.widgets.get("job_id")
+              ,file_version     = dbutils.widgets.get("file_version")
+              ,run_stats_only   = dbutils.widgets.get("run_stats_only"))
 
 # COMMAND ----------
 
@@ -39,75 +41,67 @@ display(de.audit())
 
 # COMMAND ----------
 
-#TABLE_NAME = "ELDTS"
-#FIL_4TH_NODE = "DTS"
+TABLE_NAME = "TAF_ANN_DE_BASE"
+FIL_4TH_NODE = "BSE"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+de.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "CNTCT_DTLS"
-#FIL_4TH_NODE = "ADR"
+TABLE_NAME = "TAF_ANN_DE_CNTCT_DTLS"
+FIL_4TH_NODE = "ADR"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+de.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "MC"
-#FIL_4TH_NODE = "MCR"
+TABLE_NAME = "TAF_ANN_DE_DSBLTY"
+FIL_4TH_NODE = "DSB"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+de.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "WVR"
-#FIL_4TH_NODE = "WVR"
+TABLE_NAME = "TAF_ANN_DE_ELDTS"
+FIL_4TH_NODE = "DTS"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+de.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "MFP"
-#FIL_4TH_NODE = "MFP"
+TABLE_NAME = "TAF_ANN_DE_HHSPO"
+FIL_4TH_NODE = "HSP"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+de.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "HHSPO"
-#FIL_4TH_NODE = "HHSPO"
+TABLE_NAME = "TAF_ANN_DE_MC"
+FIL_4TH_NODE = "MCR"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+de.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "DSBLTY"
-#FIL_4TH_NODE = "DSB"
+TABLE_NAME = "TAF_ANN_DE_MFP"
+FIL_4TH_NODE = "MFP"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+de.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "BASE"
-#FIL_4TH_NODE = "BSE"
+TABLE_NAME = "TAF_ANN_DE_WVR"
+FIL_4TH_NODE = "WVR"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+de.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 

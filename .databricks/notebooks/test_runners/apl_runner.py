@@ -7,7 +7,9 @@ apl = APL_Runner(da_schema        = dbutils.widgets.get("da_schema")
                 ,reporting_period = dbutils.widgets.get("reporting_period")
                 ,state_code       = dbutils.widgets.get("state_code")
                 ,run_id           = dbutils.widgets.get("run_id")
-                ,job_id           = dbutils.widgets.get("job_id"))
+                ,job_id           = dbutils.widgets.get("job_id")
+                ,file_version     = dbutils.widgets.get("file_version")
+                ,run_stats_only   = dbutils.widgets.get("run_stats_only"))
 
 # COMMAND ----------
 
@@ -39,48 +41,43 @@ display(apl.audit())
 
 # COMMAND ----------
 
-#TABLE_NAME = "LCTN"
-#FIL_4TH_NODE = "LCM"
+TABLE_NAME = "TAF_ANN_PL_BASE"
+FIL_4TH_NODE = "BSM"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+apl.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+apl.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "SAREA"
-#FIL_4TH_NODE = "SAM"
+TABLE_NAME = "TAF_ANN_PL_ENRLMT"
+FIL_4TH_NODE = "EPM"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+apl.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+apl.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "ENRLMT"
-#FIL_4TH_NODE = "EPM"
+TABLE_NAME = "TAF_ANN_PL_LCTN"
+FIL_4TH_NODE = "LCM"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+apl.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+apl.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "OA"
-#FIL_4TH_NODE = "OAM"
+TABLE_NAME = "TAF_ANN_PL_OA"
+FIL_4TH_NODE = "OAM"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+apl.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+apl.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 
-#TABLE_NAME = "BASE"
-#FIL_4TH_NODE = "BSM"
+TABLE_NAME = "TAF_ANN_PL_SAREA"
+FIL_4TH_NODE = "SAM"
  
-#de.get_ann_count(TABLE_NAME)
-#de.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-#de.create_efts_metadata()
+apl.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
+apl.create_efts_metadata(TABLE_NAME, FIL_4TH_NODE)
 
 # COMMAND ----------
 

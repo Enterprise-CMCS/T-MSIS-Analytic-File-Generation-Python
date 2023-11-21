@@ -11,7 +11,9 @@ bsf = BSF_Runner(da_schema        = dbutils.widgets.get("da_schema")
                 ,reporting_period = dbutils.widgets.get("reporting_period")
                 ,state_code       = dbutils.widgets.get("state_code")
                 ,run_id           = dbutils.widgets.get("run_id")
-                ,job_id           = dbutils.widgets.get("job_id"))
+                ,job_id           = dbutils.widgets.get("job_id")
+                ,file_version     = dbutils.widgets.get("file_version")
+                ,run_stats_only   = dbutils.widgets.get("run_stats_only"))
 
 # COMMAND ----------
 
@@ -31,7 +33,7 @@ bsf.init()
 
 # COMMAND ----------
 
-bsf.run()   
+bsf.run()
 
 # COMMAND ----------
 
@@ -59,7 +61,9 @@ sqlInsert = BSF_Metadata.finalTableOutput(bsf)
 
 # COMMAND ----------
 
-spark.sql(sqlInsert)
+# Only run this insert cell if we're doing a normal run. Otherwise, skip it
+if run_stats_only_flg == 0:
+    spark.sql(sqlInsert)
 
 # COMMAND ----------
 
@@ -69,9 +73,9 @@ bsf.job_control_updt2()
 
 TABLE_NAME = "TAF_MON_BSF"
 FIL_4TH_NODE = "BSF"
- 
-bsf.get_cnt(TABLE_NAME)
-bsf.getcounts("023_bsf_ELG00023", "0.1. create initial table")
+FILETYP = "BSF"
+
+meta_view_nm = bsf.prep_meta_table("023_bsf_ELG00023", "0.1. create_initial_table", FILETYP, FILETYP, FILETYP, bsf.RPT_OUT, TABLE_NAME, bsf.BSF_FILE_DATE)
 bsf.create_meta_info(TABLE_NAME, FIL_4TH_NODE)
-bsf.create_eftsmeta_info(TABLE_NAME, "023_bsf_ELG00023", "0.1. create initial table", f"BSF_{bsf.RPT_OUT}_{bsf.BSF_FILE_DATE}", "submtg_state_cd")
+bsf.create_eftsmeta_info(TABLE_NAME, "023_bsf_ELG00023", "0.1. create_initial_table", "BSF_STEP1", "submtg_state_cd", meta_view_name=meta_view_nm)
 bsf.file_contents(TABLE_NAME)
