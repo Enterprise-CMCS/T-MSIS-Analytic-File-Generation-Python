@@ -52,8 +52,8 @@ class IPL:
 
                 , { TAF_Closure.var_set_type1('CLL_STUS_CD') }
 
-                , case when (SRVC_BGNNG_DT < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(SRVC_BGNNG_DT, '01JAN1960') end as SRVC_BGNNG_DT
-                , case when (SRVC_ENDG_DT < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(SRVC_ENDG_DT, '01JAN1960') end as SRVC_ENDG_DT
+                , case when (SRVC_BGNNG_DT < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(SRVC_BGNNG_DT, '1960-01-01') end as SRVC_BGNNG_DT
+                , case when (SRVC_ENDG_DT < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(SRVC_ENDG_DT, '1960-01-01') end as SRVC_ENDG_DT
 
                 , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
                 , { TAF_Closure.var_set_type1('REV_CD', lpad=4) }

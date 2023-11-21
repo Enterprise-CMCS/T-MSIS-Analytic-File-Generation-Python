@@ -272,7 +272,7 @@ class TAF_Claims():
                             H.SUBMTG_STATE_CD = L.SUBMTG_STATE_CD and
                             H.ORGNL_CLM_NUM = upper(coalesce(L.ORGNL_CLM_NUM,'~')) and
                             H.ADJSTMT_CLM_NUM = upper(coalesce(L.ADJSTMT_CLM_NUM,'~')) and
-                            H.ADJDCTN_DT = coalesce(L.ADJDCTN_DT,'01JAN1960') and
+                            H.ADJDCTN_DT = coalesce(L.ADJDCTN_DT,'1960-01-01') and
                             H.ADJSTMT_IND = upper(coalesce(L.LINE_ADJSTMT_IND,'X'))
 
                         where
@@ -407,14 +407,14 @@ class TAF_Claims():
                         B.ADJDCTN_DT,
                         upper(B.ADJSTMT_IND) as ADJSTMT_IND,
                         case
-                            when nullif(B.SRVC_ENDG_DT, '01JAN1960') is null
+                            when nullif(B.SRVC_ENDG_DT, '1960-01-01') is null
                             or SRVC_ENDG_DT is null then SRVC_BGNNG_DT
                             else SRVC_ENDG_DT
                         end as SRVC_ENDG_DT_DRVD_L,
                         case
-                            when nullif(B.SRVC_ENDG_DT, '01JAN1960') is not null
+                            when nullif(B.SRVC_ENDG_DT, '1960-01-01') is not null
                                 and SRVC_ENDG_DT is not null then '4'
-                            when nullif(B.SRVC_BGNNG_DT, '01JAN1960') is not null
+                            when nullif(B.SRVC_BGNNG_DT, '1960-01-01') is not null
                                 and SRVC_BGNNG_DT is not null then '5'
                             else null
                         end as SRVC_ENDG_DT_CD_L

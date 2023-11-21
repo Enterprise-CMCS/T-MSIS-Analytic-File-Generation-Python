@@ -1013,7 +1013,6 @@ class TAF_Metadata:
 
             subDF.createOrReplaceTempView("state_submsn_type")
 
-
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
 
