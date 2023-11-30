@@ -245,7 +245,7 @@ class PRV06(PRV):
             from
                 nppes_id2 t2
             left join
-                taf_python.npidata nppes
+                {self.prv.DA_SCHEMA}.npidata nppes
             on
                 t2.prvdr_id=nppes.NPI
             """
