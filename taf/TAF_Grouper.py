@@ -828,7 +828,7 @@ class TAF_Grouper:
                 z += ","
 
         z += f"""
-            from taf_python.npidata
+            from {self.runner.DA_SCHEMA}.npidata
         """
         self.runner.append(filetyp, z)
 
@@ -894,7 +894,7 @@ class TAF_Grouper:
             """
 
         z += f"""
-            from taf_python.npidata a
+            from {self.runner.DA_SCHEMA}.npidata a
                 inner join
                 taxo_switches b
             on	   a.NPI=b.prvdr_npi
@@ -954,7 +954,7 @@ class TAF_Grouper:
                         THEN 'Transprt  '
                     ELSE NULL
                     END AS code_cat
-            FROM taf_python.ccs_sp_mapping
+            FROM {self.runner.DA_SCHEMA}.ccs_sp_mapping
         """
         self.runner.append(filetyp, z)
         # the assignment of default ccsr categories to tmsis file types
@@ -983,7 +983,7 @@ class TAF_Grouper:
                 end
             ),'XXX111') as dflt_ccsr_ctgry_ot
             FROM
-            taf_python.ccsr_dx_mapping
+            {self.runner.DA_SCHEMA}.ccsr_dx_mapping
             GROUP BY
             `ICD-10-CM Code`
         """
