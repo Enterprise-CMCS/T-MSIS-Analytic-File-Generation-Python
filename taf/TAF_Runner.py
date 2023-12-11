@@ -5,6 +5,7 @@ import re
 from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
+from taf.TAF_Run_Stack import TAF_Run_Stack
 
 
 class TAF_Runner():
@@ -13,6 +14,7 @@ class TAF_Runner():
     """
 
     PERFORMANCE = 11
+    file_type = None
 
     def __init__(self,
                  da_schema: str,
@@ -95,6 +97,11 @@ class TAF_Runner():
         self.sql = {}
         self.preplan = []
         self.plan = {}
+
+        self.taf_runid_stack = TAF_Run_Stack(state_cds=self.state_code,
+                                             file_type=self.file_type,
+                                             reporting_period=self.reporting_period,
+                                             ignore_errors=0)
 
     def print(self):
         """
@@ -230,25 +237,26 @@ class TAF_Runner():
                 None
         """
 
-        from pyspark.sql import SparkSession
-        spark = SparkSession.getActiveSession()
+        trs = TAF_Run_Stack(state_cds=self.state_code,
+                            file_type=self.file_type,
+                            reporting_period=self.reporting_period)
 
-        sdf = spark.sql("""
-            select distinct
-                submtg_state_cd,
-                max(tmsis_run_id) as tmsis_run_id
-            from
-                tmsis.tmsis_fhdr_rec_elgblty
-            where tmsis_actv_ind = 1 and
-                tmsis_rptg_prd is not null and
-                tot_rec_cnt > 0 and
-                ssn_ind in ('1','0')
-            group by
-                submtg_state_cd
-            order by
-                submtg_state_cd""")
+        # sdf = spark.sql("""
+        #     select distinct
+        #         submtg_state_cd,
+        #         max(tmsis_run_id) as tmsis_run_id
+        #     from
+        #         tmsis.tmsis_fhdr_rec_elgblty
+        #     where tmsis_actv_ind = 1 and
+        #         tmsis_rptg_prd is not null and
+        #         tot_rec_cnt > 0 and
+        #         ssn_ind in ('1','0')
+        #     group by
+        #         submtg_state_cd
+        #     order by
+        #         submtg_state_cd""")
 
-        rdd = sdf.rdd
+        rdd = trs.stack_df
         self.combined_list = rdd.map(tuple)
 
     def get_combined_list(self):
