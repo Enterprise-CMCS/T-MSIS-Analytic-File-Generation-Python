@@ -14,6 +14,10 @@ class TAF_Runner():
     """
 
     PERFORMANCE = 11
+
+    """
+    file type placeholder which will get populated from child runners
+    """
     file_type = None
 
     def __init__(self,
@@ -33,6 +37,8 @@ class TAF_Runner():
                 state_code (str): Comma-separated list of T-MSIS state code(s) values to include
                 run_id (str): Comma-separated list of T-MSIS run identifier(s) values to include
                 job_id (int): Final data will use this for da_run_id
+                file_version (str): file version that will get logged into metadata
+                run_stats_only (str): 1 or 0 as to whether run the whole job or just post job
 
             Returns:
                 None

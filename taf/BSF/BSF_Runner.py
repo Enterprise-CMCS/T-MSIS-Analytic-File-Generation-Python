@@ -36,6 +36,7 @@ class BSF_Runner(TAF_Runner):
 
         self.run_stats_only = self.__forceBool__(run_stats_only)
         self.monyrout = self.reporting_period.strftime('%Y%m').upper()
+        self.file_type = "BSF"
 
     def init(self):
         """

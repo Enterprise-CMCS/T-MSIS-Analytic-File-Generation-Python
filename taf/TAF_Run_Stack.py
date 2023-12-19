@@ -12,7 +12,8 @@ class TAF_Run_Stack:
                  reporting_period: str,
                  ignore_errors: int = 0):
         """
-        Constructs all the necessary attributes for the T-MSIS analytic file object.
+        Constructs all the necessary attributes for the T-MSIS analytic file
+        state run-id dictionary.
 
             Parameters:
                 state_cds: list,
@@ -62,8 +63,8 @@ class TAF_Run_Stack:
                 from
                 (
                     select
-                        submitting_state,
-                        distinct max(tms_run_id) as tms_run_id
+                        distinct submitting_state,
+                        max(taf.tms_run_id) as tms_run_id
                     from
                         uat_val_catalog.tmsis.{self.file_type_tables.get(self.file_type)} taf
                     where
@@ -81,7 +82,12 @@ class TAF_Run_Stack:
                 order by
                     submitting_state
         """
+        self.init_stack()
 
+    # -------------------------------------------------
+    # This dictionary is to reference which file header
+    # we should reference for run_ids
+    # -------------------------------------------------
     file_type_tables = {
             "BSF": "file_header_record_eligibility",
             "IP" : "file_header_record_ip",
@@ -115,14 +121,24 @@ class TAF_Run_Stack:
         for index, state in enumerate(submitting_state):
             run_dict.update({f"{str(state).zfill(2)}": f"{tmsis_run_id[index]}"})
 
-        self.run_dict = dict(reversed(list(run_dict.items())))
+        self.run_dict_ref = dict(reversed(list(run_dict.items())))
+        self.run_dict = self.run_dict_ref.copy()
 
     # -----------------------------------------------
     # Not sure if this should be moved down the line
     # to the TAF run id class we're discussing
     # -----------------------------------------------
-    def get_next_run_id(self):
-        return self.run_dict.popitem()
+    """ Return: tuple """
+    def get_next_run_id_tuple(self) -> tuple:
+
+        return self.run_dict_ref.popitem()
+
+    # -----------------------------------------------
+    # Return full dictionary if so desired
+    # -----------------------------------------------
+    """ Return: dict """
+    def get_run_id_dict(self) -> dict:
+        return self.run_dict
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
