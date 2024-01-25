@@ -61,7 +61,7 @@ class DE0002(DE):
 
         z = f"""create table if not exists {self.de.DA_SCHEMA}.numbers
                 (slot int, month string)
-                using parquet"""
+                using delta"""
         self.de.append(type(self).__name__, z)
 
         z = f"""insert into {self.de.DA_SCHEMA}.numbers
