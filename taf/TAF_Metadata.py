@@ -672,6 +672,7 @@ class TAF_Metadata:
         "8A6",
         "21A",
         "026",
+        "8A7",
     ]
 
     TMSIS_cutover_dates = {
