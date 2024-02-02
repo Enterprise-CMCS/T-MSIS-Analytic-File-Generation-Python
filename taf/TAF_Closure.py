@@ -365,7 +365,7 @@ class TAF_Closure:
 
         return f"""
             case when (length(lpad({var},2,'0')) - coalesce(length(regexp_replace(lpad({var},2,'0'), '[0-9]{{2}}', '')), 0)) > 0 then
-                case when ({var} >= 1 and {var} <= 57) then lpad({var}, 2, '0')
+                case when ({var} >= 1 and {var} <= 58) then lpad({var}, 2, '0')
                 else NULL end
             else NULL end as {var}
         """
