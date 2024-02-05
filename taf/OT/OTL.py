@@ -53,7 +53,7 @@ class OTL:
                 , { TAF_Closure.var_set_type6('BILL_AMT', cond1='888888888.88', cond2='9999999999.99', cond3='999999.99', cond4='999999') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1='99999999.00', cond2='888888888.88', cond3='9999999999.99') }
                 , { TAF_Closure.var_set_type6('BENE_COPMT_PD_AMT', new='COPAY_AMT', cond1='88888888888.00', cond2='888888888.88') }
-                , { TAF_Closure.var_set_type6('TPL_AMT', cond1='88888888.88') }
+                , { TAF_Closure.var_set_type6('TPL_AMT', cond1='88888888.88', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCD_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCD_FFS_EQUIV_AMT', cond1='88888888888.80', cond2='888888888.88', cond3='999999.99') }
                 , { TAF_Closure.var_set_type6('MDCR_PD_AMT', cond1='888888888.88', cond2='8888888.88', cond3='88888888888.00', cond4='99999999999.00', cond5='88888888888.88', cond6='9999999999.99') }
