@@ -39,6 +39,10 @@ class TAF_Closure:
 
         return f"cast({alias}.{colname} as decimal(13, 2)) as {colname}"
 
+    def set_as_null(colname: str, alias: str):
+
+        return f"NULL as {colname}"
+
     def var_set_type1(var: str, upper: bool = False, lpad: int = 0, new: str = "NO"):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
