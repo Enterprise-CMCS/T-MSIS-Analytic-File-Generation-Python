@@ -99,7 +99,8 @@ class IP_Metadata:
         "PLAN_ID_NUM": plan_id_num,
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
+        "COPAY_WVD_IND":TAF_Closure.set_as_null
     }
 
     validator = {}
