@@ -262,7 +262,6 @@ class RX_Metadata:
         "CLM_STUS_CD",
         "CLM_TYPE_CD",
         "CMS_64_FED_REIMBRSMT_CTGRY_CD",
-        "COPAY_WVD_IND",
         "DGNS_1_CD_IND",
         "DGNS_10_CD_IND",
         "DGNS_11_CD_IND",
