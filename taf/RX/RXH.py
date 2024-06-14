@@ -85,7 +85,7 @@ class RXH:
                 , { TAF_Closure.var_set_type1('DSPNSNG_PD_PRVDR_NPI_NUM') }
                 , { TAF_Closure.var_set_type1('DSPNSNG_PD_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }
-                , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2') }
+                , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_type6('tot_bill_amt', cond1='999999.99', cond2='69999999999.93', cond3='999999.00', cond4='888888888.88', cond5='9999999.99', cond6='99999999.90') }
                 , { TAF_Closure.var_set_type6('tot_alowd_amt', cond1='888888888.88', cond2='99999999.00') }
                 , { TAF_Closure.var_set_type6('tot_mdcd_pd_amt', cond1='999999.99', cond2='888888888.88') }

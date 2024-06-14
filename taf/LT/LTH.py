@@ -119,7 +119,7 @@ class LTH:
                 , { TAF_Closure.var_set_spclty(var='RFRG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1(var='PRVDR_LCTN_ID') }
                 , { TAF_Closure.var_set_type6('DAILY_RATE', cond1='88888.80', cond2='88888.00', cond3='88888.88') }
-                , { TAF_Closure.var_set_type2(var='PYMT_LVL_IND', lpad=0, cond1='1', cond2='2') }
+                , { TAF_Closure.var_set_type2(var='PYMT_LVL_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_type6('LTC_RCP_LBLTY_AMT', cond1='9999999999.99', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCR_PD_AMT', cond1='9999999999.99', cond2='888888888.88', cond3='88888888888.00', cond4='88888888888.88', cond5='8888888.88', cond6='99999999999.00') }
                 , { TAF_Closure.var_set_type6('TOT_BILL_AMT', cond1='9999999.99', cond2='888888888.88', cond3='99999999.90', cond4='999999.99', cond5='999999') }
