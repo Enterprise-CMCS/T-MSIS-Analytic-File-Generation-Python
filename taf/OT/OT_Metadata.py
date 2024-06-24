@@ -124,7 +124,8 @@ class OT_Metadata:
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "SRVC_ENDG_DT": dates_of_service,
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
+        "COPAY_WVD_IND":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -382,7 +383,6 @@ class OT_Metadata:
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
         "CMS_64_FED_REIMBRSMT_CTGRY_CD",
-        "COPAY_WVD_IND",
         "DGNS_1_CD_IND",
         "DGNS_2_CD_IND",
         "DGNS_3_CD_IND",

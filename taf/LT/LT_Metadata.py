@@ -80,7 +80,8 @@ class LT_Metadata:
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
         "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
         "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
-        "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND
+        "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
+        "COPAY_WVD_IND":TAF_Closure.set_as_null,
 
     }
 
@@ -422,7 +423,7 @@ class LT_Metadata:
         "CLM_STUS_CD",
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
-        "COPAY_WVD_IND",
+
         "DGNS_1_CD_IND",
         "DGNS_2_CD_IND",
         "DGNS_3_CD_IND",
