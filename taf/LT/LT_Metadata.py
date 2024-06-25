@@ -82,7 +82,7 @@ class LT_Metadata:
         "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "COPAY_WVD_IND":TAF_Closure.set_as_null,
-
+        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -476,7 +476,6 @@ class LT_Metadata:
         "RFRG_PRVDR_NUM",
         "RFRG_PRVDR_SPCLTY_CD",
         "RFRG_PRVDR_TXNMY_CD",
-        "RFRG_PRVDR_TYPE_CD",
         "RMTNC_NUM",
         "SBMTR_ID",
         "SECT_1115A_DEMO_IND",

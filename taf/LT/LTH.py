@@ -115,7 +115,7 @@ class LTH:
                 , { TAF_Closure.var_set_spclty(var='BLG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_prtype(var='RFRG_PRVDR_TYPE_CD') }
+                ,RFRG_PRVDR_TYPE_CD
                 , { TAF_Closure.var_set_spclty(var='RFRG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1(var='PRVDR_LCTN_ID') }
                 , { TAF_Closure.var_set_type6('DAILY_RATE', cond1='88888.80', cond2='88888.00', cond3='88888.88') }
