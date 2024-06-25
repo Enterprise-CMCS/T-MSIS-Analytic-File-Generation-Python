@@ -108,7 +108,7 @@ class OTH:
                 , { TAF_Closure.var_set_type1('HH_ENT_NAME') }
                 , { TAF_Closure.var_set_type1('RMTNC_NUM') }
                 , { TAF_Closure.var_set_type6('DAILY_RATE', cond1='88888', cond2='88888.80', cond3='88888.88') }
-                , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2') }
+                , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_type6('TOT_BILL_AMT', cond1='999999.00', cond2='888888888.88', cond3='9999999.99', cond4='99999999.90', cond5='999999.99', cond6='9999999999.99') }
                 , { TAF_Closure.var_set_type6('TOT_ALOWD_AMT', cond1='99999999', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('TOT_MDCD_PD_AMT', cond1='888888888.88') }
