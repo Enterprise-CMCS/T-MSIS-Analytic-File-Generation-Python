@@ -176,7 +176,7 @@ class IPH:
                 , { TAF_Closure.var_set_spclty('BLG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_prtype('rfrg_prvdr_type_cd') }
+                ,rfrg_prvdr_type_cd
                 , { TAF_Closure.var_set_spclty('RFRG_PRVDR_SPCLTY_CD') }
 
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }
