@@ -83,7 +83,8 @@ class LT_Metadata:
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "COPAY_WVD_IND":TAF_Closure.set_as_null,
         "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
-        "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null
+        "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
+        "SRVCNG_PRVDR_TXNMY_CD": TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -395,7 +396,6 @@ class LT_Metadata:
         "SELF_DRCTN_TYPE_CD",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_SPCLTY_CD",
-        "SRVCNG_PRVDR_TXNMY_CD",
         "SRVCNG_PRVDR_TYPE_CD",
         "STATE_NOTN_TXT",
         "STC_CD",
