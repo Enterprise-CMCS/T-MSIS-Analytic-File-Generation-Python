@@ -101,7 +101,8 @@ class IP_Metadata:
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
         "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
         "COPAY_WVD_IND":TAF_Closure.set_as_null,
-        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null
+        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -509,7 +510,6 @@ class IP_Metadata:
         "REV_CD",
         "RFRG_PRVDR_NPI_NUM",
         "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_SPCLTY_CD",
         "RFRG_PRVDR_TXNMY_CD",
         "SECT_1115A_DEMO_IND",
         "SPLIT_CLM_IND",
