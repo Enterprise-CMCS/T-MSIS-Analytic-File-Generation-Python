@@ -96,7 +96,7 @@ class OTH:
                 , { TAF_Closure.var_set_spclty('BLG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_taxo('RFRG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
+                ,RFRG_PRVDR_TXNMY_CD
                 , { TAF_Closure.var_set_prtype('rfrg_prvdr_type_cd') }
                 , { TAF_Closure.var_set_spclty('RFRG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1('PRVDR_UNDER_DRCTN_NPI_NUM', upper=True) }
