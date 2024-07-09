@@ -128,7 +128,8 @@ class OT_Metadata:
         "COPAY_WVD_IND":TAF_Closure.set_as_null,
         "RFRG_PRVDR_TXNMY_CD":TAF_Closure.set_as_null,
         "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
-        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null
+        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
+        "PRVDR_UNDER_SPRVSN_TXNMY_CD":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -446,7 +447,6 @@ class OT_Metadata:
         "PRVDR_UNDER_DRCTN_NPI_NUM",
         "PRVDR_UNDER_DRCTN_TXNMY_CD",
         "PRVDR_UNDER_SPRVSN_NPI_NUM",
-        "PRVDR_UNDER_SPRVSN_TXNMY_CD",
         "PTNT_CNTL_NUM",
         "PTNT_STUS_CD",
         "PYMT_LVL_IND",
