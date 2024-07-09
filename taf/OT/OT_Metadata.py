@@ -130,7 +130,8 @@ class OT_Metadata:
         "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
         "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
         "PRVDR_UNDER_SPRVSN_TXNMY_CD":TAF_Closure.set_as_null,
-        "PRVDR_UNDER_DRCTN_TXNMY_CD":TAF_Closure.set_as_null
+        "PRVDR_UNDER_DRCTN_TXNMY_CD":TAF_Closure.set_as_null,
+        "PRVDR_UNDER_DRCTN_NPI_NUM":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -445,7 +446,6 @@ class OT_Metadata:
         "PRCDR_CD_IND",
         "PRVDR_FAC_TYPE_CD",
         "PRVDR_LCTN_ID",
-        "PRVDR_UNDER_DRCTN_NPI_NUM",
         "PRVDR_UNDER_SPRVSN_NPI_NUM",
         "PTNT_CNTL_NUM",
         "PTNT_STUS_CD",
