@@ -99,7 +99,7 @@ class OTH:
                 ,RFRG_PRVDR_TXNMY_CD
                 ,RFRG_PRVDR_TYPE_CD
                 ,RFRG_PRVDR_SPCLTY_CD
-                , { TAF_Closure.var_set_type1('PRVDR_UNDER_DRCTN_NPI_NUM', upper=True) }
+                ,PRVDR_UNDER_DRCTN_NPI_NUM
                 ,PRVDR_UNDER_DRCTN_TXNMY_CD
                 , { TAF_Closure.var_set_type1('PRVDR_UNDER_SPRVSN_NPI_NUM', upper=True) }
                 ,PRVDR_UNDER_SPRVSN_TXNMY_CD
