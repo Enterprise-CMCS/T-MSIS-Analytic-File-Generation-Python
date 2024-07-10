@@ -129,7 +129,7 @@ class OTH:
                 , { TAF_Closure.fix_old_dates('BENE_DDCTBL_PD_DT') }
                 ,COPAY_WVD_IND
                 ,CPTATD_AMT_RQSTD_DT
-                , { TAF_Closure.var_set_type6('CPTATD_PYMT_RQSTD_AMT', 	cond1='888888888.88', cond2='888888888') }
+                ,CPTATD_PYMT_RQSTD_AMT
                 , { TAF_Closure.var_set_type1('OCRNC_01_CD') }
                 , { TAF_Closure.var_set_type1('OCRNC_02_CD') }
                 , { TAF_Closure.var_set_type1('OCRNC_03_CD') }
