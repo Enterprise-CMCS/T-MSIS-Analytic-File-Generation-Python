@@ -128,7 +128,7 @@ class OTH:
                 , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT', new='BENE_DDCTBL_AMT', cond1='888888888.88', cond2='888888888', cond3='88888888888.00') }
                 , { TAF_Closure.fix_old_dates('BENE_DDCTBL_PD_DT') }
                 ,COPAY_WVD_IND
-                , { TAF_Closure.fix_old_dates('CPTATD_AMT_RQSTD_DT') }
+                ,CPTATD_AMT_RQSTD_DT
                 , { TAF_Closure.var_set_type6('CPTATD_PYMT_RQSTD_AMT', 	cond1='888888888.88', cond2='888888888') }
                 , { TAF_Closure.var_set_type1('OCRNC_01_CD') }
                 , { TAF_Closure.var_set_type1('OCRNC_02_CD') }
