@@ -132,7 +132,8 @@ class OT_Metadata:
         "PRVDR_UNDER_SPRVSN_TXNMY_CD":TAF_Closure.set_as_null,
         "PRVDR_UNDER_DRCTN_TXNMY_CD":TAF_Closure.set_as_null,
         "PRVDR_UNDER_DRCTN_NPI_NUM":TAF_Closure.set_as_null,
-        "CPTATD_AMT_RQSTD_DT":TAF_Closure.set_as_null
+        "CPTATD_AMT_RQSTD_DT":TAF_Closure.set_as_null,
+        "HCPCS_RATE":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -410,7 +411,6 @@ class OT_Metadata:
         "FUNDNG_SRC_NON_FED_SHR_CD",
         "HCBS_SRVC_CD",
         "HCBS_TXNMY",
-        "HCPCS_RATE",
         "HH_ENT_NAME",
         "HH_PRVDR_IND",
         "HH_PRVDR_NPI_NUM",
