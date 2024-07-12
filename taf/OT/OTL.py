@@ -84,7 +84,7 @@ class OTL:
                 , { TAF_Closure.var_set_type1('PRCDR_2_MDFR_CD', upper=True, lpad=2) }
                 , { TAF_Closure.var_set_type1('PRCDR_3_MDFR_CD', upper=True, lpad=2) }
                 , { TAF_Closure.var_set_type1('PRCDR_4_MDFR_CD', upper=True, lpad=2) }
-                , { TAF_Closure.var_set_type3('HCPCS_RATE', cond1='0.0000000000', cond2='0.000000000000', spaces=False) }
+                ,HCPCS_RATE
                 , { TAF_Closure.var_set_type2('SELF_DRCTN_TYPE_CD', 3, cond1='000', cond2='001', cond3='002', cond4='003') }
                 , { TAF_Closure.var_set_type1('PRE_AUTHRZTN_NUM') }
                 , { TAF_Closure.var_set_type4('UOM_CD', 'YES', cond1='F2', cond2='ML', cond3='GR', cond4='UN', cond5='ME') }
