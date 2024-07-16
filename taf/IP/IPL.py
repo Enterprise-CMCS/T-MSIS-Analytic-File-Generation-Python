@@ -62,7 +62,7 @@ class IPL:
                 , { TAF_Closure.var_set_type6('REV_CHRG_AMT', cond1=88888888888.88, cond2=99999999.9, cond3=888888888.88, cond4=8888888888.88, cond5=88888888.88, cond6=9999999999.99) }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('PRSCRBNG_PRVDR_NPI_NUM', new='SRVCNG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_taxo('SRVCNG_PRVDR_TXNMY_CD', cond1=8888888888, cond2=9999999999, cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
+                ,SRVCNG_PRVDR_TXNMY_CD
                 , { TAF_Closure.var_set_prtype('SRVCNG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty('SRVCNG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1('OPRTG_PRVDR_NPI_NUM') }

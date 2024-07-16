@@ -176,11 +176,11 @@ class IPH:
                 , { TAF_Closure.var_set_spclty('BLG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_prtype('rfrg_prvdr_type_cd') }
-                , { TAF_Closure.var_set_spclty('RFRG_PRVDR_SPCLTY_CD') }
+                ,rfrg_prvdr_type_cd
+                ,RFRG_PRVDR_SPCLTY_CD
 
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }
-                , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2') }
+                , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_type6('TOT_BILL_AMT', cond1='888888888.88', cond2='99999999.90', cond3='9999999.99', cond4='999999.99', cond5='999999.00') }
                 , { TAF_Closure.var_set_type6('TOT_ALOWD_AMT', cond1='888888888.88', cond2='99999999.00') }
                 , { TAF_Closure.var_set_type6('TOT_MDCD_PD_AMT', cond1='888888888.88') }
@@ -202,7 +202,7 @@ class IPH:
                 , { TAF_Closure.var_set_type6('TOT_BENE_COINSRNC_PD_AMT',new='BENE_COINSRNC_AMT',cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
                 , { TAF_Closure.var_set_type6('TOT_BENE_COPMT_PD_AMT',new='BENE_COPMT_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
                 , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT',new='BENE_DDCTBL_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
-                , { TAF_Closure.var_set_type2('COPAY_WVD_IND', 0, cond1='0', cond2='1') }
+                , COPAY_WVD_IND
                 , { TAF_Closure.fix_old_dates('OCRNC_01_CD_EFCTV_DT') }
                 , { TAF_Closure.fix_old_dates('OCRNC_01_CD_END_DT') }
                 , { TAF_Closure.var_set_type1('OCRNC_01_CD') }
