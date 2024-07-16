@@ -356,7 +356,7 @@ class TAF_Closure:
             case when (length(lpad({var},3,'0')) - coalesce(length(regexp_replace(lpad({var},3,'0'), '[0-9]{{3}}', '')), 0)) > 0 then
                 case when (
                     ({var} >= 1 and {var} <= 93) or
-                    ({var} in (115, 119, 120, 121, 122, 123, 127, 131, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146)))
+                    ({var} in (115, 119, 120, 121, 122, 123, 127, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147)))
                 then lpad({var}, 3, '0')
             end
             else NULL end as {var}
