@@ -184,7 +184,7 @@ class IPH:
                 , { TAF_Closure.var_set_type6('TOT_BILL_AMT', cond1='888888888.88', cond2='99999999.90', cond3='9999999.99', cond4='999999.99', cond5='999999.00') }
                 , { TAF_Closure.var_set_type6('TOT_ALOWD_AMT', cond1='888888888.88', cond2='99999999.00') }
                 , { TAF_Closure.var_set_type6('TOT_MDCD_PD_AMT', cond1='888888888.88') }
-                , { TAF_Closure.var_set_type6('TOT_COPAY_AMT', cond1='9999999.99', cond2='888888888.88', cond3='88888888888.00') }
+                ,TOT_COPAY_AMT
                 , { TAF_Closure.var_set_type6('TOT_TPL_AMT', cond1='888888888.88', cond2='999999.99') }
                 , { TAF_Closure.var_set_type6('TOT_OTHR_INSRNC_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('TP_COINSRNC_PD_AMT', cond1='888888888.88') }
