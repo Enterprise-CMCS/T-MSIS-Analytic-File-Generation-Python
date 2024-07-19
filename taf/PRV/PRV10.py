@@ -36,14 +36,14 @@ class PRV10(PRV):
                   '%upper_case(prov_location_id) as prov_location_id',
                   'bed_count',
                   """case
-                      when trim(TRAILING FROM bed_type_code) in ('1','2','3','4') then trim(TRAILING FROM bed_type_code)
+                      when trim(TRAILING FROM bed_type_code) in ('1','2','3','4','5','6','7') then trim(TRAILING FROM bed_type_code)
                       else null
                    end as bed_type_code""",
                   'bed_type_eff_date',
                   'bed_type_end_date']
 
         # copy 10(bed type) provider rows
-        whr10 = "(trim(TRAILING FROM bed_type_code) in ('1','2','3','4')) or (bed_count is not null and bed_count<>0)"
+        whr10 = "(trim(TRAILING FROM bed_type_code) in ('1','2','3','4','5','6','7')) or (bed_count is not null and bed_count<>0)"
 
         self.copy_activerows('Prov10_BedType_Latest1',
                              cols10,

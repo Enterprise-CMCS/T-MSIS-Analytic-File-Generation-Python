@@ -623,7 +623,7 @@ class PRV06(PRV):
                         end as TRNSPRTN_SRVCS_PRVDR_IND,
                         case
                         when (PRVDR_CLSFCTN_TYPE_CD='1' or PRVDR_CLSFCTN_TYPE_CD='N') and PRVDR_CLSFCTN_SME=1 then 1
-                        when PRVDR_CLSFCTN_TYPE_CD='2' and PRVDR_CLSFCTN_SME=4 then 1
+                        when PRVDR_CLSFCTN_TYPE_CD='2' and (PRVDR_CLSFCTN_SME=4 or PRVDR_CLSFCTN_SME=10) then 1
                         when PRVDR_CLSFCTN_TYPE_CD='4' and PRVDR_CLSFCTN_SME=7 then 1
                         when PRVDR_CLSFCTN_CD='.' or PRVDR_CLSFCTN_CD is null or PRVDR_CLSFCTN_TYPE_CD='.' or PRVDR_CLSFCTN_TYPE_CD is null then null
                         when PRVDR_CLSFCTN_TYPE_CD<>'1' and PRVDR_CLSFCTN_TYPE_CD<>'N' and PRVDR_CLSFCTN_TYPE_CD<>'2' and PRVDR_CLSFCTN_TYPE_CD<>'4' then null
