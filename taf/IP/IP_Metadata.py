@@ -103,7 +103,8 @@ class IP_Metadata:
         "COPAY_WVD_IND":TAF_Closure.set_as_null,
         "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
         "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
-        "SRVCNG_PRVDR_TXNMY_CD":TAF_Closure.set_as_null
+        "SRVCNG_PRVDR_TXNMY_CD":TAF_Closure.set_as_null,
+        "TOT_COPAY_AMT":TAF_Closure.set_as_null
     }
 
     validator = {}

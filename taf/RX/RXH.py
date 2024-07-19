@@ -89,7 +89,7 @@ class RXH:
                 , { TAF_Closure.var_set_type6('tot_bill_amt', cond1='999999.99', cond2='69999999999.93', cond3='999999.00', cond4='888888888.88', cond5='9999999.99', cond6='99999999.90') }
                 , { TAF_Closure.var_set_type6('tot_alowd_amt', cond1='888888888.88', cond2='99999999.00') }
                 , { TAF_Closure.var_set_type6('tot_mdcd_pd_amt', cond1='999999.99', cond2='888888888.88') }
-                , { TAF_Closure.var_set_type6('tot_copay_amt', cond1='88888888888.00', cond2='888888888.88', cond3='9999999.99') }
+                ,tot_copay_amt
                 , { TAF_Closure.var_set_type6('tot_tpl_amt', cond1='999999.99', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('tot_othr_insrnc_amt', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('tot_mdcr_ddctbl_amt', cond1='99999', cond2='88888888888.00', cond3='888888888.88') }
