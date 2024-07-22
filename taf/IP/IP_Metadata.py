@@ -99,7 +99,12 @@ class IP_Metadata:
         "PLAN_ID_NUM": plan_id_num,
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
+        "COPAY_WVD_IND":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
+        "SRVCNG_PRVDR_TXNMY_CD":TAF_Closure.set_as_null,
+        "TOT_COPAY_AMT":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -421,7 +426,6 @@ class IP_Metadata:
         "CLM_STUS_CD",
         "CLM_TYPE_CD",
         "CMS_64_FED_REIMBRSMT_CTGRY_CD",
-        "COPAY_WVD_IND",
         "DGNS_1_CD_IND",
         "DGNS_10_CD_IND",
         "DGNS_11_CD_IND",
@@ -508,15 +512,12 @@ class IP_Metadata:
         "REV_CD",
         "RFRG_PRVDR_NPI_NUM",
         "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_SPCLTY_CD",
         "RFRG_PRVDR_TXNMY_CD",
-        "RFRG_PRVDR_TYPE_CD",
         "SECT_1115A_DEMO_IND",
         "SPLIT_CLM_IND",
         "SRVC_TRKNG_TYPE_CD",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_SPCLTY_CD",
-        "SRVCNG_PRVDR_TXNMY_CD",
         "SRVCNG_PRVDR_TYPE_CD",
         "STC_CD tos_cd",
         "TMSIS_FIL_NAME",

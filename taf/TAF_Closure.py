@@ -39,6 +39,10 @@ class TAF_Closure:
 
         return f"cast({alias}.{colname} as decimal(13, 2)) as {colname}"
 
+    def set_as_null(colname: str, alias: str):
+        #This function requires alias parameter but does not use it.  All functions called by cleanser need 2 parameters.    
+        return f"NULL as {colname}"
+
     def var_set_type1(var: str, upper: bool = False, lpad: int = 0, new: str = "NO"):
         """
         Helper function that acts as a template to standardize how name strings are manipulated.
@@ -352,7 +356,7 @@ class TAF_Closure:
             case when (length(lpad({var},3,'0')) - coalesce(length(regexp_replace(lpad({var},3,'0'), '[0-9]{{3}}', '')), 0)) > 0 then
                 case when (
                     ({var} >= 1 and {var} <= 93) or
-                    ({var} in (115, 119, 120, 121, 122, 123, 127, 131, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146)))
+                    ({var} in (115, 119, 120, 121, 122, 123, 127, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147)))
                 then lpad({var}, 3, '0')
             end
             else NULL end as {var}
@@ -365,7 +369,7 @@ class TAF_Closure:
 
         return f"""
             case when (length(lpad({var},2,'0')) - coalesce(length(regexp_replace(lpad({var},2,'0'), '[0-9]{{2}}', '')), 0)) > 0 then
-                case when ({var} >= 1 and {var} <= 57) then lpad({var}, 2, '0')
+                case when ({var} >= 1 and {var} <= 58) then lpad({var}, 2, '0')
                 else NULL end
             else NULL end as {var}
         """

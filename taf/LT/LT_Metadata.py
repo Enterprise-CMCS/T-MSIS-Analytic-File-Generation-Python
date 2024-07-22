@@ -80,8 +80,11 @@ class LT_Metadata:
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
         "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
         "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
-        "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND
-
+        "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
+        "COPAY_WVD_IND":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
+        "SRVCNG_PRVDR_TXNMY_CD": TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -393,7 +396,6 @@ class LT_Metadata:
         "SELF_DRCTN_TYPE_CD",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_SPCLTY_CD",
-        "SRVCNG_PRVDR_TXNMY_CD",
         "SRVCNG_PRVDR_TYPE_CD",
         "STATE_NOTN_TXT",
         "STC_CD",
@@ -422,7 +424,7 @@ class LT_Metadata:
         "CLM_STUS_CD",
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
-        "COPAY_WVD_IND",
+
         "DGNS_1_CD_IND",
         "DGNS_2_CD_IND",
         "DGNS_3_CD_IND",
@@ -473,9 +475,7 @@ class LT_Metadata:
         "PYMT_LVL_IND",
         "RFRG_PRVDR_NPI_NUM",
         "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_SPCLTY_CD",
         "RFRG_PRVDR_TXNMY_CD",
-        "RFRG_PRVDR_TYPE_CD",
         "RMTNC_NUM",
         "SBMTR_ID",
         "SECT_1115A_DEMO_IND",
