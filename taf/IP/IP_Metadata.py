@@ -314,6 +314,7 @@ class IP_Metadata:
             "WVR_TYPE_CD",
             "TP_COINSRNC_PD_AMT",
             "TP_COPMT_PD_AMT",
+            "SRC_LCTN_CD",
         ],
         "CIP00003": [
             "TMSIS_FIL_NAME",
@@ -526,7 +527,8 @@ class IP_Metadata:
         "XOVR_IND",
         "STC_CD",
         "SUBMTG_STATE_CD",
-        "NDC_UOM_CD"
+        "NDC_UOM_CD",
+        "SRC_LCTN_CD"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -727,7 +729,8 @@ class IP_Metadata:
         "SRVC_ENDG_DT_CD",
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
-        "FED_SRVC_CTGRY_CD"
+        "FED_SRVC_CTGRY_CD",
+        "SRC_LCTN_CD"
     ]
 
     # ---------------------------------------------------------------------------------
