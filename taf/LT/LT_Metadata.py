@@ -647,6 +647,7 @@ class LT_Metadata:
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
         "FED_SRVC_CTGRY_CD",
+        "SRC_LCTN_CD"
     ]
 
     # ---------------------------------------------------------------------------------
