@@ -316,7 +316,8 @@ class IP_Metadata:
             "TP_COPMT_PD_AMT",
             "SRC_LCTN_CD",
             "TOT_BENE_DDCTBL_LBLE_AMT",
-            "TOT_BENE_COPMT_LBLE_AMT"
+            "TOT_BENE_COPMT_LBLE_AMT",
+            "TOT_BENE_COINSRNC_LBLE_AMT"
         ],
         "CIP00003": [
             "TMSIS_FIL_NAME",
@@ -734,7 +735,8 @@ class IP_Metadata:
         "FED_SRVC_CTGRY_CD",
         "SRC_LCTN_CD",
         "TOT_BENE_DDCTBL_LBLE_AMT",
-        "TOT_BENE_COPMT_LBLE_AMT"
+        "TOT_BENE_COPMT_LBLE_AMT",
+        "TOT_BENE_COINSRNC_LBLE_AMT"
     ]
 
     # ---------------------------------------------------------------------------------
