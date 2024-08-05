@@ -260,6 +260,7 @@ class IPH:
                 ,TOT_BENE_COPMT_LBLE_AMT
                 ,TOT_BENE_COINSRNC_LBLE_AMT
                 ,CMBND_BENE_CST_SHRNG_PD_AMT
+                ,{ TAF_Closure.fix_old_dates('SRVC_BGNNG_DT')}
             FROM (
                 select
                     *,
