@@ -318,7 +318,8 @@ class IP_Metadata:
             "TOT_BENE_DDCTBL_LBLE_AMT",
             "TOT_BENE_COPMT_LBLE_AMT",
             "TOT_BENE_COINSRNC_LBLE_AMT",
-            "CMBND_BENE_CST_SHRNG_PD_AMT"
+            "CMBND_BENE_CST_SHRNG_PD_AMT",
+            "SRVC_BGNNG_DT"
         ],
         "CIP00003": [
             "TMSIS_FIL_NAME",
@@ -738,7 +739,8 @@ class IP_Metadata:
         "TOT_BENE_DDCTBL_LBLE_AMT",
         "TOT_BENE_COPMT_LBLE_AMT",
         "TOT_BENE_COINSRNC_LBLE_AMT",
-        "CMBND_BENE_CST_SHRNG_PD_AMT"
+        "CMBND_BENE_CST_SHRNG_PD_AMT",
+        "SRVC_BGNNG_DT"
     ]
 
     # ---------------------------------------------------------------------------------
