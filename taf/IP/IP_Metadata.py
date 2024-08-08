@@ -363,6 +363,7 @@ class IP_Metadata:
             "XXI_SRVC_CTGRY_CD",
             "MDCD_PD_AMT",
             "OTHR_INSRNC_AMT",
+            "IHS_SVC_IND"
         ],
     }
 
@@ -534,7 +535,8 @@ class IP_Metadata:
         "STC_CD",
         "SUBMTG_STATE_CD",
         "NDC_UOM_CD",
-        "SRC_LCTN_CD"
+        "SRC_LCTN_CD",
+        "IHS_SVC_IND"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -795,7 +797,8 @@ class IP_Metadata:
         "MDCD_FFS_EQUIV_AMT",
         "REC_ADD_TS",
         "REC_UPDT_TS",
-        "LINE_NUM"
+        "LINE_NUM",
+        "IHS_SVC_IND"
     ]
 
 
