@@ -262,7 +262,8 @@ class LT_Metadata:
             "WVR_ID",
             "WVR_TYPE_CD",
             "TOT_BENE_DDCTBL_LBLE_AMT",
-            "TOT_BENE_COPMT_LBLE_AMT"
+            "TOT_BENE_COPMT_LBLE_AMT",
+            "TOT_BENE_COINSRNC_LBLE_AMT"
         ],
         "CLT00003": [
             "TMSIS_RUN_ID",
@@ -651,7 +652,8 @@ class LT_Metadata:
         "FED_SRVC_CTGRY_CD",
         "SRC_LCTN_CD",
         "TOT_BENE_DDCTBL_LBLE_AMT",
-        "TOT_BENE_COPMT_LBLE_AMT"
+        "TOT_BENE_COPMT_LBLE_AMT",
+        "TOT_BENE_COINSRNC_LBLE_AMT"
     ]
 
     # ---------------------------------------------------------------------------------
