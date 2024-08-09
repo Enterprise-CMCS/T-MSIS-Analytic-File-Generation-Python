@@ -189,6 +189,7 @@ class LTH:
                 ,DGNS_1_CCSR_DFLT_CTGRY_CD
                 ,{ TAF_Closure.var_set_type1('SRC_LCTN_CD',lpad=2)}
                 ,TOT_BENE_DDCTBL_LBLE_AMT
+                ,TOT_BENE_COPMT_LBLE_AMT
             FROM (
                 select
                     *,
