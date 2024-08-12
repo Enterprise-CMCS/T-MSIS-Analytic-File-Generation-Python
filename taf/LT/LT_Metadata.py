@@ -323,6 +323,7 @@ class LT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
+            "IHS_SVC_IND"
         ],
     }
 
@@ -491,6 +492,7 @@ class LT_Metadata:
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
+        "IHS_SVC_IND"
     ]
 
     renames = {}
@@ -710,6 +712,7 @@ class LT_Metadata:
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "LINE_NUM",
+        "IHS_SVC_IND"
     ]
 
 
