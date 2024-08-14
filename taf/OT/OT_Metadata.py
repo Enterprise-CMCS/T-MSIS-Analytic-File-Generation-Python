@@ -275,7 +275,8 @@ class OT_Metadata:
             "TOT_COPAY_AMT",
             "TOT_MDCD_PD_AMT",
             "TOT_OTHR_INSRNC_AMT",
-            "TOT_TPL_AMT"
+            "TOT_TPL_AMT",
+            "SRC_LCTN_CD"
         ],
         "COT00003": [
             "TMSIS_FIL_NAME",
