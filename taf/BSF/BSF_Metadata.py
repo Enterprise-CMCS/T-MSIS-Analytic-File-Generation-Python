@@ -1679,7 +1679,7 @@ class BSF_Metadata:
             ['0', '1'],
         'TPL_OTHR_CVRG_IND':
             ['0', '1'],
-        'CRTFD_AMRCN_INDN_ALSKN_NTV_IND':
+        'AMRCN_INDN_ALSK_NTV_IND':
             ['0', '1', '2'],
         'AMRCN_INDN_ALSKA_NTV_IND':
             ['0', '1', '2'],
@@ -1814,11 +1814,11 @@ class BSF_Metadata:
         'IMGRTN_STUS_5_YR_BAR_END_DT',
         'OTHR_LANG_HOME_CD',
         'PRMRY_LANG_FLAG',
-        'ENGLSH_PRFCNCY_CD as PRMRY_LANG_ENGLSH_PRFCNCY_CD',
+        'ENGLSH_PRFCNCY_CD',
         'HSEHLD_SIZE_CD',
         'cast(NULL as string) as PRGNT_IND',
         'cast(NULL as integer) as PRGNCY_FLAG',
-        'AMRCN_INDN_ALSKA_NTV_IND as CRTFD_AMRCN_INDN_ALSKN_NTV_IND',
+        'AMRCN_INDN_ALSKA_NTV_IND as AMRCN_INDN_ALSK_NTV_IND',
         'ETHNCTY_CD',
         'ELGBL_LINE_1_ADR_HOME',
         'ELGBL_LINE_2_ADR_HOME',
