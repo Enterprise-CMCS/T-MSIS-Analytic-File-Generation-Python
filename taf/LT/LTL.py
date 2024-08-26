@@ -65,7 +65,7 @@ class LTL:
                 , { TAF_Closure.var_set_type1(var='HCPCS_RATE') }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NPI_NUM', new='SRVCNG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_taxo('SRVCNG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
+                ,SRVCNG_PRVDR_TXNMY_CD
                 , { TAF_Closure.var_set_prtype('SRVCNG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty('SRVCNG_PRVDR_SPCLTY_CD') }
 
@@ -86,6 +86,7 @@ class LTL:
                 , cast(NULL as timestamp) as REC_UPDT_TS
 
                 ,RN as LINE_NUM
+                ,{ TAF_Closure.var_set_type1('IHS_SVC_IND') }
             FROM (
                 select
                     *,

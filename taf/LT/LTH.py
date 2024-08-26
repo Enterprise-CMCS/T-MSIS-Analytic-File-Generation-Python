@@ -115,11 +115,11 @@ class LTH:
                 , { TAF_Closure.var_set_spclty(var='BLG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_prtype(var='RFRG_PRVDR_TYPE_CD') }
-                , { TAF_Closure.var_set_spclty(var='RFRG_PRVDR_SPCLTY_CD') }
+                ,RFRG_PRVDR_TYPE_CD
+                ,RFRG_PRVDR_SPCLTY_CD
                 , { TAF_Closure.var_set_type1(var='PRVDR_LCTN_ID') }
                 , { TAF_Closure.var_set_type6('DAILY_RATE', cond1='88888.80', cond2='88888.00', cond3='88888.88') }
-                , { TAF_Closure.var_set_type2(var='PYMT_LVL_IND', lpad=0, cond1='1', cond2='2') }
+                , { TAF_Closure.var_set_type2(var='PYMT_LVL_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_type6('LTC_RCP_LBLTY_AMT', cond1='9999999999.99', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCR_PD_AMT', cond1='9999999999.99', cond2='888888888.88', cond3='88888888888.00', cond4='88888888888.88', cond5='8888888.88', cond6='99999999999.00') }
                 , { TAF_Closure.var_set_type6('TOT_BILL_AMT', cond1='9999999.99', cond2='888888888.88', cond3='99999999.90', cond4='999999.99', cond5='999999') }
@@ -136,7 +136,7 @@ class LTH:
                 , { TAF_Closure.var_set_type6('TOT_BENE_COINSRNC_PD_AMT',new='BENE_COINSRNC_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
                 , { TAF_Closure.var_set_type6('TOT_BENE_COPMT_PD_AMT', new='BENE_COPMT_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
                 , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT', new='BENE_DDCTBL_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
-                , { TAF_Closure.var_set_type2(var='COPAY_WVD_IND', lpad=0, cond1='0', cond2='1') }
+                ,COPAY_WVD_IND
                 , { TAF_Closure.fix_old_dates('OCRNC_01_CD_EFCTV_DT') }
                 , { TAF_Closure.fix_old_dates('OCRNC_01_CD_END_DT') }
                 , { TAF_Closure.var_set_type1(var='OCRNC_01_CD') }
@@ -187,6 +187,11 @@ class LTH:
                 ,{ TAF_Closure.var_set_taxo('BLG_PRVDR_NPPES_TXNMY_CD',cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X',
                                                 cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 ,DGNS_1_CCSR_DFLT_CTGRY_CD
+                ,{ TAF_Closure.var_set_type1('SRC_LCTN_CD',lpad=2)}
+                ,TOT_BENE_DDCTBL_LBLE_AMT
+                ,TOT_BENE_COPMT_LBLE_AMT
+                ,TOT_BENE_COINSRNC_LBLE_AMT
+                ,CMBND_BENE_CST_SHRNG_PD_AMT
             FROM (
                 select
                     *,
