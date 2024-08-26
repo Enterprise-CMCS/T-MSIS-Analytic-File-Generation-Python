@@ -124,7 +124,18 @@ class OT_Metadata:
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "SRVC_ENDG_DT": dates_of_service,
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
+        "COPAY_WVD_IND":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_TXNMY_CD":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
+        "PRVDR_UNDER_SPRVSN_TXNMY_CD":TAF_Closure.set_as_null,
+        "PRVDR_UNDER_DRCTN_TXNMY_CD":TAF_Closure.set_as_null,
+        "PRVDR_UNDER_DRCTN_NPI_NUM":TAF_Closure.set_as_null,
+        "CPTATD_AMT_RQSTD_DT":TAF_Closure.set_as_null,
+        "HCPCS_RATE":TAF_Closure.set_as_null,
+        "CPTATD_PYMT_RQSTD_AMT":TAF_Closure.set_as_null,
+        "TOT_COPAY_AMT":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -264,7 +275,8 @@ class OT_Metadata:
             "TOT_COPAY_AMT",
             "TOT_MDCD_PD_AMT",
             "TOT_OTHR_INSRNC_AMT",
-            "TOT_TPL_AMT"
+            "TOT_TPL_AMT",
+            "SRC_LCTN_CD"
         ],
         "COT00003": [
             "TMSIS_FIL_NAME",
@@ -382,7 +394,6 @@ class OT_Metadata:
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
         "CMS_64_FED_REIMBRSMT_CTGRY_CD",
-        "COPAY_WVD_IND",
         "DGNS_1_CD_IND",
         "DGNS_2_CD_IND",
         "DGNS_3_CD_IND",
@@ -403,7 +414,6 @@ class OT_Metadata:
         "FUNDNG_SRC_NON_FED_SHR_CD",
         "HCBS_SRVC_CD",
         "HCBS_TXNMY",
-        "HCPCS_RATE",
         "HH_ENT_NAME",
         "HH_PRVDR_IND",
         "HH_PRVDR_NPI_NUM",
@@ -440,19 +450,13 @@ class OT_Metadata:
         "PRCDR_CD_IND",
         "PRVDR_FAC_TYPE_CD",
         "PRVDR_LCTN_ID",
-        "PRVDR_UNDER_DRCTN_NPI_NUM",
-        "PRVDR_UNDER_DRCTN_TXNMY_CD",
         "PRVDR_UNDER_SPRVSN_NPI_NUM",
-        "PRVDR_UNDER_SPRVSN_TXNMY_CD",
         "PTNT_CNTL_NUM",
         "PTNT_STUS_CD",
         "PYMT_LVL_IND",
         "REV_CD",
         "RFRG_PRVDR_NPI_NUM",
         "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_SPCLTY_CD",
-        "RFRG_PRVDR_TXNMY_CD",
-        "RFRG_PRVDR_TYPE_CD",
         "RMTNC_NUM",
         "SBMTR_ID",
         "SBMTR_ID",
@@ -630,7 +634,8 @@ class OT_Metadata:
         "SRVC_ENDG_DT_CD",
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
-        "FED_SRVC_CTGRY_CD"
+        "FED_SRVC_CTGRY_CD",
+        "SRC_LCTN_CD"
     ]
 
     line_columns = [
