@@ -276,7 +276,8 @@ class OT_Metadata:
             "TOT_MDCD_PD_AMT",
             "TOT_OTHR_INSRNC_AMT",
             "TOT_TPL_AMT",
-            "SRC_LCTN_CD"
+            "SRC_LCTN_CD",
+            "TOT_BENE_DDCTBL_LBLE_AMT"
         ],
         "COT00003": [
             "TMSIS_FIL_NAME",
@@ -635,7 +636,8 @@ class OT_Metadata:
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
         "FED_SRVC_CTGRY_CD",
-        "SRC_LCTN_CD"
+        "SRC_LCTN_CD",
+        "TOT_BENE_DDCTBL_LBLE_AMT"
     ]
 
     line_columns = [
