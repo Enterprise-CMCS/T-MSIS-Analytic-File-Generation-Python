@@ -280,7 +280,8 @@ class OT_Metadata:
             "TOT_BENE_DDCTBL_LBLE_AMT",
             "TOT_BENE_COPMT_LBLE_AMT",
             "TOT_BENE_COINSRNC_LBLE_AMT",
-            "CMBND_BENE_CST_SHRNG_PD_AMT"
+            "CMBND_BENE_CST_SHRNG_PD_AMT",
+            "ORDRG_PRVDR_NUM"
             
         ],
         "COT00003": [
@@ -485,6 +486,7 @@ class OT_Metadata:
         "XOVR_IND",
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",
+        "ORDRG_PRVDR_NUM"
     ]
 
     renames = {}
@@ -644,7 +646,8 @@ class OT_Metadata:
         "TOT_BENE_DDCTBL_LBLE_AMT",
         "TOT_BENE_COPMT_LBLE_AMT",
         "TOT_BENE_COINSRNC_LBLE_AMT",
-        "CMBND_BENE_CST_SHRNG_PD_AMT"
+        "CMBND_BENE_CST_SHRNG_PD_AMT",
+        "ORDRG_PRVDR_NUM"
     ]
 
     line_columns = [
