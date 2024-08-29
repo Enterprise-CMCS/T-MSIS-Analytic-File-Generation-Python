@@ -183,7 +183,7 @@ class OTH:
                 ,TOT_BENE_COPMT_LBLE_AMT
                 ,TOT_BENE_COINSRNC_LBLE_AMT
                 ,CMBND_BENE_CST_SHRNG_PD_AMT
-                ,case when regexp_replace(ORDRG_PRVDR_NUM," ","") = '' then NULL else ORDRG_PRVDR_NUM end as ORDRG_PRVDR_NUM
+                ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
             from (
                 select
                     *,
