@@ -94,6 +94,7 @@ class OTL:
                 , RN as LINE_NUM
                 , PRCDR_CCS_CTGRY_CD
                 , SRVCNG_PRVDR_NPPES_TXNMY_CD
+                , { TAF_Closure.var_set_type1('IHS_SVC_IND',upper=True) }
             from (
                 select
                     *,

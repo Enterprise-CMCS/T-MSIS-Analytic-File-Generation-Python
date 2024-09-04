@@ -343,6 +343,7 @@ class OT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
+            "IHS_SVC_IND"
         ],
     }
 
@@ -488,7 +489,8 @@ class OT_Metadata:
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",
         "ORDRG_PRVDR_NUM",
-        "ORDRG_PRVDR_NPI_NUM"
+        "ORDRG_PRVDR_NPI_NUM",
+        "IHS_SVC_IND"
     ]
 
     renames = {}
@@ -717,7 +719,8 @@ class OT_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM",
         "PRCDR_CCS_CTGRY_CD",
-        "SRVCNG_PRVDR_NPPES_TXNMY_CD"
+        "SRVCNG_PRVDR_NPPES_TXNMY_CD",
+        "IHS_SVC_IND"
     ]
 
 
