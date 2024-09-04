@@ -184,6 +184,7 @@ class OTH:
                 ,TOT_BENE_COINSRNC_LBLE_AMT
                 ,CMBND_BENE_CST_SHRNG_PD_AMT
                 ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
+                ,nullif(trim(ORDRG_PRVDR_NPI_NUM),'') as ORDRG_PRVDR_NPI_NUM
             from (
                 select
                     *,
