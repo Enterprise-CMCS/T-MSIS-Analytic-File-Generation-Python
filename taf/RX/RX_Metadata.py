@@ -376,7 +376,8 @@ class RX_Metadata:
         "STC_CD",
         "DRUG_UTLZTN_CD",
         "UOM_CD",
-        "CLM_STUS_CTGRY_CD"
+        "CLM_STUS_CTGRY_CD",
+        "SRC_LCTN_CD"
     ]
 
     renames = {}
