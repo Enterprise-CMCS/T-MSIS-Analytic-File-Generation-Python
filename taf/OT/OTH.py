@@ -179,6 +179,12 @@ class OTH:
                                                     cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 ,DGNS_1_CCSR_DFLT_CTGRY_CD
                 ,{ TAF_Closure.var_set_type1('SRC_LCTN_CD',lpad=2)}
+                ,TOT_BENE_DDCTBL_LBLE_AMT
+                ,TOT_BENE_COPMT_LBLE_AMT
+                ,TOT_BENE_COINSRNC_LBLE_AMT
+                ,CMBND_BENE_CST_SHRNG_PD_AMT
+                ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
+                ,nullif(trim(ORDRG_PRVDR_NPI_NUM),'') as ORDRG_PRVDR_NPI_NUM
             from (
                 select
                     *,
