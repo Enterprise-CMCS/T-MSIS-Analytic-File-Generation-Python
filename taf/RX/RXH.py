@@ -104,6 +104,7 @@ class RXH:
                 , num_cll
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
+                ,{ TAF_Closure.var_set_type1('SRC_LCTN_CD',lpad=2)}
             from (
                 select
                     *,
