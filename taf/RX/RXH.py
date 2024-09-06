@@ -108,6 +108,7 @@ class RXH:
                 , TOT_BENE_DDCTBL_LBLE_AMT
                 , TOT_BENE_COPMT_LBLE_AMT
                 , TOT_BENE_COINSRNC_LBLE_AMT
+                , CMBND_BENE_CST_SHRNG_PD_AMT
             from (
                 select
                     *,

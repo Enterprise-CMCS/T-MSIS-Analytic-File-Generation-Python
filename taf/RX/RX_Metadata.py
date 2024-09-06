@@ -159,7 +159,8 @@ class RX_Metadata:
             "SRC_LCTN_CD",
             "TOT_BENE_DDCTBL_LBLE_AMT",
             "TOT_BENE_COPMT_LBLE_AMT",
-            "TOT_BENE_COINSRNC_LBLE_AMT"
+            "TOT_BENE_COINSRNC_LBLE_AMT",
+            "CMBND_BENE_CST_SHRNG_PD_AMT"
         ],
         "CRX00003": [
             "MSIS_IDENT_NUM",
@@ -490,7 +491,8 @@ class RX_Metadata:
         "SRC_LCTN_CD",
         "TOT_BENE_DDCTBL_LBLE_AMT",
         "TOT_BENE_COPMT_LBLE_AMT",
-        "TOT_BENE_COINSRNC_LBLE_AMT"
+        "TOT_BENE_COINSRNC_LBLE_AMT",
+        "CMBND_BENE_CST_SHRNG_PD_AMT"
     ]
 
     line_columns = [
