@@ -156,7 +156,8 @@ class RX_Metadata:
             "BIRTH_DT",
             "TP_COINSRNC_PD_AMT",
             "TP_COPMT_PD_AMT",
-            "SRC_LCTN_CD"
+            "SRC_LCTN_CD",
+            "TOT_BENE_DDCTBL_LBLE_AMT"
         ],
         "CRX00003": [
             "MSIS_IDENT_NUM",
@@ -484,7 +485,8 @@ class RX_Metadata:
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "FED_SRVC_CTGRY_CD",
-        "SRC_LCTN_CD"
+        "SRC_LCTN_CD",
+        "TOT_BENE_DDCTBL_LBLE_AMT"
     ]
 
     line_columns = [
