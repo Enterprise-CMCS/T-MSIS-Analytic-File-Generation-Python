@@ -156,6 +156,11 @@ class RX_Metadata:
             "BIRTH_DT",
             "TP_COINSRNC_PD_AMT",
             "TP_COPMT_PD_AMT",
+            "SRC_LCTN_CD",
+            "TOT_BENE_DDCTBL_LBLE_AMT",
+            "TOT_BENE_COPMT_LBLE_AMT",
+            "TOT_BENE_COINSRNC_LBLE_AMT",
+            "CMBND_BENE_CST_SHRNG_PD_AMT"
         ],
         "CRX00003": [
             "MSIS_IDENT_NUM",
@@ -375,7 +380,8 @@ class RX_Metadata:
         "STC_CD",
         "DRUG_UTLZTN_CD",
         "UOM_CD",
-        "CLM_STUS_CTGRY_CD"
+        "CLM_STUS_CTGRY_CD",
+        "SRC_LCTN_CD"
     ]
 
     renames = {}
@@ -481,7 +487,12 @@ class RX_Metadata:
         "cast(NUM_CLL as bigint) as NUM_CLL",
         "REC_ADD_TS",
         "REC_UPDT_TS",
-        "FED_SRVC_CTGRY_CD"
+        "FED_SRVC_CTGRY_CD",
+        "SRC_LCTN_CD",
+        "TOT_BENE_DDCTBL_LBLE_AMT",
+        "TOT_BENE_COPMT_LBLE_AMT",
+        "TOT_BENE_COINSRNC_LBLE_AMT",
+        "CMBND_BENE_CST_SHRNG_PD_AMT"
     ]
 
     line_columns = [

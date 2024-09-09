@@ -276,7 +276,14 @@ class OT_Metadata:
             "TOT_MDCD_PD_AMT",
             "TOT_OTHR_INSRNC_AMT",
             "TOT_TPL_AMT",
-            "SRC_LCTN_CD"
+            "SRC_LCTN_CD",
+            "TOT_BENE_DDCTBL_LBLE_AMT",
+            "TOT_BENE_COPMT_LBLE_AMT",
+            "TOT_BENE_COINSRNC_LBLE_AMT",
+            "CMBND_BENE_CST_SHRNG_PD_AMT",
+            "ORDRG_PRVDR_NUM",
+            "ORDRG_PRVDR_NPI_NUM"
+            
         ],
         "COT00003": [
             "TMSIS_FIL_NAME",
@@ -336,6 +343,7 @@ class OT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
+            "IHS_SVC_IND"
         ],
     }
 
@@ -480,6 +488,9 @@ class OT_Metadata:
         "XOVR_IND",
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",
+        "ORDRG_PRVDR_NUM",
+        "ORDRG_PRVDR_NPI_NUM",
+        "IHS_SVC_IND"
     ]
 
     renames = {}
@@ -635,7 +646,13 @@ class OT_Metadata:
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
         "FED_SRVC_CTGRY_CD",
-        "SRC_LCTN_CD"
+        "SRC_LCTN_CD",
+        "TOT_BENE_DDCTBL_LBLE_AMT",
+        "TOT_BENE_COPMT_LBLE_AMT",
+        "TOT_BENE_COINSRNC_LBLE_AMT",
+        "CMBND_BENE_CST_SHRNG_PD_AMT",
+        "ORDRG_PRVDR_NUM",
+        "ORDRG_PRVDR_NPI_NUM"
     ]
 
     line_columns = [
@@ -702,7 +719,8 @@ class OT_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM",
         "PRCDR_CCS_CTGRY_CD",
-        "SRVCNG_PRVDR_NPPES_TXNMY_CD"
+        "SRVCNG_PRVDR_NPPES_TXNMY_CD",
+        "IHS_SVC_IND"
     ]
 
 
