@@ -632,8 +632,9 @@ class BSF_Metadata:
                         t1.ELGBL_ID_MSIS_XWALK_ENT_ID,
                         t1.ELGBL_ID_MSIS_XWALK_RSN_CHG,
                         t1.ELGBLTY_CHG_RSN_CD,
-                        t1.ELGBL_AFTR_EOM_IND
-
+                        t1.ELGBL_AFTR_EOM_IND,
+                        t1.ELGBL_FED_PVT_LVL_PCTG as FED_PVT_LVL
+                        
                     from
                         bsf_step1 as t1
                 )
@@ -1137,7 +1138,8 @@ class BSF_Metadata:
             'MDCR_BENE_ID',
             'CHIP_CD',
             'VAR_DMGRPHC_ELE_EFCTV_DT',
-            'VAR_DMGRPHC_ELE_END_DT'
+            'VAR_DMGRPHC_ELE_END_DT',
+            'ELGBL_FED_PVT_LVL_PCTG',
         ],
 
         'ELG00003A': [],
@@ -1333,7 +1335,8 @@ class BSF_Metadata:
             'MDCR_BENE_ID',
             'CHIP_CD',
             'VAR_DMGRPHC_ELE_EFCTV_DT',
-            'VAR_DMGRPHC_ELE_END_DT'
+            'VAR_DMGRPHC_ELE_END_DT',
+            'ELGBL_FED_PVT_LVL_PCTG',
         ],
 
         'ELG00003A': [
@@ -1994,7 +1997,8 @@ class BSF_Metadata:
         'ELGBL_ID_MSIS_XWALK_ENT_ID',
         'ELGBL_ID_MSIS_XWALK_RSN_CHG',
         'ELGBLTY_CHG_RSN_CD',
-        'ELGBL_AFTR_EOM_IND'
+        'ELGBL_AFTR_EOM_IND',
+        'FED_PVT_LVL',
     ]
 
 # -----------------------------------------------------------------------------
