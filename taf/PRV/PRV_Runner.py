@@ -136,10 +136,10 @@ class PRV_Runner(TAF_Runner):
         PRV_LOC segment occurs on the table Prov03_Location_CNST, which does not include 
         dummy records.
         The following function creates a new view - Prov03_Location_CNST1 - as a 
-		concatenation of Prov03_Location_CNST and loc__g2. When running metadata for 
-		record counts by state on the PRV_LOC segment, the query will now be run on 
-		Prov03_Location_CNST1 rather than Prov03_Location_CNST, so that the count includes 
-		dummy records.
+        concatenation of Prov03_Location_CNST and loc__g2. When running metadata for 
+        record counts by state on the PRV_LOC segment, the query will now be run on 
+        Prov03_Location_CNST1 rather than Prov03_Location_CNST, so that the count includes 
+        dummy records.
         '''
         PRV10(self).loc_add_dummy()
 
