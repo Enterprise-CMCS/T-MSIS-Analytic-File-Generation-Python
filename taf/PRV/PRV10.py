@@ -284,6 +284,22 @@ class PRV10(PRV):
         """
         self.prv.append(type(self).__name__, z)
 
+    def loc_add_dummy(self):
+        """
+        Append dummy records (loc__g2) onto final PRV_LOC table
+        (Prov03_Location_CNST) to create a new view: 
+        Prov03_Location_CNST, which is referenced during creation 
+        of metadata to include dummy records when computing 
+        record counts by state.
+        """
+
+        z = f"""
+            create or replace temporary view Prov03_Location_CNST1 as
+            select * from Prov03_Location_CNST
+            union all
+            select * from loc__g2
+        """
+        self.prv.append(type(self).__name__, z)
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
