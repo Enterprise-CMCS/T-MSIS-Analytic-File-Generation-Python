@@ -160,7 +160,8 @@ class RX_Metadata:
             "TOT_BENE_DDCTBL_LBLE_AMT",
             "TOT_BENE_COPMT_LBLE_AMT",
             "TOT_BENE_COINSRNC_LBLE_AMT",
-            "CMBND_BENE_CST_SHRNG_PD_AMT"
+            "CMBND_BENE_CST_SHRNG_PD_AMT",
+            "RX_ORGN_CD"
         ],
         "CRX00003": [
             "MSIS_IDENT_NUM",
@@ -381,7 +382,8 @@ class RX_Metadata:
         "DRUG_UTLZTN_CD",
         "UOM_CD",
         "CLM_STUS_CTGRY_CD",
-        "SRC_LCTN_CD"
+        "SRC_LCTN_CD",
+        "RX_ORGN_CD"
     ]
 
     renames = {}
@@ -492,7 +494,8 @@ class RX_Metadata:
         "TOT_BENE_DDCTBL_LBLE_AMT",
         "TOT_BENE_COPMT_LBLE_AMT",
         "TOT_BENE_COINSRNC_LBLE_AMT",
-        "CMBND_BENE_CST_SHRNG_PD_AMT"
+        "CMBND_BENE_CST_SHRNG_PD_AMT",
+        "RX_ORGN_CD"
     ]
 
     line_columns = [
