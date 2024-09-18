@@ -205,6 +205,7 @@ class RX_Metadata:
             "REC_NUM",
             "LINE_ADJSTMT_IND",
             "MDCR_PD_AMT",
+            "IHS_SVC_IND"
         ],
     }
 
@@ -383,7 +384,8 @@ class RX_Metadata:
         "UOM_CD",
         "CLM_STUS_CTGRY_CD",
         "SRC_LCTN_CD",
-        "RX_ORGN_CD"
+        "RX_ORGN_CD",
+        "IHS_SVC_IND"
     ]
 
     renames = {}
@@ -546,7 +548,8 @@ class RX_Metadata:
         "RSLT_SRVC_CD",
         "REC_ADD_TS",
         "REC_UPDT_TS",
-        "LINE_NUM"
+        "LINE_NUM",
+        "IHS_SVC_IND"
     ]
 
 # -----------------------------------------------------------------------------
