@@ -88,6 +88,7 @@ class RXL:
                 , cast(NULL as timestamp) as REC_UPDT_TS
                 ,RN as LINE_NUM
                 , { TAF_Closure.var_set_type1('IHS_SVC_IND')}
+                , INGRDNT_CST_SBMTD
 
             from (
                 select
