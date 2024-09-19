@@ -192,7 +192,7 @@ class IPH:
                 , { TAF_Closure.var_set_type6('MDCD_DSH_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('DRG_OUTLIER_AMT', cond1='888888888.88') }
 
-                , floor(drg_rltv_wt_num * 10000) / 10000 AS drg_rltv_wt_num
+                , DRG_RLTV_WT_NUM
 
                 , { TAF_Closure.var_set_type6('MDCR_PD_AMT', cond1='888888888.88', cond2='8888888.88', cond3='88888888888.00', cond4='88888888888.88', cond5='99999999999.00', cond6='9999999999.99') }
                 , { TAF_Closure.var_set_type6('TOT_MDCR_DDCTBL_AMT', cond1='888888888.88', cond2='99999', cond3='88888888888.00') }
