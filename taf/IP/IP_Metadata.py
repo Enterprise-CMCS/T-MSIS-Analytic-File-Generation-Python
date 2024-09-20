@@ -681,7 +681,7 @@ class IP_Metadata:
         "TP_COPMT_PD_AMT",
         "MDCD_DSH_PD_AMT",
         "DRG_OUTLIER_AMT",
-        "cast(DRG_RLTV_WT_NUM as numeric(11,4)) as DRG_RLTV_WT_NUM",
+        "DRG_RLTV_WT_NUM",
         "MDCR_PD_AMT",
         "TOT_MDCR_DDCTBL_AMT",
         "TOT_MDCR_COINSRNC_AMT",
