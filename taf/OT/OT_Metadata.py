@@ -275,7 +275,15 @@ class OT_Metadata:
             "TOT_COPAY_AMT",
             "TOT_MDCD_PD_AMT",
             "TOT_OTHR_INSRNC_AMT",
-            "TOT_TPL_AMT"
+            "TOT_TPL_AMT",
+            "SRC_LCTN_CD",
+            "TOT_BENE_DDCTBL_LBLE_AMT",
+            "TOT_BENE_COPMT_LBLE_AMT",
+            "TOT_BENE_COINSRNC_LBLE_AMT",
+            "CMBND_BENE_CST_SHRNG_PD_AMT",
+            "ORDRG_PRVDR_NUM",
+            "ORDRG_PRVDR_NPI_NUM"
+            
         ],
         "COT00003": [
             "TMSIS_FIL_NAME",
@@ -335,6 +343,7 @@ class OT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
+            "IHS_SVC_IND"
         ],
     }
 
@@ -479,6 +488,9 @@ class OT_Metadata:
         "XOVR_IND",
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",
+        "ORDRG_PRVDR_NUM",
+        "ORDRG_PRVDR_NPI_NUM",
+        "IHS_SVC_IND"
     ]
 
     renames = {}
@@ -580,11 +592,11 @@ class OT_Metadata:
         "TP_COPMT_PD_AMT",
         "MDCR_CMBND_DDCTBL_IND",
         "MDCR_REIMBRSMT_TYPE_CD",
-        "BENE_COINSRNC_AMT",
+        "TOT_BENE_COINSRNC_PD_AMT",
         "BENE_COINSRNC_PD_DT",
-        "BENE_COPMT_AMT",
+        "TOT_BENE_COPMT_PD_AMT",
         "BENE_COPMT_PD_DT",
-        "BENE_DDCTBL_AMT",
+        "TOT_BENE_DDCTBL_PD_AMT",
         "BENE_DDCTBL_PD_DT",
         "COPAY_WVD_IND",
         "CPTATD_AMT_RQSTD_DT",
@@ -633,7 +645,14 @@ class OT_Metadata:
         "SRVC_ENDG_DT_CD",
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
-        "FED_SRVC_CTGRY_CD"
+        "FED_SRVC_CTGRY_CD",
+        "SRC_LCTN_CD",
+        "TOT_BENE_DDCTBL_LBLE_AMT",
+        "TOT_BENE_COPMT_LBLE_AMT",
+        "TOT_BENE_COINSRNC_LBLE_AMT",
+        "CMBND_BENE_CST_SHRNG_PD_AMT",
+        "ORDRG_PRVDR_NUM",
+        "ORDRG_PRVDR_NPI_NUM"
     ]
 
     line_columns = [
@@ -662,7 +681,7 @@ class OT_Metadata:
         "IMNZTN_TYPE_CD",
         "BILL_AMT",
         "ALOWD_AMT",
-        "COPAY_AMT",
+        "BENE_COPMT_PD_AMT",
         "TPL_AMT",
         "MDCD_PD_AMT",
         "MDCD_FFS_EQUIV_AMT",
@@ -700,7 +719,8 @@ class OT_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM",
         "PRCDR_CCS_CTGRY_CD",
-        "SRVCNG_PRVDR_NPPES_TXNMY_CD"
+        "SRVCNG_PRVDR_NPPES_TXNMY_CD",
+        "IHS_SVC_IND"
     ]
 
 

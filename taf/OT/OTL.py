@@ -52,7 +52,7 @@ class OTL:
                     else { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound=29, multiple_condition='YES') }
                 , { TAF_Closure.var_set_type6('BILL_AMT', cond1='888888888.88', cond2='9999999999.99', cond3='999999.99', cond4='999999') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1='99999999.00', cond2='888888888.88', cond3='9999999999.99') }
-                , { TAF_Closure.var_set_type6('BENE_COPMT_PD_AMT', new='COPAY_AMT', cond1='88888888888.00', cond2='888888888.88') }
+                , { TAF_Closure.var_set_type6('BENE_COPMT_PD_AMT', cond1='88888888888.00', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('TPL_AMT', cond1='88888888.88', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCD_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCD_FFS_EQUIV_AMT', cond1='88888888888.80', cond2='888888888.88', cond3='999999.99') }
@@ -94,6 +94,7 @@ class OTL:
                 , RN as LINE_NUM
                 , PRCDR_CCS_CTGRY_CD
                 , SRVCNG_PRVDR_NPPES_TXNMY_CD
+                , { TAF_Closure.var_set_type1('IHS_SVC_IND',upper=True) }
             from (
                 select
                     *,
