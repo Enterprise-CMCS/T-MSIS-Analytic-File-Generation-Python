@@ -206,7 +206,8 @@ class RX_Metadata:
             "LINE_ADJSTMT_IND",
             "MDCR_PD_AMT",
             "IHS_SVC_IND",
-            "INGRDNT_CST_SBMTD"
+            "INGRDNT_CST_SBMTD",
+            "INGRDNT_CST_PD_AMT"
         ],
     }
 
@@ -551,7 +552,8 @@ class RX_Metadata:
         "REC_UPDT_TS",
         "LINE_NUM",
         "IHS_SVC_IND",
-        "INGRDNT_CST_SBMTD"
+        "INGRDNT_CST_SBMTD",
+        "INGRDNT_CST_PD_AMT"
     ]
 
 # -----------------------------------------------------------------------------

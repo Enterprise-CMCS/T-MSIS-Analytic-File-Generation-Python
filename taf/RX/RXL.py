@@ -89,6 +89,7 @@ class RXL:
                 ,RN as LINE_NUM
                 , { TAF_Closure.var_set_type1('IHS_SVC_IND')}
                 , INGRDNT_CST_SBMTD
+                , INGRDNT_CST_PD_AMT
 
             from (
                 select
