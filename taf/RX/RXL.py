@@ -90,6 +90,7 @@ class RXL:
                 , { TAF_Closure.var_set_type1('IHS_SVC_IND')}
                 , INGRDNT_CST_SBMTD
                 , INGRDNT_CST_PD_AMT
+                , DSPNS_FEE_PD_AMT
 
             from (
                 select
