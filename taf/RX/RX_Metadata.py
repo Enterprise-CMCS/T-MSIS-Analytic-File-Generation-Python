@@ -208,7 +208,8 @@ class RX_Metadata:
             "IHS_SVC_IND",
             "INGRDNT_CST_SBMTD",
             "INGRDNT_CST_PD_AMT",
-            "DSPNS_FEE_PD_AMT"
+            "DSPNS_FEE_PD_AMT",
+            "PROFNL_SVC_FEE_SBMTD"
         ],
     }
 
@@ -555,7 +556,8 @@ class RX_Metadata:
         "IHS_SVC_IND",
         "INGRDNT_CST_SBMTD",
         "INGRDNT_CST_PD_AMT",
-        "DSPNS_FEE_PD_AMT"
+        "DSPNS_FEE_PD_AMT",
+        "PROFNL_SVC_FEE_SBMTD"
     ]
 
 # -----------------------------------------------------------------------------
