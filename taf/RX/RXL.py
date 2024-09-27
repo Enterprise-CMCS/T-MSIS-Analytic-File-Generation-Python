@@ -92,6 +92,7 @@ class RXL:
                 , INGRDNT_CST_PD_AMT
                 , DSPNS_FEE_PD_AMT
                 , PROFNL_SVC_FEE_SBMTD
+                , PROFNL_SVC_FEE_PD_AMT
 
             from (
                 select
