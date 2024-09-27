@@ -248,6 +248,7 @@ class DE0001BASE(DE):
             ,ELGBLTY_CHG_RSN_CD_11
             ,ELGBLTY_CHG_RSN_CD_12
             ,ELGBL_AFTR_EOY_IND
+            ,FED_PVT_LVL
         """
         return z
 
@@ -364,6 +365,7 @@ class DE0001BASE(DE):
                 {DE.last_best(self, incol='ETHNCTY_CD')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_FLAG')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_EXP_FLAG')}
+                {DE.last_best(self, incol='FED_PVT_LVL')}
 
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
@@ -429,6 +431,7 @@ class DE0001BASE(DE):
                             ,msis_case_num
                             ,mdcr_bene_id
                             ,mdcr_hicn_num
+                            ,fed_pvt_lvl
                     from
                         max_run_id_de_{inyear} a
                     inner join
@@ -518,6 +521,7 @@ class DE0001BASE(DE):
                     {DE.last_best(self, 'ETHNCTY_CD',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_FLAG',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_EXP_FLAG',prior=1)}
+                    {DE.last_best(self, 'FED_PVT_LVL',prior=1)}
 
                     ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""+' '
 
@@ -603,7 +607,8 @@ class DE0001BASE(DE):
 
                     b.MSIS_CASE_NUM,
                     b.MDCR_BENE_ID,
-                    b.MDCR_HICN_NUM
+                    b.MDCR_HICN_NUM,
+                    b.FED_PVT_LVL
 
                 from base_nondemo_{self.de.YEAR} a
                         inner join
