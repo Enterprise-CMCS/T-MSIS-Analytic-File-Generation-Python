@@ -52,14 +52,14 @@ class OTL:
                     else { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound=29, multiple_condition='YES') }
                 , { TAF_Closure.var_set_type6('BILL_AMT', cond1='888888888.88', cond2='9999999999.99', cond3='999999.99', cond4='999999') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1='99999999.00', cond2='888888888.88', cond3='9999999999.99') }
-                , { TAF_Closure.var_set_type6('BENE_COPMT_PD_AMT', new='COPAY_AMT', cond1='88888888888.00', cond2='888888888.88') }
+                , { TAF_Closure.var_set_type6('BENE_COPMT_PD_AMT', cond1='88888888888.00', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('TPL_AMT', cond1='88888888.88', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCD_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCD_FFS_EQUIV_AMT', cond1='88888888888.80', cond2='888888888.88', cond3='999999.99') }
                 , { TAF_Closure.var_set_type6('MDCR_PD_AMT', cond1='888888888.88', cond2='8888888.88', cond3='88888888888.00', cond4='99999999999.00', cond5='88888888888.88', cond6='9999999999.99') }
                 , { TAF_Closure.var_set_type6('OTHR_INSRNC_AMT',   cond1='8888888888.00', cond2='888888888.88', cond3='88888888888.88') }
-                , { TAF_Closure.var_set_type6('OTHR_TOC_RX_CLM_ACTL_QTY', new='ACTL_SRVC_QTY', cond1='999999.000', cond2='888888.000', cond3='999999.99') }
-                , { TAF_Closure.var_set_type6('OTHR_TOC_RX_CLM_ALOWD_QTY', new='ALOWD_SRVC_QTY', cond1='999999.000', cond2='888888.000', cond3='888888.880', cond4='99999.999', cond5='99999') }
+                , { TAF_Closure.var_set_type6('SVC_QTY_ACTL', new ='SRVC_QTY_ACTL', cond1='999999.000', cond2='888888.000', cond3='999999.99') }
+                , { TAF_Closure.var_set_type6('SVC_QTY_ALOWD', new ='SRVC_QTY_ALOWD', cond1='999999.000', cond2='888888.000', cond3='888888.880', cond4='99999.999', cond5='99999') }
                 , { TAF_Closure.var_set_tos('TOS_CD') }
                 , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
                 , { TAF_Closure.var_set_type2('HCBS_SRVC_CD', 0, cond1=1, cond2=2, cond3=3, cond4=4, cond5=5, cond6=6, cond7=7, upper=True) }
