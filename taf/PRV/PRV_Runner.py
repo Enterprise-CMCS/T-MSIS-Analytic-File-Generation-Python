@@ -126,6 +126,22 @@ class PRV_Runner(TAF_Runner):
         PRV09(self).build(self)
         PRV10(self).build(self)
 
+        '''
+        In PRV03, records are written to TAF.TAF_PRV_LOC from Prov03_Location_CNST.
+        Dummy location records may be created in PRV04, PRV05, and PRV10 when processing
+        PRV_LIC, PRV_IDT, and PRV_BED, respectively.
+        At the end of PRV10, dummy records are gathered into a temporary table, loc__g2, 
+        where they also get exported to TAF.TAF_PRV_LOC.
+        However, during metadata computation, the audit of record counts by state for the
+        PRV_LOC segment occurs on the table Prov03_Location_CNST, which does not include 
+        dummy records.
+        The following function creates a new view - Prov03_Location_CNST1 - as a 
+        concatenation of Prov03_Location_CNST and loc__g2. When running metadata for 
+        record counts by state on the PRV_LOC segment, the query will now be run on 
+        Prov03_Location_CNST1 rather than Prov03_Location_CNST, so that the count includes 
+        dummy records.
+        '''
+        PRV10(self).loc_add_dummy()
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
