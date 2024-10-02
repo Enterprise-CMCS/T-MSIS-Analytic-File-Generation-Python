@@ -60,10 +60,13 @@ class DE0009(DE):
                 {DE.last_best(self, 'LCKIN_PRVDR_NUM1')}
                 {DE.nonmiss_month2(self, 'LCKIN_PRVDR_NUM1',var_type=" ")}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD1')}
+                ,{TAF_Closure.monthly_array(self, 'LCKIN_SRVC1')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_NUM2')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD2')}
+                ,{TAF_Closure.monthly_array(self, 'LCKIN_SRVC2')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_NUM3')}
                 ,{TAF_Closure.monthly_array(self, 'LCKIN_PRVDR_TYPE_CD3')}
+                ,{TAF_Closure.monthly_array(self, 'LCKIN_SRVC3')}
                 {DE.last_best(self, 'LTSS_PRVDR_NUM1')}
                 {DE.nonmiss_month2(self, 'LTSS_PRVDR_NUM1',var_type=" ")}
                 ,{TAF_Closure.monthly_array(self, 'LTSS_LVL_CARE_CD1')}
@@ -110,10 +113,13 @@ class DE0009(DE):
         # whether a record will go onto the Disability and Need segment)
 
         os = f"""{DE.assign_nonmiss_month(self, 'LCKIN_PRVDR_TYPE_CD1', 'LCKIN_PRVDR_NUM1_MN', 'LCKIN_PRVDR_TYPE_CD1')}
+                {DE.assign_nonmiss_month(self, 'LCKIN_SRVC1', 'LCKIN_PRVDR_NUM1_MN', 'LCKIN_SRVC1')}
                 {DE.assign_nonmiss_month(self, 'LCKIN_PRVDR_NUM2', 'LCKIN_PRVDR_NUM1_MN', 'LCKIN_PRVDR_NUM2')}
                 {DE.assign_nonmiss_month(self, 'LCKIN_PRVDR_TYPE_CD2', 'LCKIN_PRVDR_NUM1_MN', 'LCKIN_PRVDR_TYPE_CD2')}
+                {DE.assign_nonmiss_month(self, 'LCKIN_SRVC2', 'LCKIN_PRVDR_NUM1_MN', 'LCKIN_SRVC2')}
                 {DE.assign_nonmiss_month(self, 'LCKIN_PRVDR_NUM3', 'LCKIN_PRVDR_NUM1_MN', 'LCKIN_PRVDR_NUM3')}
                 {DE.assign_nonmiss_month(self, 'LCKIN_PRVDR_TYPE_CD3', 'LCKIN_PRVDR_NUM1_MN', 'LCKIN_PRVDR_TYPE_CD3')}
+                {DE.assign_nonmiss_month(self, 'LCKIN_SRVC3', 'LCKIN_PRVDR_NUM1_MN', 'LCKIN_SRVC3')}
                 {DE.assign_nonmiss_month(self, 'LTSS_PRVDR_NUM2', 'LTSS_PRVDR_NUM1_MN', 'LTSS_PRVDR_NUM2')}
                 {DE.assign_nonmiss_month(self, 'LTSS_PRVDR_NUM3', 'LTSS_PRVDR_NUM1_MN', 'LTSS_PRVDR_NUM3')}
 
@@ -388,6 +394,9 @@ class DE0009(DE):
                         ,TPL_OTHR_CVRG_IND_10
                         ,TPL_OTHR_CVRG_IND_11
                         ,TPL_OTHR_CVRG_IND_12
+                        ,LCKIN_SRVC1
+                        ,LCKIN_SRVC2
+                        ,LCKIN_SRVC3
                         {DE.table_id_cols_sfx(self)}
 
                         from disability_need_{self.de.YEAR}2
