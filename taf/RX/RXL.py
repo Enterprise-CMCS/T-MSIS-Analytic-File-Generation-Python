@@ -87,6 +87,12 @@ class RXL:
                 , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 , cast(NULL as timestamp) as REC_UPDT_TS
                 ,RN as LINE_NUM
+                , { TAF_Closure.var_set_type1('IHS_SVC_IND')}
+                , INGRDNT_CST_SBMTD
+                , INGRDNT_CST_PD_AMT
+                , DSPNS_FEE_PD_AMT
+                , PROFNL_SVC_FEE_SBMTD
+                , PROFNL_SVC_FEE_PD_AMT
 
             from (
                 select
