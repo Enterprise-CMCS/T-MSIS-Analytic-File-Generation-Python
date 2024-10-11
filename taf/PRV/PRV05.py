@@ -118,7 +118,7 @@ class PRV05(PRV):
                     submitting_state_prov_id as SUBMTG_STATE_PRVDR_ID,
                     prov_location_id as PRVDR_LCTN_ID,
                     PRVDR_ID_TYPE_CD,
-                    substr(prov_identifier from 1 for 12) as PRVDR_ID,
+                    prov_identifier as PRVDR_ID,
                     prov_identifier_issuing_entity_id as PRVDR_ID_ISSG_ENT_ID_TXT,
                     from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
                     cast(NULL as timestamp) as REC_UPDT_TS
