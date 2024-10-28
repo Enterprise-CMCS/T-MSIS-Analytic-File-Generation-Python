@@ -48,7 +48,7 @@ class RXL:
                 , { TAF_Closure.var_set_type6('suply_days_cnt', cond1='8888', cond2='999', cond3='0') }
                 , { TAF_Closure.var_set_type5('NEW_REFL_IND',lpad='2',lowerbound='0',upperbound='99') }
                 , { TAF_Closure.var_set_type2('BRND_GNRC_IND', 0, cond1='0', cond2='1', cond3='2', cond4='3', cond5='4') }
-                , { TAF_Closure.var_set_type6('DSPNS_FEE_AMT', new='dspns_fee_amt', cond1='88888.88')  }
+                , { TAF_Closure.var_set_type6('DSPNS_FEE_SBMTD', cond1='88888.88')  }
                 ,case when trim(DRUG_UTLZTN_CD) is not NULL then upper(DRUG_UTLZTN_CD)
                     else NULL
                     end as DRUG_UTLZTN_CD
