@@ -73,7 +73,7 @@ class RXL:
                 , { TAF_Closure.var_set_type1('CLL_STUS_CD') }
                 , { TAF_Closure.var_set_type6('bill_amt', cond1='9999999999.99', cond2='999999.99', cond3='999999', cond4='888888888.88') }
                 , { TAF_Closure.var_set_type6('alowd_amt', cond1='9999999999.99', cond2='888888888.88', cond3='99999999.00') }
-                , { TAF_Closure.var_set_type6('COPAY_AMT', new='copay_amt',	cond1='888888888.88', cond2='88888888888.00') }
+                , { TAF_Closure.var_set_type6('BENE_COPMT_PD_AMT',	cond1='888888888.88', cond2='88888888888.00') }
                 , { TAF_Closure.var_set_type6('tpl_amt', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('mdcd_pd_amt', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('mdcr_pd_amt', cond1='88888888888.88', cond2='99999999999.00', cond3='888888888.88', cond4='88888888888.00', cond5='8888888.88', cond6='9999999999.99') }
