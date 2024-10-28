@@ -61,8 +61,8 @@ class RXL:
                 , { TAF_Closure.var_set_type2('REBT_ELGBL_IND', 0, cond1='0', cond2='1', cond3='2') }
                 , { TAF_Closure.var_set_type5('IMNZTN_TYPE_CD', lpad=2, lowerbound=0, upperbound=29) }
                 , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
-                , { TAF_Closure.var_set_type6('OTHR_TOC_RX_CLM_ALOWD_QTY', new='alowd_srvc_qty', cond1='99999', cond2='99999.999', cond3='888888.000', cond4='999999', cond5='888888.880') }
-                , { TAF_Closure.var_set_type6('OTHR_TOC_RX_CLM_ACTL_QTY', new='actl_srvc_qty', cond1='999999.99', cond2='888888', cond3='999999', cond4='0') }
+                , { TAF_Closure.var_set_type6('RX_QTY_ALOWD',cond1='99999', cond2='99999.999', cond3='888888.000', cond4='999999', cond5='888888.880') }
+                , { TAF_Closure.var_set_type6('RX_QTY_ACTL',cond1='999999.99', cond2='888888', cond3='999999', cond4='0') }
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD',2, cond1='01',cond2='02',cond3='03',cond4='04') }
 
                 ,case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
