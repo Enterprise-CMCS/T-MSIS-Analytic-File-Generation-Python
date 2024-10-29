@@ -96,9 +96,9 @@ class RXH:
                 , { TAF_Closure.var_set_type6('tot_mdcr_coinsrnc_amt', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('TP_COINSRNC_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('TP_COPMT_PD_AMT', cond1='99999999999.00', cond2='888888888.88', cond3='888888888.00', cond4='88888888888.00') }
-                , { TAF_Closure.var_set_type6('TOT_BENE_COINSRNC_PD_AMT',new='BENE_COINSRNC_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
-                , { TAF_Closure.var_set_type6('TOT_BENE_COPMT_PD_AMT',new='BENE_COPMT_AMT',	cond1='88888888888.00', cond2='888888888.88', cond3='888888888.00') }
-                , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT',new='BENE_DDCTBL_AMT', cond1='88888888888.00', cond2='888888888.88', cond3='888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_COINSRNC_PD_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_COPMT_PD_AMT',	cond1='88888888888.00', cond2='888888888.88', cond3='888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT', cond1='88888888888.00', cond2='888888888.88', cond3='888888888.00') }
                 , COPAY_WVD_IND
                 , cll_cnt
                 , num_cll
