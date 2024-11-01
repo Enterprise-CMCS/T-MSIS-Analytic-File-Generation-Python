@@ -69,7 +69,7 @@ class ELG00009(ELG):
                                         REC_NUM desc,
                                         lckin_prvdr_num,
                                         lpad(lckin_prvdr_type_cd,2,'0'),
-                                        coalesce(lpad(lckd_in_srvc,3,'0'),'*')
+                                        lpad(lckd_in_srvc,3,'0')
                                         ) 
                                 as lckin_deduper
 
@@ -95,7 +95,7 @@ class ELG00009(ELG):
                                         REC_NUM desc,
                                         lckin_prvdr_num,
                                         lckin_prvdr_type_code,
-                                        coalesce(lckin_srvc, '*')
+                                        lckin_srvc
                                   ) as keeper
 
                 from {self.tab_no}_step1
