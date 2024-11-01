@@ -64,7 +64,7 @@ class IP_Runner(TAF_Runner):
         # -------------------------------------------------
         claims = TAF_Claims(self)
         claims.AWS_Claims_Family_Table_Link(
-            "tmsis", "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT"
+            "tmsis", "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT",True
         )
 
         # -------------------------------------------------
