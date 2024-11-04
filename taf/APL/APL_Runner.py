@@ -194,7 +194,7 @@ class APL_Runner(TAF_Runner):
                 '{file.lower()}' as src_fil_type,
                 {file}_fil_dt as src_fil_dt,
                 da_run_id as src_da_run_id,
-                date_format(date(fil_cret_dt),'MM/dd/yyyy') as src_fil_creat_dt,
+                fil_cret_dt as src_fil_creat_dt,
                 from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
                 null as REC_UPDT_TS
 
