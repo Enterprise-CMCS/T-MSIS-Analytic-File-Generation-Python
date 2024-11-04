@@ -52,56 +52,66 @@ class IP_Runner(TAF_Runner):
         grouper.fetch_ccs("IP")
 
         # -------------------------------------------------
-        #   Produces:
+        #   Denied claims loop:
+        #     Run each of queries twice, first time for accepted claims,
+        #       second time for denied claims.
         # -------------------------------------------------
-        #   1 - HEADER_IP
-        #   2 - HEADER2_IP
-        #   3 - NO_DISCHARGE_DATES
-        #   4 - CLM_FMLY_IP
-        #   5 - COMBINED_HEADER
-        #   6 - ALL_HEADER_IP
-        #   7 - FA_HDR_IP
-        # -------------------------------------------------
-        claims = TAF_Claims(self)
-        claims.AWS_Claims_Family_Table_Link(
-            "tmsis", "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT",True
-        )
+        
+        denied_run = [False,True]
+        for denied_flag in denied_run:
 
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - IP_LINE_IN
-        #   2 - IP_LINE_PRE_NPPES
-        #   3 - IP_LINE
-        #   4 - RN_IP
-        #   5 - IP_HEADER
-        # -------------------------------------------------
-        ip = IP(self)
-        ip.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP")
+            # -------------------------------------------------
+            #   Produces:
+            # -------------------------------------------------
+            #   1 - HEADER_IP
+            #   2 - HEADER2_IP
+            #   3 - NO_DISCHARGE_DATES
+            #   4 - CLM_FMLY_IP
+            #   5 - COMBINED_HEADER
+            #   6 - ALL_HEADER_IP
+            #   7 - FA_HDR_IP
+            # -------------------------------------------------
 
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - IP_HEADER_STEP1
-        #   2 - IP_TAXONOMY
-        #   3 - IP_HEADER_GROUPER
-        # -------------------------------------------------
-        grouper.AWS_Assign_Grouper_Data_Conv(
-            "IP", "IP_HEADER", "IP_LINE", "DSCHRG_DT", True, True, True, True, True
-        )
+            claims = TAF_Claims(self)
+            claims.AWS_Claims_Family_Table_Link(
+                "tmsis", "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT",denied_flag
+            )
 
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   - IPH
-        # -------------------------------------------------
-        IPH().create(self)
-        IPL().create(self)
+            # -------------------------------------------------
+            #   Produces:
+            # -------------------------------------------------
+            #   1 - IP_LINE_IN
+            #   2 - IP_LINE_PRE_NPPES
+            #   3 - IP_LINE
+            #   4 - RN_IP
+            #   5 - IP_HEADER
+            # -------------------------------------------------
+            ip = IP(self)
+            ip.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP")
 
-        grouper.fasc_code("IP")
+            # -------------------------------------------------
+            #   Produces:
+            # -------------------------------------------------
+            #   1 - IP_HEADER_STEP1
+            #   2 - IP_TAXONOMY
+            #   3 - IP_HEADER_GROUPER
+            # -------------------------------------------------
+            grouper.AWS_Assign_Grouper_Data_Conv(
+                "IP", "IP_HEADER", "IP_LINE", "DSCHRG_DT", True, True, True, True, True
+            )
 
-        IPH().build(self)
-        IPL().build(self)
+            # -------------------------------------------------
+            #   Produces:
+            # -------------------------------------------------
+            #   - IPH
+            # -------------------------------------------------
+            IPH().create(self)
+            IPL().create(self)
+
+            grouper.fasc_code("IP")
+
+            IPH().build(self,denied_flag=denied_flag)
+            IPL().build(self,denied_flag=denied_flag)
 
 
 # -----------------------------------------------------------------------------

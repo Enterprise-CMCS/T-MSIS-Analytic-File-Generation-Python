@@ -98,7 +98,7 @@ class IPL:
 
         runner.append("IP", z)
 
-    def build(self, runner: IP_Runner):
+    def build(self, runner: IP_Runner,denied_flag):
         """
         Build SQL query for the line-level segment.
         """
@@ -107,15 +107,20 @@ class IPL:
         if runner.run_stats_only:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
+        
+        table={
+            True:"taf_ipl_d",
+            False:"taf_ipl"
 
+        }
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_ipl
+                INSERT INTO {runner.DA_SCHEMA}.{table[denied_flag]}
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.line_columns) }
                 FROM IPL
         """
 
-        runner.append(type(self).__name__, z)
+        runner.append("IP", z)
 
 
 # -----------------------------------------------------------------------------

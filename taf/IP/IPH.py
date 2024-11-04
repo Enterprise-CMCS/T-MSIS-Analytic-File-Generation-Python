@@ -280,7 +280,7 @@ class IPH:
         """
         runner.append("IP", z)
 
-    def build(self, runner: IP_Runner):
+    def build(self, runner: IP_Runner,denied_flag):
         """
         Build the SQL query for the IP header segment.
         """
@@ -290,8 +290,13 @@ class IPH:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
+        table={
+            True:"taf_iph_d",
+            False:"taf_iph"
+        }
+        
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_iph
+                INSERT INTO {runner.DA_SCHEMA}.{table[denied_flag]}
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
                 FROM (
@@ -302,7 +307,7 @@ class IPH:
                             ON h.ip_link_key = fasc.ip_link_key
                 )
         """
-        runner.append(type(self).__name__, z)
+        runner.append("IP", z)
 
 
 # -----------------------------------------------------------------------------
