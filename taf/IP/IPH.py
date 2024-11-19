@@ -13,13 +13,15 @@ class IPH:
     calendar month for which data are reported.
     """
 
-    def create(self, runner: IP_Runner):
+    def create(self, runner: IP_Runner,denied_flag=False):
         """
         Create the IP segment header.
         """
+        
+        d_suf = {True:"_d",False:""}
 
         z = f"""
-            create or replace temporary view IPH as
+            create or replace temporary view IPH{d_suf[denied_flag]} as
 
             select
 
@@ -275,7 +277,7 @@ class IPH:
                     trim(ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
                     then trim(ADJSTMT_IND) else NULL end as ADJSTMT_IND_CLEAN
                 from
-                    IP_HEADER_GROUPER
+                    IP_HEADER_GROUPER{d_suf[denied_flag]}
                 ) H
         """
         runner.append("IP", z)
@@ -295,6 +297,8 @@ class IPH:
             False:"taf_iph"
         }
         
+        d_suf = {True:"_d",False:""}
+        
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.{table[denied_flag]}
                 SELECT
@@ -302,12 +306,12 @@ class IPH:
                 FROM (
                     SELECT h.*
                         ,fasc.fed_srvc_ctgry_cd
-                    FROM IPH AS h
-                        LEFT JOIN IP_HDR_ROLLED AS fasc
+                    FROM IPH{d_suf[denied_flag]} AS h
+                        LEFT JOIN IP_HDR_ROLLED{d_suf[denied_flag]} AS fasc
                             ON h.ip_link_key = fasc.ip_link_key
                 )
         """
-        runner.append("IP", z)
+        runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

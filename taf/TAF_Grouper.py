@@ -603,10 +603,13 @@ class TAF_Grouper:
         PHC=True,
         MH_SUD=True,
         TAXONOMY=True,
+        denied_flag = False
         ):
+        
+        d_suf = {True:"_d",False:""}
 
         z = f"""
-            create or replace temporary view {clm_tbl}_STEP1 as
+            create or replace temporary view {clm_tbl}_STEP1{d_suf[denied_flag]} as
             select
                 a.*
             """
@@ -631,7 +634,7 @@ class TAF_Grouper:
                     { self.icd_inner(MH_SUD, filetyp) }
                     { self.select_taxonomy_inner(TAXONOMY, filetyp) }
                 from
-                    {clm_tbl} b
+                    {clm_tbl}{d_suf[denied_flag]} b
                     left join nppes_npi nppes on nppes.prvdr_npi=b.BLG_PRVDR_NPI_NUM
             ) as a
 
@@ -647,7 +650,7 @@ class TAF_Grouper:
         if TAXONOMY:
 
             z = f"""
-                create or replace temporary view {filetyp}_TAXONOMY as
+                create or replace temporary view {filetyp}_TAXONOMY{d_suf[denied_flag]} as
 
                 select
                     NEW_SUBMTG_STATE_CD_LINE,
@@ -708,7 +711,7 @@ class TAF_Grouper:
                             new='TEMP_TAXONMY_LINE') }
 
                     from
-                        {line_tbl}) line
+                        {line_tbl}{d_suf[denied_flag]}) line
 
                     group by
                         NEW_SUBMTG_STATE_CD_LINE,
@@ -720,7 +723,7 @@ class TAF_Grouper:
             self.runner.append(filetyp, z)
 
         z = f"""
-            create or replace temporary view {clm_tbl}_GROUPER as
+            create or replace temporary view {clm_tbl}_GROUPER{d_suf[denied_flag]} as
 
             select
                 a.*
@@ -728,7 +731,7 @@ class TAF_Grouper:
                 { self.taxonomy(TAXONOMY, filetyp) }
 
             from
-                {clm_tbl}_STEP1 a
+                {clm_tbl}_STEP1{d_suf[denied_flag]} a
 
             { self.join_taxonomy(TAXONOMY, filetyp) }
 
@@ -989,14 +992,16 @@ class TAF_Grouper:
         """
         self.runner.append(filetyp, z)
 
-    def fasc_code(self, filetyp: str):
+    def fasc_code(self, filetyp: str,denied_flag=False):
         """
         Federally assigned service category
         """
+        
+        d_suf = {True:"_d",False:""}
 
         # claim header
         z = f"""
-            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_header_0 AS
+            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_header_0{d_suf[denied_flag]} AS
             SELECT submtg_state_cd
                 ,msis_ident_num
                 ,da_run_id
@@ -1112,17 +1117,17 @@ class TAF_Grouper:
 
         if (filetyp.casefold() == 'othr_toc'):
             z += f"""
-                 FROM oth
+                 FROM oth{d_suf[denied_flag]}
             """
         else:
             z += f"""
-                FROM {filetyp}h
+                FROM {filetyp}h{d_suf[denied_flag]}
             """
         self.runner.append(filetyp, z)
 
         # service line
         z = f"""
-            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_LNE AS
+            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_LNE{d_suf[denied_flag]} AS
             SELECT submtg_state_cd
                 ,msis_ident_num
                 ,da_run_id
@@ -1610,13 +1615,13 @@ class TAF_Grouper:
             """
         else:
             z += f"""
-                 FROM {filetyp}L
+                 FROM {filetyp}L{d_suf[denied_flag]}
             """
         self.runner.append(filetyp, z)
 
         # combine claim header and line
         z = f"""
-            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_COMBINED AS
+            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_COMBINED{d_suf[denied_flag]} AS
             SELECT
                 b.*
                 ,case when { TAF_Closure.misslogic("msis_ident_num","len(trim(msis_ident_num))") } then 1 else 0 end as inval_msis_id
@@ -1843,9 +1848,9 @@ class TAF_Grouper:
 
                                     then 1 else 0 end as other_pmpm
 
-                from {filetyp}_header_0 h
+                from {filetyp}_header_0{d_suf[denied_flag]} h
                         left join
-                        {filetyp}_lne l
+                        {filetyp}_lne{d_suf[denied_flag]} l
 
                 on h.submtg_state_cd=l.submtg_state_cd and
         """
@@ -1866,7 +1871,7 @@ class TAF_Grouper:
 
         # create columns for non financial claims
         z = f"""
-            create or replace temporary view {filetyp}_LNE_FLAG_TOS_CAT as
+            create or replace temporary view {filetyp}_LNE_FLAG_TOS_CAT{d_suf[denied_flag]} as
             select *
         """
 
@@ -2086,7 +2091,7 @@ class TAF_Grouper:
                                             dsh_flag=0 and srvc_trkg=0 and
                                             supp_clms=0 and cap_tos_null_toc=0
                                         then 1 else 0 end as not_fin_clm
-                            from {filetyp}_combined
+                            from {filetyp}_combined{d_suf[denied_flag]}
                             )a
         """
 
@@ -2117,7 +2122,7 @@ class TAF_Grouper:
         # not rolling up because some line columns are needed for qa tab
         # ---------------------------------------------------------------------
         z = f"""
-             create or replace temporary view {filetyp}_HDR_ROLLED_0 as
+             create or replace temporary view {filetyp}_HDR_ROLLED_0{d_suf[denied_flag]} as
              select b.*
                      ,inp_clms + rx_clms + ic_clms + nf_clms + othr_res_clms +
                      dental_clms + trnsprt_clms + othr_hcbs_clms + op_hosp_clms +
@@ -2240,13 +2245,13 @@ class TAF_Grouper:
             """
 
         z += f"""
-             from {filetyp}_lne_flag_tos_cat
+             from {filetyp}_lne_flag_tos_cat{d_suf[denied_flag]}
              where rec_cnt=1 ) a ) b
         """
         self.runner.append(filetyp, z)
 
         z = f"""
-            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_HDR_ROLLED AS
+            CREATE OR REPLACE TEMPORARY VIEW {filetyp}_HDR_ROLLED{d_suf[denied_flag]} AS
             SELECT *
                 ,CASE
                     WHEN cmc_php = 1
@@ -2292,7 +2297,7 @@ class TAF_Grouper:
                     WHEN all_othr_prof_clms = 1
                         THEN '38'
                     END AS fed_srvc_ctgry_cd
-            FROM {filetyp}_HDR_ROLLED_0
+            FROM {filetyp}_HDR_ROLLED_0{d_suf[denied_flag]}
         """
         self.runner.append(filetyp, z)
 

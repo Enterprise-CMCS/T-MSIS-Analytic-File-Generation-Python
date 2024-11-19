@@ -87,7 +87,7 @@ class IP_Runner(TAF_Runner):
             #   5 - IP_HEADER
             # -------------------------------------------------
             ip = IP(self)
-            ip.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP")
+            ip.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP",denied_flag)
 
             # -------------------------------------------------
             #   Produces:
@@ -97,7 +97,7 @@ class IP_Runner(TAF_Runner):
             #   3 - IP_HEADER_GROUPER
             # -------------------------------------------------
             grouper.AWS_Assign_Grouper_Data_Conv(
-                "IP", "IP_HEADER", "IP_LINE", "DSCHRG_DT", True, True, True, True, True
+                "IP", "IP_HEADER", "IP_LINE", "DSCHRG_DT", True, True, True, True, True,denied_flag
             )
 
             # -------------------------------------------------
@@ -105,10 +105,10 @@ class IP_Runner(TAF_Runner):
             # -------------------------------------------------
             #   - IPH
             # -------------------------------------------------
-            IPH().create(self)
-            IPL().create(self)
+            IPH().create(self, denied_flag=denied_flag)
+            IPL().create(self, denied_flag=denied_flag)
 
-            grouper.fasc_code("IP")
+            grouper.fasc_code("IP",denied_flag=denied_flag)
 
             IPH().build(self,denied_flag=denied_flag)
             IPL().build(self,denied_flag=denied_flag)

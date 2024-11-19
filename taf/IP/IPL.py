@@ -14,13 +14,14 @@ class IPL:
     calendar month for which data are reported.
     """
 
-    def create(self, runner: IP_Runner):
+    def create(self, runner: IP_Runner,denied_flag=False):
         """
         Create the IP line-level segment.
         """
-
+        d_suf = {True:"_d",False:""}
+        
         z = f"""
-            create or replace temporary view IPL as
+            create or replace temporary view IPL{d_suf[denied_flag]} as
 
             select
 
@@ -92,7 +93,7 @@ class IPL:
                     trim(LINE_ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
                     then trim(LINE_ADJSTMT_IND) else NULL end as LINE_ADJSTMT_IND_CLEAN
                 from
-                    IP_LINE
+                    IP_LINE{d_suf[denied_flag]}
                 ) H
             """
 
@@ -113,14 +114,17 @@ class IPL:
             False:"taf_ipl"
 
         }
+        
+        d_suf = {True:"_d",False:""}
+        
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.{table[denied_flag]}
                 SELECT
                     { IP_Metadata.finalFormatter(IP_Metadata.line_columns) }
-                FROM IPL
+                FROM IPL{d_suf[denied_flag]}
         """
 
-        runner.append("IP", z)
+        runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

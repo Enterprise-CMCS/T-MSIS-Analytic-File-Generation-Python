@@ -29,14 +29,15 @@ class IP(TAF):
         super().__init__(runner)
         self.st_fil_type = "IP"
 
-    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment):
+    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment,denied_flag=False):
         """
         Pull line item records for header records linked with claims family table dataset.
         """
+        d_suf = {True:"_d",False:""}
 
         # Create a temporary line file
         z = f"""
-            create or replace temporary view {fl2}_LINE_IN as
+            create or replace temporary view {fl2}_LINE_IN{d_suf[denied_flag]} as
             select
                 SUBMTG_STATE_CD,
                 { IP_Metadata.selectDataElements(tab_no, 'a') }
@@ -51,7 +52,7 @@ class IP(TAF):
 
         # Subset line file and attach row numbers to all records belonging to an ICN set.  Fix PA & IA
         z = f"""
-            create or replace temporary view {fl2}_LINE_PRE_NPPES as
+            create or replace temporary view {fl2}_LINE_PRE_NPPES{d_suf[denied_flag]}  as
             select
                 a.*,
                 row_number() over (
@@ -73,9 +74,9 @@ class IP(TAF):
                 a.submtg_state_cd as new_submtg_state_cd_line
 
             from
-                {fl2}_LINE_IN as A
+                {fl2}_LINE_IN{d_suf[denied_flag]}  as A
 
-            inner join FA_HDR_{fl} H
+            inner join FA_HDR_{fl}{d_suf[denied_flag]} H
 
             on
                 H.TMSIS_RUN_ID = a.TMSIS_RUN_ID_LINE and
@@ -89,12 +90,12 @@ class IP(TAF):
 
         # join line file with NPPES to pick up servicing provider taxonomy code
         z = f"""
-            create or replace temporary view {fl2}_LINE as
+            create or replace temporary view {fl2}_LINE{d_suf[denied_flag]}  as
             select
                 a.*
                ,{TAF_Closure.var_set_taxo("SELECTED_TXNMY_CD",cond1="8888888888", cond2="9999999999", cond3="000000000X", cond4="999999999X",
 									      cond5="NONE", cond6="XXXXXXXXXX", cond7="NO TAXONOMY", new="SRVCNG_PRVDR_NPPES_TXNMY_CD")}
-            from {fl2}_LINE_PRE_NPPES as a
+            from {fl2}_LINE_PRE_NPPES{d_suf[denied_flag]}  as a
             left join NPPES_NPI n
                 on n.prvdr_npi = a.PRSCRBNG_PRVDR_NPI_NUM    --misnomer on IP input
 
@@ -103,7 +104,7 @@ class IP(TAF):
 
         # Pull out maximum row_number for each partition
         z = f"""
-            create or replace temporary view RN_{fl2} as
+            create or replace temporary view RN_{fl2}{d_suf[denied_flag]}  as
             select
                 NEW_SUBMTG_STATE_CD_LINE
                 , ORGNL_CLM_NUM_LINE
@@ -113,7 +114,7 @@ class IP(TAF):
                 , max(RN) as NUM_CLL
 
             from
-                {fl2}_LINE
+                {fl2}_LINE{d_suf[denied_flag]} 
 
             group by
                 NEW_SUBMTG_STATE_CD_LINE,
@@ -126,13 +127,13 @@ class IP(TAF):
 
         # Attach num_cll variable to header records as per instruction
         z = f"""
-            create or replace temporary view {fl2}_HEADER as
+            create or replace temporary view {fl2}_HEADER{d_suf[denied_flag]}  as
             select
                 HEADER.*
                 ,coalesce(RN.NUM_CLL,0) as NUM_CLL
 
             from
-                FA_HDR_{fl2} HEADER left join RN_{fl2} RN
+                FA_HDR_{fl2}{d_suf[denied_flag]}  HEADER left join RN_{fl2}{d_suf[denied_flag]}  RN
 
             on
                 HEADER.NEW_SUBMTG_STATE_CD = RN.NEW_SUBMTG_STATE_CD_LINE and

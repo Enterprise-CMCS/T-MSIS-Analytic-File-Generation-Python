@@ -175,8 +175,12 @@ class TAF_Claims():
         #  HEADER_?
         #
         # -----------------------------------------------------------------------------
+        
+        d_suf = {True:"_d",False:""}
+        
+        
         z = f"""
-            create or replace temporary view HEADER_{fl} as
+            create or replace temporary view HEADER_{fl}{d_suf[denied_flag]} as
 
             select
                 { self.selectDataElements(fl, tab_no, 'a') }
@@ -211,7 +215,7 @@ class TAF_Claims():
         #
         # -----------------------------------------------------------------------------
         z = f"""
-            create or replace temporary view HEADER2_{fl} as
+            create or replace temporary view HEADER2_{fl}{d_suf[denied_flag]}  as
 
             select
                 A.TMSIS_RUN_ID
@@ -223,7 +227,7 @@ class TAF_Claims():
                 {self.select_date(fl)}
 
             from
-                HEADER_{fl} A
+                HEADER_{fl}{d_suf[denied_flag]}  A
 
             group by
                 A.TMSIS_RUN_ID,
@@ -257,9 +261,9 @@ class TAF_Claims():
             # Exclude records with missing end date, and keep TMSIS active and where header is missing disch
 
             z = f"""
-                create or replace temporary view NO_DISCHARGE_DATES as
+                create or replace temporary view NO_DISCHARGE_DATES{d_suf[denied_flag]}  as
 
-                with MAX_DATES as
+                with MAX_DATES{d_suf[denied_flag]}  as
                     (select
                         H.TMSIS_RUN_ID
                         ,H.ORGNL_CLM_NUM
@@ -271,7 +275,7 @@ class TAF_Claims():
                         ,MAX(L.SRVC_BGNNG_DT) as SRVC_BGNNG_DT
 
                     from
-                        HEADER2_{fl} H
+                        HEADER2_{fl}{d_suf[denied_flag]}  H
 
                     inner join
                         {TMSIS_SCHEMA}.TMSIS_CLL_REC_{fl} L
@@ -299,7 +303,7 @@ class TAF_Claims():
                 select
                     *
                 from
-                    MAX_DATES
+                    MAX_DATES{d_suf[denied_flag]} 
                 where
                     {self.rep_yr_mo(fl, self.rep_yr, self.rep_mo)}
                 """
@@ -324,7 +328,7 @@ class TAF_Claims():
             _fl = fl
 
         z = f"""
-                create or replace temporary view CLM_FMLY_{fl} as
+                create or replace temporary view CLM_FMLY_{fl}{d_suf[denied_flag]}  as
 
                 select
                     TMSIS_RUN_ID
@@ -387,7 +391,7 @@ class TAF_Claims():
         if fl in ['IP', 'OTHR_TOC']:
 
             z = f"""
-                    create or replace temporary view COMBINED_HEADER as
+                    create or replace temporary view COMBINED_HEADER{d_suf[denied_flag]}  as
                     (select
                         A.TMSIS_RUN_ID,
                         A.ORGNL_CLM_NUM,
@@ -400,7 +404,7 @@ class TAF_Claims():
                         null as SRVC_ENDG_DT_CD_L
 
                     from
-                        HEADER2_{fl} A
+                        HEADER2_{fl}{d_suf[denied_flag]}  A
 
                     where
                         {self.where_date(fl)}
@@ -427,7 +431,7 @@ class TAF_Claims():
                             else null
                         end as SRVC_ENDG_DT_CD_L
                     from
-                        NO_DISCHARGE_DATES B )
+                        NO_DISCHARGE_DATES{d_suf[denied_flag]}  B )
             """
             self.runner.append(fl, z)
 
@@ -439,16 +443,16 @@ class TAF_Claims():
 
         # Join to limited and de-duped HEADER table to CLAIM FAMILY TABLE
         z = f"""
-                create or replace temporary view ALL_HEADER_{fl} as
+                create or replace temporary view ALL_HEADER_{fl}{d_suf[denied_flag]}  as
 
                 select
                     H.*
 
                 from
-                    {self.use_header(fl)} H
+                    {self.use_header(fl)}{d_suf[denied_flag]} H
 
                 inner join
-                    CLM_FMLY_{fl} F
+                    CLM_FMLY_{fl}{d_suf[denied_flag]} F
 
                     on
                         H.ORGNL_CLM_NUM = F.ORGNL_CLM_NUM
@@ -472,17 +476,17 @@ class TAF_Claims():
         # -----------------------------------------------------------------------------
         # Join de-duped HEADER finder file to T-MSIS HEADER FILE
         z = f"""
-            create or replace temporary view FA_HDR_{fl} as
+            create or replace temporary view FA_HDR_{fl}{d_suf[denied_flag]} as
 
             select
                 A.*,
                 h.submtg_state_cd as new_submtg_state_cd
                 { self.coalesce_dos(fl) }
             from
-                ALL_HEADER_{fl} H
+                ALL_HEADER_{fl}{d_suf[denied_flag]} H
 
             inner join
-                HEADER_{fl} A
+                HEADER_{fl}{d_suf[denied_flag]} A
 
                 on  H.SUBMTG_STATE_CD = A.SUBMTG_STATE_CD and
                     H.TMSIS_RUN_ID = A.TMSIS_RUN_ID and
