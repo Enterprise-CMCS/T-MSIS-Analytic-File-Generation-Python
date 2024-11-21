@@ -543,17 +543,19 @@ class TAF_Grouper:
 
         return "\n".join(select)
 
-    def join_taxonomy(self, TAXONOMY: bool, filetyp: str):
+    def join_taxonomy(self, TAXONOMY: bool, filetyp: str,denied_flag=False):
         """
         Join taxonomy tables.
         """
+        
+        d_suf = {True:"_d",False:""}
 
         join = []
         if TAXONOMY:
 
             join.append(
                 f"""
-                left join {filetyp}_TAXONOMY l
+                left join {filetyp}_TAXONOMY{d_suf[denied_flag]} l
                 on
                     l.NEW_SUBMTG_STATE_CD_LINE = a.NEW_SUBMTG_STATE_CD
                 and l.ORGNL_CLM_NUM_LINE = a.ORGNL_CLM_NUM
@@ -733,7 +735,7 @@ class TAF_Grouper:
             from
                 {clm_tbl}_STEP1{d_suf[denied_flag]} a
 
-            { self.join_taxonomy(TAXONOMY, filetyp) }
+            { self.join_taxonomy(TAXONOMY, filetyp,denied_flag) }
 
         """
         self.runner.append(filetyp, z)

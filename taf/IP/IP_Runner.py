@@ -57,7 +57,7 @@ class IP_Runner(TAF_Runner):
         #       second time for denied claims.
         # -------------------------------------------------
         
-        denied_run = [False,True]
+        denied_run = [False,True]   
         for denied_flag in denied_run:
 
             # -------------------------------------------------
