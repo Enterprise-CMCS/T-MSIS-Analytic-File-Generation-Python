@@ -254,9 +254,24 @@ class PRV03(PRV):
                            'BRDRSTV',
                            'addr_border_state_ind',
                            'ADR_BRDR_STATE_IND',
-                           'Prov03_Locations_BS',
+                           'Prov03_Locations_PRE_ZIP',
                            'C',
                            1)
+        
+        # apply regex validation to zip code; retain only all numeric values
+        z = f"""
+        
+            -- applying regex filter to retain all numeric zip code values only
+            create or replace temporary view Prov03_Locations_BS as
+            select *, 
+                    case 
+                      when ADDR_ZIP_CODE regexp '[^.0-9a-zA-Z _-]' then null
+                      else ADDR_ZIP_CODE
+                    end as ADDR_ZIP_CODE_CLEAN
+            from Prov03_Locations_PRE_ZIP
+            
+        """
+        self.prv.append(type(self).__name__, z)
 
         # create separate variables for provider address type values
         z = f"""
@@ -307,7 +322,7 @@ class PRV03(PRV):
                         addr_ln3,
                         addr_city,
                         addr_state,
-                        addr_zip_code,
+                        ADDR_ZIP_CODE_CLEAN,
                         addr_county,
                         addr_border_state_ind,
                         SUBMTG_STATE_CD,
@@ -339,7 +354,7 @@ class PRV03(PRV):
                     upper(T.addr_ln3) as ADR_LINE_3_TXT,
                     upper(T.addr_city) as ADR_CITY_NAME,
                     T.ADR_STATE_CD,
-                    T.addr_zip_code as ADR_ZIP_CD,
+                    T.ADDR_ZIP_CODE_CLEAN as ADR_ZIP_CD,
                     T.addr_county as ADR_CNTY_CD,
                     T.ADR_BRDR_STATE_IND,
                     case
