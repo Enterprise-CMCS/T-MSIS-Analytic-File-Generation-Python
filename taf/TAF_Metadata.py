@@ -522,7 +522,11 @@ class TAF_Metadata:
             (1426, '022b_bsf_ELG00022', '0.2. MultiIds', 'ELG00022_MSIS_XWALK_multi', 'distinct msis_ident_num', 'submtg_state_cd'),
             (1427, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_uniq_step1', 'distinct msis_ident_num', 'submtg_state_cd'),
             (1428, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_uniq_step2', 'distinct msis_ident_num', 'submtg_state_cd'),
-            (1429, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_{bsf_file_date}_uniq', 'distinct msis_ident_num', 'submtg_state_cd')
+            (1429, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_{bsf_file_date}_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
+            (1501, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', '{fl}_HEADER_D', 'new_submtg_state_cd', 'new_submtg_state_cd'),
+            (1502, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', '{fl}_HEADER_D', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd'),
+            (1503, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', '{fl}_LINE_D', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'new_submtg_state_cd_line'),
+            (1504, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', '{fl}_LINE_D', 'new_submtg_state_cd_line', 'new_submtg_state_cd_line'),
         ]
 
     XIX_SRVC_CTGRY_CD_values = [
