@@ -65,15 +65,15 @@ class LTL:
                 , { TAF_Closure.var_set_type1(var='HCPCS_RATE') }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NPI_NUM', new='SRVCNG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_taxo('SRVCNG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
+                ,SRVCNG_PRVDR_TXNMY_CD
                 , { TAF_Closure.var_set_prtype('SRVCNG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty('SRVCNG_PRVDR_SPCLTY_CD') }
 
                 , case when PRVDR_FAC_TYPE_CD in ('100000000', '170000000', '250000000', '260000000', '270000000', '280000000', '290000000', '300000000', '310000000', '320000000', '330000000', '340000000', '380000000') then PRVDR_FAC_TYPE_CD
                     else NULL end as PRVDR_FAC_TYPE_CD
 
-                , { TAF_Closure.var_set_type6('RC_QTY_ACTL', new='ACTL_SRVC_QTY',	cond1='88888.888', cond2='99999.990', cond3='999999') }
-                , { TAF_Closure.var_set_type6('RC_QTY_ALOWD', new='ALOWD_SRVC_QTY',	cond1='88888.888', cond2='888888.890') }
+                , { TAF_Closure.var_set_type6('RC_QTY_ACTL',cond1='88888.888', cond2='99999.990', cond3='999999') }
+                , { TAF_Closure.var_set_type6('RC_QTY_ALOWD',cond1='88888.888', cond2='888888.890') }
                 , { TAF_Closure.var_set_type1(var='REV_CD',lpad=4) }
                 , { TAF_Closure.var_set_type6('REV_CHRG_AMT', cond1='8888888888.88', cond2='88888888.88', cond3='888888888.88', cond4='88888888888.88', cond5='99999999.90', cond6='9999999999.99') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1='888888888.88', cond2='99999999.00', cond3='9999999999.99') }
@@ -86,6 +86,7 @@ class LTL:
                 , cast(NULL as timestamp) as REC_UPDT_TS
 
                 ,RN as LINE_NUM
+                ,{ TAF_Closure.var_set_type1('IHS_SVC_IND') }
             FROM (
                 select
                     *,

@@ -57,12 +57,12 @@ class IPL:
 
                 , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
                 , { TAF_Closure.var_set_type1('REV_CD', lpad=4) }
-                , { TAF_Closure.var_set_type6('RC_QTY_ACTL', new='ACTL_SRVC_QTY', cond1=999999, cond2=88888.888, cond3=99999.990) }
-                , { TAF_Closure.var_set_type6('RC_QTY_ALOWD', new='ALOWD_SRVC_QTY', cond1=888888.89, cond2=88888.888) }
+                , { TAF_Closure.var_set_type6('RC_QTY_ACTL',cond1=999999, cond2=88888.888, cond3=99999.990) }
+                , { TAF_Closure.var_set_type6('RC_QTY_ALOWD',cond1=888888.89, cond2=88888.888) }
                 , { TAF_Closure.var_set_type6('REV_CHRG_AMT', cond1=88888888888.88, cond2=99999999.9, cond3=888888888.88, cond4=8888888888.88, cond5=88888888.88, cond6=9999999999.99) }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('PRSCRBNG_PRVDR_NPI_NUM', new='SRVCNG_PRVDR_NPI_NUM') }
-                , { TAF_Closure.var_set_taxo('SRVCNG_PRVDR_TXNMY_CD', cond1=8888888888, cond2=9999999999, cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
+                ,SRVCNG_PRVDR_TXNMY_CD
                 , { TAF_Closure.var_set_prtype('SRVCNG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty('SRVCNG_PRVDR_SPCLTY_CD') }
                 , { TAF_Closure.var_set_type1('OPRTG_PRVDR_NPI_NUM') }
@@ -83,6 +83,7 @@ class IPL:
                 , cast(NULL as timestamp) as REC_UPDT_TS
 
                 ,RN as LINE_NUM
+                ,{ TAF_Closure.var_set_type1('IHS_SVC_IND') }
 
             FROM (
                 select

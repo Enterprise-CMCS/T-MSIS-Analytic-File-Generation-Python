@@ -660,7 +660,17 @@ class TAF_Runner():
         df = spark.sql(cnt_sql)
         self.logger.debug(cnt_sql)
 
-        dict_audt = df.toPandas().to_dict(orient="records")
+        """
+        pgm_audt_cnt_id = 776: count of records on the TAF_PRV_LOC segment
+        Originally queries the Prov03_Location_CNST view, which does not include 
+        dummy records from the PRV_LIC, PRV_IDT, or PRV_BED segments.
+        Correction: instead query Prov03_Location_CNST1, which includes said dummy
+        records. By making the update here, no changes are necessary to TAF_Metadata.py
+        nor to the metadata function calls within any TAF Runner workbooks.
+        """
+        df_pd = df.toPandas()
+        df_pd.loc[df_pd['pgm_audt_cnt_id'] == 776, 'obj_name'] = df_pd['obj_name'].astype(str)+'1'
+        dict_audt = df_pd.to_dict(orient="records")
 
         for i in dict_audt:
             rstr = hash(time.time())

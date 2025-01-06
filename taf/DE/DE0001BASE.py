@@ -56,7 +56,7 @@ class DE0001BASE(DE):
             ,IMGRTN_STUS_5_YR_BAR_END_DT
             ,OTHR_LANG_HOME_CD
             ,PRMRY_LANG_FLAG
-            ,PRMRY_LANG_ENGLSH_PRFCNCY_CD
+            ,ENGLSH_PRFCNCY_CD
             ,HSEHLD_SIZE_CD
             ,PRGNCY_FLAG_01
             ,PRGNCY_FLAG_02
@@ -71,7 +71,7 @@ class DE0001BASE(DE):
             ,PRGNCY_FLAG_11
             ,PRGNCY_FLAG_12
             ,PRGNCY_FLAG_EVR
-            ,CRTFD_AMRCN_INDN_ALSKN_NTV_IND
+            ,AMRCN_INDN_ALSK_NTV_IND
             ,ETHNCTY_CD
             ,RACE_ETHNCTY_FLAG
             ,RACE_ETHNCTY_EXP_FLAG
@@ -248,6 +248,7 @@ class DE0001BASE(DE):
             ,ELGBLTY_CHG_RSN_CD_11
             ,ELGBLTY_CHG_RSN_CD_12
             ,ELGBL_AFTR_EOY_IND
+            ,FED_PVT_LVL
         """
         return z
 
@@ -358,12 +359,13 @@ class DE0001BASE(DE):
                 {DE.last_best(self, incol='IMGRTN_STUS_5_YR_BAR_END_DT')}
                 {DE.last_best(self, incol='OTHR_LANG_HOME_CD')}
                 {DE.last_best(self, incol='PRMRY_LANG_FLAG')}
-                {DE.last_best(self, incol='PRMRY_LANG_ENGLSH_PRFCNCY_CD')}
+                {DE.last_best(self, incol='ENGLSH_PRFCNCY_CD')}
                 {DE.last_best(self, incol='HSEHLD_SIZE_CD')}
-                {DE.last_best(self, incol='CRTFD_AMRCN_INDN_ALSKN_NTV_IND')}
+                {DE.last_best(self, incol='AMRCN_INDN_ALSK_NTV_IND')}
                 {DE.last_best(self, incol='ETHNCTY_CD')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_FLAG')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_EXP_FLAG')}
+                {DE.last_best(self, incol='FED_PVT_LVL')}
 
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
@@ -417,9 +419,9 @@ class DE0001BASE(DE):
                             ,imgrtn_stus_5_yr_bar_end_dt
                             ,othr_lang_home_cd
                             ,prmry_lang_flag
-                            ,prmry_lang_englsh_prfcncy_cd
+                            ,englsh_prfcncy_cd
                             ,hsehld_size_cd
-                            ,crtfd_amrcn_indn_alskn_ntv_ind
+                            ,amrcn_indn_alsk_ntv_ind
                             ,ethncty_cd
                             ,race_ethncty_flag
                             ,race_ethncty_exp_flag
@@ -429,6 +431,7 @@ class DE0001BASE(DE):
                             ,msis_case_num
                             ,mdcr_bene_id
                             ,mdcr_hicn_num
+                            ,fed_pvt_lvl
                     from
                         max_run_id_de_{inyear} a
                     inner join
@@ -511,13 +514,14 @@ class DE0001BASE(DE):
                     {DE.last_best(self, 'IMGRTN_STUS_5_YR_BAR_END_DT',prior=1)}
                     {DE.last_best(self, 'OTHR_LANG_HOME_CD',prior=1)}
                     {DE.last_best(self, 'PRMRY_LANG_FLAG',prior=1)}
-                    {DE.last_best(self, 'PRMRY_LANG_ENGLSH_PRFCNCY_CD',prior=1)}
+                    {DE.last_best(self, 'ENGLSH_PRFCNCY_CD',prior=1)}
                     {DE.last_best(self, 'HSEHLD_SIZE_CD',prior=1)}
 
-                    {DE.last_best(self, 'CRTFD_AMRCN_INDN_ALSKN_NTV_IND',prior=1)}
+                    {DE.last_best(self, 'AMRCN_INDN_ALSK_NTV_IND',prior=1)}
                     {DE.last_best(self, 'ETHNCTY_CD',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_FLAG',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_EXP_FLAG',prior=1)}
+                    {DE.last_best(self, 'FED_PVT_LVL',prior=1)}
 
                     ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""+' '
 
@@ -589,10 +593,10 @@ class DE0001BASE(DE):
                     b.IMGRTN_STUS_5_YR_BAR_END_DT,
                     b.OTHR_LANG_HOME_CD,
                     b.PRMRY_LANG_FLAG,
-                    b.PRMRY_LANG_ENGLSH_PRFCNCY_CD,
+                    b.ENGLSH_PRFCNCY_CD,
                     b.HSEHLD_SIZE_CD,
 
-                    b.CRTFD_AMRCN_INDN_ALSKN_NTV_IND,
+                    b.AMRCN_INDN_ALSK_NTV_IND,
                     b.ETHNCTY_CD,
                     b.RACE_ETHNCTY_FLAG,
                     b.RACE_ETHNCTY_EXP_FLAG,
@@ -603,7 +607,8 @@ class DE0001BASE(DE):
 
                     b.MSIS_CASE_NUM,
                     b.MDCR_BENE_ID,
-                    b.MDCR_HICN_NUM
+                    b.MDCR_HICN_NUM,
+                    b.FED_PVT_LVL
 
                 from base_nondemo_{self.de.YEAR} a
                         inner join

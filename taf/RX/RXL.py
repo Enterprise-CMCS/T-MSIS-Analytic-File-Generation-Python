@@ -48,7 +48,7 @@ class RXL:
                 , { TAF_Closure.var_set_type6('suply_days_cnt', cond1='8888', cond2='999', cond3='0') }
                 , { TAF_Closure.var_set_type5('NEW_REFL_IND',lpad='2',lowerbound='0',upperbound='99') }
                 , { TAF_Closure.var_set_type2('BRND_GNRC_IND', 0, cond1='0', cond2='1', cond3='2', cond4='3', cond5='4') }
-                , { TAF_Closure.var_set_type6('DSPNS_FEE_AMT', new='dspns_fee_amt', cond1='88888.88')  }
+                , { TAF_Closure.var_set_type6('DSPNS_FEE_SBMTD', cond1='88888.88')  }
                 ,case when trim(DRUG_UTLZTN_CD) is not NULL then upper(DRUG_UTLZTN_CD)
                     else NULL
                     end as DRUG_UTLZTN_CD
@@ -61,8 +61,8 @@ class RXL:
                 , { TAF_Closure.var_set_type2('REBT_ELGBL_IND', 0, cond1='0', cond2='1', cond3='2') }
                 , { TAF_Closure.var_set_type5('IMNZTN_TYPE_CD', lpad=2, lowerbound=0, upperbound=29) }
                 , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
-                , { TAF_Closure.var_set_type6('OTHR_TOC_RX_CLM_ALOWD_QTY', new='alowd_srvc_qty', cond1='99999', cond2='99999.999', cond3='888888.000', cond4='999999', cond5='888888.880') }
-                , { TAF_Closure.var_set_type6('OTHR_TOC_RX_CLM_ACTL_QTY', new='actl_srvc_qty', cond1='999999.99', cond2='888888', cond3='999999', cond4='0') }
+                , { TAF_Closure.var_set_type6('RX_QTY_ALOWD',cond1='99999', cond2='99999.999', cond3='888888.000', cond4='999999', cond5='888888.880') }
+                , { TAF_Closure.var_set_type6('RX_QTY_ACTL',cond1='999999.99', cond2='888888', cond3='999999', cond4='0') }
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD',2, cond1='01',cond2='02',cond3='03',cond4='04') }
 
                 ,case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
@@ -73,7 +73,7 @@ class RXL:
                 , { TAF_Closure.var_set_type1('CLL_STUS_CD') }
                 , { TAF_Closure.var_set_type6('bill_amt', cond1='9999999999.99', cond2='999999.99', cond3='999999', cond4='888888888.88') }
                 , { TAF_Closure.var_set_type6('alowd_amt', cond1='9999999999.99', cond2='888888888.88', cond3='99999999.00') }
-                , { TAF_Closure.var_set_type6('COPAY_AMT', new='copay_amt',	cond1='888888888.88', cond2='88888888888.00') }
+                , { TAF_Closure.var_set_type6('BENE_COPMT_PD_AMT',	cond1='888888888.88', cond2='88888888888.00') }
                 , { TAF_Closure.var_set_type6('tpl_amt', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('mdcd_pd_amt', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('mdcr_pd_amt', cond1='88888888888.88', cond2='99999999999.00', cond3='888888888.88', cond4='88888888888.00', cond5='8888888.88', cond6='9999999999.99') }
@@ -87,6 +87,12 @@ class RXL:
                 , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 , cast(NULL as timestamp) as REC_UPDT_TS
                 ,RN as LINE_NUM
+                , { TAF_Closure.var_set_type1('IHS_SVC_IND')}
+                , INGRDNT_CST_SBMTD
+                , INGRDNT_CST_PD_AMT
+                , DSPNS_FEE_PD_AMT
+                , PROFNL_SVC_FEE_SBMTD
+                , PROFNL_SVC_FEE_PD_AMT
 
             from (
                 select

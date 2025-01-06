@@ -20,11 +20,13 @@ class ELG00009(ELG):
                 lckin_prvdrs.append(f"""
                     , t{i}.LCKIN_PRVDR_NUM as LCKIN_PRVDR_NUM{i}
                     , t{i}.LCKIN_PRVDR_TYPE_CODE as LCKIN_PRVDR_TYPE_CD{i}
+                    , t{i}.LCKIN_SRVC as LCKIN_SRVC{i}
                 """.format())
             else:
                 lckin_prvdrs.append(f"""
                     , cast(null as varchar(30)) as LCKIN_PRVDR_NUM{i}
                     , cast(null as varchar(2)) as LCKIN_PRVDR_TYPE_CD{i}
+                    , cast(null as varchar(3)) as LCKIN_SRVC{i}
                 """.format())
 
         return new_line.join(lckin_prvdrs)
@@ -52,22 +54,29 @@ class ELG00009(ELG):
                 {self.end_date},
                 REC_NUM,
                 lpad(lckin_prvdr_type_cd,2,'0') as lckin_prvdr_type_code,
+                lpad(lckd_in_srvc,3,'0') as lckin_srvc,
 
                 row_number() over (partition by submtg_state_cd,
                                         msis_ident_num,
                                         lckin_prvdr_num,
-                                        lpad(lckin_prvdr_type_cd,2,'0')
-                            order by submtg_state_cd,
+                                        lpad(lckin_prvdr_type_cd,2,'0'),
+                                        lpad(lckd_in_srvc,3,'0')
+                                    order by submtg_state_cd,
                                         msis_ident_num,
                                         TMSIS_RPTG_PRD desc,
                                         {self.eff_date} desc,
                                         {self.end_date} desc,
                                         REC_NUM desc,
                                         lckin_prvdr_num,
-                                        lpad(lckin_prvdr_type_cd,2,'0')) as lckin_deduper
+                                        lpad(lckin_prvdr_type_cd,2,'0'),
+                                        lpad(lckd_in_srvc,3,'0')
+                                        ) 
+                                as lckin_deduper
 
-                from (select * from {self.tab_no} where lckin_prvdr_num is not null
-                                            or lckin_prvdr_type_cd is not null) t1
+                from (select * from {self.tab_no} 
+                      where lckin_prvdr_num is not null
+                          or lckin_prvdr_type_cd is not null
+                      ) t1
                 """
         self.bsf.append(type(self).__name__, z)
 
@@ -78,29 +87,24 @@ class ELG00009(ELG):
 
                 row_number() over (partition by submtg_state_cd,
                                         msis_ident_num
-                            order by submtg_state_cd,
+                                    order by submtg_state_cd,
                                         msis_ident_num,
                                         TMSIS_RPTG_PRD desc,
                                         {self.eff_date} desc,
                                         {self.end_date} desc,
                                         REC_NUM desc,
                                         lckin_prvdr_num,
-                                        lckin_prvdr_type_code) as keeper
+                                        lckin_prvdr_type_code,
+                                        lckin_srvc
+                                  ) as keeper
 
                 from {self.tab_no}_step1
                 where lckin_deduper=1
                 """
         self.bsf.append(type(self).__name__, z)
 
-        # title "Number of lock in providers per beneficiary in {self.tab_no}"
-        # select * from connection to tmsis_passthrough
-        #  ( select keeper,count(msis_ident_num) as lock_in_providers from {self.tab_no}_step2 group by keeper ) order by keeper
-
-        #  Determine Max number of Keeper Records
-        # select max_keep into :max_keep
-        # from (select * from connection to tmsis_passthrough
-        #       (select max(keeper) as max_keep from {self.tab_no}_step2))
-        max_keep = 3
+        #  Set Max number of Keeper Records
+        MAX_KEEP = 3
 
         z = f"""
             create or replace temporary view {self.tab_no}_{self.bsf.BSF_FILE_DATE}_uniq as
@@ -109,14 +113,14 @@ class ELG00009(ELG):
                 t1.submtg_state_cd
                 ,t1.msis_ident_num
 
-                { self.lckin_prvdr(max_keep) }
+                { self.lckin_prvdr(MAX_KEEP) }
 
-                , case when ({ self.lckin_flag(max_keep) })
+                , case when ({ self.lckin_flag(MAX_KEEP) })
                   then 1 else 2 end as LOCK_IN_FLG
 
                 from (select * from {self.tab_no}_step2 where keeper=1) t1
 
-                { BSF_Metadata.dedup_tbl_joiner('ELG00009', range(2, 3 + 1), max_keep) }
+                { BSF_Metadata.dedup_tbl_joiner('ELG00009', range(2, 3 + 1), MAX_KEEP) }
 
                 """
         self.bsf.append(type(self).__name__, z)

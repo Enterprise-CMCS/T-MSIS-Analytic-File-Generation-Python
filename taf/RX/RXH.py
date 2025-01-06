@@ -85,25 +85,31 @@ class RXH:
                 , { TAF_Closure.var_set_type1('DSPNSNG_PD_PRVDR_NPI_NUM') }
                 , { TAF_Closure.var_set_type1('DSPNSNG_PD_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }
-                , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2') }
+                , { TAF_Closure.var_set_type2('PYMT_LVL_IND', 0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_type6('tot_bill_amt', cond1='999999.99', cond2='69999999999.93', cond3='999999.00', cond4='888888888.88', cond5='9999999.99', cond6='99999999.90') }
                 , { TAF_Closure.var_set_type6('tot_alowd_amt', cond1='888888888.88', cond2='99999999.00') }
                 , { TAF_Closure.var_set_type6('tot_mdcd_pd_amt', cond1='999999.99', cond2='888888888.88') }
-                , { TAF_Closure.var_set_type6('tot_copay_amt', cond1='88888888888.00', cond2='888888888.88', cond3='9999999.99') }
+                ,tot_copay_amt
                 , { TAF_Closure.var_set_type6('tot_tpl_amt', cond1='999999.99', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('tot_othr_insrnc_amt', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('tot_mdcr_ddctbl_amt', cond1='99999', cond2='88888888888.00', cond3='888888888.88') }
                 , { TAF_Closure.var_set_type6('tot_mdcr_coinsrnc_amt', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('TP_COINSRNC_PD_AMT', cond1='888888888.88') }
                 , { TAF_Closure.var_set_type6('TP_COPMT_PD_AMT', cond1='99999999999.00', cond2='888888888.88', cond3='888888888.00', cond4='88888888888.00') }
-                , { TAF_Closure.var_set_type6('TOT_BENE_COINSRNC_PD_AMT',new='BENE_COINSRNC_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
-                , { TAF_Closure.var_set_type6('TOT_BENE_COPMT_PD_AMT',new='BENE_COPMT_AMT',	cond1='88888888888.00', cond2='888888888.88', cond3='888888888.00') }
-                , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT',new='BENE_DDCTBL_AMT', cond1='88888888888.00', cond2='888888888.88', cond3='888888888.00') }
-                , { TAF_Closure.var_set_type2('COPAY_WVD_IND', 0, cond1='0', cond2='1') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_COINSRNC_PD_AMT', cond1='888888888.88', cond2='888888888.00', cond3='88888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_COPMT_PD_AMT',	cond1='88888888888.00', cond2='888888888.88', cond3='888888888.00') }
+                , { TAF_Closure.var_set_type6('TOT_BENE_DDCTBL_PD_AMT', cond1='88888888888.00', cond2='888888888.88', cond3='888888888.00') }
+                , COPAY_WVD_IND
                 , cll_cnt
                 , num_cll
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
+                ,{ TAF_Closure.var_set_type1('SRC_LCTN_CD',lpad=2)}
+                , TOT_BENE_DDCTBL_LBLE_AMT
+                , TOT_BENE_COPMT_LBLE_AMT
+                , TOT_BENE_COINSRNC_LBLE_AMT
+                , CMBND_BENE_CST_SHRNG_PD_AMT
+                , { TAF_Closure.var_set_type1('RX_ORGN_CD')}
             from (
                 select
                     *,

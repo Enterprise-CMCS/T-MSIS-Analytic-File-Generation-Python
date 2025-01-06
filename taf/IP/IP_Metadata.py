@@ -99,7 +99,12 @@ class IP_Metadata:
         "PLAN_ID_NUM": plan_id_num,
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD
+        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
+        "COPAY_WVD_IND":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
+        "SRVCNG_PRVDR_TXNMY_CD":TAF_Closure.set_as_null,
+        "TOT_COPAY_AMT":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -309,6 +314,13 @@ class IP_Metadata:
             "WVR_TYPE_CD",
             "TP_COINSRNC_PD_AMT",
             "TP_COPMT_PD_AMT",
+            "SRC_LCTN_CD",
+            "TOT_BENE_DDCTBL_LBLE_AMT",
+            "TOT_BENE_COPMT_LBLE_AMT",
+            "TOT_BENE_COINSRNC_LBLE_AMT",
+            "CMBND_BENE_CST_SHRNG_PD_AMT",
+            "SRVC_BGNNG_DT",
+            "SRVC_ENDG_DT"
         ],
         "CIP00003": [
             "TMSIS_FIL_NAME",
@@ -351,6 +363,7 @@ class IP_Metadata:
             "XXI_SRVC_CTGRY_CD",
             "MDCD_PD_AMT",
             "OTHR_INSRNC_AMT",
+            "IHS_SVC_IND"
         ],
     }
 
@@ -421,7 +434,6 @@ class IP_Metadata:
         "CLM_STUS_CD",
         "CLM_TYPE_CD",
         "CMS_64_FED_REIMBRSMT_CTGRY_CD",
-        "COPAY_WVD_IND",
         "DGNS_1_CD_IND",
         "DGNS_10_CD_IND",
         "DGNS_11_CD_IND",
@@ -508,15 +520,12 @@ class IP_Metadata:
         "REV_CD",
         "RFRG_PRVDR_NPI_NUM",
         "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_SPCLTY_CD",
         "RFRG_PRVDR_TXNMY_CD",
-        "RFRG_PRVDR_TYPE_CD",
         "SECT_1115A_DEMO_IND",
         "SPLIT_CLM_IND",
         "SRVC_TRKNG_TYPE_CD",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_SPCLTY_CD",
-        "SRVCNG_PRVDR_TXNMY_CD",
         "SRVCNG_PRVDR_TYPE_CD",
         "STC_CD tos_cd",
         "TMSIS_FIL_NAME",
@@ -525,7 +534,9 @@ class IP_Metadata:
         "XOVR_IND",
         "STC_CD",
         "SUBMTG_STATE_CD",
-        "NDC_UOM_CD"
+        "NDC_UOM_CD",
+        "SRC_LCTN_CD",
+        "IHS_SVC_IND"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -670,15 +681,15 @@ class IP_Metadata:
         "TP_COPMT_PD_AMT",
         "MDCD_DSH_PD_AMT",
         "DRG_OUTLIER_AMT",
-        "cast(DRG_RLTV_WT_NUM as numeric(11,4)) as DRG_RLTV_WT_NUM",
+        "DRG_RLTV_WT_NUM",
         "MDCR_PD_AMT",
         "TOT_MDCR_DDCTBL_AMT",
         "TOT_MDCR_COINSRNC_AMT",
         "MDCR_CMBND_DDCTBL_IND",
         "MDCR_REIMBRSMT_TYPE_CD",
-        "BENE_COINSRNC_AMT",
-        "BENE_COPMT_AMT",
-        "BENE_DDCTBL_AMT",
+        "TOT_BENE_COINSRNC_PD_AMT",
+        "TOT_BENE_COPMT_PD_AMT",
+        "TOT_BENE_DDCTBL_PD_AMT",
         "COPAY_WVD_IND",
         "OCRNC_01_CD_EFCTV_DT",
         "OCRNC_01_CD_END_DT",
@@ -726,7 +737,14 @@ class IP_Metadata:
         "SRVC_ENDG_DT_CD",
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
-        "FED_SRVC_CTGRY_CD"
+        "FED_SRVC_CTGRY_CD",
+        "SRC_LCTN_CD",
+        "TOT_BENE_DDCTBL_LBLE_AMT",
+        "TOT_BENE_COPMT_LBLE_AMT",
+        "TOT_BENE_COINSRNC_LBLE_AMT",
+        "CMBND_BENE_CST_SHRNG_PD_AMT",
+        "SRVC_BGNNG_DT",
+        "SRVC_ENDG_DT"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -759,8 +777,8 @@ class IP_Metadata:
         "SRVC_ENDG_DT",
         "BNFT_TYPE_CD",
         "REV_CD",
-        "cast(ACTL_SRVC_QTY as numeric(12,3)) as ACTL_SRVC_QTY",
-        "cast(ALOWD_SRVC_QTY as numeric(12,3)) as ALOWD_SRVC_QTY",
+        "cast(RC_QTY_ACTL as numeric(12,3)) as RC_QTY_ACTL",
+        "cast(RC_QTY_ALOWD as numeric(12,3)) as RC_QTY_ALOWD",
         "REV_CHRG_AMT",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_NPI_NUM",
@@ -779,7 +797,8 @@ class IP_Metadata:
         "MDCD_FFS_EQUIV_AMT",
         "REC_ADD_TS",
         "REC_UPDT_TS",
-        "LINE_NUM"
+        "LINE_NUM",
+        "IHS_SVC_IND"
     ]
 
 

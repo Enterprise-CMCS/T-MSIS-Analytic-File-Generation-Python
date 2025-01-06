@@ -80,8 +80,11 @@ class LT_Metadata:
         "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
         "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
         "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
-        "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND
-
+        "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
+        "COPAY_WVD_IND":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
+        "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
+        "SRVCNG_PRVDR_TXNMY_CD": TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -258,6 +261,10 @@ class LT_Metadata:
             "CLM_TYPE_CD",
             "WVR_ID",
             "WVR_TYPE_CD",
+            "TOT_BENE_DDCTBL_LBLE_AMT",
+            "TOT_BENE_COPMT_LBLE_AMT",
+            "TOT_BENE_COINSRNC_LBLE_AMT",
+            "CMBND_BENE_CST_SHRNG_PD_AMT"
         ],
         "CLT00003": [
             "TMSIS_RUN_ID",
@@ -316,6 +323,7 @@ class LT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
+            "IHS_SVC_IND"
         ],
     }
 
@@ -393,7 +401,6 @@ class LT_Metadata:
         "SELF_DRCTN_TYPE_CD",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_SPCLTY_CD",
-        "SRVCNG_PRVDR_TXNMY_CD",
         "SRVCNG_PRVDR_TYPE_CD",
         "STATE_NOTN_TXT",
         "STC_CD",
@@ -422,7 +429,7 @@ class LT_Metadata:
         "CLM_STUS_CD",
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
-        "COPAY_WVD_IND",
+
         "DGNS_1_CD_IND",
         "DGNS_2_CD_IND",
         "DGNS_3_CD_IND",
@@ -473,9 +480,7 @@ class LT_Metadata:
         "PYMT_LVL_IND",
         "RFRG_PRVDR_NPI_NUM",
         "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_SPCLTY_CD",
         "RFRG_PRVDR_TXNMY_CD",
-        "RFRG_PRVDR_TYPE_CD",
         "RMTNC_NUM",
         "SBMTR_ID",
         "SECT_1115A_DEMO_IND",
@@ -487,6 +492,7 @@ class LT_Metadata:
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
+        "IHS_SVC_IND"
     ]
 
     renames = {}
@@ -595,9 +601,9 @@ class LT_Metadata:
         "TP_COPMT_PD_AMT",
         "MDCR_CMBND_DDCTBL_IND",
         "MDCR_REIMBRSMT_TYPE_CD",
-        "BENE_COINSRNC_AMT",
-        "BENE_COPMT_AMT",
-        "BENE_DDCTBL_AMT",
+        "TOT_BENE_COINSRNC_PD_AMT",
+        "TOT_BENE_COPMT_PD_AMT",
+        "TOT_BENE_DDCTBL_PD_AMT",
         "COPAY_WVD_IND",
         "OCRNC_01_CD_EFCTV_DT",
         "OCRNC_01_CD_END_DT",
@@ -647,6 +653,11 @@ class LT_Metadata:
         "BLG_PRVDR_NPPES_TXNMY_CD",
         "DGNS_1_CCSR_DFLT_CTGRY_CD",
         "FED_SRVC_CTGRY_CD",
+        "SRC_LCTN_CD",
+        "TOT_BENE_DDCTBL_LBLE_AMT",
+        "TOT_BENE_COPMT_LBLE_AMT",
+        "TOT_BENE_COINSRNC_LBLE_AMT",
+        "CMBND_BENE_CST_SHRNG_PD_AMT"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -689,8 +700,8 @@ class LT_Metadata:
         "SRVCNG_PRVDR_TYPE_CD",
         "SRVCNG_PRVDR_SPCLTY_CD",
         "PRVDR_FAC_TYPE_CD",
-        "cast(ACTL_SRVC_QTY as numeric(12,3)) as ACTL_SRVC_QTY",
-        "cast(ALOWD_SRVC_QTY as numeric(12,3)) as ALOWD_SRVC_QTY",
+        "cast(RC_QTY_ACTL as numeric(12,3)) as RC_QTY_ACTL",
+        "cast(RC_QTY_ALOWD as numeric(12,3)) as RC_QTY_ALOWD",
         "REV_CD",
         "REV_CHRG_AMT",
         "ALOWD_AMT",
@@ -701,6 +712,7 @@ class LT_Metadata:
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "LINE_NUM",
+        "IHS_SVC_IND"
     ]
 
 

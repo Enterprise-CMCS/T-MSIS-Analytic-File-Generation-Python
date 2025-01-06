@@ -60,7 +60,7 @@ class ELG00005(ELG):
                 else null end as ELIGIBILITY_GROUP_CATEGORY_FLG,
 
                 case when MAS_CD = '.' or ELGBLTY_MDCD_BASIS_CD='.' then '.'
-                    else (MAS_CD || ELGBLTY_MDCD_BASIS_CD) end as MASBOE
+                    else (MAS_CD || lpad(trim(ELGBLTY_MDCD_BASIS_CD),2,'0')) end as MASBOE
         """
 
         #  Create temp table to determine which beneficiaries have multiple records
