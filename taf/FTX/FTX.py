@@ -33,6 +33,37 @@ class FTX(TAF):
                     )
         """
         self.runner.append(self.st_fil_type, z)
+        
+        #dedup
+        z = f"""
+            create or replace temporary view {_2x_segment}_nodups as
+            with nodups as 
+                (
+                    select
+                        TMSIS_RUN_ID
+                        ,SUBMTG_STATE_CD
+                        ,ORGNL_CLM_NUM
+                        ,ADJSTMT_CLM_NUM
+                        ,ADJSTMT_IND
+                    from {_2x_segment}_IN
+                    group by TMSIS_RUN_ID
+                        ,SUBMTG_STATE_CD
+                        ,ORGNL_CLM_NUM
+                        ,ADJSTMT_CLM_NUM
+                        ,ADJSTMT_IND
+                    having count(TMSIS_RUN_ID) = 1
+                ) 
+            select b.*
+            from {_2x_segment}_IN as b inner join nodups
+            on (
+                    nodups.TMSIS_RUN_ID = b.TMSIS_RUN_ID and
+                    nodups.SUBMTG_STATE_CD = b.SUBMTG_STATE_CD and
+                    nodups.ORGNL_CLM_NUM = b.ORGNL_CLM_NUM and
+                    nodups.ADJSTMT_CLM_NUM = b.ADJSTMT_CLM_NUM and
+                    nodups.ADJSTMT_IND = b.ADJSTMT_IND
+                )
+            """
+        #self.runner.append(self.st_fil_type, z)
 
 
 

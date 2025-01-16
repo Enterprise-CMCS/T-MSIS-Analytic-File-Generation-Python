@@ -40,15 +40,15 @@ class FTX_Runner(TAF_Runner):
         
         #dictionary of the input tmsis segments and their associated end dt
         FTX_TMSIS_SEGMENTS = {
-            #  "tmsis_indvdl_cptatn_pmpm"      :{"start_dt":"cptatn_prd_strt_dt",     "end_dt":"cptatn_prd_end_dt",       "segment":"FTX00002"}
-            # ,"tmsis_indvdl_hi_prm_pymt"      :{"start_dt":"prm_prd_strt_dt",        "end_dt":"prm_prd_end_dt",          "segment":"FTX00003"}
-            # ,"tmsis_grp_insrnc_prm_pymt"     :{"start_dt":"prm_prd_strt_dt",        "end_dt":"prm_prd_end_dt",          "segment":"FTX00004"}
-            # ,"tmsis_cst_shrng_ofst"          :{"start_dt":"cvrg_prd_strt_dt",       "end_dt":"cvrg_prd_end_dt",         "segment":"FTX00005"}
-            # ,"tmsis_val_bsd_pymt"            :{"start_dt":"prfmnc_prd_strt_dt",     "end_dt":"prfmnc_prd_end_dt",       "segment":"FTX00006"}
-            # ,"tmsis_sdp_seprt_pymt_term"     :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX00007"}
-            # ,"tmsis_cst_stlmt_pymt"          :{"start_dt":"cst_stlmt_prd_strt_dt",  "end_dt":"cst_stlmt_prd_end_dt",    "segment":"FTX00008"}
-            # ,"tmsis_fqhc_wrp_pymt"           :{'start_dt':'wrp_prd_strt_dt',        'end_dt':'wrp_prd_end_dt',          "segment":"FTX00009"}
-            "tmsis_misc_pymt"               :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX000095"}
+             "tmsis_indvdl_cptatn_pmpm"      :{"start_dt":"cptatn_prd_strt_dt",     "end_dt":"cptatn_prd_end_dt",       "segment":"FTX00002"}
+            ,"tmsis_indvdl_hi_prm_pymt"      :{"start_dt":"prm_prd_strt_dt",        "end_dt":"prm_prd_end_dt",          "segment":"FTX00003"}
+            ,"tmsis_grp_insrnc_prm_pymt"     :{"start_dt":"prm_prd_strt_dt",        "end_dt":"prm_prd_end_dt",          "segment":"FTX00004"}
+            ,"tmsis_cst_shrng_ofst"          :{"start_dt":"cvrg_prd_strt_dt",       "end_dt":"cvrg_prd_end_dt",         "segment":"FTX00005"}
+            ,"tmsis_val_bsd_pymt"            :{"start_dt":"prfmnc_prd_strt_dt",     "end_dt":"prfmnc_prd_end_dt",       "segment":"FTX00006"}
+            ,"tmsis_sdp_seprt_pymt_term"     :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX00007"}
+            ,"tmsis_cst_stlmt_pymt"          :{"start_dt":"cst_stlmt_prd_strt_dt",  "end_dt":"cst_stlmt_prd_end_dt",    "segment":"FTX00008"}
+            ,"tmsis_fqhc_wrp_pymt"           :{'start_dt':'wrp_prd_strt_dt',        'end_dt':'wrp_prd_end_dt',          "segment":"FTX00009"}
+            ,"tmsis_misc_pymt"               :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX000095"}
         }
         claims = TAF_Claims(self)
         for key,vals in FTX_TMSIS_SEGMENTS.items():

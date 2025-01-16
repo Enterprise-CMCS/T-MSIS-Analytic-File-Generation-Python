@@ -12,9 +12,9 @@ class FTX_Metadata:
 
         new_line_comma = "\n\t\t\t,"
 
-        columns = FTX_Metadata.columns.get(segment_id).copy()
+        columns =  FTX_Metadata.columns.get(segment_id).copy()
         cleanser = FTX_Metadata.cleanser.get(segment_id).copy()
-        renames = FTX_Metadata.renames.get(segment_id).copy()
+        renames =  FTX_Metadata.renames.get(segment_id).copy()
 
         for i, item in enumerate(columns):
             if item in cleanser.keys():
