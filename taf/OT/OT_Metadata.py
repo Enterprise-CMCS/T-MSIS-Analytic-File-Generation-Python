@@ -123,8 +123,6 @@ class OT_Metadata:
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "SRVC_ENDG_DT": dates_of_service,
-        "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
         "COPAY_WVD_IND":TAF_Closure.set_as_null,
         "RFRG_PRVDR_TXNMY_CD":TAF_Closure.set_as_null,
         "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
@@ -135,7 +133,16 @@ class OT_Metadata:
         "CPTATD_AMT_RQSTD_DT":TAF_Closure.set_as_null,
         "HCPCS_RATE":TAF_Closure.set_as_null,
         "CPTATD_PYMT_RQSTD_AMT":TAF_Closure.set_as_null,
-        "TOT_COPAY_AMT":TAF_Closure.set_as_null
+        "TOT_COPAY_AMT":TAF_Closure.set_as_null,
+        "BNFT_TYPE_CD":TAF_Closure.set_as_null,
+        "IMNZTN_TYPE_CD":TAF_Closure.set_as_null,
+        "SRVC_TRKNG_PYMT_AMT":TAF_Closure.set_as_null,
+        "PRVDR_UNDER_SPRVSN_NPI_NUM":TAF_Closure.set_as_null,
+        "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "DGNS_POA_1_CD_IND":TAF_Closure.set_as_null,
+        "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null
+        
     }
 
     validator = {}
@@ -389,7 +396,6 @@ class OT_Metadata:
         "BLG_PRVDR_TXNMY_CD",
         "BLG_PRVDR_TYPE_CD",
         "BLG_UNIT_CD",
-        "BNFT_TYPE_CD",
         "BRDR_STATE_IND",
         "CHK_NUM",
         "CLL_STUS_CD",
@@ -426,7 +432,6 @@ class OT_Metadata:
         "HH_PRVDR_IND",
         "HH_PRVDR_NPI_NUM",
         "HLTH_CARE_ACQRD_COND_CD",
-        "IMNZTN_TYPE_CD",
         "MDCR_BENE_ID",
         "MDCR_CMBND_DDCTBL_IND",
         "MDCR_HICN_NUM",
@@ -458,7 +463,6 @@ class OT_Metadata:
         "PRCDR_CD_IND",
         "PRVDR_FAC_TYPE_CD",
         "PRVDR_LCTN_ID",
-        "PRVDR_UNDER_SPRVSN_NPI_NUM",
         "PTNT_CNTL_NUM",
         "PTNT_STUS_CD",
         "PYMT_LVL_IND",
@@ -472,7 +476,6 @@ class OT_Metadata:
         "SELF_DRCTN_TYPE_CD",
         "SPLIT_CLM_IND",
         "SRC_LCTN_CD",
-        "SRVC_TRKNG_TYPE_CD",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_SPCLTY_CD",
         "SRVCNG_PRVDR_TXNMY_CD",
@@ -486,8 +489,6 @@ class OT_Metadata:
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
-        "XIX_SRVC_CTGRY_CD",
-        "XXI_SRVC_CTGRY_CD",
         "ORDRG_PRVDR_NUM",
         "ORDRG_PRVDR_NPI_NUM",
         "IHS_SVC_IND"
