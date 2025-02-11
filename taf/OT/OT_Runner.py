@@ -67,7 +67,6 @@ class OT_Runner(TAF_Runner):
         claims.AWS_Claims_Family_Table_Link(
             "tmsis", "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
         )
-
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
@@ -80,6 +79,8 @@ class OT_Runner(TAF_Runner):
         ot.AWS_Extract_Line(
             "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
         )
+
+        claims.select_dx("tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC")
 
         # -------------------------------------------------
         #   Produces:

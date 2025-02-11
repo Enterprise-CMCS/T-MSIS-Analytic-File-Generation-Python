@@ -54,6 +54,20 @@ class OT_Metadata:
                             + f" as {OT_Metadata.line_renames.get(item).lower()}"
                         )
 
+            # qualify dx columns
+            if segment_id.casefold() == "cot00004":
+                if item in OT_Metadata.dx_renames.keys():
+                    if item in OT_Metadata.upper:
+                        columns[i] = (
+                            "upper(" + columns[i].lower().split(" as ")[0]
+                            + f") as {OT_Metadata.dx_renames.get(item).lower()}"
+                        )
+                    else:
+                        columns[i] = (
+                            columns[i].lower().split(" as ")[0]
+                            + f" as {OT_Metadata.dx_renames.get(item).lower()}"
+                        )
+
         return new_line_comma.join(columns)
 
     def finalFormatter(output_columns):
@@ -135,7 +149,8 @@ class OT_Metadata:
         "CPTATD_AMT_RQSTD_DT":TAF_Closure.set_as_null,
         "HCPCS_RATE":TAF_Closure.set_as_null,
         "CPTATD_PYMT_RQSTD_AMT":TAF_Closure.set_as_null,
-        "TOT_COPAY_AMT":TAF_Closure.set_as_null
+        "TOT_COPAY_AMT":TAF_Closure.set_as_null,
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
@@ -345,6 +360,18 @@ class OT_Metadata:
             "XXI_SRVC_CTGRY_CD",
             "IHS_SVC_IND"
         ],
+        "COT00004": [
+            "TMSIS_RUN_ID",
+            "SUBMTG_STATE_CD",
+            "ORGNL_CLM_NUM",
+            "ADJSTMT_CLM_NUM",
+            "ADJSTMT_IND",
+            "ADJDCTN_DT",
+            "DGNS_TYPE_CD",
+            "DGNS_SQNC_NUM",
+            "DGNS_CD_IND",
+            "DGNS_CD"
+        ],
     }
 
     class OTH:
@@ -490,7 +517,10 @@ class OT_Metadata:
         "XXI_SRVC_CTGRY_CD",
         "ORDRG_PRVDR_NUM",
         "ORDRG_PRVDR_NPI_NUM",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "DGNS_TYPE_CD",
+        "DGNS_CD_FLAG",
+        "DGNS_CD"
     ]
 
     renames = {}
@@ -512,6 +542,9 @@ class OT_Metadata:
         "HCPCS_TXNMY_CD": "HCBS_TXNMY",
         "NDC_UOM_CD": "UOM_CD",
     }
+    
+    dx_renames = {"DGNS_CD_IND":"DGNS_CD_FLAG"}
+    
 
     header_columns = [
         "DA_RUN_ID",
