@@ -141,7 +141,8 @@ class OT_Metadata:
         "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "DGNS_POA_1_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null
+        "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null,
+        "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null
         
     }
 
