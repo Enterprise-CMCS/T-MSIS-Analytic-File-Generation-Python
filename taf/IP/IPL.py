@@ -43,19 +43,18 @@ class IPL:
 
                 , { TAF_Closure.var_set_tos('TOS_CD') }
 
-                , case when lpad(IMNZTN_TYPE_CD,2,'0') = '88' then NULL
-                    else  { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound='29', multiple_condition='YES') }
+                ,IMNZTN_type_cd
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01',  cond2='02', cond3='03', cond4='04') }
 
-                , case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD else NULL end as XIX_SRVC_CTGRY_CD
-                , case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD else NULL end as XXI_SRVC_CTGRY_CD
+                ,XIX_SRVC_CTGRY_CD
+                ,XXI_SRVC_CTGRY_CD
 
                 , { TAF_Closure.var_set_type1('CLL_STUS_CD') }
 
                 , case when (SRVC_BGNNG_DT < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(SRVC_BGNNG_DT, '1960-01-01') end as SRVC_BGNNG_DT
                 , case when (SRVC_ENDG_DT < to_date('1600-01-01')) then to_date('1599-12-31') else nullif(SRVC_ENDG_DT, '1960-01-01') end as SRVC_ENDG_DT
 
-                , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
+                ,BNFT_TYPE_CD
                 , { TAF_Closure.var_set_type1('REV_CD', lpad=4) }
                 , { TAF_Closure.var_set_type6('RC_QTY_ACTL',cond1=999999, cond2=88888.888, cond3=99999.990) }
                 , { TAF_Closure.var_set_type6('RC_QTY_ALOWD',cond1=888888.89, cond2=88888.888) }
@@ -71,7 +70,7 @@ class IPL:
                     else NULL end as prvdr_fac_type_cd
 
                 , { TAF_Closure.var_set_type6('NDC_QTY', cond1=999999, cond2=888888, cond3=88888.888, cond4=888888.888, cond5=999999.998, cond6=888888.880) }
-                , { TAF_Closure.var_set_type1('HCPCS_RATE') }
+                ,HCPCS_RATE
                 , { TAF_Closure.var_set_fills('NDC_CD', cond1=0, cond2=8, cond3='9', cond4='#', spaces='YES') }
                 , { TAF_Closure.var_set_type4('UOM_CD', 'YES', cond1='F2', cond2='ML', cond3='GR', cond4='UN', cond5='ME') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1=888888888.88, cond2=99999999.00, cond3=9999999999.99) }
