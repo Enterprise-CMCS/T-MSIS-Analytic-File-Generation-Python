@@ -59,16 +59,14 @@ class RXL:
                     else { TAF_Closure.var_set_type5('CMPND_DSG_FORM_CD', lpad=2, lowerbound=1, upperbound=18, multiple_condition=True) }
 
                 , { TAF_Closure.var_set_type2('REBT_ELGBL_IND', 0, cond1='0', cond2='1', cond3='2') }
-                , { TAF_Closure.var_set_type5('IMNZTN_TYPE_CD', lpad=2, lowerbound=0, upperbound=29) }
-                , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
+                ,IMNZTN_TYPE_CD
+                ,BNFT_TYPE_CD
                 , { TAF_Closure.var_set_type6('RX_QTY_ALOWD',cond1='99999', cond2='99999.999', cond3='888888.000', cond4='999999', cond5='888888.880') }
                 , { TAF_Closure.var_set_type6('RX_QTY_ACTL',cond1='999999.99', cond2='888888', cond3='999999', cond4='0') }
                 , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD',2, cond1='01',cond2='02',cond3='03',cond4='04') }
 
-                ,case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
-                    else NULL end as XIX_SRVC_CTGRY_CD
-                ,case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD
-                    else NULL end as XXI_SRVC_CTGRY_CD
+                ,XIX_SRVC_CTGRY_CD
+                ,XXI_SRVC_CTGRY_CD
 
                 , { TAF_Closure.var_set_type1('CLL_STUS_CD') }
                 , { TAF_Closure.var_set_type6('bill_amt', cond1='9999999999.99', cond2='999999.99', cond3='999999', cond4='888888888.88') }
