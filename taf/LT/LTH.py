@@ -66,8 +66,8 @@ class LTH:
                 , case when lpad(wvr_type_cd, 2, '0') = '88' then NULL
                    else { TAF_Closure.var_set_type5(var='wvr_type_cd', lpad=2, lowerbound='1', upperbound='33', multiple_condition='YES') }
                 , { TAF_Closure.var_set_type1(var='WVR_ID') }
-                , { TAF_Closure.var_set_type2(var='SRVC_TRKNG_TYPE_CD', lpad=2, cond1='00', cond2='01', cond3='02', cond4='03', cond5='04', cond6='05', cond7='06') }
-                , { TAF_Closure.var_set_type6('SRVC_TRKNG_PYMT_AMT', cond1='888888888.88') }
+                ,SRVC_TRKNG_TYPE_CD
+                ,SRVC_TRKNG_PYMT_AMT
                 , { TAF_Closure.var_set_type2(var='OTHR_INSRNC_IND', lpad=0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2(var='OTHR_TPL_CLCTN_CD', lpad=3, cond1='000', cond2='001', cond3='002', cond4='003', cond5='004', cond6='005', cond7='006', cond8='007') }
                 , { TAF_Closure.var_set_type2('FIXD_PYMT_IND', 0, cond1='0', cond2='1') }
@@ -118,7 +118,7 @@ class LTH:
                 ,RFRG_PRVDR_TYPE_CD
                 ,RFRG_PRVDR_SPCLTY_CD
                 , { TAF_Closure.var_set_type1(var='PRVDR_LCTN_ID') }
-                , { TAF_Closure.var_set_type6('DAILY_RATE', cond1='88888.80', cond2='88888.00', cond3='88888.88') }
+                ,DAILY_RATE
                 , { TAF_Closure.var_set_type2(var='PYMT_LVL_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_type6('LTC_RCP_LBLTY_AMT', cond1='9999999999.99', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCR_PD_AMT', cond1='9999999999.99', cond2='888888888.88', cond3='88888888888.00', cond4='88888888888.88', cond5='8888888.88', cond6='99999999999.00') }
