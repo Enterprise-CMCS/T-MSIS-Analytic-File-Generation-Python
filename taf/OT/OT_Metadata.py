@@ -53,6 +53,19 @@ class OT_Metadata:
                             columns[i].lower().split(" as ")[0]
                             + f" as {OT_Metadata.line_renames.get(item).lower()}"
                         )
+            #qualify dx columns
+            if segment_id.casefold() == "cot00004":
+                if item in OT_Metadata.dx_renames.keys():
+                    if item in OT_Metadata.upper:
+                        columns[i] = (
+                            "upper(" + columns[i].lower().split(" as ")[0]
+                            + f") as {OT_Metadata.dx_renames.get(item).lower()}"
+                        )
+                    else:
+                        columns[i] = (
+                            columns[i].lower().split(" as ")[0]
+                            + f" as {OT_Metadata.dx_renames.get(item).lower()}"
+                        )
 
         return new_line_comma.join(columns)
 
@@ -142,8 +155,8 @@ class OT_Metadata:
         "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "DGNS_POA_1_CD_IND":TAF_Closure.set_as_null,
         "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null,
-        "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null
-        
+        "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null,
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
@@ -353,6 +366,18 @@ class OT_Metadata:
             "XXI_SRVC_CTGRY_CD",
             "IHS_SVC_IND"
         ],
+        "COT00004": [
+            "TMSIS_RUN_ID",
+            "SUBMTG_STATE_CD",
+            "ORGNL_CLM_NUM",
+            "ADJSTMT_CLM_NUM",
+            "ADJSTMT_IND",
+            "ADJDCTN_DT",
+            "DGNS_TYPE_CD",
+            "DGNS_SQNC_NUM",
+            "DGNS_CD_IND",
+            "DGNS_CD"
+        ],
     }
 
     class OTH:
@@ -492,12 +517,17 @@ class OT_Metadata:
         "XOVR_IND",
         "ORDRG_PRVDR_NUM",
         "ORDRG_PRVDR_NPI_NUM",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "DGNS_TYPE_CD",
+        "DGNS_CD_FLAG",
+        "DGNS_CD"
     ]
 
     renames = {}
 
     header_renames = {"PLAN_ID_NUM": "MC_PLAN_ID"}
+
+    dx_renames = {"DGNS_CD_IND":"DGNS_CD_FLAG"}
 
     line_renames = {
         "SUBMTG_STATE_CD": "SUBMTG_STATE_CD_LINE",

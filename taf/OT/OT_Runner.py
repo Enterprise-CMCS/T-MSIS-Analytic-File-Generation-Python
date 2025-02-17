@@ -81,6 +81,7 @@ class OT_Runner(TAF_Runner):
             "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
         )
 
+        claims.select_dx("tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC")
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
