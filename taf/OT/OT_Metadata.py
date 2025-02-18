@@ -288,9 +288,7 @@ class OT_Metadata:
             "TOT_BENE_DDCTBL_LBLE_AMT",
             "TOT_BENE_COPMT_LBLE_AMT",
             "TOT_BENE_COINSRNC_LBLE_AMT",
-            "CMBND_BENE_CST_SHRNG_PD_AMT",
-            "ORDRG_PRVDR_NUM",
-            "ORDRG_PRVDR_NPI_NUM"
+            "CMBND_BENE_CST_SHRNG_PD_AMT"
             
         ],
         "COT00003": [
@@ -351,7 +349,9 @@ class OT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
-            "IHS_SVC_IND"
+            "IHS_SVC_IND",
+            "ORDRG_PRVDR_NUM",
+            "ORDRG_PRVDR_NPI_NUM"
         ],
     }
 
@@ -652,9 +652,8 @@ class OT_Metadata:
         "TOT_BENE_DDCTBL_LBLE_AMT",
         "TOT_BENE_COPMT_LBLE_AMT",
         "TOT_BENE_COINSRNC_LBLE_AMT",
-        "CMBND_BENE_CST_SHRNG_PD_AMT",
-        "ORDRG_PRVDR_NUM",
-        "ORDRG_PRVDR_NPI_NUM"
+        "CMBND_BENE_CST_SHRNG_PD_AMT"
+
     ]
 
     line_columns = [
@@ -722,7 +721,9 @@ class OT_Metadata:
         "LINE_NUM",
         "PRCDR_CCS_CTGRY_CD",
         "SRVCNG_PRVDR_NPPES_TXNMY_CD",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "ORDRG_PRVDR_NUM",
+        "ORDRG_PRVDR_NPI_NUM"
     ]
 
 
