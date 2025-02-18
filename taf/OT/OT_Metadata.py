@@ -142,8 +142,11 @@ class OT_Metadata:
         "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "DGNS_POA_1_CD_IND":TAF_Closure.set_as_null,
         "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null,
-        "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null
-        
+        "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null,
+        "DGNS_1_CD":TAF_Closure.set_as_null,
+        "DGNS_2_CD":TAF_Closure.set_as_null,
+        "DGNS_1_CD_IND":TAF_Closure.set_as_null,
+        "DGNS_2_CD_IND":TAF_Closure.set_as_null
     }
 
     validator = {}
@@ -301,7 +304,7 @@ class OT_Metadata:
             "BNFT_TYPE_CD",
             "BILL_AMT",
             "CLL_STUS_CD",
-            "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+            "FED_REIMBRSMT_CTGRY_CD",
             "BENE_COPMT_PD_AMT",
             "SRVC_ENDG_DT",
             "HCPCS_SRVC_CD",
@@ -408,7 +411,7 @@ class OT_Metadata:
         "CLM_STUS_CD",
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
-        "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+        "FED_REIMBRSMT_CTGRY_CD",
         "DGNS_1_CD_IND",
         "DGNS_2_CD_IND",
         "DGNS_3_CD_IND",
@@ -703,7 +706,7 @@ class OT_Metadata:
         "TOOTH_NUM",
         "TOOTH_ORAL_CVTY_AREA_DSGNTD_CD",
         "TOOTH_SRFC_CD",
-        "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+        "FED_REIMBRSMT_CTGRY_CD",
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",
         "STATE_NOTN_TXT",
