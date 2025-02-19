@@ -73,7 +73,7 @@ class OTL:
                 , case when lpad(upper(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD), 2, '0') in ('20', '30', '40') then lpad(upper(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD), 2, '0')
                     else { TAF_Closure.var_set_type5('TOOTH_ORAL_CVTY_AREA_DSGNTD_CD', lpad=2, lowerbound=0, upperbound=10, multiple_condition='YES', upper=True) }
                 , { TAF_Closure.var_set_type4('TOOTH_SRFC_CD', 'YES', cond1='B', cond2='D', cond3='F', cond4='I', cond5='L', cond6='M', cond7='O') }
-                , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01', cond2='02', cond3='03', cond4='04') }
+                , { TAF_Closure.var_set_type2('FED_REIMBRSMT_CTGRY_CD', 2, cond1='01', cond2='02', cond3='03', cond4='04') }
                 ,XIX_SRVC_CTGRY_CD
                 ,XXI_SRVC_CTGRY_CD
                 , { TAF_Closure.var_set_type1('STATE_NOTN_TXT') }
@@ -92,6 +92,8 @@ class OTL:
                 , PRCDR_CCS_CTGRY_CD
                 , SRVCNG_PRVDR_NPPES_TXNMY_CD
                 , { TAF_Closure.var_set_type1('IHS_SVC_IND',upper=True) }
+                ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
+                ,nullif(trim(ORDRG_PRVDR_NPI_NUM),'') as ORDRG_PRVDR_NPI_NUM
             from (
                 select
                     *,
