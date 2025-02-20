@@ -401,6 +401,36 @@ class TAF_Closure:
             end as {var}
         """
 
+    def var_set_dgns_type(var):
+        """
+        Helper function for setting Diagnosis Type Code
+        """
+        return f"""
+            case when (upper({var}) in ('A','D','E','O','P','R')) then upper({var})
+                else NULL
+            end as {var}
+        """
+        
+    def var_set_dgns_sqnc(var):
+        """
+        Helper function for setting Diagnosis Sqnc Number
+        """
+        return f"""
+            case when ({var} >= 1 and {var} <=24) then {var}
+                else NULL
+            end as {var}
+        """
+
+    def var_set_dgns_flag(var):
+        """
+        Helper function for setting Diagnosis Code Flag
+        """
+        return f"""
+            case when (upper({var}) in ('1','2')) then upper({var})
+                else NULL
+            end as {var}
+        """
+
     def var_set_fills(
         var: str,
         cond1: str = "@",

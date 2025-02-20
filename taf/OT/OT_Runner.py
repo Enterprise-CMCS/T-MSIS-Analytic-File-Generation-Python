@@ -38,6 +38,7 @@ class OT_Runner(TAF_Runner):
         from taf.OT.OT import OT
         from taf.OT.OTH import OTH
         from taf.OT.OTL import OTL
+        from taf.OT.OT_DX import OT_DX
 
         # -------------------------------------------------
         #   Produces:
@@ -68,6 +69,8 @@ class OT_Runner(TAF_Runner):
             "tmsis", "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
         )
 
+        claims.select_dx("tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC")
+
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
@@ -80,7 +83,6 @@ class OT_Runner(TAF_Runner):
         ot.AWS_Extract_Line(
             "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
         )
-
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
@@ -106,14 +108,18 @@ class OT_Runner(TAF_Runner):
         # -------------------------------------------------
         #   - OTH
         #   - TAF_OTH
+        #   - TAF_OTL
+        #
         # -------------------------------------------------
         OTH().create(self)
         OTL().create(self)
+        OT_DX().create(self)
 
         grouper.fasc_code("OTHR_TOC")
 
         OTH().build(self)
         OTL().build(self)
+        OT_DX().build(self)
 
 
 # -----------------------------------------------------------------------------

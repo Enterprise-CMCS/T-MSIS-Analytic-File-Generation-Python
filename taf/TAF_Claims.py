@@ -485,6 +485,33 @@ class TAF_Claims():
         """
         self.runner.append(fl, z)
 
+    def select_dx(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl):
+        z = f"""
+            create or replace temporary view dx_{fl} as
+                select dx_all.*
+                ,h.msis_ident_num
+                ,h.new_submtg_state_cd
+                from
+                    (
+                    select
+                    { self.selectDataElements(fl, tab_no, 'a') }
+                    from
+                        {TMSIS_SCHEMA}.{_2x_segment} as a
+                    where
+                        concat(a.submtg_state_cd, a.tmsis_run_id) in ({self.runner.get_combined_list()})
+                    ) as dx_all
+                inner join
+                    FA_HDR_{fl} as h
+                on (
+                    dx_all.TMSIS_RUN_ID = h.TMSIS_RUN_ID and
+                    dx_all.ORGNL_CLM_NUM = h.ORGNL_CLM_NUM and
+                    dx_all.ADJSTMT_CLM_NUM = h.ADJSTMT_CLM_NUM and
+                    dx_all.ADJDCTN_DT = h.ADJDCTN_DT and
+                    dx_all.ADJSTMT_IND = h.ADJSTMT_IND
+                    )
+            """
+        self.runner.append(fl, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
