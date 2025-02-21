@@ -485,7 +485,23 @@ class TAF_Claims():
         """
         self.runner.append(fl, z)
 
-    def select_dx(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl):
+    def select_dx(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, header_in, header_out):
+        """
+        Extract elements from DX table, keeping rows associated wtih headers currently being processed.
+        Apply data cleaning to elements
+        Prepare DX level table for output
+        Transpose DX table where applicable (IP, OT, LT)
+        Join Transposed DX table to Header level where applicable (IP, OT, LT)
+
+        Function inputs:
+            TMSIS_SCHEMA:  Name of the schema holding the raw data
+            tab_no:  number for the segment ie COT00004
+            _2x_segment:  name of the input T-MSIS DX segment
+            fl:  file type (IP, OTHR_TOC, LT, RX)
+            header_in:  name of header view to use for limiting dx records to only claims being processed.  Also used for joining back to header file.
+            header_out:  name of header view after DX fields have been transposed and joined to the header view.
+        """
+
         z = f"""
             create or replace temporary view dx_{fl} as
                 select dx_all.*
@@ -501,7 +517,7 @@ class TAF_Claims():
                         concat(a.submtg_state_cd, a.tmsis_run_id) in ({self.runner.get_combined_list()})
                     ) as dx_all
                 inner join
-                    FA_HDR_{fl} as h
+                    {header_in} as h
                 on (
                     dx_all.TMSIS_RUN_ID = h.TMSIS_RUN_ID and
                     dx_all.ORGNL_CLM_NUM = h.ORGNL_CLM_NUM and

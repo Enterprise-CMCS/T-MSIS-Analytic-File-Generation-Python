@@ -7,7 +7,7 @@ class OT_DX:
     """
     Each OT TAF is comprised of two files – a claim-header level file and a claim-line level file and a diagnosis level file.
     The claims included in these files are active, final-action, non-voided, and non-denied claims.
-    Only header claims with a date in the TAF month/year, along with their associated claim line
+    Only header claims with a date in the TAF month/year, along with their associated claim line and diagnosis
     records, are included. All files can be linked together using a unique key that is constructed
     based on various claim header, claim line, and claim DX data elements. The three OT TAF are produced for each
     calendar month in which the data are reported.
@@ -66,6 +66,10 @@ class OT_DX:
             return
 
         z = f"""
+                INSERT INTO {runner.DA_SCHEMA}.taf_otd
+                SELECT
+                    { OT_Metadata.finalFormatter(OT_Metadata.dx_columns) }
+                FROM OT_DX
         """
 
         runner.append(type(self).__name__, z)

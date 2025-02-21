@@ -762,6 +762,26 @@ class OT_Metadata:
         "ORDRG_PRVDR_NUM",
         "ORDRG_PRVDR_NPI_NUM"
     ]
+    
+    dx_columns = [
+        "DA_RUN_ID",
+        "OT_LINK_KEY",
+        "OT_VRSN",
+        "OT_FIL_DT",
+        "TMSIS_RUN_ID",
+        "MSIS_IDENT_NUM",
+        "SUBMTG_STATE_CD",
+        "ORGNL_CLM_NUM",
+        "ADJSTMT_CLM_NUM",
+        "ADJSTMT_IND",
+        "ADJDCTN_DT",
+        "DGNS_TYPE_CD",
+        "DGNS_SQNC_NUM",
+        "DGNS_CD_FLAG",
+        "DGNS_CD",
+        "REC_ADD_TS",
+        "REC_UPDT_TS"
+    ]
 
 
 # -----------------------------------------------------------------------------

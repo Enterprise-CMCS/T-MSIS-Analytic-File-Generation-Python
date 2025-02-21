@@ -69,7 +69,9 @@ class OT_Runner(TAF_Runner):
             "tmsis", "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
         )
 
-        claims.select_dx("tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC")
+        claims.select_dx(
+            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC","DON'T KNOW YET"
+        )
 
         # -------------------------------------------------
         #   Produces:
