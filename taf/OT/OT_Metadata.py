@@ -158,10 +158,6 @@ class OT_Metadata:
         "DGNS_POA_1_CD_IND":TAF_Closure.set_as_null,
         "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null,
         "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null,
-        "DGNS_1_CD":TAF_Closure.set_as_null,
-        "DGNS_2_CD":TAF_Closure.set_as_null,
-        "DGNS_1_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_2_CD_IND":TAF_Closure.set_as_null,
         "DGNS_CD":TAF_Closure.compress_dots
     }
 
@@ -211,10 +207,6 @@ class OT_Metadata:
             "DAILY_RATE",
             "CPTATD_AMT_RQSTD_DT",
             "BIRTH_DT",
-            "DGNS_1_CD",
-            "DGNS_2_CD",
-            "DGNS_1_CD_IND",
-            "DGNS_2_CD_IND",
             "DGNS_POA_1_CD_IND",
             "DGNS_POA_2_CD_IND",
             "ELGBL_1ST_NAME",

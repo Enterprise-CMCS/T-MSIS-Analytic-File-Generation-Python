@@ -70,7 +70,7 @@ class OT_Runner(TAF_Runner):
         )
 
         claims.select_dx(
-            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC","DON'T KNOW YET"
+            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC","DON'T KNOW YET",2
         )
 
         # -------------------------------------------------
