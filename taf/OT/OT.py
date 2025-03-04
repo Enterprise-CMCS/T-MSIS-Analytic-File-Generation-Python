@@ -133,6 +133,7 @@ class OT(TAF):
 
         # Attach num_cll variable to header records as per instruction
         # Use this step to add in transposed DX codes and flags
+        # If there's no line in the dx file, set the additional dgns prsnt flag to 0.
         z = f"""
             create or replace temporary view {fl2}_HEADER as
             select
@@ -142,6 +143,7 @@ class OT(TAF):
                 ,dx.DGNS_1_CD_IND
                 ,dx.DGNS_2_CD
                 ,dx.DGNS_2_CD_IND
+                ,coalesce(dx.addtnl_dgns_prsnt,0) as addtnl_dgns_prsnt
 
             from
                 FA_HDR_{fl} HEADER left join RN_{fl2} RN
@@ -163,7 +165,92 @@ class OT(TAF):
         """
         self.runner.append(self.st_fil_type, z)
 
+    def select_dx(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, header_in, numdx=0):
+        """
+        
+        Added for T-MSIS v4 changes, as TAF 9.0
+        
+        Extract elements from DX table, keeping rows associated wtih headers currently being processed.
+        Apply data cleaning to elements
+        Prepare DX level table for output
+        Transpose DX table where applicable (IP, OT, LT)
+        Join Transposed DX table to Header level where applicable (IP, OT, LT)
 
+        Function inputs:
+            TMSIS_SCHEMA:  Name of the schema holding the raw data
+            tab_no:  number for the segment ie COT00004
+            _2x_segment:  name of the input T-MSIS DX segment
+            fl:  file type (IP, OTHR_TOC, LT, RX)
+            header_in:  name of header view to use for limiting dx records to only claims being processed.  Also used for joining back to header file.
+            header_out:  name of header view after DX fields have been transposed and joined to the header view.
+            numdx = the number of DX fields to be transposed and joined to header file.
+        """
+
+        z = f"""
+            create or replace temporary view dx_{fl} as
+                select dx_all.*
+                ,h.msis_ident_num
+                ,h.new_submtg_state_cd
+                ,row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
+                                                ,dx_all.adjstmt_ind,dx_all.adjdctn_dt order by dx_all.DGNS_SQNC_NUM,sort_val) as h_iteration
+                from
+                    (
+                    select
+                    { OT_Metadata.selectDataElements(tab_no, 'a') }
+                    ,case
+                            when upper(dgns_type_cd) = "P" then 1
+                            when upper(dgns_type_cd) = "D" then 2
+                            when upper(dgns_type_cd) = "O" then 3
+                            when upper(dgns_type_cd) = "E" then 4
+                            when upper(dgns_type_cd) = "R" then 5
+                            else 6 end as sort_val
+                    from
+                        {TMSIS_SCHEMA}.{_2x_segment} as a
+                    where
+                        concat(a.submtg_state_cd, a.tmsis_run_id) in ({self.runner.get_combined_list()})
+                    ) as dx_all
+                inner join
+                    {header_in} as h
+                on (
+                    dx_all.TMSIS_RUN_ID = h.TMSIS_RUN_ID and
+                    dx_all.ORGNL_CLM_NUM = h.ORGNL_CLM_NUM and
+                    dx_all.ADJSTMT_CLM_NUM = h.ADJSTMT_CLM_NUM and
+                    dx_all.ADJDCTN_DT = h.ADJDCTN_DT and
+                    dx_all.ADJSTMT_IND = h.ADJSTMT_IND
+                    )
+                where (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^0]+', '')), 0))!= 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^8]+', '')), 0)) != 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^9]+', '')), 0)) != 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^#]+', '')), 0)) != 0
+                    and nullif(trim(DGNS_CD),'') is not null
+            """
+        self.runner.append(fl, z)
+        
+        #transpose the DX file to the appropriate number of DX fields.
+        z = f"""
+            create or replace temporary view dx_wide as
+            select 
+                new_submtg_state_cd
+                ,orgnl_clm_num
+                ,adjstmt_clm_num
+                ,adjstmt_ind
+                ,adjdctn_dt
+                ,max(case when h_iteration > {numdx} then 1 else 0 end) as addtnl_dgns_prsnt"""
+        for i in range(1,numdx+1):
+            z+= f"""
+                ,max(case when h_iteration = {i} then DGNS_CD else null end) as dgns_{i}_cd
+                ,max(case when h_iteration = {i} then dgns_cd_flag else null end) as DGNS_{i}_CD_IND
+                ,max(case when h_iteration = {i} then dgns_type_cd else null end) as dgns_{i}_type_cd """
+        z += f"""
+            from dx_{fl}
+            group by
+                new_submtg_state_cd
+                ,orgnl_clm_num
+                ,adjstmt_clm_num
+                ,adjstmt_ind
+                ,adjdctn_dt
+        """
+        self.runner.append(fl, z)
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
 
