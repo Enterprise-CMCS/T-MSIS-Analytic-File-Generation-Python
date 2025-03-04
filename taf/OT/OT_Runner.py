@@ -69,8 +69,15 @@ class OT_Runner(TAF_Runner):
             "tmsis", "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
         )
 
-        claims.select_dx(
-            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC","DON'T KNOW YET",2
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
+        #   1 - dx_OTHR_TOC
+        #   2 - dx_wide
+
+        ot = OT(self)
+        ot.select_dx(
+            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC",2
         )
 
         # -------------------------------------------------
@@ -81,7 +88,6 @@ class OT_Runner(TAF_Runner):
         #   3 - RN_OTHR_TOC
         #   4 - OTHR_TOC_HEADER
         # -------------------------------------------------
-        ot = OT(self)
         ot.AWS_Extract_Line(
             "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
         )

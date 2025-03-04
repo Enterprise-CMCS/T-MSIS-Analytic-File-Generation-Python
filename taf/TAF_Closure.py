@@ -426,7 +426,7 @@ class TAF_Closure:
         Helper function for setting Diagnosis Code Flag
         """
         return f"""
-            case when (upper({var}) in ('1','2')) then upper({var})
+            case when (upper({var}) in ('1','2','3')) then upper({var})
                 else NULL
             end as {var}
         """

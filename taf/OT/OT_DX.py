@@ -38,7 +38,7 @@ class OT_DX:
                 else ADJDCTN_DT
                 end as ADJDCTN_DT
             , {TAF_Closure.var_set_dgns_type('DGNS_TYPE_CD')}
-            , {TAF_Closure.var_set_dgns_sqnc('DGNS_SQNC_NUM')}
+            , DGNS_SQNC_NUM
             , {TAF_Closure.var_set_dgns_flag('dgns_cd_flag')}
             , {TAF_Closure.var_set_fills('DGNS_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
