@@ -66,7 +66,7 @@ class OT_DX:
             return
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_otd
+                INSERT INTO {runner.DA_SCHEMA}.TAF_OT_DX
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.dx_columns) }
                 FROM OT_DX
