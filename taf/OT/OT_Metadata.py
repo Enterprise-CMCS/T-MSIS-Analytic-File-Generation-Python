@@ -54,7 +54,7 @@ class OT_Metadata:
                             + f" as {OT_Metadata.line_renames.get(item).lower()}"
                         )
 
-                        #qualify dx columns
+            #qualify dx columns
             if segment_id.casefold() == "cot00004":
                 if item in OT_Metadata.dx_renames.keys():
                     if item in OT_Metadata.upper:

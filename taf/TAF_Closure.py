@@ -414,16 +414,6 @@ class TAF_Closure:
                 else NULL
             end as {var}
         """
-        
-    def var_set_dgns_sqnc(var):
-        """
-        Helper function for setting Diagnosis Sqnc Number
-        """
-        return f"""
-            case when ({var} >= 1 and {var} <=24) then {var}
-                else NULL
-            end as {var}
-        """
 
     def var_set_dgns_flag(var):
         """
