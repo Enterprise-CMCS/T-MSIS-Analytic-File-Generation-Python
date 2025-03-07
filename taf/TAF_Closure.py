@@ -39,6 +39,10 @@ class TAF_Closure:
 
         return f"cast({alias}.{colname} as decimal(13, 2)) as {colname}"
 
+    def cast_as_int(colname: str, alias: str):
+
+        return f"cast({alias}.{colname} as int) as {colname}"
+
     def set_as_null(colname: str, alias: str):
         #This function requires alias parameter but does not use it.  All functions called by cleanser need 2 parameters.    
         return f"NULL as {colname}"
