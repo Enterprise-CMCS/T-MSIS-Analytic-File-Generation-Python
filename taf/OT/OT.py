@@ -167,14 +167,12 @@ class OT(TAF):
 
     def select_dx(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, header_in, numdx=0):
         """
-        
         Added for T-MSIS v4 changes, as TAF 9.0
-        
+
         Extract elements from DX table, keeping rows associated wtih headers currently being processed.
         Apply data cleaning to elements
         Prepare DX level table for output
-        Transpose DX table where applicable (IP, OT, LT)
-        Join Transposed DX table to Header level where applicable (IP, OT, LT)
+        Transpose DX table
 
         Function inputs:
             TMSIS_SCHEMA:  Name of the schema holding the raw data
@@ -182,7 +180,6 @@ class OT(TAF):
             _2x_segment:  name of the input T-MSIS DX segment
             fl:  file type (IP, OTHR_TOC, LT, RX)
             header_in:  name of header view to use for limiting dx records to only claims being processed.  Also used for joining back to header file.
-            header_out:  name of header view after DX fields have been transposed and joined to the header view.
             numdx = the number of DX fields to be transposed and joined to header file.
         """
 
