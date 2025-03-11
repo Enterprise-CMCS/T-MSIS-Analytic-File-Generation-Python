@@ -506,7 +506,7 @@ class OT_Metadata:
         "ORDRG_PRVDR_NPI_NUM",
         "IHS_SVC_IND",
         "DGNS_TYPE_CD",
-        "DGNS_CD_FLAG",
+        "DGNS_CD_IND",
         "DGNS_CD"
         
     ]
@@ -515,7 +515,7 @@ class OT_Metadata:
 
     header_renames = {"PLAN_ID_NUM": "MC_PLAN_ID"}
     
-    dx_renames = {"DGNS_CD_IND":"DGNS_CD_FLAG"}
+    dx_renames = {}
 
     line_renames = {
         "SUBMTG_STATE_CD": "SUBMTG_STATE_CD_LINE",
@@ -759,7 +759,7 @@ class OT_Metadata:
         "ADJDCTN_DT",
         "DGNS_TYPE_CD",
         "DGNS_SQNC_NUM",
-        "DGNS_CD_FLAG",
+        "DGNS_CD_IND",
         "DGNS_CD",
         "REC_ADD_TS",
         "REC_UPDT_TS"

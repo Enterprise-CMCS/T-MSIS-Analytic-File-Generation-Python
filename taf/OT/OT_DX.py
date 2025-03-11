@@ -39,7 +39,7 @@ class OT_DX:
                 end as ADJDCTN_DT
             , {TAF_Closure.var_set_dgns_type('DGNS_TYPE_CD')}
             , DGNS_SQNC_NUM
-            , {TAF_Closure.var_set_dgns_flag('dgns_cd_flag')}
+            , {TAF_Closure.var_set_dgns_flag('DGNS_CD_IND')}
             ,DGNS_CD
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline

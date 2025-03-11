@@ -236,8 +236,7 @@ class OT(TAF):
         for i in range(1,numdx+1):
             z+= f"""
                 ,max(case when h_iteration = {i} then DGNS_CD else null end) as dgns_{i}_cd
-                ,max(case when h_iteration = {i} then dgns_cd_flag else null end) as DGNS_{i}_CD_IND
-                ,max(case when h_iteration = {i} then dgns_type_cd else null end) as dgns_{i}_type_cd """
+                ,max(case when h_iteration = {i} then dgns_cd_ind else null end) as DGNS_{i}_CD_IND """
         z += f"""
             from dx_{fl}
             group by
