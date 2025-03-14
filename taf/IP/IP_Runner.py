@@ -79,7 +79,7 @@ class IP_Runner(TAF_Runner):
         ip = IP(self)
         ip.select_dx("tmsis", "CIP00004", "tmsis_clm_dx_ip", "IP","FA_HDR_IP",12)
 
-        ip.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP")
+        ip.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP",12)
 
         # -------------------------------------------------
         #   Produces:

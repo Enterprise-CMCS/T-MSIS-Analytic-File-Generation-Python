@@ -29,7 +29,7 @@ class IP(TAF):
         super().__init__(runner)
         self.st_fil_type = "IP"
 
-    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment):
+    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment,numdx):
         """
         Pull line item records for header records linked with claims family table dataset.
         """
@@ -125,21 +125,38 @@ class IP(TAF):
         self.runner.append(self.st_fil_type, z)
 
         # Attach num_cll variable to header records as per instruction
+        # Use this step to add in transposed DX codes and flags
+        # If there's no line in the dx file, set the additional dgns prsnt flag to 0.
         z = f"""
             create or replace temporary view {fl2}_HEADER as
             select
                 HEADER.*
                 ,coalesce(RN.NUM_CLL,0) as NUM_CLL
-
+                ,coalesce(dx.addtnl_dgns_prsnt,0) as addtnl_dgns_prsnt
+                ,dx.ADMTG_DGNS_CD
+                ,dx.ADMTG_DGNS_CD_IND"""
+        for i in range(1,numdx+1):
+            z+= f"""
+                ,dx.dgns_{i}_cd
+                ,dx.DGNS_{i}_CD_IND
+                ,dx.dgns_{i}_poa_cd_ind"""
+        z+=f"""
             from
                 FA_HDR_{fl2} HEADER left join RN_{fl2} RN
-
             on
                 HEADER.NEW_SUBMTG_STATE_CD = RN.NEW_SUBMTG_STATE_CD_LINE and
                 HEADER.ORGNL_CLM_NUM = RN.ORGNL_CLM_NUM_LINE and
                 HEADER.ADJSTMT_CLM_NUM = RN.ADJSTMT_CLM_NUM_LINE and
                 HEADER.ADJDCTN_DT = RN.ADJDCTN_DT_LINE and
                 HEADER.ADJSTMT_IND = RN.LINE_ADJSTMT_IND
+            left join dx_wide as dx
+            on (
+                    HEADER.NEW_SUBMTG_STATE_CD = dx.NEW_SUBMTG_STATE_CD and
+                    HEADER.ORGNL_CLM_NUM = dx.ORGNL_CLM_NUM and
+                    HEADER.ADJSTMT_CLM_NUM = dx.ADJSTMT_CLM_NUM and
+                    HEADER.ADJDCTN_DT = dx.ADJDCTN_DT and
+                    HEADER.ADJSTMT_IND = dx.ADJSTMT_IND
+            )
         """
         self.runner.append(self.st_fil_type, z)
 
