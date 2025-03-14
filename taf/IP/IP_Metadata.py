@@ -775,6 +775,27 @@ class IP_Metadata:
         "LINE_NUM",
         "IHS_SVC_IND"
     ]
+    
+    dx_columns = [
+        "DA_RUN_ID",
+        "IP_LINK_KEY",
+        "IP_VRSN",
+        "IP_FIL_DT",
+        "TMSIS_RUN_ID",
+        "MSIS_IDENT_NUM",
+        "SUBMTG_STATE_CD",
+        "ORGNL_CLM_NUM",
+        "ADJSTMT_CLM_NUM",
+        "ADJSTMT_IND",
+        "ADJDCTN_DT",
+        "DGNS_TYPE_CD",
+        "DGNS_SQNC_NUM",
+        "DGNS_CD_IND",
+        "DGNS_CD",
+        "DGNS_POA_CD_IND",
+        "REC_ADD_TS",
+        "REC_UPDT_TS"
+    ]
 
 
 # -----------------------------------------------------------------------------

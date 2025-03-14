@@ -37,6 +37,7 @@ class IP_Runner(TAF_Runner):
         from taf.IP.IP import IP
         from taf.IP.IPH import IPH
         from taf.IP.IPL import IPL
+        from taf.IP.IP_DX import IP_DX
 
         # -------------------------------------------------
         #   Produces:
@@ -70,15 +71,21 @@ class IP_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
+        #   1 - dx_IP
+        #   2 - dx_wide
+        # -------------------------------------------------
+        ip = IP(self)
+        ip.select_dx("tmsis", "CIP00004", "tmsis_clm_dx_ip", "IP","FA_HDR_IP",12)
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
         #   1 - IP_LINE_IN
         #   2 - IP_LINE_PRE_NPPES
         #   3 - IP_LINE
         #   4 - RN_IP
         #   5 - IP_HEADER
         # -------------------------------------------------
-        ip = IP(self)
-        ip.select_dx("tmsis", "CIP00004", "tmsis_clm_dx_ip", "IP","FA_HDR_IP",12)
-
         ip.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP",12)
 
         # -------------------------------------------------
@@ -99,11 +106,13 @@ class IP_Runner(TAF_Runner):
         # -------------------------------------------------
         IPH().create(self)
         IPL().create(self)
+        IP_DX().create(self)
 
         grouper.fasc_code("IP")
 
         IPH().build(self)
         IPL().build(self)
+        IP_DX().build(self)
 
 
 # -----------------------------------------------------------------------------
