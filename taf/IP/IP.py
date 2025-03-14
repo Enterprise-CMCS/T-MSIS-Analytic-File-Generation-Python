@@ -163,11 +163,21 @@ class IP(TAF):
 
         z = f"""
             create or replace temporary view dx_{fl} as
+              select *,
+                    row_number() over (Partition by new_submtg_state_cd, orgnl_clm_num, adjstmt_clm_num
+                                                    ,adjstmt_ind,adjdctn_dt order by admitting_flag, principal_flag desc, DGNS_SQNC_NUM,sort_val) as h_iteration
+            from (
                 select dx_all.*
                 ,h.msis_ident_num
                 ,h.new_submtg_state_cd
-                ,row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
-                                                ,dx_all.adjstmt_ind,dx_all.adjdctn_dt order by dx_all.DGNS_SQNC_NUM,sort_val) as h_iteration
+                ,case 
+                  when upper(dgns_type_cd) = "A"
+                    and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
+                                                 ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, dx_all.dgns_type_cd order by dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as admitting_flag
+                ,case 
+                  when upper(dgns_type_cd) = "P"
+                    and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
+                                                 ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, dx_all.dgns_type_cd order by dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as principal_flag
                 from
                     (
                     select
@@ -199,6 +209,7 @@ class IP(TAF):
                     and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^9]+', '')), 0)) != 0
                     and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^#]+', '')), 0)) != 0
                     and nullif(trim(DGNS_CD),'') is not null
+            )
             """
         self.runner.append(fl, z)
         
@@ -211,12 +222,14 @@ class IP(TAF):
                 ,adjstmt_clm_num
                 ,adjstmt_ind
                 ,adjdctn_dt
-                ,max(case when h_iteration > {numdx} then 1 else 0 end) as addtnl_dgns_prsnt"""
+                ,max(case when h_iteration > {numdx} and admitting_flag = 0 and principal_flag = 0 then 1 else 0 end) as addtnl_dgns_prsnt
+                ,max(case when admitting_flag = 1 then DGNS_CD else null end) as ADMTG_DGNS_CD
+                ,max(case when admitting_flag = 1 then DGNS_CD_IND else null end) as ADMTG_DGNS_CD_IND"""
         for i in range(1,numdx+1):
             z+= f"""
-                ,max(case when h_iteration = {i} then DGNS_CD else null end) as dgns_{i}_cd
-                ,max(case when h_iteration = {i} then dgns_cd_ind else null end) as DGNS_{i}_CD_IND
-                ,max(case when h_iteration = {i} then dgns_poa_cd_ind else null end) as dgns_{i}_poa_cd_ind"""
+                ,max(case when h_iteration = {i} and admitting_flag = 0 then DGNS_CD else null end) as dgns_{i}_cd
+                ,max(case when h_iteration = {i} and admitting_flag = 0 then dgns_cd_ind else null end) as DGNS_{i}_CD_IND
+                ,max(case when h_iteration = {i} and admitting_flag = 0 then dgns_poa_cd_ind else null end) as dgns_{i}_poa_cd_ind"""
         z += f"""
             from dx_{fl}
             group by
