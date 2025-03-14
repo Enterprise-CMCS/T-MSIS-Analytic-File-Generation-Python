@@ -42,6 +42,13 @@ class IP_Metadata:
                         + f" as {IP_Metadata.line_renames.get(item).lower()}"
                     )
 
+            # qualify dx columns
+            if segment_id == "CIP00004":
+                if item in IP_Metadata.dx_renames.keys():
+                    columns[i] = (
+                        columns[i].lower().split(" as ")[0]
+                        + f" as {IP_Metadata.dx_renames.get(item).lower()}"
+                    )
         return new_line_comma.join(columns)
 
     def finalFormatter(output_columns):
@@ -83,18 +90,6 @@ class IP_Metadata:
         "ADJSTMT_CLM_NUM": TAF_Closure.coalesce_tilda,
         "ORGNL_CLM_NUM": TAF_Closure.coalesce_tilda,
         "ADMTG_DGNS_CD": TAF_Closure.compress_dots,
-        "DGNS_1_CD": TAF_Closure.compress_dots,
-        "DGNS_10_CD": TAF_Closure.compress_dots,
-        "DGNS_11_CD": TAF_Closure.compress_dots,
-        "DGNS_12_CD": TAF_Closure.compress_dots,
-        "DGNS_2_CD": TAF_Closure.compress_dots,
-        "DGNS_3_CD": TAF_Closure.compress_dots,
-        "DGNS_4_CD": TAF_Closure.compress_dots,
-        "DGNS_5_CD": TAF_Closure.compress_dots,
-        "DGNS_6_CD": TAF_Closure.compress_dots,
-        "DGNS_7_CD": TAF_Closure.compress_dots,
-        "DGNS_8_CD": TAF_Closure.compress_dots,
-        "DGNS_9_CD": TAF_Closure.compress_dots,
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "PLAN_ID_NUM": plan_id_num,
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
@@ -109,7 +104,8 @@ class IP_Metadata:
         "HCPCS_RATE":TAF_Closure.set_as_null,
         "IMNZTN_TYPE_CD":TAF_Closure.set_as_null,
         "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
-        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null
+        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
@@ -332,6 +328,19 @@ class IP_Metadata:
             "OTHR_INSRNC_AMT",
             "IHS_SVC_IND"
         ],
+        "CIP00004": [
+            "TMSIS_RUN_ID",
+            "SUBMTG_STATE_CD",
+            "ORGNL_CLM_NUM",
+            "ADJSTMT_CLM_NUM",
+            "ADJSTMT_IND",
+            "ADJDCTN_DT",
+            "DGNS_TYPE_CD",
+            "DGNS_SQNC_NUM",
+            "DGNS_CD_IND",
+            "DGNS_CD",
+            "DGNS_POA_CD_IND"
+        ],
     }
 
     coalesce = {
@@ -377,6 +386,8 @@ class IP_Metadata:
         "STC_CD": "TOS_CD",
         "NDC_UOM_CD": "UOM_CD",
     }
+    
+    dx_renames = {}
 
     upper = [
         "ADJSTMT_LINE_NUM",
@@ -497,7 +508,11 @@ class IP_Metadata:
         "SUBMTG_STATE_CD",
         "NDC_UOM_CD",
         "SRC_LCTN_CD",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "DGNS_TYPE_CD",
+        "DGNS_CD_IND",
+		"DGNS_CD",
+		"DGNS_POA_CD_IND"
     ]
 
     # ---------------------------------------------------------------------------------
