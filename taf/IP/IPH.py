@@ -268,6 +268,7 @@ class IPH:
                     when (SRVC_ENDG_DT < '1600-01-01') then '1599-12-31'
                     else nullif(SRVC_ENDG_DT, '1960-01-01')
                     end as SRVC_ENDG_DT
+                ,ADDTNL_DGNS_PRSNT
             FROM (
                 select
                     *,

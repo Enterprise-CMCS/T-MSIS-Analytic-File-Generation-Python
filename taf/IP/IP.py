@@ -139,7 +139,7 @@ class IP(TAF):
             z+= f"""
                 ,dx.dgns_{i}_cd
                 ,dx.DGNS_{i}_CD_IND
-                ,dx.dgns_{i}_poa_cd_ind"""
+                ,dx.dgns_poa_{i}_cd_ind"""
         z+=f"""
             from
                 FA_HDR_{fl2} HEADER left join RN_{fl2} RN
@@ -246,7 +246,7 @@ class IP(TAF):
             z+= f"""
                 ,max(case when h_iteration = {i} and admitting_flag = 0 then DGNS_CD else null end) as dgns_{i}_cd
                 ,max(case when h_iteration = {i} and admitting_flag = 0 then dgns_cd_ind else null end) as DGNS_{i}_CD_IND
-                ,max(case when h_iteration = {i} and admitting_flag = 0 then dgns_poa_cd_ind else null end) as dgns_{i}_poa_cd_ind"""
+                ,max(case when h_iteration = {i} and admitting_flag = 0 then DGNS_POA_IND else null end) as dgns_poa_{i}_cd_ind"""
         z += f"""
             from dx_{fl}
             group by

@@ -83,6 +83,10 @@ class IP_Metadata:
 
         return f"upper({alias}.{colname}) as mc_plan_id"
 
+    def cast_as_int(colname: str, alias: str):
+
+        return f"cast({alias}.{colname} as int) as {colname}"
+
     cleanser = {
         "ADJDCTN_DT": TAF_Closure.coalesce_date,
         "DSCHRG_DT": dates_of_service,
@@ -104,7 +108,8 @@ class IP_Metadata:
         "IMNZTN_TYPE_CD":TAF_Closure.set_as_null,
         "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
-        "DGNS_CD":TAF_Closure.compress_dots
+        "DGNS_CD":TAF_Closure.compress_dots,
+        "DGNS_SQNC_NUM":cast_as_int
     }
 
     validator = {}
@@ -386,7 +391,7 @@ class IP_Metadata:
         "NDC_UOM_CD": "UOM_CD",
     }
     
-    dx_renames = {}
+    dx_renames = {"DGNS_POA_CD_IND":"DGNS_POA_IND"}
 
     upper = [
         "ADJSTMT_LINE_NUM",
@@ -719,7 +724,8 @@ class IP_Metadata:
         "TOT_BENE_COINSRNC_LBLE_AMT",
         "CMBND_BENE_CST_SHRNG_PD_AMT",
         "SRVC_BGNNG_DT",
-        "SRVC_ENDG_DT"
+        "SRVC_ENDG_DT",
+        "ADDTNL_DGNS_PRSNT"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -792,7 +798,7 @@ class IP_Metadata:
         "DGNS_SQNC_NUM",
         "DGNS_CD_IND",
         "DGNS_CD",
-        "DGNS_POA_CD_IND",
+        "DGNS_POA_IND",
         "REC_ADD_TS",
         "REC_UPDT_TS"
     ]

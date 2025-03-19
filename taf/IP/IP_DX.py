@@ -40,7 +40,7 @@ class IP_DX:
             ,DGNS_SQNC_NUM
             ,DGNS_CD_IND
             ,DGNS_CD
-            ,DGNS_POA_CD_IND
+            ,DGNS_POA_IND
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
             from (
