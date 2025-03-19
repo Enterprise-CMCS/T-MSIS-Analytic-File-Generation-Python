@@ -421,16 +421,6 @@ class OT_Metadata:
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
         "FED_REIMBRSMT_CTGRY_CD",
-        "DGNS_1_CD_IND",
-        "DGNS_2_CD_IND",
-        "DGNS_3_CD_IND",
-        "DGNS_4_CD_IND",
-        "DGNS_5_CD_IND",
-        "DGNS_POA_1_CD_IND",
-        "DGNS_POA_2_CD_IND",
-        "DGNS_POA_3_CD_IND",
-        "DGNS_POA_4_CD_IND",
-        "DGNS_POA_5_CD_IND",
         "DSCHRG_HR_NUM",
         "ELGBL_1ST_NAME",
         "ELGBL_LAST_NAME",
@@ -506,8 +496,7 @@ class OT_Metadata:
         "ORDRG_PRVDR_NPI_NUM",
         "IHS_SVC_IND",
         "DGNS_TYPE_CD",
-        "DGNS_CD_IND",
-        "DGNS_CD"
+        "DGNS_CD_IND"
         
     ]
 

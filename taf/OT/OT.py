@@ -195,11 +195,11 @@ class OT(TAF):
                     select
                     { OT_Metadata.selectDataElements(tab_no, 'a') }
                     ,case
-                            when upper(dgns_type_cd) = "P" then 1
-                            when upper(dgns_type_cd) = "D" then 2
-                            when upper(dgns_type_cd) = "O" then 3
-                            when upper(dgns_type_cd) = "E" then 4
-                            when upper(dgns_type_cd) = "R" then 5
+                            when trim(upper(dgns_type_cd)) = "P" then 1
+                            when trim(upper(dgns_type_cd)) = "D" then 2
+                            when trim(upper(dgns_type_cd)) = "O" then 3
+                            when trim(upper(dgns_type_cd)) = "E" then 4
+                            when trim(upper(dgns_type_cd)) = "R" then 5
                             else 6 end as sort_val
                     from
                         {TMSIS_SCHEMA}.{_2x_segment} as a

@@ -37,9 +37,9 @@ class OT_DX:
                 when ADJDCTN_DT=to_date('1960-01-01') then NULL
                 else ADJDCTN_DT
                 end as ADJDCTN_DT
-            , {TAF_Closure.var_set_dgns_type('DGNS_TYPE_CD')}
+            ,{ TAF_Closure.var_set_type4('DGNS_TYPE_CD', 'YES', cond1='A', cond2='D', cond3='E', cond4='O', cond5='P', cond6='R') }
             , DGNS_SQNC_NUM
-            , {TAF_Closure.var_set_dgns_flag('DGNS_CD_IND')}
+            ,{ TAF_Closure.var_set_type2('DGNS_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
             ,DGNS_CD
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
