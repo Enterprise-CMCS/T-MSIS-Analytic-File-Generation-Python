@@ -39,6 +39,10 @@ class TAF_Closure:
 
         return f"cast({alias}.{colname} as decimal(13, 2)) as {colname}"
 
+    def cast_as_int(colname: str, alias: str):
+
+        return f"cast({alias}.{colname} as int) as {colname}"
+
     def set_as_null(colname: str, alias: str):
         #This function requires alias parameter but does not use it.  All functions called by cleanser need 2 parameters.    
         return f"NULL as {colname}"
@@ -397,6 +401,26 @@ class TAF_Closure:
 
         return f"""
             case when (upper({var}) in ('Y','N','U','W','1')) then upper({var})
+                else NULL
+            end as {var}
+        """
+
+    def var_set_dgns_type(var):
+        """
+        Helper function for setting Diagnosis Type Code
+        """
+        return f"""
+            case when (upper({var}) in ('A','D','E','O','P','R')) then upper({var})
+                else NULL
+            end as {var}
+        """
+
+    def var_set_dgns_flag(var):
+        """
+        Helper function for setting Diagnosis Code Flag
+        """
+        return f"""
+            case when (upper({var}) in ('1','2','3')) then upper({var})
                 else NULL
             end as {var}
         """
