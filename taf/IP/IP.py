@@ -188,11 +188,11 @@ class IP(TAF):
                 ,h.msis_ident_num
                 ,h.new_submtg_state_cd
                 ,case 
-                  when upper(dgns_type_cd) = "A"
+                  when trim(upper(dgns_type_cd)) = "A"
                     and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
                                                  ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, dx_all.dgns_type_cd order by dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as admitting_flag
                 ,case 
-                  when upper(dgns_type_cd) = "P"
+                  when trim(upper(dgns_type_cd)) = "P"
                     and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
                                                  ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, dx_all.dgns_type_cd order by dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as principal_flag
                 from
@@ -200,12 +200,12 @@ class IP(TAF):
                     select
                     { IP_Metadata.selectDataElements(tab_no, 'a') }
                     ,case
-                            when upper(dgns_type_cd) = "P" then 1
-                            when upper(dgns_type_cd) = "A" then 2
-                            when upper(dgns_type_cd) = "D" then 3
-                            when upper(dgns_type_cd) = "O" then 4
-                            when upper(dgns_type_cd) = "E" then 5
-                            when upper(dgns_type_cd) = "R" then 6
+                            when trim(upper(dgns_type_cd)) = "P" then 1
+                            when trim(upper(dgns_type_cd)) = "A" then 2
+                            when trim(upper(dgns_type_cd)) = "D" then 3
+                            when trim(upper(dgns_type_cd)) = "O" then 4
+                            when trim(upper(dgns_type_cd)) = "E" then 5
+                            when trim(upper(dgns_type_cd)) = "R" then 6
                             else 7 end as sort_val
                     from
                         {TMSIS_SCHEMA}.{_2x_segment} as a

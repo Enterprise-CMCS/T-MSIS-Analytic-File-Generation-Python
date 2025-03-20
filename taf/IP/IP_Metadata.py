@@ -83,10 +83,6 @@ class IP_Metadata:
 
         return f"upper({alias}.{colname}) as mc_plan_id"
 
-    def cast_as_int(colname: str, alias: str):
-
-        return f"cast({alias}.{colname} as int) as {colname}"
-
     cleanser = {
         "ADJDCTN_DT": TAF_Closure.coalesce_date,
         "DSCHRG_DT": dates_of_service,
@@ -109,7 +105,7 @@ class IP_Metadata:
         "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "DGNS_CD":TAF_Closure.compress_dots,
-        "DGNS_SQNC_NUM":cast_as_int
+        "DGNS_SQNC_NUM":TAF_Closure.cast_as_int
     }
 
     validator = {}
@@ -415,30 +411,6 @@ class IP_Metadata:
         "CLM_STUS_CD",
         "CLM_TYPE_CD",
         "FED_REIMBRSMT_CTGRY_CD",
-        "DGNS_1_CD_IND",
-        "DGNS_10_CD_IND",
-        "DGNS_11_CD_IND",
-        "DGNS_12_CD_IND",
-        "DGNS_2_CD_IND",
-        "DGNS_3_CD_IND",
-        "DGNS_4_CD_IND",
-        "DGNS_5_CD_IND",
-        "DGNS_6_CD_IND",
-        "DGNS_7_CD_IND",
-        "DGNS_8_CD_IND",
-        "DGNS_9_CD_IND",
-        "DGNS_POA_1_CD_IND",
-        "DGNS_POA_10_CD_IND",
-        "DGNS_POA_11_CD_IND",
-        "DGNS_POA_12_CD_IND",
-        "DGNS_POA_2_CD_IND",
-        "DGNS_POA_3_CD_IND",
-        "DGNS_POA_4_CD_IND",
-        "DGNS_POA_5_CD_IND",
-        "DGNS_POA_6_CD_IND",
-        "DGNS_POA_7_CD_IND",
-        "DGNS_POA_8_CD_IND",
-        "DGNS_POA_9_CD_IND",
         "DRG_CD_IND",
         "DRG_CD",
         "DRG_DESC",
@@ -515,7 +487,6 @@ class IP_Metadata:
         "IHS_SVC_IND",
         "DGNS_TYPE_CD",
         "DGNS_CD_IND",
-		"DGNS_CD",
 		"DGNS_POA_CD_IND"
     ]
 
