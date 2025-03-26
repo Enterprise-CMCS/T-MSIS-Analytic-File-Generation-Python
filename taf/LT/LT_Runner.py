@@ -40,6 +40,7 @@ class LT_Runner(TAF_Runner):
         from taf.LT.LT import LT
         from taf.LT.LTH import LTH
         from taf.LT.LTL import LTL
+        from taf.LT.LT_DX import LT_DX
         
         #number of DX codes to be backfilled to the Header file.
         NUMDX = 6
@@ -106,11 +107,13 @@ class LT_Runner(TAF_Runner):
         # -------------------------------------------------
         LTH().create(self)
         LTL().create(self)
+        LT_DX().create(self)
 
         grouper.fasc_code("LT")
 
         LTH().build(self)
         LTL().build(self)
+        LT_DX().build(self)
 
 
 # -----------------------------------------------------------------------------
