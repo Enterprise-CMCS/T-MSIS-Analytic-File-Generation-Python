@@ -54,6 +54,19 @@ class LT_Metadata:
                             + f" as {LT_Metadata.line_renames.get(item).lower()}"
                         )
 
+            # qualify dx columns
+            if segment_id.casefold() == "clt00004":
+                if item in LT_Metadata.dx_renames.keys():
+                    if item in LT_Metadata.upper:
+                        columns[i] = (
+                            "upper(" + columns[i].lower().split(" as ")[0]
+                            + f") as {LT_Metadata.dx_renames.get(item).lower()}"
+                        )
+                    else:
+                        columns[i] = (
+                            columns[i].lower().split(" as ")[0]
+                            + f" as {LT_Metadata.dx_renames.get(item).lower()}"
+                        )
         return new_line_comma.join(columns)
 
     def finalFormatter(output_columns):
@@ -85,23 +98,8 @@ class LT_Metadata:
         "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null,
         "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
-        "DGNS_1_CD":TAF_Closure.set_as_null,
-        "DGNS_2_CD":TAF_Closure.set_as_null,
-        "DGNS_3_CD":TAF_Closure.set_as_null,
-        "DGNS_4_CD":TAF_Closure.set_as_null,
-        "DGNS_5_CD":TAF_Closure.set_as_null,
-        "DGNS_1_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_2_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_3_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_4_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_5_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_POA_1_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_POA_3_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_POA_4_CD_IND":TAF_Closure.set_as_null,
-        "DGNS_POA_5_CD_IND":TAF_Closure.set_as_null,
-        "ADMTG_DGNS_CD":TAF_Closure.set_as_null,
-        "ADMTG_DGNS_CD_IND":TAF_Closure.set_as_null
+        "DGNS_CD":TAF_Closure.compress_dots,
+        "DGNS_SQNC_NUM":TAF_Closure.cast_as_int
     }
 
     validator = {}
@@ -130,8 +128,6 @@ class LT_Metadata:
             "ADJSTMT_RSN_CD",
             "ADMSN_DT",
             "ADMSN_HR_NUM",
-            "ADMTG_DGNS_CD",
-            "ADMTG_DGNS_CD_IND",
             "ADMTG_PRVDR_NPI_NUM",
             "ADMTG_PRVDR_NUM",
             "ADMTG_PRVDR_SPCLTY_CD",
@@ -164,21 +160,6 @@ class LT_Metadata:
             "XOVR_IND",
             "DAILY_RATE",
             "BIRTH_DT",
-            "DGNS_1_CD",
-            "DGNS_2_CD",
-            "DGNS_3_CD",
-            "DGNS_4_CD",
-            "DGNS_5_CD",
-            "DGNS_1_CD_IND",
-            "DGNS_2_CD_IND",
-            "DGNS_3_CD_IND",
-            "DGNS_4_CD_IND",
-            "DGNS_5_CD_IND",
-            "DGNS_POA_1_CD_IND",
-            "DGNS_POA_2_CD_IND",
-            "DGNS_POA_3_CD_IND",
-            "DGNS_POA_4_CD_IND",
-            "DGNS_POA_5_CD_IND",
             "DSCHRG_DT",
             "DSCHRG_HR_NUM",
             "ELGBL_1ST_NAME",
@@ -342,6 +323,19 @@ class LT_Metadata:
             "XXI_SRVC_CTGRY_CD",
             "IHS_SVC_IND"
         ],
+        "CLT00004": [
+            "TMSIS_RUN_ID",
+            "SUBMTG_STATE_CD",
+            "ORGNL_CLM_NUM",
+            "ADJSTMT_CLM_NUM",
+            "ADJSTMT_IND",
+            "ADJDCTN_DT",
+            "DGNS_TYPE_CD",
+            "DGNS_SQNC_NUM",
+            "DGNS_CD_IND",
+            "DGNS_CD",
+            "DGNS_POA_CD_IND"
+        ],
     }
 
     class LTH:
@@ -396,6 +390,8 @@ class LT_Metadata:
         "NDC_UOM_CD": "UOM_CD",
     }
 
+    dx_renames = {"DGNS_POA_CD_IND":"DGNS_POA_IND"}
+    
     upper = [
         "ADJSTMT_LINE_NUM",
         "ADJSTMT_LINE_RSN_CD",
@@ -421,7 +417,6 @@ class LT_Metadata:
         "SUBMTG_STATE_CD",
         "ADJSTMT_RSN_CD",
         "ADMSN_HR_NUM",
-        "ADMTG_DGNS_CD_IND",
         "ADMTG_PRVDR_NPI_NUM",
         "ADMTG_PRVDR_NUM",
         "ADMTG_PRVDR_SPCLTY_CD",
@@ -443,16 +438,6 @@ class LT_Metadata:
         "CLM_STUS_CD",
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
-        "DGNS_1_CD_IND",
-        "DGNS_2_CD_IND",
-        "DGNS_3_CD_IND",
-        "DGNS_4_CD_IND",
-        "DGNS_5_CD_IND",
-        "DGNS_POA_1_CD_IND",
-        "DGNS_POA_2_CD_IND",
-        "DGNS_POA_3_CD_IND",
-        "DGNS_POA_4_CD_IND",
-        "DGNS_POA_5_CD_IND",
         "DSCHRG_HR_NUM",
         "ELGBL_1ST_NAME",
         "ELGBL_LAST_NAME",
@@ -502,7 +487,10 @@ class LT_Metadata:
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "DGNS_TYPE_CD",
+        "DGNS_CD_IND",
+		"DGNS_POA_CD_IND"
     ]
 
     renames = {}
@@ -667,7 +655,8 @@ class LT_Metadata:
         "TOT_BENE_DDCTBL_LBLE_AMT",
         "TOT_BENE_COPMT_LBLE_AMT",
         "TOT_BENE_COINSRNC_LBLE_AMT",
-        "CMBND_BENE_CST_SHRNG_PD_AMT"
+        "CMBND_BENE_CST_SHRNG_PD_AMT",
+        "ADDTNL_DGNS_PRSNT"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -725,6 +714,26 @@ class LT_Metadata:
         "IHS_SVC_IND"
     ]
 
+    dx_columns = [
+        "DA_RUN_ID",
+        "LT_LINK_KEY",
+        "LT_VRSN",
+        "LT_FIL_DT",
+        "TMSIS_RUN_ID",
+        "MSIS_IDENT_NUM",
+        "SUBMTG_STATE_CD",
+        "ORGNL_CLM_NUM",
+        "ADJSTMT_CLM_NUM",
+        "ADJSTMT_IND",
+        "ADJDCTN_DT",
+        "DGNS_TYPE_CD",
+        "DGNS_SQNC_NUM",
+        "DGNS_CD_IND",
+        "DGNS_CD",
+        "DGNS_POA_IND",
+        "REC_ADD_TS",
+        "REC_UPDT_TS"
+    ]
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

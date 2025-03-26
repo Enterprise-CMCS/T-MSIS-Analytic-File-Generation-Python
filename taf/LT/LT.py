@@ -173,6 +173,114 @@ class LT(TAF):
         """
         self.runner.append(self.st_fil_type, z)
 
+    def select_dx(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, header_in, numdx=0):
+        """
+        Added for T-MSIS v4 changes, as TAF 9.0
+
+        Extract elements from DX table, keeping rows associated wtih headers currently being processed.
+        Apply data cleaning to elements
+        Prepare DX level table for output
+        Transpose DX table
+
+        Function inputs:
+            TMSIS_SCHEMA:  Name of the schema holding the raw data
+            tab_no:  number for the segment ie CLT00004
+            _2x_segment:  name of the input T-MSIS DX segment
+            fl:  file type (IP, OTHR_TOC, LT, RX)
+            header_in:  name of header view to use for limiting dx records to only claims being processed.  Also used for joining back to header file.
+            numdx = the number of DX fields to be transposed and joined to header file.
+        """
+
+        z = f"""
+            create or replace temporary view dx_{fl} as
+              select *,
+                    row_number() over (Partition by new_submtg_state_cd, orgnl_clm_num, adjstmt_clm_num
+                                                    ,adjstmt_ind,adjdctn_dt order by null_flag, admitting_flag, principal_flag, DGNS_SQNC_NUM,sort_val) + 1 as h_iteration
+            from (
+                select dx_all.*
+                ,h.msis_ident_num
+                ,h.new_submtg_state_cd
+                ,case 
+                  when trim(upper(dgns_type_cd)) = "A"
+                    and null_flag = 0
+                    and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
+                                                 ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, trim(dx_all.dgns_type_cd) order by null_flag, dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as admitting_flag
+                ,case 
+                  when trim(upper(dgns_type_cd)) = "P"
+                    and null_flag = 0
+                    and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
+                                                 ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, trim(dx_all.dgns_type_cd) order by null_flag, dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as principal_flag
+                
+                from
+                    (
+                    select
+                    { LT_Metadata.selectDataElements(tab_no, 'a') }
+                    ,case
+                            when trim(upper(dgns_type_cd)) = "P" then 1
+                            when trim(upper(dgns_type_cd)) = "A" then 2
+                            when trim(upper(dgns_type_cd)) = "D" then 3
+                            when trim(upper(dgns_type_cd)) = "O" then 4
+                            when trim(upper(dgns_type_cd)) = "E" then 5
+                            when trim(upper(dgns_type_cd)) = "R" then 6
+                            else 7 end as sort_val
+                    ,case when DGNS_SQNC_NUM is null then 1 else 0 end as null_flag
+                    from
+                        {TMSIS_SCHEMA}.{_2x_segment} as a
+                    where
+                        concat(a.submtg_state_cd, a.tmsis_run_id) in ({self.runner.get_combined_list()})
+                    ) as dx_all
+                inner join
+                    {header_in} as h
+                on (
+                    dx_all.TMSIS_RUN_ID = h.TMSIS_RUN_ID and
+                    dx_all.ORGNL_CLM_NUM = h.ORGNL_CLM_NUM and
+                    dx_all.ADJSTMT_CLM_NUM = h.ADJSTMT_CLM_NUM and
+                    dx_all.ADJDCTN_DT = h.ADJDCTN_DT and
+                    dx_all.ADJSTMT_IND = h.ADJSTMT_IND
+                    )
+                where (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^0]+', '')), 0))!= 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^8]+', '')), 0)) != 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^9]+', '')), 0)) != 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^#]+', '')), 0)) != 0
+                    and nullif(trim(DGNS_CD),'') is not null
+            )
+            """
+        self.runner.append(fl, z)
+        
+        #transpose the DX file to the appropriate number of DX fields.
+        z = f"""
+            create or replace temporary view dx_wide as
+            select
+                new_submtg_state_cd
+                ,orgnl_clm_num
+                ,adjstmt_clm_num
+                ,adjstmt_ind
+                ,adjdctn_dt
+                ,max(case when h_iteration > {numdx} and admitting_flag = 0 and principal_flag = 0 then 1
+                          when null_flag = 1 then 1
+                        else 0 end) as addtnl_dgns_prsnt
+                ,max(case when admitting_flag = 1 then DGNS_CD else null end) as ADMTG_DGNS_CD
+                ,max(case when admitting_flag = 1 then DGNS_CD_IND else null end) as ADMTG_DGNS_CD_IND
+                ,max(case when principal_flag = 1 then DGNS_CD else null end) as DGNS_1_CD
+                ,max(case when principal_flag = 1 then DGNS_CD_IND else null end) as DGNS_1_CD_IND
+                ,max(case when principal_flag = 1 then DGNS_POA_IND else null end) as dgns_poa_1_cd_ind"""
+                
+        for i in range(2,numdx+1):
+            z+= f"""
+                ,max(case when h_iteration = {i} and admitting_flag = 0 and null_flag = 0 and principal_flag = 0 then DGNS_CD else null end) as dgns_{i}_cd
+                ,max(case when h_iteration = {i} and admitting_flag = 0 and null_flag = 0 and principal_flag = 0 then dgns_cd_ind else null end) as DGNS_{i}_CD_IND
+                ,max(case when h_iteration = {i} and admitting_flag = 0 and null_flag = 0 and principal_flag = 0 then DGNS_POA_IND else null end) as dgns_poa_{i}_cd_ind"""
+        z += f"""
+            from dx_{fl}
+            group by
+                new_submtg_state_cd
+                ,orgnl_clm_num
+                ,adjstmt_clm_num
+                ,adjstmt_ind
+                ,adjdctn_dt
+        """
+        self.runner.append(fl, z)
+
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal
