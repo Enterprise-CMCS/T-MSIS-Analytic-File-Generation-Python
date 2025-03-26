@@ -26,7 +26,7 @@ class LT(TAF):
         super().__init__(runner)
         self.st_fil_type = "LT"
 
-    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment):
+    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment,numdx):
         """
         Pull line item records for header records linked with claims family table dataset.
         """
@@ -160,16 +160,31 @@ class LT(TAF):
                 , case when CONSTR.MH_DAYS_UNDER_21 = 1 then HEADER.MDCD_CVRD_IP_DAYS_CNT
                     when CONSTR.MH_DAYS_UNDER_21 = 0 and  HEADER.MDCD_CVRD_IP_DAYS_CNT is not null then 0
                     end as CVRD_MH_DAYS_UNDER_21
-
+                ,coalesce(dx.addtnl_dgns_prsnt,0) as addtnl_dgns_prsnt
+                ,dx.ADMTG_DGNS_CD
+                ,dx.ADMTG_DGNS_CD_IND"""
+        for i in range(1,numdx+1):
+            z+= f"""
+                ,dx.dgns_{i}_cd
+                ,dx.DGNS_{i}_CD_IND
+                ,dx.dgns_poa_{i}_cd_ind"""
+        z+=f"""
             from
                 FA_HDR_{fl} HEADER left join constructed_{fl2} CONSTR
-
               on
                 HEADER.NEW_SUBMTG_STATE_CD = CONSTR.NEW_SUBMTG_STATE_CD_LINE and
                 HEADER.ORGNL_CLM_NUM = CONSTR.ORGNL_CLM_NUM_LINE and
                 HEADER.ADJSTMT_CLM_NUM = CONSTR.ADJSTMT_CLM_NUM_LINE and
                 HEADER.ADJDCTN_DT = CONSTR.ADJDCTN_DT_LINE and
                 upper(HEADER.ADJSTMT_IND) = upper(CONSTR.LINE_ADJSTMT_IND)
+            left join dx_wide as dx
+            on (
+                    HEADER.NEW_SUBMTG_STATE_CD = dx.NEW_SUBMTG_STATE_CD and
+                    HEADER.ORGNL_CLM_NUM = dx.ORGNL_CLM_NUM and
+                    HEADER.ADJSTMT_CLM_NUM = dx.ADJSTMT_CLM_NUM and
+                    HEADER.ADJDCTN_DT = dx.ADJDCTN_DT and
+                    HEADER.ADJSTMT_IND = dx.ADJSTMT_IND
+            )
         """
         self.runner.append(self.st_fil_type, z)
 

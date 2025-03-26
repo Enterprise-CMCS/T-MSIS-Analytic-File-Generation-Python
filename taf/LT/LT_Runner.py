@@ -91,7 +91,7 @@ class LT_Runner(TAF_Runner):
         #   3 - RN_LT
         #   4 - LT_HEADER
         # -------------------------------------------------
-        lt.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT")
+        lt.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT",NUMDX)
 
         # -------------------------------------------------
         #   Produces:
