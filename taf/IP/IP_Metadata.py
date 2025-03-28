@@ -104,8 +104,7 @@ class IP_Metadata:
         "IMNZTN_TYPE_CD":TAF_Closure.set_as_null,
         "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
         "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
-        "DGNS_CD":TAF_Closure.compress_dots,
-        "DGNS_SQNC_NUM":TAF_Closure.cast_as_int
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
