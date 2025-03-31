@@ -63,7 +63,7 @@ class RXL:
                 ,BNFT_TYPE_CD
                 , { TAF_Closure.var_set_type6('RX_QTY_ALOWD',cond1='99999', cond2='99999.999', cond3='888888.000', cond4='999999', cond5='888888.880') }
                 , { TAF_Closure.var_set_type6('RX_QTY_ACTL',cond1='999999.99', cond2='888888', cond3='999999', cond4='0') }
-                , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD',2, cond1='01',cond2='02',cond3='03',cond4='04') }
+                , { TAF_Closure.var_set_type2('FED_REIMBRSMT_CTGRY_CD',2, cond1='01',cond2='02',cond3='03',cond4='04') }
 
                 ,XIX_SRVC_CTGRY_CD
                 ,XXI_SRVC_CTGRY_CD
