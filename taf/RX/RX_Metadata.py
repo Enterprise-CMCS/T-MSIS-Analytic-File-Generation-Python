@@ -43,6 +43,13 @@ class RX_Metadata:
                         + f" as {RX_Metadata.line_renames.get(item).lower()}"
                     )
 
+            # qualify DX columns
+            if segment_id.casefold() == "crx00004":
+                if item in RX_Metadata.dx_renames.keys():
+                    columns[i] = (
+                        columns[i].lower().split(" as ")[0]
+                        + f" as {RX_Metadata.dx_renames.get(item).lower()}"
+                    )
         return new_line_comma.join(columns)
 
     def finalFormatter(output_columns):
@@ -91,7 +98,8 @@ class RX_Metadata:
         "SRVC_TRKNG_PYMT_AMT":TAF_Closure.set_as_null,
         "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null,
         "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
-        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null
+        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
@@ -216,6 +224,18 @@ class RX_Metadata:
             "PROFNL_SVC_FEE_SBMTD",
             "PROFNL_SVC_FEE_PD_AMT"
         ],
+        "CRX00004": [
+            "TMSIS_RUN_ID",
+            "SUBMTG_STATE_CD",
+            "ORGNL_CLM_NUM",
+            "ADJSTMT_CLM_NUM",
+            "ADJSTMT_IND",
+            "ADJDCTN_DT",
+            "DGNS_TYPE_CD",
+            "DGNS_SQNC_NUM",
+            "DGNS_CD_IND",
+            "DGNS_CD"
+        ]
     }
 
     class RXH:
@@ -391,12 +411,16 @@ class RX_Metadata:
         "CLM_STUS_CTGRY_CD",
         "SRC_LCTN_CD",
         "RX_ORGN_CD",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "DGNS_TYPE_CD",
+        "DGNS_CD_IND"
     ]
 
     renames = {}
 
     header_renames = {}
+
+    dx_renames = {}
 
     line_renames = {
         "SUBMTG_STATE_CD": "SUBMTG_STATE_CD_LINE",
@@ -503,7 +527,8 @@ class RX_Metadata:
         "TOT_BENE_COPMT_LBLE_AMT",
         "TOT_BENE_COINSRNC_LBLE_AMT",
         "CMBND_BENE_CST_SHRNG_PD_AMT",
-        "RX_ORGN_CD"
+        "RX_ORGN_CD",
+        "DGNS_PRSNT"
     ]
 
     line_columns = [
@@ -561,6 +586,26 @@ class RX_Metadata:
         "DSPNS_FEE_PD_AMT",
         "PROFNL_SVC_FEE_SBMTD",
         "PROFNL_SVC_FEE_PD_AMT"
+    ]
+
+    dx_columns = [
+        "DA_RUN_ID",
+        "RX_LINK_KEY",
+        "RX_VRSN",
+        "RX_FIL_DT",
+        "TMSIS_RUN_ID",
+        "MSIS_IDENT_NUM",
+        "SUBMTG_STATE_CD",
+        "ORGNL_CLM_NUM",
+        "ADJSTMT_CLM_NUM",
+        "ADJSTMT_IND",
+        "ADJDCTN_DT",
+        "DGNS_TYPE_CD",
+        "DGNS_SQNC_NUM",
+        "DGNS_CD_IND",
+        "DGNS_CD",
+        "REC_ADD_TS",
+        "REC_UPDT_TS"
     ]
 
 # -----------------------------------------------------------------------------

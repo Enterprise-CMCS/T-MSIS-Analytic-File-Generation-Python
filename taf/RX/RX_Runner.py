@@ -38,6 +38,7 @@ class RX_Runner(TAF_Runner):
         from taf.RX.RX import RX
         from taf.RX.RXH import RXH
         from taf.RX.RXL import RXL
+        from taf.RX.RX_DX import RX_DX
 
         # -------------------------------------------------
         #   Produces:
@@ -71,12 +72,19 @@ class RX_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
+        #   1 - dx_RX
+        #   2 - dx_wide
+        rx = RX(self)
+        rx.select_dx("tmsis", "CRX00004", "tmsis_clm_dx_rx", "RX", "FA_HDR_RX")
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
         #   1 - RX_LINE_IN
         #   2 - RX_LINE
         #   3 - RN_RX
         #   4 - RX_HEADER
         # -------------------------------------------------
-        rx = RX(self)
         rx.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "RX", "RX", "CRX00003", "TMSIS_CLL_REC_RX")
 
         # -------------------------------------------------
@@ -91,14 +99,25 @@ class RX_Runner(TAF_Runner):
         #   Produces:
         # -------------------------------------------------
         #   - RXH
+        #   - RXL
+        #   - RX_DX
         # -------------------------------------------------
         RXH().create(self)
         RXL().create(self)
+        RX_DX().create(self)
 
         grouper.fasc_code("RX")
 
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
+        #   - inserts into TAF_RXH permanent table.
+        #   - Inserts into TAF_RXL permanent table.
+        #   - Inserts into TAF_RX_DX permanent table.
+        # -------------------------------------------------
         RXH().build(self)
         RXL().build(self)
+        RX_DX().build(self)
 
 
 # -----------------------------------------------------------------------------
