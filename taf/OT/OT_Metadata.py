@@ -146,8 +146,7 @@ class OT_Metadata:
         "DGNS_POA_1_CD_IND":TAF_Closure.set_as_null,
         "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null,
         "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null,
-        "DGNS_CD":TAF_Closure.compress_dots,
-        "DGNS_SQNC_NUM":TAF_Closure.cast_as_int
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
