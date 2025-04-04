@@ -522,7 +522,9 @@ class TAF_Metadata:
             (1426, '022b_bsf_ELG00022', '0.2. MultiIds', 'ELG00022_MSIS_XWALK_multi', 'distinct msis_ident_num', 'submtg_state_cd'),
             (1427, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_uniq_step1', 'distinct msis_ident_num', 'submtg_state_cd'),
             (1428, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_uniq_step2', 'distinct msis_ident_num', 'submtg_state_cd'),
-            (1429, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_{bsf_file_date}_uniq', 'distinct msis_ident_num', 'submtg_state_cd')
+            (1429, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_{bsf_file_date}_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
+            (1450, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'dx_OTHR_TOC', 'new_submtg_state_cd', 'new_submtg_state_cd'),
+            (1451, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'dx_OTHR_TOC', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd')
         ]
 
     XIX_SRVC_CTGRY_CD_values = [
