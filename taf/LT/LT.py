@@ -177,7 +177,7 @@ class LT(TAF):
                 HEADER.ADJSTMT_CLM_NUM = CONSTR.ADJSTMT_CLM_NUM_LINE and
                 HEADER.ADJDCTN_DT = CONSTR.ADJDCTN_DT_LINE and
                 upper(HEADER.ADJSTMT_IND) = upper(CONSTR.LINE_ADJSTMT_IND)
-            left join dx_wide as dx
+            left join dx_wide_{fl} as dx
             on (
                     HEADER.NEW_SUBMTG_STATE_CD = dx.NEW_SUBMTG_STATE_CD and
                     HEADER.ORGNL_CLM_NUM = dx.ORGNL_CLM_NUM and
@@ -264,7 +264,7 @@ class LT(TAF):
         
         #transpose the DX file to the appropriate number of DX fields.
         z = f"""
-            create or replace temporary view dx_wide as
+            create or replace temporary view dx_wide_{fl} as
             select
                 new_submtg_state_cd
                 ,orgnl_clm_num
