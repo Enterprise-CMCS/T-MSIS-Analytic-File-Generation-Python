@@ -21,7 +21,6 @@ class FTX(TAF):
             create or replace temporary view {_2x_segment}_IN as
             select
             { FTX_Metadata.selectDataElements(tab_no, 'a') }
-
             from
                 {TMSIS_SCHEMA}.{_2x_segment} A
             where
@@ -63,8 +62,59 @@ class FTX(TAF):
                     nodups.ADJSTMT_IND = b.ADJSTMT_IND
                 )
             """
-        #self.runner.append(self.st_fil_type, z)
+        self.runner.append(self.st_fil_type, z)
 
+        #in with statement, limit clm fam table to final action = 1 and adjst indicator not null and not equal to 1.
+        #clean keys, remove dups
+        #then inner join that with ftx deduplicated records to limit to final action = 1
+        z = f"""
+            create or replace temporary view ALL_{_2x_segment} as
+                with CLM_FMLY_{_2x_segment} as
+                    (
+                            select
+                            TMSIS_RUN_ID
+                            ,coalesce(upper(ORGNL_CLM_NUM), '~') as ORGNL_CLM_NUM
+                            ,coalesce(upper(ADJSTMT_CLM_NUM), '~') as ADJSTMT_CLM_NUM
+                            ,trim(SUBMTG_STATE_CD) as SUBMTG_STATE_CD
+                            ,COALESCE(UPPER(ADJSTMT_IND),'X') as ADJSTMT_IND
+                        from {TMSIS_SCHEMA}.tmsis_clm_fmly_{tab_no} as a
+                        where clm_fmly_finl_actn_ind  = 1
+                                and concat(submtg_state_cd,tmsis_run_id) in ({self.runner.get_combined_list()})
+                                and coalesce(a.ADJSTMT_IND,'1') <> 1
+                        group by
+                            1,2,3,4,5
+                        having
+                            count(tmsis_run_id) = 1
+                    )
+                select
+                    H.*
+                    ,'{tab_no}' as TMSIS_SGMT_NUM
+                    ,case when MSIS_IDENT_NUM is not null then 1 else 0 end as INDVDL_BENE_IND
+                from {_2x_segment}_nodups as H
+                inner join
+                CLM_FMLY_{_2x_segment} as F
+                on (
+                    H.ORGNL_CLM_NUM = F.ORGNL_CLM_NUM
+                    and H.ADJSTMT_CLM_NUM = F.ADJSTMT_CLM_NUM
+                    and H.ADJSTMT_IND = F.ADJSTMT_IND
+                    and H.SUBMTG_STATE_CD = F.SUBMTG_STATE_CD
+                    and H.TMSIS_RUN_ID = F.TMSIS_RUN_ID
+                )
+        """
+        self.runner.append(self.st_fil_type, z)
+
+    def stack_segments(self,input_tables):
+        z = f"""
+            create or replace temporary view COMBINED_FTX as
+            """
+
+        for key,vals in input_tables.items():
+            z+=f"""
+            select * from ALL_{key}
+            union all"""
+        z=z[:-9]
+
+        self.runner.append(self.st_fil_type, z)
 
 
 

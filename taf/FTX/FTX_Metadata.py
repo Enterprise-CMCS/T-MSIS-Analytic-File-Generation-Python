@@ -15,14 +15,15 @@ class FTX_Metadata:
         columns =  FTX_Metadata.columns.get(segment_id).copy()
         cleanser = FTX_Metadata.cleanser.get(segment_id).copy()
         renames =  FTX_Metadata.renames.get(segment_id).copy()
+        upper = FTX_Metadata.upper.get(segment_id).copy()
 
         for i, item in enumerate(columns):
             if item in cleanser.keys():
                 columns[i] = cleanser.copy().get(item)(item, alias)
             # elif item in FTX_Metadata.validator.keys():
             #     columns[i] = FTX_Metadata.maskInvalidValues(item, alias)
-            # elif item in FTX_Metadata.upper:
-            #     columns[i] = f"upper({alias}.{item}) as {str(item).lower()}"
+            elif item in upper:
+                columns[i] = f"upper({alias}.{item}) as {str(item).lower()}"
             else:
                 columns[i] = f"{alias}.{columns[i]}"
             if item in renames.keys():
@@ -30,23 +31,6 @@ class FTX_Metadata:
                     columns[i].lower().split(" as ")[0]
                     + f" as {renames.get(item).lower()}"
                 )
-
-
-            # # qualify header columns
-            # if segment_id == "CIP00002":
-            #     if item in IP_Metadata.header_renames.keys():
-            #         columns[i] = (
-            #             columns[i].lower().split(" as ")[0]
-            #             + f" as {IP_Metadata.header_renames.get(item).lower()}"
-            #         )
-
-            # # qualify line columns
-            # if segment_id == "CIP00003":
-            #     if item in IP_Metadata.line_renames.keys():
-            #         columns[i] = (
-            #             columns[i].lower().split(" as ")[0]
-            #             + f" as {IP_Metadata.line_renames.get(item).lower()}"
-            #         )
 
         return new_line_comma.join(columns)
     
@@ -417,7 +401,7 @@ class FTX_Metadata:
             "APM_MODEL_TYPE_CD", #does not exist
             "expndtr_authrty_type" #needs rename EXPNDTR_AUTHRTY_TYPE_CD
         ],
-        "FTX000095": [
+        "FTX00095": [
             "TMSIS_RUN_ID",
             "MSIS_IDENT_NUM",  #does not exist
             "SUBMTG_STATE_CD",
@@ -624,7 +608,7 @@ class FTX_Metadata:
                 "APM_MODEL_TYPE_CD":TAF_Closure.set_as_null,
                 
         },
-        "FTX000095":
+        "FTX00095":
         {
                 "ADJDCTN_DT": TAF_Closure.coalesce_date,
                 "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
@@ -800,7 +784,7 @@ class FTX_Metadata:
                 "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
                 "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
             },
-        "FTX000095":
+        "FTX00095":
             {
                 "payerid":"PYR_ID",
                 "payerid_type":"PYR_ID_TYPE_CD",
@@ -821,5 +805,53 @@ class FTX_Metadata:
                 "mbescbes_form":"MBESCBES_FRM",
                 "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
                 "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
+            }
+    }
+    
+    upper = {
+        "FTX00002": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+            },
+        "FTX00003": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+            },
+        "FTX00004": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+            },
+        "FTX00005": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+            },
+        "FTX00006": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+            },
+        "FTX00007": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+            },
+        "FTX00008": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+            },
+        "FTX00009": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+            },
+        "FTX00095": 
+            {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
             }
     }

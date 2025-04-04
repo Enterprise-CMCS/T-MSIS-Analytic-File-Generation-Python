@@ -36,7 +36,7 @@ class FTX_Runner(TAF_Runner):
         from taf.FTX.FTX import FTX
         ftx = FTX(self)
         
-        tmsis_schema = "dc_val_working_catalog.tmsis_v6_test_data"
+        tmsis_schema = "state_prod_catalog.tmsis"
         
         #dictionary of the input tmsis segments and their associated end dt
         FTX_TMSIS_SEGMENTS = {
@@ -48,7 +48,7 @@ class FTX_Runner(TAF_Runner):
             ,"tmsis_sdp_seprt_pymt_term"     :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX00007"}
             ,"tmsis_cst_stlmt_pymt"          :{"start_dt":"cst_stlmt_prd_strt_dt",  "end_dt":"cst_stlmt_prd_end_dt",    "segment":"FTX00008"}
             ,"tmsis_fqhc_wrp_pymt"           :{'start_dt':'wrp_prd_strt_dt',        'end_dt':'wrp_prd_end_dt',          "segment":"FTX00009"}
-            ,"tmsis_misc_pymt"               :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX000095"}
+            ,"tmsis_misc_pymt"               :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX00095"}
         }
         claims = TAF_Claims(self)
         for key,vals in FTX_TMSIS_SEGMENTS.items():
@@ -60,6 +60,9 @@ class FTX_Runner(TAF_Runner):
                                         vals["end_dt"],
                                         claims.rep_mo,
                                         claims.rep_yr)
+        
+        ftx.stack_segments(FTX_TMSIS_SEGMENTS)
+        
 
 
 
