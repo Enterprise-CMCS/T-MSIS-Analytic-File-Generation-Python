@@ -20,7 +20,7 @@ This is a Python Library for the generation of the T-MSIS Analytic File (TAF) wi
 
 The library version is included the source code. It can be updated in ```_init_()``` method of the TAF module.
 ```pytion
-    __version__ = "7.1.16"    # deployed library version
+    __version__ = "#.#"    # set deployed library version to TAF software version, i.e. "9.0"
 ```
 
 ## Manual Build and Deploy
