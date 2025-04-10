@@ -5,9 +5,9 @@ from taf.FTX.FTX_Runner import FTX_Runner
 
 ftx = FTX_Runner(
     da_schema="TAF_PYTHON",
-    reporting_period="2018-12-31",
-    state_code="'24'",
-    run_id="'3501'",
+    reporting_period="2024-04-30",
+    state_code="'04'",
+    run_id="'1179'",
     job_id="'99999'",
     file_version="AP"
 )
