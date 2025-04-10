@@ -3,7 +3,7 @@ from taf.TAF_Grouper import TAF_Grouper
 from taf.TAF_Runner import TAF_Runner
 
 class FTX_Runner(TAF_Runner):
-    
+
     """
     The TAF-specific module contains executable statements as well as function definitions to
     generate and execute SQL to produce individual segment as well as final output.
@@ -11,22 +11,22 @@ class FTX_Runner(TAF_Runner):
     """
 
     def __init__(self,
-                 da_schema: str,
-                 reporting_period: str,
-                 state_code: str,
-                 run_id: str,
-                 job_id: int,
-                 file_version: str,
-                 run_stats_only: int = 0):
+                da_schema: str,
+                reporting_period: str,
+                state_code: str,
+                run_id: str,
+                job_id: int,
+                file_version: str,
+                run_stats_only: int = 0):
         super().__init__(da_schema,
-                         reporting_period,
-                         state_code,
-                         run_id,
-                         job_id,
-                         file_version,
-                         run_stats_only)
+                        reporting_period,
+                        state_code,
+                        run_id,
+                        job_id,
+                        file_version,
+                        run_stats_only)
         self.run_stats_only = self.__forceBool__(run_stats_only)
-        
+
     def init(self):
         """
         Import, create, and build out each segment for a given file type.
@@ -35,12 +35,12 @@ class FTX_Runner(TAF_Runner):
         """
         from taf.FTX.FTX import FTX
         ftx = FTX(self)
-        
-        tmsis_schema = "state_prod_catalog.tmsis"
-        
+
+        TMSIS_SCHEMA = "state_prod_catalog.tmsis"
+
         #dictionary of the input tmsis segments and their associated end dt
         FTX_TMSIS_SEGMENTS = {
-             "tmsis_indvdl_cptatn_pmpm"      :{"start_dt":"cptatn_prd_strt_dt",     "end_dt":"cptatn_prd_end_dt",       "segment":"FTX00002"}
+            "tmsis_indvdl_cptatn_pmpm"      :{"start_dt":"cptatn_prd_strt_dt",     "end_dt":"cptatn_prd_end_dt",       "segment":"FTX00002"}
             ,"tmsis_indvdl_hi_prm_pymt"      :{"start_dt":"prm_prd_strt_dt",        "end_dt":"prm_prd_end_dt",          "segment":"FTX00003"}
             ,"tmsis_grp_insrnc_prm_pymt"     :{"start_dt":"prm_prd_strt_dt",        "end_dt":"prm_prd_end_dt",          "segment":"FTX00004"}
             ,"tmsis_cst_shrng_ofst"          :{"start_dt":"cvrg_prd_strt_dt",       "end_dt":"cvrg_prd_end_dt",         "segment":"FTX00005"}
@@ -50,26 +50,45 @@ class FTX_Runner(TAF_Runner):
             ,"tmsis_fqhc_wrp_pymt"           :{'start_dt':'wrp_prd_strt_dt',        'end_dt':'wrp_prd_end_dt',          "segment":"FTX00009"}
             ,"tmsis_misc_pymt"               :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX00095"}
         }
+
+        # -----------------------------------------------------------------------------
+        #   Produces the following for each segment in the FTX TMSIS SEGMENTS dictionary:
+        # -----------------------------------------------------------------------------
+        #   1.  {_2x_segment}_IN (initial extraction from T-MSIS)
+        #   2.  {_2x_segment}_nodups (keep only records with no dups)
+        #   3.  ALL_{_2x_segment} (dedup claim family table and join to ftx records)
+        # -----------------------------------------------------------------------------
         claims = TAF_Claims(self)
         for key,vals in FTX_TMSIS_SEGMENTS.items():
-            ftx.AWS_Extract_FTX_segment(tmsis_schema, 
-                                        "FTX", 
-                                        vals["segment"], 
-                                        key, 
+            ftx.AWS_Extract_FTX_segment(TMSIS_SCHEMA,
+                                        "FTX",
+                                        vals["segment"],
+                                        key,
                                         vals["start_dt"],
                                         vals["end_dt"],
                                         claims.rep_mo,
                                         claims.rep_yr)
-        
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
+        #   1.  COMBINED_FTX
+        # -------------------------------------------------
         ftx.stack_segments(FTX_TMSIS_SEGMENTS)
-        
 
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
+        #   1.  FTX
+        # -------------------------------------------------
+        ftx.create(self)
 
-
-
-
-
-
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
+        #   1.  {da_schema}.TAF_FTX
+        # -------------------------------------------------
+        ftx.build(self)
 
 
 # -----------------------------------------------------------------------------

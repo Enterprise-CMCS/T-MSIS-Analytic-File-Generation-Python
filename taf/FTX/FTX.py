@@ -105,8 +105,7 @@ class FTX(TAF):
 
     def stack_segments(self,input_tables):
         z = f"""
-            create or replace temporary view COMBINED_FTX as
-            """
+            create or replace temporary view COMBINED_FTX as"""
 
         for key,vals in input_tables.items():
             z+=f"""
@@ -116,9 +115,125 @@ class FTX(TAF):
 
         self.runner.append(self.st_fil_type, z)
 
+    def create(self, runner: FTX_Runner):
+        """
+        Create the FTX segment.
+        """
 
+        z = f"""
+            create or replace temporary view FTX as
 
+            select
 
+                {runner.DA_RUN_ID} as DA_RUN_ID,
+                '{runner.VERSION}' as FTX_VRSN,
+                '{runner.TAF_FILE_DATE}' as FTX_FIL_DT
+
+                , TMSIS_RUN_ID
+                , TMSIS_SGMT_NUM
+                , INDVDL_BENE_IND
+                , { TAF_Closure.var_set_type1('MSIS_IDENT_NUM') }
+                , SUBMTG_STATE_CD
+                , { TAF_Closure.var_set_type3('orgnl_clm_num', cond1='~') }
+                , { TAF_Closure.var_set_type3('adjstmt_clm_num', cond1='~') }
+                , ADJSTMT_IND_CLEAN as ADJSTMT_IND
+                , case
+                    when (PMT_OR_RCPMT_DT < to_date('1600-01-01')) then to_date('1599-12-31')
+                    when PMT_OR_RCPMT_DT=to_date('1960-01-01') then NULL
+                    else PMT_OR_RCPMT_DT
+                end as PMT_OR_RCPMT_DT
+                , { TAF_Closure.var_set_type6('PMT_OR_RCPMT_AMT', cond1='888888888.88', cond2='99999999.90', cond3='99999999.90', cond4='999999.99', cond5='999999.00') }
+                , case
+                    when (CHK_EFCTV_DT < to_date('1600-01-01')) then to_date('1599-12-31')
+                    when CHK_EFCTV_DT=to_date('1960-01-01') then NULL
+                    else CHK_EFCTV_DT
+                end as CHK_EFCTV_DT
+                , { TAF_Closure.var_set_type1('PYR_ID') }
+                , { TAF_Closure.var_set_type2('PYR_ID_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='95') }
+                , case when PYR_MC_PLN_TYPE_CD is not null 
+                    and lpad(trim(PYR_MC_PLN_TYPE_CD), 2, '0') in ('01','02','03','04','05','06','07','08','09',
+                                                                    '10','11','12','13','14','15','16','17','18','19','20',
+                                                                    '60','70','80') then lpad(trim(PYR_MC_PLN_TYPE_CD), 2, '0') else null end as PYR_MC_PLN_TYPE_CD
+                , { TAF_Closure.var_set_type1('PYEE_ID') }
+                , { TAF_Closure.var_set_type2('PYEE_ID_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='05'
+                                                                , cond6='06', cond7='07', cond8='08', cond9='09', cond10='95') }
+                , case when PYEE_MC_PLN_TYPE_CD is not null
+                    and lpad(trim(PYEE_MC_PLN_TYPE_CD ), 2, '0') in ('01','02','03','04','05','06','07','08','09',
+                                                                    '10','11','12','13','14','15','16','17','18','19','20',
+                                                                    '60','70','80') then lpad(trim(PYEE_MC_PLN_TYPE_CD ), 2, '0') else null end as PYEE_MC_PLN_TYPE_CD
+                , { TAF_Closure.var_set_type1('PYEE_TAX_ID') }
+                , { TAF_Closure.var_set_type2('PYEE_TAX_ID_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='95') }
+                , lpad(trim(SSN_NUM),9,'0') as SSN_NUM
+                , { TAF_Closure.var_set_type1('PLCY_MMBR_ID') }
+                , { TAF_Closure.var_set_type1('PLCY_GRP_NUM') }
+                , { TAF_Closure.var_set_type1('PLCY_OWNR_CD') }
+                , { TAF_Closure.var_set_type1('INSRNC_PLN_ID') }
+                , { TAF_Closure.var_set_type1('INSRNC_CARR_ID_NUM') }
+                , case
+                    when (PMT_PRD_EFF_DT < to_date('1600-01-01')) then to_date('1599-12-31')
+                    when PMT_PRD_EFF_DT=to_date('1960-01-01') then NULL
+                    else PMT_PRD_EFF_DT
+                end as PMT_PRD_EFF_DT
+                , case
+                    when (PMT_PRD_END_DT < to_date('1600-01-01')) then to_date('1599-12-31')
+                    when PMT_PRD_END_DT=to_date('1960-01-01') then NULL
+                    else PMT_PRD_END_DT
+                end as PMT_PRD_END_DT
+                , { TAF_Closure.var_set_type2('PMT_PRD_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='05', cond6 = '95') }
+                , { TAF_Closure.var_set_type2('TRNS_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='95') }
+                , { TAF_Closure.var_set_type2('FED_RIMBRSMT_CTGRY', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='95') }
+                , { TAF_Closure.var_set_type2('MBESCBES_FRM_GRP', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('MBESCBES_FRM', 0, cond1='64.10BASE', cond2='64.9A', cond3='64.9BASE', cond4 = '64.9P', cond5='64.21U'
+                                                                , cond6='64.21UP', cond7='21BASE', cond8='21P') }
+                , MBESCBES_SRVC_CTGRY
+                , { TAF_Closure.var_set_type1('WVR_ID') }
+                , case when lpad(wvr_type_cd, 2, '0') = '88' then NULL
+                    else { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2, lowerbound=1, upperbound=33, multiple_condition='YES') }
+                , { TAF_Closure.var_set_type4('FUNDNG_CD', 'YES', cond1='A', cond2='B', cond3='C', cond4='D', cond5='E', cond6='F', cond7='G', cond8='H', cond9='I') }
+                , { TAF_Closure.var_set_type2('fundng_src_non_fed_shr_cd', 2, cond1='01', cond2='02', cond3='03', cond4='04', cond5='05', cond6='06') }
+                , { TAF_Closure.var_set_type2('OFST_TYPE_CD', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('SDP_IND', 0, cond1='0', cond2='1') }
+                , case when SRC_LCTN_CD is NOT NULL and lpad(trim(SRC_LCTN_CD), 2, '0')
+                    in ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '20', '22', '23') then lpad(trim(SRC_LCTN_CD), 2, '0')
+                    else NULL end as SRC_LCTN_CD
+                , { TAF_Closure.var_set_type1('SPA_NUM') }
+                , { TAF_Closure.var_set_type2('SUBCPTATN_IND', 0, cond1='1', cond2='2') }
+                , { TAF_Closure.var_set_type1('PMT_CTGRY_XREF') }
+                , { TAF_Closure.var_set_type2('APM_MODEL_TYPE_CD', 0, cond1='2A', cond2='2B', cond3='2C',
+                                                                    cond4='3A', cond5='3B', cond6='3N',
+                                                                    cond7='4A', cond8='4B', cond9='4C', cond10='4N') }
+                , { TAF_Closure.var_set_type2('EXPNDTR_AUTHRTY_TYPE_CD', 0, cond1='01', cond2='95') }
+                , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                , from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
+            from (
+                select
+                    *,
+                    case when ADJSTMT_IND is NOT NULL and
+                    trim(ADJSTMT_IND) in ('0', '1', '2', '3', '4', '5', '6')
+                    then trim(ADJSTMT_IND) else NULL end as ADJSTMT_IND_CLEAN
+                from
+                    COMBINED_FTX
+                ) H
+            """
+        runner.append("FTX", z)
+
+    def build(self, runner: FTX_Runner):
+        """
+        Build the OT claim-header level segment.
+        """
+        # if this flag is set them don't insert to the tables
+        # we're running to grab statistics only
+        if runner.run_stats_only:
+            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            return
+
+        z = f"""
+                INSERT INTO {runner.DA_SCHEMA}.TAF_FTX
+                SELECT
+                    { FTX_Metadata.finalFormatter(FTX_Metadata.ftx_cols) }
+                FROM FTX
+        """
+        runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

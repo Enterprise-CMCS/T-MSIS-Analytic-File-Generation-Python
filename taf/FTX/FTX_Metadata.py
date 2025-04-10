@@ -15,7 +15,8 @@ class FTX_Metadata:
         columns =  FTX_Metadata.columns.get(segment_id).copy()
         cleanser = FTX_Metadata.cleanser.get(segment_id).copy()
         renames =  FTX_Metadata.renames.get(segment_id).copy()
-        upper = FTX_Metadata.upper.get(segment_id).copy()
+        #upper = FTX_Metadata.upper.get(segment_id).copy()
+        upper = FTX_Metadata.upper.copy()
 
         for i, item in enumerate(columns):
             if item in cleanser.keys():
@@ -33,7 +34,27 @@ class FTX_Metadata:
                 )
 
         return new_line_comma.join(columns)
-    
+
+    def finalFormatter(output_columns):
+        """
+        Function for final formatting.
+        """
+
+        new_line_comma = "\n\t\t\t,"
+
+        columns: list = output_columns.copy()
+        rpl_columns: list = []
+
+        # need to check for whether these fields are part of the upper list
+        # which means they are required to be uppercase for safety
+        for fld in columns:
+            if fld in FTX_Metadata.upper:
+                rpl_columns.append(f"upper({fld})")
+            else:
+                rpl_columns.append(fld)
+
+        return new_line_comma.join(rpl_columns)
+
     columns = {
         "FTX00002": [
             "TMSIS_RUN_ID",
@@ -42,31 +63,31 @@ class FTX_Metadata:
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_or_rcpmt_dt",
-            "pymt_or_rcpmt_amt",
+            "PYMT_OR_RCPMT_DT",
+            "PYMT_OR_RCPMT_AMT",
             "CHK_EFCTV_DT",
-            "payerid",
-            "payerid_type",
-            "pyr_mcr_plan_type",
+            "PAYERID",
+            "PAYERID_TYPE",
+            "PYR_MCR_PLAN_TYPE",
             "PYEE_ID",
-            "pyee_id_type",
-            "pyee_mcr_plan_type",
+            "PYEE_ID_TYPE",
+            "PYEE_MCR_PLAN_TYPE",
             "PYEE_TAX_ID",
-            "pyee_tax_id_type",
+            "PYEE_TAX_ID_TYPE",
             "SSN_NUM",
             "PLCY_MMBR_ID",
             "PLCY_GRP_NUM",
             "PLCY_OWNR_CD",
             "INSRNC_PLN_ID",
             "INSRNC_CARR_ID_NUM",
-            "cptatn_prd_strt_dt",
-            "cptatn_prd_end_dt",
+            "CPTATN_PRD_STRT_DT",
+            "CPTATN_PRD_END_DT",
             "PMT_PRD_TYPE_CD",
             "TRNS_TYPE_CD",
-            "fed_reimbrsmt_ctgry_cd",
-            "mbescbes_form_grp",
-            "mbescbes_form",
-            "mbescbes_srvc_ctgry_cd",
+            "FED_REIMBRSMT_CTGRY_CD",
+            "MBESCBES_FORM_GRP",
+            "MBESCBES_FORM",
+            "MBESCBES_SRVC_CTGRY_CD",
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
@@ -76,9 +97,9 @@ class FTX_Metadata:
             "SRC_LCTN_CD",
             "SPA_NUM",
             "SUBCPTATN_IND",
-            "pymt_cat_xref", 
+            "PYMT_CAT_XREF", 
             "APM_MODEL_TYPE_CD",
-            "expndtr_authrty_type"
+            "EXPNDTR_AUTHRTY_TYPE"
         ],
         "FTX00003": [
             "TMSIS_RUN_ID",
@@ -87,31 +108,31 @@ class FTX_Metadata:
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_or_rcpmt_dt",
-            "pymt_amt",
+            "PYMT_OR_RCPMT_DT",
+            "PYMT_AMT",
             "CHK_EFCTV_DT",
-            "payerid",
-            "payerid_type",
+            "PAYERID",
+            "PAYERID_TYPE",
             "PYR_MC_PLN_TYPE_CD",
             "PYEE_ID",
-            "pyee_id_type",
+            "PYEE_ID_TYPE",
             "PYEE_MC_PLN_TYPE_CD",
             "PYEE_TAX_ID",
-            "pyee_tax_id_type",
+            "PYEE_TAX_ID_TYPE",
             "SSN_NUM",
-            "mmbr_id",
+            "MMBR_ID",
             "PLCY_GRP_NUM",
             "PLCY_OWNR_CD",
-            "insrnc_plan_id",
+            "INSRNC_PLAN_ID",
             "INSRNC_CARR_ID_NUM",
-            "prm_prd_strt_dt",
-            "prm_prd_end_dt",
+            "PRM_PRD_STRT_DT",
+            "PRM_PRD_END_DT",
             "PMT_PRD_TYPE_CD",
             "TRNS_TYPE_CD",
-            "fed_reimbrsmt_ctgry_cd",
-            "mbescbes_form_grp",
-            "mbescbes_form",
-            "mbescbes_srvc_ctgry_cd",
+            "FED_REIMBRSMT_CTGRY_CD",
+            "MBESCBES_FORM_GRP",
+            "MBESCBES_FORM",
+            "MBESCBES_SRVC_CTGRY_CD",
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
@@ -123,7 +144,7 @@ class FTX_Metadata:
             "SUBCPTATN_IND",
             "PMT_CTGRY_XREF",
             "APM_MODEL_TYPE_CD",
-            "expndtr_authrty_type"
+            "EXPNDTR_AUTHRTY_TYPE"
         ],
         "FTX00004": [
             "TMSIS_RUN_ID",
@@ -132,31 +153,31 @@ class FTX_Metadata:
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_dt",
-            "pymt_amt",
+            "PYMT_DT",
+            "PYMT_AMT",
             "CHK_EFCTV_DT",
-            "payerid",
-            "payerid_type",
+            "PAYERID",
+            "PAYERID_TYPE",
             "PYR_MC_PLN_TYPE_CD",
             "PYEE_ID",
-            "pyee_id_type",
+            "PYEE_ID_TYPE",
             "PYEE_MC_PLN_TYPE_CD",
             "PYEE_TAX_ID",
-            "pyee_tax_id_type",
-            "ssn",
-            "mmbr_id",
-            "grp_num",
+            "PYEE_TAX_ID_TYPE",
+            "SSN",
+            "MMBR_ID",
+            "GRP_NUM",
             "PLCY_OWNR_CD",
-            "insrnc_plan_id",
+            "INSRNC_PLAN_ID",
             "INSRNC_CARR_ID_NUM",
-            "prm_prd_strt_dt",
-            "prm_prd_end_dt",
+            "PRM_PRD_STRT_DT",
+            "PRM_PRD_END_DT",
             "PMT_PRD_TYPE_CD",
             "TRNS_TYPE_CD",
-            "fed_reimbrsmt_ctgry_cd",
-            "mbescbes_form_grp",
-            "mbescbes_form",
-            "mbescbes_srvc_ctgry_cd",
+            "FED_REIMBRSMT_CTGRY_CD",
+            "MBESCBES_FORM_GRP",
+            "MBESCBES_FORM",
+            "MBESCBES_SRVC_CTGRY_CD",
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
@@ -168,7 +189,7 @@ class FTX_Metadata:
             "SUBCPTATN_IND",
             "PMT_CTGRY_XREF",
             "APM_MODEL_TYPE_CD",
-            "expndtr_authrty_type"
+            "EXPNDTR_AUTHRTY_TYPE"
         ],
         "FTX00005": [
             "TMSIS_RUN_ID",
@@ -177,43 +198,43 @@ class FTX_Metadata:
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_or_rcpmt_dt",
-            "pymt_or_rcpmt_amt",
+            "PYMT_OR_RCPMT_DT",
+            "PYMT_OR_RCPMT_AMT",
             "CHK_EFCTV_DT",
-            "payerid",
-            "payerid_type",
-            "PYR_MC_PLN_TYPE_CD", #does not exist
+            "PAYERID",
+            "PAYERID_TYPE",
+            "PYR_MC_PLN_TYPE_CD", #DOES NOT EXIST
             "PYEE_ID",
-            "pyee_id_type", #needs rename PYR_ID_TYPE_CD
-            "pyee_mcr_plan_type", #needs rename PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
             "PYEE_TAX_ID",
-            "pyee_tax_id_type", #needs rename PYR_ID_TYPE_CD
-            "SSN_NUM", #does not exist
-            "PLCY_MMBR_ID", #does not exist
-            "PLCY_GRP_NUM", #does not exist
-            "PLCY_OWNR_CD", #does not exist
-            "insrnc_plan_id", 
-            "INSRNC_CARR_ID_NUM", #does not exist
-            "cvrg_prd_strt_dt", #needs rename PMT_PRD_EFF_DT
-            "cvrg_prd_end_dt", #needs rename PMT_PRD_END_DT
-            "PMT_PRD_TYPE_CD", #does not exist
-            "TRNS_TYPE_CD", #needs rename to TRNS_TYPE_CD
-            "fed_reimbrsmt_ctgry_cd", #needs rename FED_RIMBRSMT_CTGRY
-            "mbescbes_form_grp", #needs rename MBESCBES_FRM_GRP
-            "mbescbes_form", #needs rename MBESCBES_FRM
-            "mbescbes_srvc_ctgry_cd", #needs rename MBESCBES_SRVC_CTGRY
+            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "SSN_NUM", #DOES NOT EXIST
+            "PLCY_MMBR_ID", #DOES NOT EXIST
+            "PLCY_GRP_NUM", #DOES NOT EXIST
+            "PLCY_OWNR_CD", #DOES NOT EXIST
+            "INSRNC_PLAN_ID", 
+            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
+            "CVRG_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
+            "CVRG_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
+            "PMT_PRD_TYPE_CD", #DOES NOT EXIST
+            "TRNS_TYPE_CD", #NEEDS RENAME TO TRNS_TYPE_CD
+            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
+            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
+            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
+            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "ofst_trans_type", 
-            "SDP_IND", #does not exist
+            "OFST_TRANS_TYPE", 
+            "SDP_IND", #DOES NOT EXIST
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #does not exist
-            "PMT_CTGRY_XREF", #does not exist
-            "APM_MODEL_TYPE_CD", #does not exist
-            "expndtr_authrty_type" #needs rename EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND", #DOES NOT EXIST
+            "PMT_CTGRY_XREF", #DOES NOT EXIST
+            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
+            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
         ],
         "FTX00006": [
             "TMSIS_RUN_ID",
@@ -222,232 +243,232 @@ class FTX_Metadata:
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_or_rcpmt_dt",
-            "pymt_or_rcpmt_amt",
+            "PYMT_OR_RCPMT_DT",
+            "PYMT_OR_RCPMT_AMT",
             "CHK_EFCTV_DT",
-            "payerid", #needs rename to PYR_ID
-            "payerid_type", #needs rename PYR_ID_TYPE_CD
+            "PAYERID", #NEEDS RENAME TO PYR_ID
+            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
             "PYR_MC_PLN_TYPE_CD",
             "PYEE_ID",
-            "pyee_id_type", #needs rename PYR_ID_TYPE_CD
-            "pyee_mcr_plan_type", #needs rename PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
             "PYEE_TAX_ID",
-            "pyee_tax_id_type", #needs rename PYR_ID_TYPE_CD
-            "SSN_NUM", #does not exist
-            "PLCY_MMBR_ID", #does not exist
-            "PLCY_GRP_NUM", #does not exist
-            "PLCY_OWNR_CD", #does not exist
-            "insrnc_plan_id", #does not exist
-            "INSRNC_CARR_ID_NUM", #does not exist
-            "prfmnc_prd_strt_dt", #needs rename PMT_PRD_EFF_DT
-            "prfmnc_prd_end_dt", #needs rename PMT_PRD_END_DT
-            "PMT_PRD_TYPE_CD", #does not exist
-            "TRNS_TYPE_CD", #does not exist
-            "fed_reimbrsmt_ctgry_cd", #needs rename FED_RIMBRSMT_CTGRY
-            "mbescbes_form_grp", #needs rename MBESCBES_FRM_GRP
-            "mbescbes_form", #needs rename MBESCBES_FRM
-            "mbescbes_srvc_ctgry_cd", #needs rename MBESCBES_SRVC_CTGRY
+            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "SSN_NUM", #DOES NOT EXIST
+            "PLCY_MMBR_ID", #DOES NOT EXIST
+            "PLCY_GRP_NUM", #DOES NOT EXIST
+            "PLCY_OWNR_CD", #DOES NOT EXIST
+            "INSRNC_PLN_ID", #DOES NOT EXIST
+            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
+            "PRFMNC_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
+            "PRFMNC_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
+            "PMT_PRD_TYPE_CD", #DOES NOT EXIST
+            "TRNS_TYPE_CD", #DOES NOT EXIST
+            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
+            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
+            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
+            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #does not exist
-            "SDP_IND", #does not exist
+            "OFST_TYPE_CD", #DOES NOT EXIST
+            "SDP_IND", #DOES NOT EXIST
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #does not exist
-            "pymt_cat_xref", #does not exist
-            "vb_pymt_model_type", #does not exist
-            "expndtr_authrty_type" #needs rename EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND", #DOES NOT EXIST
+            "PYMT_CAT_XREF", #DOES NOT EXIST
+            "VB_PYMT_MODEL_TYPE", #DOES NOT EXIST
+            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
         ],
         "FTX00007": [
             "TMSIS_RUN_ID",
-            "MSIS_IDENT_NUM", #does not exist
+            "MSIS_IDENT_NUM", #DOES NOT EXIST
             "SUBMTG_STATE_CD",
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_or_rcpmt_dt",
-            "pymt_or_rcpmt_amt",
+            "PYMT_OR_RCPMT_DT",
+            "PYMT_OR_RCPMT_AMT",
             "CHK_EFCTV_DT",
-            "payerid", #needs rename to PYR_ID
-            "payerid_type", #needs rename PYR_ID_TYPE_CD
+            "PAYERID", #NEEDS RENAME TO PYR_ID
+            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
             "PYR_MC_PLN_TYPE_CD",
             "PYEE_ID",
-            "pyee_id_type", #needs rename PYR_ID_TYPE_CD
-            "pyee_mcr_plan_type", #needs rename PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
             "PYEE_TAX_ID",
-            "pyee_tax_id_type", #needs rename PYR_ID_TYPE_CD
-            "SSN_NUM", #does not exist
-            "PLCY_MMBR_ID", #does not exist
-            "PLCY_GRP_NUM", #does not exist
-            "PLCY_OWNR_CD", #does not exist
-            "INSRNC_PLN_ID", #does not exist
-            "INSRNC_CARR_ID_NUM", #does not exist
-            "pymt_prd_strt_dt", #needs rename PMT_PRD_EFF_DT
-            "pymt_prd_end_dt", #needs rename PMT_PRD_END_DT
-            "pymt_prd_type", #needs rename PMT_PRD_TYPE_CD
-            "TRNS_TYPE_CD", #does not exist
-            "fed_reimbrsmt_ctgry_cd", #needs rename FED_RIMBRSMT_CTGRY
-            "mbescbes_form_grp", #needs rename MBESCBES_FRM_GRP
-            "mbescbes_form", #needs rename MBESCBES_FRM
-            "mbescbes_srvc_ctgry_cd", #needs rename MBESCBES_SRVC_CTGRY
+            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "SSN_NUM", #DOES NOT EXIST
+            "PLCY_MMBR_ID", #DOES NOT EXIST
+            "PLCY_GRP_NUM", #DOES NOT EXIST
+            "PLCY_OWNR_CD", #DOES NOT EXIST
+            "INSRNC_PLN_ID", #DOES NOT EXIST
+            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
+            "PYMT_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
+            "PYMT_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
+            "PYMT_PRD_TYPE", #NEEDS RENAME PMT_PRD_TYPE_CD
+            "TRNS_TYPE_CD", #DOES NOT EXIST
+            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
+            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
+            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
+            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #does not exist
-            "SDP_IND", #does not exist
+            "OFST_TYPE_CD", #DOES NOT EXIST
+            "SDP_IND", #DOES NOT EXIST
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #does not exist
-            "pymt_cat_xref", #does not exist
-            "APM_MODEL_TYPE_CD", #does not exist
-            "expndtr_authrty_type" #needs rename EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND", #DOES NOT EXIST
+            "PYMT_CAT_XREF", #DOES NOT EXIST
+            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
+            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
         ],
         "FTX00008": [
             "TMSIS_RUN_ID",
-            "MSIS_IDENT_NUM",  #does not exist
+            "MSIS_IDENT_NUM",  #DOES NOT EXIST
             "SUBMTG_STATE_CD",
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_or_rcpmt_dt",   #does not exist
-            "pymt_or_rcpmt_amt",  #does not exist
+            "PYMT_OR_RCPMT_DT",   #DOES NOT EXIST
+            "PYMT_OR_RCPMT_AMT",  #DOES NOT EXIST
             "CHK_EFCTV_DT",
-            "payerid", #needs rename to PYR_ID
-            "payerid_type", #needs rename PYR_ID_TYPE_CD
+            "PAYERID", #NEEDS RENAME TO PYR_ID
+            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
             "PYR_MC_PLN_TYPE_CD",
             
             
             "PYEE_ID",
-            "pyee_id_type", #needs rename
-            "pyee_mcr_plan_type", #needs rename PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE", #NEEDS RENAME
+            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
             "PYEE_TAX_ID",
-            "pyee_tax_id_type", #needs rename PYR_ID_TYPE_CD
+            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
             
-            "SSN_NUM", #does not exist
-            "PLCY_MMBR_ID", #does not exist
-            "PLCY_GRP_NUM", #does not exist
-            "PLCY_OWNR_CD", #does not exist
-            "insrnc_plan_id", #needs rename INSRNC_PLN_ID
-            "INSRNC_CARR_ID_NUM", #does not exist
-            "cst_stlmt_prd_strt_dt", #needs rename PMT_PRD_EFF_DT
-            "cst_stlmt_prd_end_dt", #needs rename PMT_PRD_END_DT
-            "PMT_PRD_TYPE_CD", #does not exist
-            "TRNS_TYPE_CD", #does not exist
-            "fed_reimbrsmt_ctgry_cd", #needs rename FED_RIMBRSMT_CTGRY
-            "mbescbes_form_grp", #needs rename MBESCBES_FRM_GRP
-            "mbescbes_form", #needs rename MBESCBES_FRM
-            "mbescbes_srvc_ctgry_cd", #needs rename MBESCBES_SRVC_CTGRY
+            "SSN_NUM", #DOES NOT EXIST
+            "PLCY_MMBR_ID", #DOES NOT EXIST
+            "PLCY_GRP_NUM", #DOES NOT EXIST
+            "PLCY_OWNR_CD", #DOES NOT EXIST
+            "INSRNC_PLN_ID", #NEEDS RENAME INSRNC_PLN_ID
+            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
+            "CST_STLMT_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
+            "CST_STLMT_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
+            "PMT_PRD_TYPE_CD", #DOES NOT EXIST
+            "TRNS_TYPE_CD", #DOES NOT EXIST
+            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
+            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
+            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
+            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #needs rename OFST_TYPE_CD
-            "SDP_IND", #does not exist
+            "OFST_TYPE_CD", #NEEDS RENAME OFST_TYPE_CD
+            "SDP_IND", #DOES NOT EXIST
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #does not exist
-            "PMT_CTGRY_XREF", #does not exist
-            "APM_MODEL_TYPE_CD", #does not exist
-            "expndtr_authrty_type" #needs rename EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND", #DOES NOT EXIST
+            "PMT_CTGRY_XREF", #DOES NOT EXIST
+            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
+            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
         ],
         "FTX00009": [
             "TMSIS_RUN_ID",
-            "MSIS_IDENT_NUM",  #does not exist
+            "MSIS_IDENT_NUM",  #DOES NOT EXIST
             "SUBMTG_STATE_CD",
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_or_rcpmt_dt",   #does not exist
-            "pymt_or_rcpmt_amt",  #does not exist
+            "PYMT_OR_RCPMT_DT",   #DOES NOT EXIST
+            "PYMT_OR_RCPMT_AMT",  #DOES NOT EXIST
             "CHK_EFCTV_DT",
-            "payerid", #needs rename to PYR_ID
-            "payerid_type", #needs rename PYR_ID_TYPE_CD
+            "PAYERID", #NEEDS RENAME TO PYR_ID
+            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
             "PYR_MC_PLN_TYPE_CD",
             
             
             "PYEE_ID",
-            "pyee_id_type", #needs rename
-            "pyee_mcr_plan_type", #needs rename PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE", #NEEDS RENAME
+            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
             "PYEE_TAX_ID",
-            "pyee_tax_id_type", #needs rename PYR_ID_TYPE_CD
+            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
             
-            "SSN_NUM", #does not exist
-            "PLCY_MMBR_ID", #does not exist
-            "PLCY_GRP_NUM", #does not exist
-            "PLCY_OWNR_CD", #does not exist
-            "insrnc_plan_id", #needs rename INSRNC_PLN_ID
-            "INSRNC_CARR_ID_NUM", #does not exist
-            "wrp_prd_strt_dt", #needs rename PMT_PRD_EFF_DT
-            "wrp_prd_end_dt", #needs rename PMT_PRD_END_DT
-            "PMT_PRD_TYPE_CD", #does not exist
-            "TRNS_TYPE_CD", #does not exist
-            "fed_reimbrsmt_ctgry_cd", #needs rename FED_RIMBRSMT_CTGRY
-            "mbescbes_form_grp", #needs rename MBESCBES_FRM_GRP
-            "mbescbes_form", #needs rename MBESCBES_FRM
-            "mbescbes_srvc_ctgry_cd", #needs rename MBESCBES_SRVC_CTGRY
+            "SSN_NUM", #DOES NOT EXIST
+            "PLCY_MMBR_ID", #DOES NOT EXIST
+            "PLCY_GRP_NUM", #DOES NOT EXIST
+            "PLCY_OWNR_CD", #DOES NOT EXIST
+            "INSRNC_PLN_ID", #NEEDS RENAME INSRNC_PLN_ID
+            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
+            "WRP_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
+            "WRP_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
+            "PMT_PRD_TYPE_CD", #DOES NOT EXIST
+            "TRNS_TYPE_CD", #DOES NOT EXIST
+            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
+            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
+            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
+            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #needs rename OFST_TYPE_CD
-            "SDP_IND", #does not exist
+            "OFST_TYPE_CD", #NEEDS RENAME OFST_TYPE_CD
+            "SDP_IND", #DOES NOT EXIST
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #does not exist
-            "PMT_CTGRY_XREF", #does not exist
-            "APM_MODEL_TYPE_CD", #does not exist
-            "expndtr_authrty_type" #needs rename EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND", #DOES NOT EXIST
+            "PMT_CTGRY_XREF", #DOES NOT EXIST
+            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
+            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
         ],
         "FTX00095": [
             "TMSIS_RUN_ID",
-            "MSIS_IDENT_NUM",  #does not exist
+            "MSIS_IDENT_NUM",  #DOES NOT EXIST
             "SUBMTG_STATE_CD",
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "pymt_or_rcpmt_dt",   #does not exist
-            "pymt_or_rcpmt_amt",  #does not exist
+            "PYMT_OR_RCPMT_DT",   #DOES NOT EXIST
+            "PYMT_OR_RCPMT_AMT",  #DOES NOT EXIST
             "CHK_EFCTV_DT",
-            "payerid", #needs rename to PYR_ID
-            "payerid_type", #needs rename PYR_ID_TYPE_CD
-            "pyr_mcr_plan_type",
+            "PAYERID", #NEEDS RENAME TO PYR_ID
+            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PYR_MCR_PLAN_TYPE",
             
             
             "PYEE_ID",
-            "pyee_id_type", #needs rename
-            "pyee_mcr_plan_type", #needs rename PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE", #NEEDS RENAME
+            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
             "PYEE_TAX_ID",
-            "pyee_tax_id_type", #needs rename PYR_ID_TYPE_CD
+            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
             
-            "SSN_NUM", #does not exist
-            "PLCY_MMBR_ID", #does not exist
-            "PLCY_GRP_NUM", #does not exist
-            "PLCY_OWNR_CD", #does not exist
-            "insrnc_plan_id", #needs rename INSRNC_PLN_ID
-            "INSRNC_CARR_ID_NUM", #does not exist
-            "pymt_prd_strt_dt", #needs rename PMT_PRD_EFF_DT
-            "pymt_prd_end_dt", #needs rename PMT_PRD_END_DT
-            "pymt_prd_type", #does not exist
-            "trans_type_cd", #does not exist
-            "fed_reimbrsmt_ctgry_cd", #needs rename FED_RIMBRSMT_CTGRY
-            "mbescbes_form_grp", #needs rename MBESCBES_FRM_GRP
-            "mbescbes_form", #needs rename MBESCBES_FRM
-            "mbescbes_srvc_ctgry_cd", #needs rename MBESCBES_SRVC_CTGRY
+            "SSN_NUM", #DOES NOT EXIST
+            "PLCY_MMBR_ID", #DOES NOT EXIST
+            "PLCY_GRP_NUM", #DOES NOT EXIST
+            "PLCY_OWNR_CD", #DOES NOT EXIST
+            "INSRNC_PLN_ID", #NEEDS RENAME INSRNC_PLN_ID
+            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
+            "PYMT_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
+            "PYMT_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
+            "PYMT_PRD_TYPE", #DOES NOT EXIST
+            "TRANS_TYPE_CD", #DOES NOT EXIST
+            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
+            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
+            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
+            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #needs rename OFST_TYPE_CD
-            "SDP_IND", #does not exist
+            "OFST_TYPE_CD", #NEEDS RENAME OFST_TYPE_CD
+            "SDP_IND", #DOES NOT EXIST
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #does not exist
-            "pymt_cat_xref", #does not exist
-            "APM_MODEL_TYPE_CD", #does not exist
-            "expndtr_authrty_type" #needs rename EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND", #DOES NOT EXIST
+            "PYMT_CAT_XREF", #DOES NOT EXIST
+            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
+            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
         ]
         
     }
@@ -535,7 +556,7 @@ class FTX_Metadata:
             "PLCY_MMBR_ID":TAF_Closure.set_as_null,
             "PLCY_GRP_NUM":TAF_Closure.set_as_null,
             "PLCY_OWNR_CD":TAF_Closure.set_as_null,
-            "insrnc_plan_id":TAF_Closure.set_as_null,
+            "INSRNC_PLN_ID":TAF_Closure.set_as_null,
             "INSRNC_CARR_ID_NUM":TAF_Closure.set_as_null,
             "PMT_PRD_TYPE_CD":TAF_Closure.set_as_null,
             "TRNS_TYPE_CD":TAF_Closure.set_as_null,
@@ -574,7 +595,7 @@ class FTX_Metadata:
                 "PLCY_MMBR_ID":TAF_Closure.set_as_null,
                 "PLCY_GRP_NUM":TAF_Closure.set_as_null,
                 "PLCY_OWNR_CD":TAF_Closure.set_as_null,
-                "insrnc_plan_id":TAF_Closure.set_as_null,
+                "INSRNC_PLN_ID":TAF_Closure.set_as_null,
 			    "INSRNC_CARR_ID_NUM":TAF_Closure.set_as_null,
                 "PMT_PRD_TYPE_CD":TAF_Closure.set_as_null,
                 "TRNS_TYPE_CD":TAF_Closure.set_as_null,
@@ -597,7 +618,7 @@ class FTX_Metadata:
                 "PLCY_MMBR_ID":TAF_Closure.set_as_null,
                 "PLCY_GRP_NUM":TAF_Closure.set_as_null,
                 "PLCY_OWNR_CD":TAF_Closure.set_as_null,
-                "insrnc_plan_id":TAF_Closure.set_as_null,
+                "INSRNC_PLN_ID":TAF_Closure.set_as_null,
 			    "INSRNC_CARR_ID_NUM":TAF_Closure.set_as_null,
                 "PMT_PRD_TYPE_CD":TAF_Closure.set_as_null,
                 "TRNS_TYPE_CD":TAF_Closure.set_as_null,
@@ -618,240 +639,275 @@ class FTX_Metadata:
                 "PLCY_MMBR_ID":TAF_Closure.set_as_null,
                 "PLCY_GRP_NUM":TAF_Closure.set_as_null,
                 "PLCY_OWNR_CD":TAF_Closure.set_as_null,
-                "insrnc_plan_id":TAF_Closure.set_as_null,
+                "INSRNC_PLN_ID":TAF_Closure.set_as_null,
                 "OFST_TYPE_CD":TAF_Closure.set_as_null,
                 "SUBCPTATN_IND":TAF_Closure.set_as_null,
                 "APM_MODEL_TYPE_CD":TAF_Closure.set_as_null,
         }
     }
-    
+
     renames = {
         "FTX00002":
             {
-                "pymt_or_rcpmt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_or_rcpmt_amt":"PMT_OR_RCPMT_AMT",
-                "pyr_mcr_plan_type":"PYR_MC_PLN_TYPE_CD",
-                "pymt_cat_xref":"PMT_CTGRY_XREF",
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pyr_mcr_plan_type":"PYR_MC_PLN_TYPE_CD",
-                "cptatn_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "cptatn_prd_end_dt":"PMT_PRD_END_DT",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "pyee_mcr_plan_type":"PYEE_MC_PLN_TYPE_CD",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                
+                "PYMT_OR_RCPMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_OR_RCPMT_AMT":"PMT_OR_RCPMT_AMT",
+                "PYR_MCR_PLAN_TYPE":"PYR_MC_PLN_TYPE_CD",
+                "PYMT_CAT_XREF":"PMT_CTGRY_XREF",
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYR_MCR_PLAN_TYPE":"PYR_MC_PLN_TYPE_CD",
+                "CPTATN_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "CPTATN_PRD_END_DT":"PMT_PRD_END_DT",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "PYEE_MCR_PLAN_TYPE":"PYEE_MC_PLN_TYPE_CD",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD"
             },
         "FTX00003":
             {
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pyr_mcr_plan_type":"PYR_MC_PLN_TYPE_CD",
-                "pymt_or_rcpmt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_amt":"PMT_OR_RCPMT_AMT",
-                "pyr_mcr_plan_type":"PYR_MC_PLN_TYPE_CD",
-                "mmbr_id":"PLCY_MMBR_ID",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                "insrnc_plan_id":"INSRNC_PLN_ID",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "prm_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "prm_prd_end_dt":"PMT_PRD_END_DT"
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYR_MCR_PLAN_TYPE":"PYR_MC_PLN_TYPE_CD",
+                "PYMT_OR_RCPMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_AMT":"PMT_OR_RCPMT_AMT",
+                "PYR_MCR_PLAN_TYPE":"PYR_MC_PLN_TYPE_CD",
+                "MMBR_ID":"PLCY_MMBR_ID",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD",
+                "INSRNC_PLAN_ID":"INSRNC_PLN_ID",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "PRM_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "PRM_PRD_END_DT":"PMT_PRD_END_DT"
             },
         "FTX00004":
             {
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pymt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_amt":"PMT_OR_RCPMT_AMT",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                "insrnc_plan_id":"INSRNC_PLN_ID",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "ssn":"SSN_NUM",
-                "mmbr_id":"PLCY_MMBR_ID",
-                "grp_num":"PLCY_GRP_NUM",
-                "prm_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "prm_prd_end_dt":"PMT_PRD_END_DT",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD"
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_AMT":"PMT_OR_RCPMT_AMT",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD",
+                "INSRNC_PLAN_ID":"INSRNC_PLN_ID",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "SSN":"SSN_NUM",
+                "MMBR_ID":"PLCY_MMBR_ID",
+                "GRP_NUM":"PLCY_GRP_NUM",
+                "PRM_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "PRM_PRD_END_DT":"PMT_PRD_END_DT",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD"
             },
         "FTX00005":
             {
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pyr_mcr_plan_type":"PYR_MC_PLN_TYPE_CD",
-                "pymt_or_rcpmt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_or_rcpmt_amt":"PMT_OR_RCPMT_AMT",
-                "pymt_amt":"PMT_OR_RCPMT_AMT",
-                "ofst_trans_type":"OFST_TYPE_CD",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "pyee_mcr_plan_type":"PYEE_MC_PLN_TYPE_CD",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                "insrnc_plan_id":"INSRNC_PLN_ID",
-                "cvrg_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "cvrg_prd_end_dt":"PMT_PRD_END_DT",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYR_MCR_PLAN_TYPE":"PYR_MC_PLN_TYPE_CD",
+                "PYMT_OR_RCPMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_OR_RCPMT_AMT":"PMT_OR_RCPMT_AMT",
+                "PYMT_AMT":"PMT_OR_RCPMT_AMT",
+                "OFST_TRANS_TYPE":"OFST_TYPE_CD",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "PYEE_MCR_PLAN_TYPE":"PYEE_MC_PLN_TYPE_CD",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD",
+                "INSRNC_PLAN_ID":"INSRNC_PLN_ID",
+                "CVRG_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "CVRG_PRD_END_DT":"PMT_PRD_END_DT",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
             },
         "FTX00006":
             {
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pymt_or_rcpmt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_or_rcpmt_amt":"PMT_OR_RCPMT_AMT",
-                "pymt_cat_xref":"PMT_CTGRY_XREF",
-                "vb_pymt_model_type":"APM_MODEL_TYPE_CD",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "pyee_mcr_plan_type":"PYEE_MC_PLN_TYPE_CD",
-                "insrnc_plan_id":"INSRNC_PLN_ID",
-                "prfmnc_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "prfmnc_prd_end_dt":"PMT_PRD_END_DT",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYMT_OR_RCPMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_OR_RCPMT_AMT":"PMT_OR_RCPMT_AMT",
+                "PYMT_CAT_XREF":"PMT_CTGRY_XREF",
+                "VB_PYMT_MODEL_TYPE":"APM_MODEL_TYPE_CD",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "PYEE_MCR_PLAN_TYPE":"PYEE_MC_PLN_TYPE_CD",
+                "PRFMNC_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "PRFMNC_PRD_END_DT":"PMT_PRD_END_DT",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
             },
         "FTX00007":
             {
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pymt_or_rcpmt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_or_rcpmt_amt":"PMT_OR_RCPMT_AMT",
-                "pymt_cat_xref":"PMT_CTGRY_XREF",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "pyee_mcr_plan_type":"PYEE_MC_PLN_TYPE_CD",
-                "pymt_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "pymt_prd_end_dt":"PMT_PRD_END_DT",
-                "pymt_prd_type":"PMT_PRD_TYPE_CD",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYMT_OR_RCPMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_OR_RCPMT_AMT":"PMT_OR_RCPMT_AMT",
+                "PYMT_CAT_XREF":"PMT_CTGRY_XREF",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "PYEE_MCR_PLAN_TYPE":"PYEE_MC_PLN_TYPE_CD",
+                "PYMT_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "PYMT_PRD_END_DT":"PMT_PRD_END_DT",
+                "PYMT_PRD_TYPE":"PMT_PRD_TYPE_CD",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
             },
         "FTX00008":
             {
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pymt_or_rcpmt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_or_rcpmt_amt":"PMT_OR_RCPMT_AMT",
-                "cst_stlmt_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "cst_stlmt_prd_end_dt":"PMT_PRD_END_DT",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "pyee_mcr_plan_type":"PYEE_MC_PLN_TYPE_CD",
-                "insrnc_plan_id":"INSRNC_PLN_ID",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYMT_OR_RCPMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_OR_RCPMT_AMT":"PMT_OR_RCPMT_AMT",
+                "CST_STLMT_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "CST_STLMT_PRD_END_DT":"PMT_PRD_END_DT",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "PYEE_MCR_PLAN_TYPE":"PYEE_MC_PLN_TYPE_CD",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
             },
         "FTX00009":
             {
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pymt_or_rcpmt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_or_rcpmt_amt":"PMT_OR_RCPMT_AMT",
-                "wrp_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "wrp_prd_end_dt":"PMT_PRD_END_DT",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "pyee_mcr_plan_type":"PYEE_MC_PLN_TYPE_CD",
-                "insrnc_plan_id":"INSRNC_PLN_ID",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYMT_OR_RCPMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_OR_RCPMT_AMT":"PMT_OR_RCPMT_AMT",
+                "WRP_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "WRP_PRD_END_DT":"PMT_PRD_END_DT",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "PYEE_MCR_PLAN_TYPE":"PYEE_MC_PLN_TYPE_CD",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
             },
         "FTX00095":
             {
-                "payerid":"PYR_ID",
-                "payerid_type":"PYR_ID_TYPE_CD",
-                "pyr_mcr_plan_type":"PYR_MC_PLN_TYPE_CD",
-                "pymt_prd_strt_dt":"PMT_PRD_EFF_DT",
-                "pymt_prd_end_dt":"PMT_PRD_END_DT",
-                "pymt_prd_type":"PMT_PRD_TYPE_CD",
-                "trans_type_cd":"TRNS_TYPE_CD",
-                "pymt_cat_xref":"PMT_CTGRY_XREF",
-                "pymt_or_rcpmt_dt":"PMT_OR_RCPMT_DT",
-                "pymt_or_rcpmt_amt":"PMT_OR_RCPMT_AMT",
-                "pyee_tax_id_type":"PYEE_TAX_ID_TYPE_CD",
-                "pyee_id_type":"PYEE_ID_TYPE_CD",
-                "pyee_mcr_plan_type":"PYEE_MC_PLN_TYPE_CD",
-                "insrnc_plan_id":"INSRNC_PLN_ID",
-                "fed_reimbrsmt_ctgry_cd":"FED_RIMBRSMT_CTGRY",
-                "mbescbes_form_grp":"MBESCBES_FRM_GRP",
-                "mbescbes_form":"MBESCBES_FRM",
-                "mbescbes_srvc_ctgry_cd":"MBESCBES_SRVC_CTGRY",
-                "expndtr_authrty_type":"EXPNDTR_AUTHRTY_TYPE_CD",
+                "PAYERID":"PYR_ID",
+                "PAYERID_TYPE":"PYR_ID_TYPE_CD",
+                "PYR_MCR_PLAN_TYPE":"PYR_MC_PLN_TYPE_CD",
+                "PYMT_PRD_STRT_DT":"PMT_PRD_EFF_DT",
+                "PYMT_PRD_END_DT":"PMT_PRD_END_DT",
+                "PYMT_PRD_TYPE":"PMT_PRD_TYPE_CD",
+                "TRANS_TYPE_CD":"TRNS_TYPE_CD",
+                "PYMT_CAT_XREF":"PMT_CTGRY_XREF",
+                "PYMT_OR_RCPMT_DT":"PMT_OR_RCPMT_DT",
+                "PYMT_OR_RCPMT_AMT":"PMT_OR_RCPMT_AMT",
+                "PYEE_TAX_ID_TYPE":"PYEE_TAX_ID_TYPE_CD",
+                "PYEE_ID_TYPE":"PYEE_ID_TYPE_CD",
+                "PYEE_MCR_PLAN_TYPE":"PYEE_MC_PLN_TYPE_CD",
+                "FED_REIMBRSMT_CTGRY_CD":"FED_RIMBRSMT_CTGRY",
+                "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+                "MBESCBES_FORM":"MBESCBES_FRM",
+                "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+                "EXPNDTR_AUTHRTY_TYPE":"EXPNDTR_AUTHRTY_TYPE_CD",
             }
     }
+
+    upper =  {
+                "SUBMTG_STATE_CD",
+                "MSIS_IDENT_NUM",
+                "PAYERID",
+                "PYR_MCR_PLAN_TYPE",
+                "PYEE_ID",
+                "PYEE_ID_TYPE",
+                "PYEE_MCR_PLAN_TYPE",
+                "PYEE_TAX_ID",
+                "PYEE_TAX_ID_TYPE",
+                "MMBR_ID",
+                "GRP_NUM",
+                "PLCY_OWNR_CD",
+                "INSRNC_PALN_ID",
+                "INSRNC_CARR_ID_NUM",
+                "PMT_PRD_TYPE",
+                "TRANS_TYPE_CD",
+                "FED_REIMBRSMT_CTGRY_CD",
+                "MBESCBES_FORM_GRP",
+                "MBESCBES_FORM",
+                "MBESCBES_SRVC_CTGRY_CD",
+                "WVR_ID",
+                "WVR_TYPE_CD",
+                "FUNDNG_CD",
+                "FUNDNG_SRC_NON_FED_SHR_CD",
+                "OFST_TRANS_TYPE",
+                "SDP_IND",
+                "SRC_LCTN_CD",
+                "SPA_NUM",
+                "SUBCPTATN_IND",
+                "PMT_CAT_XREF",
+                "VB_PYMT_MODEL_TYPE",
+                "EXPNDTR_AUTHRTY_TYPE_CD"
+            }
     
-    upper = {
-        "FTX00002": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            },
-        "FTX00003": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            },
-        "FTX00004": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            },
-        "FTX00005": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            },
-        "FTX00006": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            },
-        "FTX00007": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            },
-        "FTX00008": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            },
-        "FTX00009": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            },
-        "FTX00095": 
-            {
-                "SUBMTG_STATE_CD",
-                "MSIS_IDENT_NUM",
-            }
-    }
+    ftx_cols = [
+        "DA_RUN_ID",
+        "FTX_VRSN",
+        "FTX_FIL_DT",
+        "TMSIS_RUN_ID",
+        "TMSIS_SGMT_NUM",
+        "INDVDL_BENE_IND",
+        "MSIS_IDENT_NUM",
+        "SUBMTG_STATE_CD",
+        "ORGNL_CLM_NUM",
+        "ADJSTMT_CLM_NUM",
+        "ADJSTMT_IND",
+        "PMT_OR_RCPMT_DT",
+        "PMT_OR_RCPMT_AMT",
+        "CHK_EFCTV_DT",
+        "PYR_ID",
+        "PYR_ID_TYPE_CD",
+        "PYR_MC_PLN_TYPE_CD",
+        "PYEE_ID",
+        "PYEE_ID_TYPE_CD",
+        "PYEE_MC_PLN_TYPE_CD",
+        "PYEE_TAX_ID",
+        "PYEE_TAX_ID_TYPE_CD",
+        "SSN_NUM",
+        "PLCY_MMBR_ID",
+        "PLCY_GRP_NUM",
+        "PLCY_OWNR_CD",
+        "INSRNC_PLN_ID",
+        "INSRNC_CARR_ID_NUM",
+        "PMT_PRD_EFF_DT",
+        "PMT_PRD_END_DT",
+        "PMT_PRD_TYPE_CD",
+        "TRNS_TYPE_CD",
+        "FED_RIMBRSMT_CTGRY",
+        "MBESCBES_FRM_GRP",
+        "MBESCBES_FRM",
+        "MBESCBES_SRVC_CTGRY",
+        "WVR_ID",
+        "WVR_TYPE_CD",
+        "FUNDNG_CD",
+        "FUNDNG_SRC_NON_FED_SHR_CD",
+        "OFST_TYPE_CD",
+        "SDP_IND",
+        "SRC_LCTN_CD",
+        "SPA_NUM",
+        "SUBCPTATN_IND",
+        "PMT_CTGRY_XREF",
+        "APM_MODEL_TYPE_CD",
+        "EXPNDTR_AUTHRTY_TYPE_CD",
+        "REC_ADD_TS",
+        "REC_UPDT_TS"
+    ]
