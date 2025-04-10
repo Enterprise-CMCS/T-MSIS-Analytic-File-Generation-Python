@@ -46,8 +46,8 @@ From the top level folder, run these commands:
 
 This step uses the Databricks UI to upload the whl file to a Volume. Volume path is listed below:
 
-upload to Databricks prod: /Volumes/cms_prod_catalog/taf_python/taf_package_volume_prod
-Upload to Databricks val: /Volumes/uat_val_catalog/taf_python/taf_package_volume_val
+upload to Databricks prod: /Volumes/cms_prod_catalog/taf_python/taf_package_volume_prod \
+upload to Databricks val: /Volumes/uat_val_catalog/taf_python/taf_package_volume_val
 
 
 ### Deploy the library to the Databricks cluster
