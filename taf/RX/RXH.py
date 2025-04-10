@@ -110,6 +110,7 @@ class RXH:
                 , TOT_BENE_COINSRNC_LBLE_AMT
                 , CMBND_BENE_CST_SHRNG_PD_AMT
                 , { TAF_Closure.var_set_type1('RX_ORGN_CD')}
+                , DGNS_PRSNT
             from (
                 select
                     *,

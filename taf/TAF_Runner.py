@@ -5,6 +5,7 @@ import re
 from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
+from taf import __version__
 
 
 class TAF_Runner():
@@ -344,14 +345,14 @@ class TAF_Runner():
                 ,lower("{file_type}")
                 ,1
                 ,"{parms}"
-                ,concat("{self.ITERATION}", ",", "7.1")
+                ,concat("{self.ITERATION}", ",", "{__version__}")
                 ,NULL
                 ,NULL
                 ,False
                 ,from_utc_timestamp(current_timestamp(), "EST")
                 ,NULL
                 ,False
-                ,concat("{self.ITERATION}", ",", "7.1")
+                ,concat("{self.ITERATION}", ",", "{__version__}")
                 )
             """
             self.logger.debug(insert_query)
