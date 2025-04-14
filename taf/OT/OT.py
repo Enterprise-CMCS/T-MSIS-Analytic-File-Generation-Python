@@ -189,7 +189,7 @@ class OT(TAF):
                 ,h.msis_ident_num
                 ,h.new_submtg_state_cd
                 ,row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
-                                                ,dx_all.adjstmt_ind,dx_all.adjdctn_dt order by dx_all.DGNS_SQNC_NUM,sort_val) as h_iteration
+                                                ,dx_all.adjstmt_ind,dx_all.adjdctn_dt order by dx_all.null_flag, dx_all.admitting_flag, dx_all.DGNS_SQNC_NUM,sort_val) as h_iteration
                 from
                     (
                     select
@@ -201,6 +201,8 @@ class OT(TAF):
                             when trim(upper(dgns_type_cd)) = "E" then 4
                             when trim(upper(dgns_type_cd)) = "R" then 5
                             else 6 end as sort_val
+                    ,case when DGNS_SQNC_NUM is null then 1 else 0 end as null_flag
+                    ,case when trim(upper(dgns_type_cd)) = 'A' then 1 else 0 end as admitting_flag
                     from
                         {TMSIS_SCHEMA}.{_2x_segment} as a
                     where
@@ -232,11 +234,11 @@ class OT(TAF):
                 ,adjstmt_clm_num
                 ,adjstmt_ind
                 ,adjdctn_dt
-                ,max(case when h_iteration > {numdx} then 1 else 0 end) as addtnl_dgns_prsnt"""
+                ,max(case when h_iteration > {numdx} or greatest(admitting_flag,null_flag) = 1 then 1 else 0 end) as addtnl_dgns_prsnt"""
         for i in range(1,numdx+1):
             z+= f"""
-                ,max(case when h_iteration = {i} then DGNS_CD else null end) as dgns_{i}_cd
-                ,max(case when h_iteration = {i} then dgns_cd_ind else null end) as DGNS_{i}_CD_IND """
+                ,max(case when h_iteration = {i} and greatest(admitting_flag,null_flag) <> 1 then DGNS_CD else null end) as dgns_{i}_cd
+                ,max(case when h_iteration = {i} and greatest(admitting_flag,null_flag) <> 1 then dgns_cd_ind else null end) as DGNS_{i}_CD_IND """
         z += f"""
             from dx_{fl}
             group by
