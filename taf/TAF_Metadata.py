@@ -529,6 +529,8 @@ class TAF_Metadata:
             (1453, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'dx_IP', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd')
         ]
 
+    DGNS_TYPE_CD_values = ['A','D','E','O','P','R']
+
     XIX_SRVC_CTGRY_CD_values = [
         "001A",
         "001B",
