@@ -201,7 +201,10 @@ class OT(TAF):
                             when trim(upper(dgns_type_cd)) = "E" then 4
                             when trim(upper(dgns_type_cd)) = "R" then 5
                             else 6 end as sort_val
-                    ,case when DGNS_SQNC_NUM is null or nullif(trim(dgns_type_cd),'') is null then 1 else 0 end as null_flag
+                    ,case when DGNS_SQNC_NUM is null or
+                        nullif(trim(dgns_type_cd),'') is null or
+                        trim(upper(dgns_type_cd)) not in ('A','D','E','O','P','R')
+                        then 1 else 0 end as null_flag
                     ,case when trim(upper(dgns_type_cd)) = 'A' then 1 else 0 end as admitting_flag
                     from
                         {TMSIS_SCHEMA}.{_2x_segment} as a
