@@ -249,7 +249,7 @@ class PRV07(PRV):
                         M.prvdr_1st_name,
                         M.prvdr_mdl_initl_name,
                         M.prvdr_last_name,
-                        M.gndr_cd,
+                        M.sex_cd,
                         M.ownrshp_cd,
                         M.ownrshp_cat,
                         M.prvdr_prft_stus_cd,
