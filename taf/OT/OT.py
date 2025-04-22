@@ -2,6 +2,7 @@ from taf.OT.OT_Metadata import OT_Metadata
 from taf.OT.OT_Runner import OT_Runner
 from taf.TAF import TAF
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class OT(TAF):
@@ -203,7 +204,7 @@ class OT(TAF):
                             else 6 end as sort_val
                     ,case when DGNS_SQNC_NUM is null or
                         nullif(trim(dgns_type_cd),'') is null or
-                        trim(upper(dgns_type_cd)) not in ('A','D','E','O','P','R')
+                        trim(upper(dgns_type_cd)) not in {tuple(TAF_Metadata.DGNS_TYPE_CD_values)}
                         then 1 else 0 end as null_flag
                     ,case when trim(upper(dgns_type_cd)) = 'A' then 1 else 0 end as admitting_flag
                     from

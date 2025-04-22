@@ -1,6 +1,7 @@
 from taf.OT.OT_Runner import OT_Runner
 from taf.OT.OT_Metadata import OT_Metadata
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class OT_DX:
@@ -37,7 +38,7 @@ class OT_DX:
                 when ADJDCTN_DT=to_date('1960-01-01') then NULL
                 else ADJDCTN_DT
                 end as ADJDCTN_DT
-            ,{ TAF_Closure.var_set_type4('DGNS_TYPE_CD', 'YES', cond1='A', cond2='D', cond3='E', cond4='O', cond5='P', cond6='R') }
+            , case when trim(upper(dgns_type_cd)) in {tuple(TAF_Metadata.DGNS_TYPE_CD_values)} then trim(upper(dgns_type_cd)) else NULL end as DGNS_TYPE_CD
             , DGNS_SQNC_NUM
             ,{ TAF_Closure.var_set_type2('DGNS_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
             ,DGNS_CD
