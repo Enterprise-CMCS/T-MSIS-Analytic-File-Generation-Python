@@ -2,6 +2,7 @@ from taf.LT.LT_Metadata import LT_Metadata
 from taf.LT.LT_Runner import LT_Runner
 from taf.TAF import TAF
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class LT(TAF):
@@ -206,26 +207,39 @@ class LT(TAF):
             numdx = the number of DX fields to be transposed and joined to header file.
         """
 
+        # h_iteration corresponds to the iteration in the header file for that row to be backfilled. 1 will go to the row with type = "P" with lowest sqnc number.
+        # If there is no P, iteration 1 will be populated with the lowest sequence number row.
+        #
+        # null_flag is 1 if Sqnc number is null, or the type code is null, or the type code is invalid.
+        # DX rows with null_flag = 1 will not be backfilled to the header file but will be output to the DX level file.
+        # null_flag used in sort order to sort to the bottom before assinging h_iteration.  This prevents gaps in h_iteration.
+        #
+        # principal flag is 1 for the DX row with type = "P" and the lowest sqnc number.  This row will be backfilled into
+        # iteration 1 of the header file.  Used in sort order to sort this row to the top before assigning h_iteration.
+        #
+        # admitting flag is 1 for the DX row with type = "A" and the lowest sqnc number.   This row will be backfilled into the Admitting DGNS field on the header file.
+        # This field is used in the sort order to sort to the bottom before assigning h_iteration.  This prevents gaps in h_iteration.
+        #
+        # is_admitting_flag is 1 if the type = "A".  This is used to keep from backfilling any type = "A" rows into _1 - _12 on header file.  Field is used to sort to the
+        # bottom before assigning h_iteration.  This prevents gaps in h_iteration.
+
         z = f"""
             create or replace temporary view dx_{fl} as
               select *,
                     row_number() over (Partition by new_submtg_state_cd, orgnl_clm_num, adjstmt_clm_num
-                                                    ,adjstmt_ind,adjdctn_dt order by null_flag, admitting_flag, principal_flag, DGNS_SQNC_NUM,sort_val) + 1 as h_iteration
+                                                    ,adjstmt_ind,adjdctn_dt order by null_flag,is_admitting_flag, admitting_flag, principal_flag desc, DGNS_SQNC_NUM,sort_val) as h_iteration
             from (
                 select dx_all.*
                 ,h.msis_ident_num
                 ,h.new_submtg_state_cd
-                ,case 
-                  when trim(upper(dgns_type_cd)) = "A"
+                ,case when trim(upper(dgns_type_cd)) = "A"
                     and null_flag = 0
                     and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
-                                                 ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, trim(dx_all.dgns_type_cd) order by null_flag, dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as admitting_flag
-                ,case 
-                  when trim(upper(dgns_type_cd)) = "P"
+                                                ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, trim(dx_all.dgns_type_cd) order by null_flag, dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as admitting_flag
+                ,case when trim(upper(dgns_type_cd)) = "P"
                     and null_flag = 0
                     and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
-                                                 ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, trim(dx_all.dgns_type_cd) order by null_flag, dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as principal_flag
-                
+                                                ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, trim(dx_all.dgns_type_cd) order by null_flag, dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as principal_flag
                 from
                     (
                     select
@@ -238,7 +252,11 @@ class LT(TAF):
                             when trim(upper(dgns_type_cd)) = "E" then 5
                             when trim(upper(dgns_type_cd)) = "R" then 6
                             else 7 end as sort_val
-                    ,case when DGNS_SQNC_NUM is null then 1 else 0 end as null_flag
+                    ,case when DGNS_SQNC_NUM is null or
+                        nullif(trim(dgns_type_cd),'') is null or
+                        trim(upper(dgns_type_cd)) not in {tuple(TAF_Metadata.DGNS_TYPE_CD_values)}
+                        then 1 else 0 end as null_flag
+                    ,case when trim(upper(dgns_type_cd)) = "A" then 1 else 0 end as is_admitting_flag
                     from
                         {TMSIS_SCHEMA}.{_2x_segment} as a
                     where
@@ -271,20 +289,17 @@ class LT(TAF):
                 ,adjstmt_clm_num
                 ,adjstmt_ind
                 ,adjdctn_dt
-                ,max(case when h_iteration > {numdx} and admitting_flag = 0 and principal_flag = 0 then 1
-                          when null_flag = 1 then 1
+                ,max(case when h_iteration > {numdx} and admitting_flag = 0 then 1
+                        when null_flag = 1 then 1
+                        when admitting_flag = 0 and is_admitting_flag = 1 then 1
                         else 0 end) as addtnl_dgns_prsnt
                 ,max(case when admitting_flag = 1 then DGNS_CD else null end) as ADMTG_DGNS_CD
-                ,max(case when admitting_flag = 1 then DGNS_CD_IND else null end) as ADMTG_DGNS_CD_IND
-                ,max(case when principal_flag = 1 then DGNS_CD else null end) as DGNS_1_CD
-                ,max(case when principal_flag = 1 then DGNS_CD_IND else null end) as DGNS_1_CD_IND
-                ,max(case when principal_flag = 1 then DGNS_POA_IND else null end) as dgns_poa_1_cd_ind"""
-                
-        for i in range(2,numdx+1):
-            z+= f"""
-                ,max(case when h_iteration = {i} and admitting_flag = 0 and null_flag = 0 and principal_flag = 0 then DGNS_CD else null end) as dgns_{i}_cd
-                ,max(case when h_iteration = {i} and admitting_flag = 0 and null_flag = 0 and principal_flag = 0 then dgns_cd_ind else null end) as DGNS_{i}_CD_IND
-                ,max(case when h_iteration = {i} and admitting_flag = 0 and null_flag = 0 and principal_flag = 0 then DGNS_POA_IND else null end) as dgns_poa_{i}_cd_ind"""
+                ,max(case when admitting_flag = 1 then DGNS_CD_IND else null end) as ADMTG_DGNS_CD_IND"""
+        for i in range(1, numdx + 1):
+            z += f"""
+                ,max(case when h_iteration = {i} and greatest(null_flag,is_admitting_flag) <> 1 then DGNS_CD else null end) as dgns_{i}_cd
+                ,max(case when h_iteration = {i} and greatest(null_flag,is_admitting_flag) <> 1 then dgns_cd_ind else null end) as DGNS_{i}_CD_IND
+                ,max(case when h_iteration = {i} and greatest(null_flag,is_admitting_flag) <> 1 then DGNS_POA_IND else null end) as dgns_poa_{i}_cd_ind"""
         z += f"""
             from dx_{fl}
             group by

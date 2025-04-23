@@ -43,7 +43,7 @@ class LT_Runner(TAF_Runner):
         from taf.LT.LT_DX import LT_DX
 
         #number of DX codes to be backfilled to the Header file.
-        NUMDX = 6
+        NUMDX = 5
 
         # -------------------------------------------------
         #   Produces:
