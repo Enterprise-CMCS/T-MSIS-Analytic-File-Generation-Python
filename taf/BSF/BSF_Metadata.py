@@ -93,11 +93,11 @@ class BSF_Metadata:
                 t2.AGE,
                 t2.DECEASED_FLG as DECEASED_FLAG,
                 t2.AGE_GROUP_FLG as AGE_GROUP_FLAG,
-                t2.GNDR_CODE,
+                t2.SEX_CODE,
 
                 {BSF_Metadata.tagAlias('ELG00003', 't3')},
 
-                t3.PRMRY_LANG_CODE,
+                t3.PREFRD_LANG_CODE,
                 t3.PRMRY_LANG_FLG as PRMRY_LANG_FLAG,
                 t3.PREGNANCY_FLG as PREGNANCY_FLAG,
 
@@ -107,7 +107,7 @@ class BSF_Metadata:
 
                 ELGBLTY_GRP_CODE as ELGBLTY_GRP_CD,
                 DUAL_ELGBL_CODE as DUAL_ELGBL_CD,
-                lpad(trim(ELGBLTY_CHG_RSN_CD), 2, '0') as ELGBLTY_CHG_RSN_CD,
+                lpad(trim(ELGBLTY_TRMNTN_RSN), 2, '0') as ELGBLTY_TRMNTN_RSN,
 
                 t5.CARE_LVL_STUS_CODE,
                 t5.DUAL_ELIGIBLE_FLG as DUAL_ELIGIBLE_FLAG,
@@ -446,7 +446,7 @@ class BSF_Metadata:
                         t1.AGE as AGE_NUM,
                         t1.AGE_GROUP_FLAG as AGE_GRP_FLAG,
                         t1.DECEASED_FLAG as DCSD_FLAG,
-                        t1.GNDR_CD,
+                        t1.SEX_CD,
                         t1.MRTL_STUS_CD,
                         t1.INCM_CD,
                         t1.VET_IND,
@@ -455,7 +455,7 @@ class BSF_Metadata:
                         t1.IMGRTN_STUS_CD,
                         t1.IMGRTN_VRFCTN_IND,
                         t1.IMGRTN_STUS_5_YR_BAR_END_DT,
-                        t1.PRMRY_LANG_CODE as OTHR_LANG_HOME_CD,
+                        t1.PREFRD_LANG_CODE as OTHR_LANG_HOME_CD,
                         t1.PRMRY_LANG_FLAG,
                         t1.ENGLSH_PRFCNCY_CD,
                         t1.HSEHLD_SIZE_CD,
@@ -634,7 +634,7 @@ class BSF_Metadata:
                         t1.ELGBL_ID_MSIS_XWALK,
                         t1.ELGBL_ID_MSIS_XWALK_ENT_ID,
                         t1.ELGBL_ID_MSIS_XWALK_RSN_CHG,
-                        t1.ELGBLTY_CHG_RSN_CD,
+                        t1.ELGBLTY_TRMNTN_RSN as ELGBLTY_TRMNTN_RSN_CD,
                         t1.ELGBL_AFTR_EOM_IND,
                         t1.LCKIN_SRVC1,
                         t1.LCKIN_SRVC2,
@@ -803,12 +803,12 @@ class BSF_Metadata:
 
         return f"lpad(trim({alias}.NDC_UOM_CHRNC_NON_HH_CD), 3, '0') as NDC_UOM_CHRNC_NON_HH_CD"
 
-    def cleanPrimaryLangCd(alias):
+    def cleanPreferredLangCd(alias):
         """
-        Clean Primary Language Code by uppercasing the language names.  
+        Clean Preferred Language Code by uppercasing the language names.  
         """
 
-        return f"upper({alias}.PRMRY_LANG_CD) as PRMRY_LANG_CD"
+        return f"upper({alias}.PREFRD_LANG_CD) as PREFRD_LANG_CD"
 
     def cleanImmigrationStatusCd(alias):
         """
@@ -845,27 +845,27 @@ class BSF_Metadata:
     #
     # ---------------------------------------------------------------------------------
     @staticmethod
-    def encodePrimaryLanguage():
+    def encodePreferredLanguage():
         """
-        Function to encode Primary Languages.  
+        Function to encode Preferred Languages.  
         """
 
         return """case
-             when trim(PRMRY_LANG_CODE) in('CHI')                         then  'C'
-             when trim(PRMRY_LANG_CODE) in('GER','GMH','GOH','GSW','NDS') then  'D'
-             when trim(PRMRY_LANG_CODE) in('ENG','ENM','ANG')             then  'E'
-             when trim(PRMRY_LANG_CODE) in('FRE','FRM','FRO')             then  'F'
-             when trim(PRMRY_LANG_CODE) in('GRC','GRE')                   then  'G'
-             when trim(PRMRY_LANG_CODE) in('ITA','SCN')                   then  'I'
-             when trim(PRMRY_LANG_CODE) in('JPN')                         then  'J'
-             when trim(PRMRY_LANG_CODE) in('NOB','NNO','NOR')             then  'N'
-             when trim(PRMRY_LANG_CODE) in('POL')                         then  'P'
-             when trim(PRMRY_LANG_CODE) in('RUS')                         then  'R'
-             when trim(PRMRY_LANG_CODE) in('SPA')                         then  'S'
-             when trim(PRMRY_LANG_CODE) in('SWE')                         then  'V'
-             when trim(PRMRY_LANG_CODE) in('SRP','HRV')                   then  'W'
-             when trim(PRMRY_LANG_CODE) in('UND','','.')
-                  or PRMRY_LANG_CODE is null                               then  null
+             when trim(PREFRD_LANG_CODE) in('CHI')                         then  'C'
+             when trim(PREFRD_LANG_CODE) in('GER','GMH','GOH','GSW','NDS') then  'D'
+             when trim(PREFRD_LANG_CODE) in('ENG','ENM','ANG')             then  'E'
+             when trim(PREFRD_LANG_CODE) in('FRE','FRM','FRO')             then  'F'
+             when trim(PREFRD_LANG_CODE) in('GRC','GRE')                   then  'G'
+             when trim(PREFRD_LANG_CODE) in('ITA','SCN')                   then  'I'
+             when trim(PREFRD_LANG_CODE) in('JPN')                         then  'J'
+             when trim(PREFRD_LANG_CODE) in('NOB','NNO','NOR')             then  'N'
+             when trim(PREFRD_LANG_CODE) in('POL')                         then  'P'
+             when trim(PREFRD_LANG_CODE) in('RUS')                         then  'R'
+             when trim(PREFRD_LANG_CODE) in('SPA')                         then  'S'
+             when trim(PREFRD_LANG_CODE) in('SWE')                         then  'V'
+             when trim(PREFRD_LANG_CODE) in('SRP','HRV')                   then  'W'
+             when trim(PREFRD_LANG_CODE) in('UND','','.')
+                  or PREFRD_LANG_CODE is null                               then  null
              else 'O' end as PRMRY_LANG_FLG
         """
 
@@ -936,7 +936,7 @@ class BSF_Metadata:
 
     cleanser = {
         'SSN_NUM': cleanSSN,
-        'PRMRY_LANG_CD': cleanPrimaryLangCd,
+        'PREFRD_LANG_CD': cleanPreferredLangCd,
         'DSBLTY_TYPE_CD': cleanDisabilityTypeCd,
         'NDC_UOM_CHRNC_NON_HH_CD': cleanNDC_UOM_CHRNC_NON_HH_CD,
         'IMGRTN_STUS_CD': cleanImmigrationStatusCd,
@@ -990,7 +990,7 @@ class BSF_Metadata:
         'ELIGIBLE_ENTIRE_MONTH_IND': 'ELGBL_ENTIR_MO_IND',
         'ELIGIBLE_LAST_DAY_OF_MONTH_IND': 'ELGBL_LAST_DAY_OF_MO_IND',
         'ENROLLMENT_TYPE_FLAG': 'ENRL_TYPE_FLAG',
-        'GNDR_CODE': 'GNDR_CD',
+        'SEX_CODE': 'SEX_CD',
         'HCBS_AUTISM_SP_DIS_NON_HHCC_FLAG': 'HCBS_AUTSM_NON_HHCC_FLAG',
         'HCBS_BRAIN_INJ_NON_HHCC_FLAG': 'HCBS_BRN_INJ_NON_HHCC_FLAG',
         'HCBS_DISAB_OTHER_NON_HHCC_FLAG': 'HCBS_DSBL_OTHR_NON_HHCC_FLAG',
@@ -1012,7 +1012,7 @@ class BSF_Metadata:
         'OTHER_DISAB_FLAG': 'OTHR_DSBL_FLAG',
         'OTHER_HH_CHRONIC_COND_FLAG': 'OTHR_HH_CHRNC_COND_FLAG',
         'OTHER_PAC_ISLANDER_FLAG': 'othr_pac_islndr_flag',
-        'PRMRY_LANG_CODE': 'OTHR_LANG_HOME_CD',
+        'PREFRD_LANG_CODE': 'OTHR_LANG_HOME_CD',
         'OVERWEIGHT_HH_CHRONIC_COND_FLAG': 'OVRWT_HH_CHRNC_COND_FLAG',
         'RACE_ETHNICITY_FLAG': 'RACE_ETHNCTY_FLAG',
         'REGION': 'REG_FLAG',
@@ -1056,11 +1056,11 @@ class BSF_Metadata:
         'ELGBL_STATE_CD_MAIL',
         'ELGBL_ZIP_CD_HOME',
         'ELGBL_ZIP_CD_MAIL',
-        'ELGBLTY_CHG_RSN_CD'
+        'ELGBLTY_TRMNTN_RSN'
         'ELGBLTY_GRP_CD',
         'ELGBLTY_MDCD_BASIS_CD',
         'ETHNCTY_CD',
-        'GNDR_CD',
+        'SEX_CD',
         'HH_ENT_NAME',
         'HH_PRVDR_NUM',
         'HSEHLD_SIZE_CD',
@@ -1116,7 +1116,7 @@ class BSF_Metadata:
 
         'ELG00002': [
             'BIRTH_DT',
-            'GNDR_CD',
+            'SEX_CD',
             'ELGBL_1ST_NAME',
             'ELGBL_LAST_NAME',
             'ELGBL_MDL_INITL_NAME',
@@ -1137,7 +1137,7 @@ class BSF_Metadata:
             'IMGRTN_STUS_CD',
             'IMGRTN_STUS_5_YR_BAR_END_DT',
             'IMGRTN_VRFCTN_IND',
-            'PRMRY_LANG_CD',
+            'PREFRD_LANG_CD',
             'ENGLSH_PRFCNCY_CD',
             'HSEHLD_SIZE_CD',
             'PRGNT_IND',
@@ -1301,7 +1301,7 @@ class BSF_Metadata:
             'REC_NUM',
             'DEATH_DT',
             'BIRTH_DT',
-            'GNDR_CD',
+            'SEX_CD',
             'ELGBL_1ST_NAME',
             'ELGBL_LAST_NAME',
             'ELGBL_MDL_INITL_NAME',
@@ -1334,7 +1334,7 @@ class BSF_Metadata:
             'IMGRTN_STUS_CD',
             'IMGRTN_STUS_5_YR_BAR_END_DT',
             'IMGRTN_VRFCTN_IND',
-            'PRMRY_LANG_CD',
+            'PREFRD_LANG_CD',
             'ENGLSH_PRFCNCY_CD',
             'HSEHLD_SIZE_CD',
             'PRGNT_IND',
@@ -1382,7 +1382,7 @@ class BSF_Metadata:
             'REC_NUM',
             'ELGBLTY_GRP_CD',
             'DUAL_ELGBL_CD',
-            'ELGBLTY_CHG_RSN_CD',
+            'ELGBLTY_TRMNTN_RSN',
             'MSIS_CASE_NUM',
             'ELGBLTY_MDCD_BASIS_CD',
             'CARE_LVL_STUS_CD',
@@ -1495,7 +1495,7 @@ class BSF_Metadata:
             'SUBMTG_STATE_CD',
             'REC_NUM',
             'MC_PLAN_ID',
-            'ENRLD_MC_PLAN_TYPE_CD',
+            'MC_PLAN_TYPE_CD',
             'MC_PLAN_ENRLMT_EFCTV_DT',
             'MC_PLAN_ENRLMT_END_DT'
         ],
@@ -1590,7 +1590,7 @@ class BSF_Metadata:
 
     validator = {
 
-        'GNDR_CD':
+        'SEX_CD':
             ['M', 'F'],
         'MRTL_STUS_CD':
             ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14',
@@ -1628,7 +1628,7 @@ class BSF_Metadata:
              '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37',
              '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '59', '60', '61',
              '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76'],
-        'ELGBLTY_CHG_RSN_CD':
+        'ELGBLTY_TRMNTN_RSN':
             ['01', '02', '03', '04', '05', '06', '07', '08', '09', '1', '2', '3', '4', '5', '6', '7', '8', '9',
              '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22',
              '23', '24', '25', '26', '27', '28', '29', '30', '31'],
@@ -1708,7 +1708,7 @@ class BSF_Metadata:
              '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33'],
         'LTSS_LVL_CARE_CD':
             ['1', '2', '3'],
-        'ENRLD_MC_PLAN_TYPE_CD':
+        'MC_PLAN_TYPE_CD':
             ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '01', '02', '03', '04', '05',
              '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '60', '70', '80'],
         'ETHNCTY_CD':
@@ -1725,7 +1725,7 @@ class BSF_Metadata:
             ['0', '1', '2'],
     }
 
-    prmry_lang_cd = [
+    prefrd_lang_cd = [
         'ABK', 'ACE', 'ACH', 'ADA', 'ADY', 'AAR', 'AFH', 'AFR', 'AFA', 'AIN', 'AKA', 'AKK', 'ALB', 'ALB', 'ALE', 'ALG', 'TUT',
         'AMH', 'ANP', 'APA', 'ARA', 'ARG', 'ARP', 'ARW', 'ARM', 'RUP', 'ART', 'ASM', 'AST', 'ATH', 'AUS', 'MAP', 'AVA', 'AVE',
         'AWA', 'AYM', 'AZE', 'BAN', 'BAT', 'BAL', 'BAM', 'BAI', 'BAD', 'BNT', 'BAS', 'BAK', 'BAQ', 'BTK', 'BEJ', 'BEL', 'BEM',
@@ -1843,7 +1843,7 @@ class BSF_Metadata:
         'cast(AGE_NUM as integer) as AGE_NUM',
         'AGE_GRP_FLAG',
         'DCSD_FLAG',
-        'GNDR_CD',
+        'SEX_CD',
         'MRTL_STUS_CD',
         'INCM_CD',
         'VET_IND',
@@ -2033,7 +2033,7 @@ class BSF_Metadata:
         'ELGBL_ID_MSIS_XWALK',
         'ELGBL_ID_MSIS_XWALK_ENT_ID',
         'ELGBL_ID_MSIS_XWALK_RSN_CHG',
-        'ELGBLTY_CHG_RSN_CD',
+        'ELGBLTY_TRMNTN_RSN_CD',
         'ELGBL_AFTR_EOM_IND',
         'LCKIN_SRVC1',
         'LCKIN_SRVC2',
