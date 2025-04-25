@@ -851,21 +851,21 @@ class BSF_Metadata:
         """
 
         return """case
-             when trim(PREFRD_LANG_CODE) in('CHI')                         then  'C'
-             when trim(PREFRD_LANG_CODE) in('GER','GMH','GOH','GSW','NDS') then  'D'
-             when trim(PREFRD_LANG_CODE) in('ENG','ENM','ANG')             then  'E'
-             when trim(PREFRD_LANG_CODE) in('FRE','FRM','FRO')             then  'F'
-             when trim(PREFRD_LANG_CODE) in('GRC','GRE')                   then  'G'
-             when trim(PREFRD_LANG_CODE) in('ITA','SCN')                   then  'I'
-             when trim(PREFRD_LANG_CODE) in('JPN')                         then  'J'
-             when trim(PREFRD_LANG_CODE) in('NOB','NNO','NOR')             then  'N'
-             when trim(PREFRD_LANG_CODE) in('POL')                         then  'P'
-             when trim(PREFRD_LANG_CODE) in('RUS')                         then  'R'
-             when trim(PREFRD_LANG_CODE) in('SPA')                         then  'S'
-             when trim(PREFRD_LANG_CODE) in('SWE')                         then  'V'
-             when trim(PREFRD_LANG_CODE) in('SRP','HRV')                   then  'W'
+             when trim(PREFRD_LANG_CODE) in('CHI','ZHO')                         then  'C'
+             when trim(PREFRD_LANG_CODE) in('DEU','GER','GMH','GOH','GSW','NDS') then  'D'
+             when trim(PREFRD_LANG_CODE) in('ENG','ENM','ANG')                   then  'E'
+             when trim(PREFRD_LANG_CODE) in('FRA','FRE','FRM','FRO')             then  'F'
+             when trim(PREFRD_LANG_CODE) in('ELL','GRC','GRE')                   then  'G'
+             when trim(PREFRD_LANG_CODE) in('ITA','SCN')                         then  'I'
+             when trim(PREFRD_LANG_CODE) in('JPN')                               then  'J'
+             when trim(PREFRD_LANG_CODE) in('NOB','NNO','NOR')                   then  'N'
+             when trim(PREFRD_LANG_CODE) in('POL')                               then  'P'
+             when trim(PREFRD_LANG_CODE) in('RUS')                               then  'R'
+             when trim(PREFRD_LANG_CODE) in('SPA')                               then  'S'
+             when trim(PREFRD_LANG_CODE) in('SWE')                               then  'V'
+             when trim(PREFRD_LANG_CODE) in('SRP','HRV')                         then  'W'
              when trim(PREFRD_LANG_CODE) in('UND','','.')
-                  or PREFRD_LANG_CODE is null                               then  null
+                  or PREFRD_LANG_CODE is null                                    then  null
              else 'O' end as PRMRY_LANG_FLG
         """
 
@@ -1729,32 +1729,32 @@ class BSF_Metadata:
         'ABK', 'ACE', 'ACH', 'ADA', 'ADY', 'AAR', 'AFH', 'AFR', 'AFA', 'AIN', 'AKA', 'AKK', 'ALB', 'ALB', 'ALE', 'ALG', 'TUT',
         'AMH', 'ANP', 'APA', 'ARA', 'ARG', 'ARP', 'ARW', 'ARM', 'RUP', 'ART', 'ASM', 'AST', 'ATH', 'AUS', 'MAP', 'AVA', 'AVE',
         'AWA', 'AYM', 'AZE', 'BAN', 'BAT', 'BAL', 'BAM', 'BAI', 'BAD', 'BNT', 'BAS', 'BAK', 'BAQ', 'BTK', 'BEJ', 'BEL', 'BEM',
-        'BEN', 'BER', 'BHO', 'BIH', 'BIK', 'BIN', 'BIS', 'BYN', 'ZBL', 'NOB', 'BOS', 'BRA', 'BRE', 'BUG', 'BUL', 'BUA', 'BUR',
-        'CAD', 'CAT', 'CAU', 'CEB', 'CEL', 'CAI', 'KHM', 'CHG', 'CMC', 'CHA', 'CHE', 'CHR', 'CHY', 'CHB', 'NYA', 'CHI', 'CHN',
-        'CHP', 'CHO', 'CHU', 'CHK', 'CHV', 'NWC', 'SYC', 'COP', 'COR', 'COS', 'CRE', 'MUS', 'CRP', 'CPE', 'CPF', 'CPP', 'CRH',
-        'HRV', 'CUS', 'CZE', 'DAK', 'DAN', 'DAR', 'DEL', 'DIN', 'DIV', 'DOI', 'DGR', 'DRA', 'DUA', 'DUM', 'DUT', 'DYU', 'DZO',
-        'FRS', 'EFI', 'EGY', 'EKA', 'ELX', 'ENG', 'ENM', 'ANG', 'MYV', 'EPO', 'EST', 'EWE', 'EWO', 'FAN', 'FAT', 'FAO', 'FIJ',
-        'FIL', 'FIN', 'FIU', 'FON', 'FRE', 'FRM', 'FRO', 'FUR', 'FUL', 'GAA', 'GLA', 'CAR', 'GLG', 'LUG', 'GAY', 'GBA', 'GEZ',
+        'BEN', 'BER', 'BHO', 'BIH', 'BIK', 'BIN', 'BIS', 'BOD', 'BYN', 'ZBL', 'NOB', 'BOS', 'BRA', 'BRE', 'BUG', 'BUL', 'BUA', 'BUR',
+        'CAD', 'CAT', 'CAU', 'CEB', 'CEL', 'CES', 'CAI', 'KHM', 'CHG', 'CMC', 'CNR', 'CHA', 'CHE', 'CHR', 'CHY', 'CHB', 'NYA', 'CHI', 'CHN',
+        'CHP', 'CHO', 'CHU', 'CHK', 'CHV', 'CYM', 'NWC', 'SYC', 'COP', 'COR', 'COS', 'CRE', 'MUS', 'CRP', 'CPE', 'CPF', 'CPP', 'CRH',
+        'HRV', 'CUS', 'CZE', 'DAK', 'DAN', 'DAR', 'DEL', 'DEU', 'DIN', 'DIV', 'DOI', 'DGR', 'DRA', 'DUA', 'DUM', 'DUT', 'DYU', 'DZO',
+        'FRS', 'EFI', 'EGY', 'EKA', 'ELX', 'ENG', 'ENM', 'ANG', 'MYV', 'ELL', 'EPO', 'EST', 'EUS', 'EWE', 'EWO', 'FAN', 'FAS', 'FAT', 'FAO', 'FIJ',
+        'FIL', 'FIN', 'FIU', 'FON', 'FRA', 'FRE', 'FRM', 'FRO', 'FUR', 'FUL', 'GAA', 'GLA', 'CAR', 'GLG', 'LUG', 'GAY', 'GBA', 'GEZ',
         'GEO', 'GER', 'GMH', 'GOH', 'GEM', 'GIL', 'GON', 'GOR', 'GOT', 'GRB', 'GRC', 'GRE', 'GRN', 'GUJ', 'GWI', 'HAI', 'HAT',
-        'HAU', 'HAW', 'HEB', 'HER', 'HIL', 'HIM', 'HIN', 'HMO', 'HIT', 'HMN', 'HUN', 'HUP', 'IBA', 'ICE', 'IDO', 'IBO', 'IJO',
-        'ILO', 'SMN', 'INC', 'INE', 'IND', 'INH', 'INA', 'ILE', 'IKU', 'IPK', 'IRA', 'GLE', 'MGA', 'SGA', 'IRO', 'ITA', 'JPN',
-        'JAV', 'JRB', 'JPR', 'KBD', 'KAB', 'KAC', 'KAL', 'XAL', 'KAM', 'KAN', 'KAU', 'KRC', 'KAA', 'KRL', 'KAR', 'KAS', 'CSB',
+        'HAU', 'HAW', 'HEB', 'HER', 'HIL', 'HIM', 'HIN', 'HMO', 'HIT', 'HMN', 'HUN', 'HUP', 'HYE', 'IBA', 'ICE', 'IDO', 'IBO', 'IJO',
+        'ILO', 'ISL', 'SMN', 'INC', 'INE', 'IND', 'INH', 'INA', 'ILE', 'IKU', 'IPK', 'IRA', 'GLE', 'MGA', 'SGA', 'IRO', 'ITA', 'JPN',
+        'JAV', 'JRB', 'JPR', 'KBD', 'KAB', 'KAC', 'KAL', 'KAT', 'XAL', 'KAM', 'KAN', 'KAU', 'KRC', 'KAA', 'KRL', 'KAR', 'KAS', 'CSB',
         'KAW', 'KAZ', 'KHA', 'KHI', 'KHO', 'KIK', 'KMB', 'KIN', 'KIR', 'TLH', 'KOM', 'KON', 'KOK', 'KOR', 'KOS', 'KPE', 'KRO',
         'KUA', 'KUM', 'KUR', 'HSB', 'KRU', 'KUT', 'LAD', 'LAH', 'LAM', 'DAY', 'LAO', 'LAT', 'LAV', 'LEZ', 'LIM', 'LIN', 'LIT',
         'JBO', 'NDS', 'DSB', 'LOZ', 'LUB', 'LUA', 'LUI', 'SMJ', 'LUN', 'LUO', 'LUS', 'LTZ', 'MAC', 'MAD', 'MAG', 'MAI', 'MAK',
         'MLG', 'MAY', 'MAL', 'MLT', 'MNC', 'MDR', 'MAN', 'MNI', 'MNO', 'GLV', 'MAO', 'ARN', 'MAR', 'CHM', 'MAH', 'MWR', 'MAS',
-        'MYN', 'MEN', 'MIC', 'MIN', 'MWL', 'MOH', 'MDF', 'LOL', 'MON', 'MKH', 'MOS', 'MUL', 'MUN', 'NAH', 'NAU', 'NAV', 'NDE',
-        'NBL', 'NDO', 'NAP', 'NEW', 'NEP', 'NIA', 'NIC', 'SSA', 'NIU', 'NQO', 'NOG', 'NON', 'NAI', 'FRR', 'SME', 'NOR', 'NNO',
+        'MYN', 'MEN', 'MIC', 'MIN', 'MWL', 'MOH', 'MDF', 'LOL', 'MON', 'MKD', 'MKH', 'MOS', 'MRI', 'MSA', 'MUL', 'MUN', 'MYA', 'NAH', 'NAU', 'NAV', 'NDE',
+        'NBL', 'NDO', 'NAP', 'NEW', 'NEP', 'NIA', 'NIC', 'NLD', 'SSA', 'NIU', 'NQO', 'NOG', 'NON', 'NAI', 'FRR', 'SME', 'NOR', 'NNO',
         'NUB', 'NYM', 'NYN', 'NYO', 'NZI', 'OCI', 'ARC', 'OJI', 'ORI', 'ORM', 'OSA', 'OSS', 'OTO', 'PAL', 'PAU', 'PLI', 'PAM',
         'PAG', 'PAN', 'PAP', 'PAA', 'NSO', 'PER', 'PEO', 'PHI', 'PHN', 'PON', 'POL', 'POR', 'PRA', 'PRO', 'PUS', 'QUE', 'RAJ',
-        'RAP', 'RAR', 'ROA', 'RUM', 'ROH', 'ROM', 'RUN', 'RUS', 'SAL', 'SAM', 'SMI', 'SMO', 'SAD', 'SAG', 'SAN', 'SAT', 'SRD',
+        'RAP', 'RAR', 'ROA', 'RUM', 'ROH', 'ROM', 'RON', 'RUN', 'RUS', 'SAL', 'SAM', 'SMI', 'SMO', 'SAD', 'SAG', 'SAN', 'SAT', 'SRD',
         'SAS', 'SCO', 'SEL', 'SEM', 'SRP', 'SRR', 'SHN', 'SNA', 'III', 'SCN', 'SID', 'SGN', 'BLA', 'SND', 'SIN', 'SIT', 'SIO',
-        'SMS', 'DEN', 'SLA', 'SLO', 'SLV', 'SOG', 'SOM', 'SON', 'SNK', 'WEN', 'SOT', 'SAI', 'ALT', 'SMA', 'SPA', 'SRN', 'SUK',
+        'SMS', 'DEN', 'SLK', 'SLA', 'SLO', 'SLV', 'SOG', 'SOM', 'SON', 'SNK', 'WEN', 'SOT', 'SQI', 'SAI', 'ALT', 'SMA', 'SPA', 'SRN', 'SUK',
         'SUX', 'SUN', 'SUS', 'SWA', 'SSW', 'SWE', 'GSW', 'SYR', 'TGL', 'TAH', 'TAI', 'TGK', 'TMH', 'TAM', 'TAT', 'TEL', 'TER',
         'TET', 'THA', 'TIB', 'TIG', 'TIR', 'TEM', 'TIV', 'TLI', 'TPI', 'TKL', 'TOG', 'TON', 'TSI', 'TSO', 'TSN', 'TUM', 'TUP',
-        'TUR', 'OTA', 'TUK', 'TVL', 'TYV', 'TWI', 'UDM', 'UGA', 'UIG', 'UKR', 'UMB', 'MIS', 'UND', 'UZB', 'VAI', 'VEN', 'VIE',
+        'TUR', 'OTA', 'TUK', 'TVL', 'TYV', 'TWI', 'UDM', 'UGA', 'UIG', 'UKR', 'UMB', 'URD', 'MIS', 'UND', 'UZB', 'VAI', 'VEN', 'VIE',
         'VOL', 'VOT', 'WAK', 'WLN', 'WAR', 'WAS', 'WEL', 'FRY', 'WAL', 'WOL', 'XHO', 'SAH', 'YAO', 'YAP', 'YID', 'YOR', 'YPK',
-        'ZND', 'ZAP', 'ZZA', 'ZEN', 'ZHA', 'ZUL', 'ZUN']
+        'ZND', 'ZAP', 'ZGH', 'ZHO', 'ZZA', 'ZEN', 'ZHA', 'ZUL', 'ZUN']
 
     output_columns = [
         'DA_RUN_ID',
