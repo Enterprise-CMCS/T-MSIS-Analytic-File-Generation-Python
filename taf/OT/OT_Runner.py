@@ -40,6 +40,9 @@ class OT_Runner(TAF_Runner):
         from taf.OT.OTL import OTL
         from taf.OT.OT_DX import OT_DX
 
+        #TAF 9.0:  Number of DX codes to be backfilled to header file.
+        NUMDX = 2
+
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
@@ -77,7 +80,7 @@ class OT_Runner(TAF_Runner):
 
         ot = OT(self)
         ot.select_dx(
-            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC",2
+            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC",NUMDX
         )
 
         # -------------------------------------------------

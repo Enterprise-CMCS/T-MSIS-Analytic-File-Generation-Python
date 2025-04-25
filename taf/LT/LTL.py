@@ -44,7 +44,7 @@ class LTL:
                 , { TAF_Closure.var_set_tos('TOS_CD') }
 
                 ,IMNZTN_TYPE_CD
-                , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01',  cond2='02', cond3='03', cond4='04') }
+                , { TAF_Closure.var_set_type2('FED_REIMBRSMT_CTGRY_CD', 2, cond1='01',  cond2='02', cond3='03', cond4='04') }
 
                 ,XIX_SRVC_CTGRY_CD
                 ,XXI_SRVC_CTGRY_CD
