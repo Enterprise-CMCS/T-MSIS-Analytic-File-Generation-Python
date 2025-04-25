@@ -2533,6 +2533,7 @@ flat_file_columns['TAF_PRV'] = [
   'EMER_SRVCS_PRVDR_IND',
   'REC_ADD_TS',
   'REC_UPDT_TS',
+  'ATYPICAL_PRVDR_IND',
 ]
 
 # COMMAND ----------
@@ -2964,6 +2965,7 @@ flat_file_columns['TAF_ANN_PR_BASE'] = [
   'BED_SPLMTL',
   'REC_ADD_TS',
   'REC_UPDT_TS',
+  'ATYPICAL_PRVDR_IND',
 ]
 
 # COMMAND ----------

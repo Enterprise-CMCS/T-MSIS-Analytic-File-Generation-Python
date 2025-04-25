@@ -300,7 +300,8 @@ class PRV07(PRV):
                         T.mh_srvc_prvdr_ind,
                         T.emer_srvcs_prvdr_ind,
                         from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS,
-                        cast(NULL as timestamp) as REC_UPDT_TS
+                        cast(NULL as timestamp) as REC_UPDT_TS,
+                        M.atypical_prvdr_ind
                 from Prov02_Main_CNST M
                 left join Prov07_Medicaid_Mapped E
                     on {self.write_equalkeys(self.srtlist, 'M', 'E')}

@@ -86,6 +86,7 @@ class BASE(APR):
             f"""{TAF_Closure.ever_year('EMER_SRVCS_PRVDR_IND')}""",
             f"""{TAF_Closure.ever_year('TCHNG_IND')}""",
             f"""{TAF_Closure.ever_year('ACPT_NEW_PTNTS_IND')}""",
+            f"""{TAF_Closure.ever_year('ATYPICAL_PRVDR_IND')}""",
             f"""{TAF_Closure.any_month(incols='SUBMTG_STATE_PRVDR_ID',outcol='PRVDR_FLAG', condition='IS NOT NULL')}"""]
 
         outercols = [
@@ -227,7 +228,11 @@ class BASE(APR):
             'PGM_SPLMTL',
             'TXNMY_SPLMTL',
             'ENRLMT_SPLMTL',
-            'BED_SPLMTL']
+            'BED_SPLMTL',
+            "from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS",
+            'cast(NULL as timestamp) as REC_UPDT_TS',
+            'ATYPICAL_PRVDR_IND',
+            ]
 
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
@@ -240,8 +245,6 @@ class BASE(APR):
                 SELECT
                     { self.table_id_cols() }
                     ,{ ','.join(basecols) }
-                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                    ,cast(NULL as timestamp) as REC_UPDT_TS
                 FROM base_{self.year}_final"""
 
             self.apr.append(type(self).__name__, z)

@@ -53,7 +53,9 @@ class PRV02(PRV):
                   'prov_profit_status',
                   '%fix_old_dates(date_of_birth)',
                   '%fix_old_dates(date_of_death)',
-                  'accepting_new_patients_ind']
+                  'accepting_new_patients_ind',
+                  'atypical_prov_ind',
+                  ]
 
         whr02 = 'upper(submitting_state_prov_id) is not null'
 
@@ -194,6 +196,16 @@ class PRV02(PRV):
                            'C',
                             1)
 
+        self.recode_lookup('Prov02_Main_NP',
+                            self.srtlist,
+                           'prv_formats_sm',
+                           'ATYPICV',
+                           'atypical_prov_ind',
+                           'ATYPICAL_PRVDR_IND',
+                           'Prov02_Main_AT',
+                           'C',
+                            1)
+        
         # diststyle key distkey(submitting_state_prov_id)
         # compound sortkey (tms_run_id, submitting_state, submitting_state_prov_id) as
         z = f"""
@@ -209,7 +221,7 @@ class PRV02(PRV):
                     when date_of_death > to_date('{self.prv.RPT_PRD}') then null else date_of_death
                     end as DEATH_DT
             from
-                Prov02_Main_NP
+                Prov02_Main_AT
             where
                 FAC_GRP_INDVDL_CD='03' or FAC_GRP_INDVDL_CD is null
             order by
@@ -246,7 +258,9 @@ class PRV02(PRV):
                      'OWNRSHP_CD',
                      'OWNRSHP_CAT',
                      'PRVDR_PRFT_STUS_CD',
-                     'ACPT_NEW_PTNTS_IND']
+                     'ACPT_NEW_PTNTS_IND',
+                     'ATYPICAL_PRVDR_IND',
+                     ]
 
         var02ind = ['prov_first_name',
                     'prov_middle_initial',
@@ -254,14 +268,15 @@ class PRV02(PRV):
                     'SEX_CD',
                     'AGE_NUM',
                     'date_of_birth',
-                    'DEATH_DT']
+                    'DEATH_DT',
+                    ]
 
         # diststyle key distkey(submitting_state_prov_id)
         # compound sortkey (tms_run_id, submitting_state, submitting_state_prov_id) as
         z = f"""
                 create or replace temporary view Prov02_Main_All as
                 select { self.write_keyprefix(var02nind, 'R')}, { self.write_keyprefix(var02ind, 'T') }
-                from Prov02_Main_NP R
+                from Prov02_Main_AT R
                     left join Prov02_Main_GC T
                     on { self.write_equalkeys(self.srtlist,'R', 'T') }
                 order by { self.write_keyprefix(self.srtlist, 'R') }
@@ -299,6 +314,7 @@ class PRV02(PRV):
                     date_of_birth as BIRTH_DT,
                     DEATH_DT,
                     ACPT_NEW_PTNTS_IND,
+                    ATYPICAL_PRVDR_IND,
                     case
                       when AGE_NUM < 15 then null
                       when AGE_NUM > 125 then 125
