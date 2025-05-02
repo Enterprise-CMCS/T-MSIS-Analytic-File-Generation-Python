@@ -38,6 +38,7 @@ class FTX(TAF):
             where
                 a.TMSIS_ACTV_IND = 1
                 and concat(a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})
+                and coalesce(a.ADJSTMT_IND,'1') <> 1
                 and (
                         year(coalesce({analysis_date_end.replace('"', '')},{analysis_date_start.replace('"', '')})) = {rep_yr}
                         and date_part ('month', coalesce({analysis_date_end.replace('"', '')},{analysis_date_start.replace('"', '')})) = {rep_mo}

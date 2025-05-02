@@ -818,6 +818,7 @@ class FTX_Metadata:
                 "SUBMTG_STATE_CD",
                 "MSIS_IDENT_NUM",
                 "PAYERID",
+                "PAYERID_TYPE",
                 "PYR_MCR_PLAN_TYPE",
                 "PYEE_ID",
                 "PYEE_ID_TYPE",
@@ -846,7 +847,7 @@ class FTX_Metadata:
                 "SUBCPTATN_IND",
                 "PYMT_CAT_XREF",
                 "VB_PYMT_MODEL_TYPE",
-                "EXPNDTR_AUTHRTY_TYPE_CD"
+                "EXPNDTR_AUTHRTY_TYPE"
             }
 
     ftx_cols = [
