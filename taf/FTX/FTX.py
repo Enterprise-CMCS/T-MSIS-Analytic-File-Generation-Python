@@ -3,15 +3,27 @@ from taf.TAF_Closure import TAF_Closure
 from taf.FTX.FTX_Runner import FTX_Runner
 from taf.FTX.FTX_Metadata import FTX_Metadata
 from taf.TAF_Claims import TAF_Claims
+from taf.TAF_Metadata import TAF_Metadata
+
 
 class FTX(TAF):
-    
+
     def __init__(self, runner: FTX_Runner):
         super().__init__(runner)
         self.st_fil_type = "FTX"
 
     ### create functions to do the work in this class.
-    def AWS_Extract_FTX_segment(self, TMSIS_SCHEMA, fl, tab_no, _2x_segment, analysis_date_start, analysis_date_end,rep_mo,rep_yr):
+    def AWS_Extract_FTX_segment(
+        self,
+        TMSIS_SCHEMA,
+        fl,
+        tab_no,
+        _2x_segment,
+        analysis_date_start,
+        analysis_date_end,
+        rep_mo,
+        rep_yr,
+    ):
         """
         Pull line item records for header records linked with claims family table dataset.
         """
@@ -32,8 +44,8 @@ class FTX(TAF):
                     )
         """
         self.runner.append(self.st_fil_type, z)
-        
-        #dedup
+
+        # dedup
         z = f"""
             create or replace temporary view {_2x_segment}_nodups as
             with nodups as 
@@ -64,9 +76,9 @@ class FTX(TAF):
             """
         self.runner.append(self.st_fil_type, z)
 
-        #in with statement, limit clm fam table to final action = 1 and adjst indicator not null and not equal to 1.
-        #clean keys, remove dups
-        #then inner join that with ftx deduplicated records to limit to final action = 1
+        # in with statement, limit clm fam table to final action = 1 and adjst indicator not null and not equal to 1.
+        # clean keys, remove dups
+        # then inner join that with ftx deduplicated records to limit to final action = 1
         z = f"""
             create or replace temporary view ALL_{_2x_segment} as
                 with CLM_FMLY_{_2x_segment} as
@@ -103,15 +115,15 @@ class FTX(TAF):
         """
         self.runner.append(self.st_fil_type, z)
 
-    def stack_segments(self,input_tables):
+    def stack_segments(self, input_tables):
         z = f"""
             create or replace temporary view COMBINED_FTX as"""
 
-        for key,vals in input_tables.items():
-            z+=f"""
+        for key, vals in input_tables.items():
+            z += f"""
             select * from ALL_{key}
             union all"""
-        z=z[:-9]
+        z = z[:-9]
 
         self.runner.append(self.st_fil_type, z)
 
@@ -120,6 +132,7 @@ class FTX(TAF):
         Create the FTX segment.
         """
 
+        # for MBESCBES_FRM below, we are compressing spaces for the valid value check, but outputting the original value.
         z = f"""
             create or replace temporary view FTX as
 
@@ -183,9 +196,12 @@ class FTX(TAF):
                 , { TAF_Closure.var_set_type2('TRNS_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='95') }
                 , { TAF_Closure.var_set_type2('FED_RIMBRSMT_CTGRY', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='95') }
                 , { TAF_Closure.var_set_type2('MBESCBES_FRM_GRP', 0, cond1='1', cond2='2', cond3='3') }
-                , { TAF_Closure.var_set_type2('MBESCBES_FRM', 0, cond1='64.10BASE', cond2='64.9A', cond3='64.9BASE', cond4 = '64.9P', cond5='64.21U'
-                                                                , cond6='64.21UP', cond7='21BASE', cond8='21P') }
-                , MBESCBES_SRVC_CTGRY
+                , case when replace(upper(trim(MBESCBES_FRM)),' ','') in {tuple(x.replace(" ","") for x in TAF_Metadata.MBESCBES_FRM_values)} then upper(trim(MBESCBES_FRM)) else NULL end as MBESCBES_FRM
+
+                , case when upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0')) in {tuple(TAF_Metadata.MBESCBES_SRVC_CTGRY_values)}
+                    then upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0'))
+                    else NULL end as MBESCBES_SRVC_CTGRY
+
                 , { TAF_Closure.var_set_type1('WVR_ID') }
                 , case when lpad(wvr_type_cd, 2, '0') = '88' then NULL
                     else { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2, lowerbound=1, upperbound=33, multiple_condition='YES') }
@@ -224,7 +240,9 @@ class FTX(TAF):
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
         if runner.run_stats_only:
-            runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
+            runner.logger.info(
+                f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **"
+            )
             return
 
         z = f"""

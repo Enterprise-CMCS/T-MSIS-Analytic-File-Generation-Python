@@ -203,38 +203,38 @@ class FTX_Metadata:
             "CHK_EFCTV_DT",
             "PAYERID",
             "PAYERID_TYPE",
-            "PYR_MC_PLN_TYPE_CD", #DOES NOT EXIST
+            "PYR_MC_PLN_TYPE_CD", 
             "PYEE_ID",
-            "PYEE_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE",
+            "PYEE_MCR_PLAN_TYPE",
             "PYEE_TAX_ID",
-            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            "SSN_NUM", #DOES NOT EXIST
-            "PLCY_MMBR_ID", #DOES NOT EXIST
-            "PLCY_GRP_NUM", #DOES NOT EXIST
-            "PLCY_OWNR_CD", #DOES NOT EXIST
+            "PYEE_TAX_ID_TYPE",
+            "SSN_NUM",
+            "PLCY_MMBR_ID", 
+            "PLCY_GRP_NUM", 
+            "PLCY_OWNR_CD", 
             "INSRNC_PLAN_ID", 
-            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
-            "CVRG_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
-            "CVRG_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
-            "PMT_PRD_TYPE_CD", #DOES NOT EXIST
-            "TRNS_TYPE_CD", #NEEDS RENAME TO TRNS_TYPE_CD
-            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
-            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
-            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
-            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
+            "INSRNC_CARR_ID_NUM", 
+            "CVRG_PRD_STRT_DT", 
+            "CVRG_PRD_END_DT", 
+            "PMT_PRD_TYPE_CD", 
+            "TRNS_TYPE_CD", 
+            "FED_REIMBRSMT_CTGRY_CD", 
+            "MBESCBES_FORM_GRP", 
+            "MBESCBES_FORM", 
+            "MBESCBES_SRVC_CTGRY_CD",
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
             "OFST_TRANS_TYPE", 
-            "SDP_IND", #DOES NOT EXIST
+            "SDP_IND", 
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #DOES NOT EXIST
-            "PMT_CTGRY_XREF", #DOES NOT EXIST
-            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
-            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND", 
+            "PMT_CTGRY_XREF", 
+            "APM_MODEL_TYPE_CD",
+            "EXPNDTR_AUTHRTY_TYPE"
         ],
         "FTX00006": [
             "TMSIS_RUN_ID",
@@ -246,44 +246,44 @@ class FTX_Metadata:
             "PYMT_OR_RCPMT_DT",
             "PYMT_OR_RCPMT_AMT",
             "CHK_EFCTV_DT",
-            "PAYERID", #NEEDS RENAME TO PYR_ID
-            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PAYERID", 
+            "PAYERID_TYPE",
             "PYR_MC_PLN_TYPE_CD",
             "PYEE_ID",
-            "PYEE_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE",
+            "PYEE_MCR_PLAN_TYPE", 
             "PYEE_TAX_ID",
-            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            "SSN_NUM", #DOES NOT EXIST
-            "PLCY_MMBR_ID", #DOES NOT EXIST
-            "PLCY_GRP_NUM", #DOES NOT EXIST
-            "PLCY_OWNR_CD", #DOES NOT EXIST
-            "INSRNC_PLN_ID", #DOES NOT EXIST
-            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
-            "PRFMNC_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
-            "PRFMNC_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
-            "PMT_PRD_TYPE_CD", #DOES NOT EXIST
-            "TRNS_TYPE_CD", #DOES NOT EXIST
-            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
-            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
-            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
-            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
+            "PYEE_TAX_ID_TYPE", 
+            "SSN_NUM", 
+            "PLCY_MMBR_ID",
+            "PLCY_GRP_NUM", 
+            "PLCY_OWNR_CD",
+            "INSRNC_PLN_ID",
+            "INSRNC_CARR_ID_NUM",
+            "PRFMNC_PRD_STRT_DT", 
+            "PRFMNC_PRD_END_DT", 
+            "PMT_PRD_TYPE_CD", 
+            "TRNS_TYPE_CD", 
+            "FED_REIMBRSMT_CTGRY_CD",
+            "MBESCBES_FORM_GRP", 
+            "MBESCBES_FORM", 
+            "MBESCBES_SRVC_CTGRY_CD", 
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #DOES NOT EXIST
-            "SDP_IND", #DOES NOT EXIST
+            "OFST_TYPE_CD", 
+            "SDP_IND", 
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #DOES NOT EXIST
-            "PYMT_CAT_XREF", #DOES NOT EXIST
-            "VB_PYMT_MODEL_TYPE", #DOES NOT EXIST
-            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND", 
+            "PYMT_CAT_XREF", 
+            "VB_PYMT_MODEL_TYPE",
+            "EXPNDTR_AUTHRTY_TYPE" 
         ],
         "FTX00007": [
             "TMSIS_RUN_ID",
-            "MSIS_IDENT_NUM", #DOES NOT EXIST
+            "MSIS_IDENT_NUM",
             "SUBMTG_STATE_CD",
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
@@ -291,184 +291,175 @@ class FTX_Metadata:
             "PYMT_OR_RCPMT_DT",
             "PYMT_OR_RCPMT_AMT",
             "CHK_EFCTV_DT",
-            "PAYERID", #NEEDS RENAME TO PYR_ID
-            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PAYERID",
+            "PAYERID_TYPE", 
             "PYR_MC_PLN_TYPE_CD",
             "PYEE_ID",
-            "PYEE_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE", 
+            "PYEE_MCR_PLAN_TYPE",
             "PYEE_TAX_ID",
-            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            "SSN_NUM", #DOES NOT EXIST
-            "PLCY_MMBR_ID", #DOES NOT EXIST
-            "PLCY_GRP_NUM", #DOES NOT EXIST
-            "PLCY_OWNR_CD", #DOES NOT EXIST
-            "INSRNC_PLN_ID", #DOES NOT EXIST
-            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
-            "PYMT_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
-            "PYMT_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
-            "PYMT_PRD_TYPE", #NEEDS RENAME PMT_PRD_TYPE_CD
-            "TRNS_TYPE_CD", #DOES NOT EXIST
-            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
-            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
-            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
-            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
+            "PYEE_TAX_ID_TYPE", 
+            "SSN_NUM", 
+            "PLCY_MMBR_ID", 
+            "PLCY_GRP_NUM", 
+            "PLCY_OWNR_CD", 
+            "INSRNC_PLN_ID",
+            "INSRNC_CARR_ID_NUM", 
+            "PYMT_PRD_STRT_DT", 
+            "PYMT_PRD_END_DT", 
+            "PYMT_PRD_TYPE", 
+            "TRNS_TYPE_CD", 
+            "FED_REIMBRSMT_CTGRY_CD", 
+            "MBESCBES_FORM_GRP", 
+            "MBESCBES_FORM", 
+            "MBESCBES_SRVC_CTGRY_CD", 
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #DOES NOT EXIST
-            "SDP_IND", #DOES NOT EXIST
+            "OFST_TYPE_CD",
+            "SDP_IND",
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #DOES NOT EXIST
-            "PYMT_CAT_XREF", #DOES NOT EXIST
-            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
-            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND",
+            "PYMT_CAT_XREF",
+            "APM_MODEL_TYPE_CD",
+            "EXPNDTR_AUTHRTY_TYPE"
         ],
         "FTX00008": [
             "TMSIS_RUN_ID",
-            "MSIS_IDENT_NUM",  #DOES NOT EXIST
+            "MSIS_IDENT_NUM", 
             "SUBMTG_STATE_CD",
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "PYMT_OR_RCPMT_DT",   #DOES NOT EXIST
-            "PYMT_OR_RCPMT_AMT",  #DOES NOT EXIST
+            "PYMT_OR_RCPMT_DT",  
+            "PYMT_OR_RCPMT_AMT", 
             "CHK_EFCTV_DT",
-            "PAYERID", #NEEDS RENAME TO PYR_ID
-            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PAYERID", 
+            "PAYERID_TYPE", 
             "PYR_MC_PLN_TYPE_CD",
-            
-            
             "PYEE_ID",
-            "PYEE_ID_TYPE", #NEEDS RENAME
-            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE", 
+            "PYEE_MCR_PLAN_TYPE", 
             "PYEE_TAX_ID",
-            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            
-            "SSN_NUM", #DOES NOT EXIST
-            "PLCY_MMBR_ID", #DOES NOT EXIST
-            "PLCY_GRP_NUM", #DOES NOT EXIST
-            "PLCY_OWNR_CD", #DOES NOT EXIST
-            "INSRNC_PLN_ID", #NEEDS RENAME INSRNC_PLN_ID
-            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
-            "CST_STLMT_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
-            "CST_STLMT_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
-            "PMT_PRD_TYPE_CD", #DOES NOT EXIST
-            "TRNS_TYPE_CD", #DOES NOT EXIST
-            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
-            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
-            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
-            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
+            "PYEE_TAX_ID_TYPE", 
+            "SSN_NUM", 
+            "PLCY_MMBR_ID", 
+            "PLCY_GRP_NUM", 
+            "PLCY_OWNR_CD", 
+            "INSRNC_PLN_ID",
+            "INSRNC_CARR_ID_NUM", 
+            "CST_STLMT_PRD_STRT_DT", 
+            "CST_STLMT_PRD_END_DT", 
+            "PMT_PRD_TYPE_CD",
+            "TRNS_TYPE_CD",
+            "FED_REIMBRSMT_CTGRY_CD", 
+            "MBESCBES_FORM_GRP", 
+            "MBESCBES_FORM",
+            "MBESCBES_SRVC_CTGRY_CD",
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #NEEDS RENAME OFST_TYPE_CD
-            "SDP_IND", #DOES NOT EXIST
+            "OFST_TYPE_CD",
+            "SDP_IND", 
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #DOES NOT EXIST
-            "PMT_CTGRY_XREF", #DOES NOT EXIST
-            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
-            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND",
+            "PMT_CTGRY_XREF",
+            "APM_MODEL_TYPE_CD", 
+            "EXPNDTR_AUTHRTY_TYPE"
         ],
         "FTX00009": [
             "TMSIS_RUN_ID",
-            "MSIS_IDENT_NUM",  #DOES NOT EXIST
+            "MSIS_IDENT_NUM",
             "SUBMTG_STATE_CD",
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "PYMT_OR_RCPMT_DT",   #DOES NOT EXIST
-            "PYMT_OR_RCPMT_AMT",  #DOES NOT EXIST
+            "PYMT_OR_RCPMT_DT",
+            "PYMT_OR_RCPMT_AMT",
             "CHK_EFCTV_DT",
-            "PAYERID", #NEEDS RENAME TO PYR_ID
-            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PAYERID",
+            "PAYERID_TYPE",
             "PYR_MC_PLN_TYPE_CD",
-            
-            
             "PYEE_ID",
-            "PYEE_ID_TYPE", #NEEDS RENAME
-            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE",
+            "PYEE_MCR_PLAN_TYPE",
             "PYEE_TAX_ID",
-            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            
-            "SSN_NUM", #DOES NOT EXIST
-            "PLCY_MMBR_ID", #DOES NOT EXIST
-            "PLCY_GRP_NUM", #DOES NOT EXIST
-            "PLCY_OWNR_CD", #DOES NOT EXIST
-            "INSRNC_PLN_ID", #NEEDS RENAME INSRNC_PLN_ID
-            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
-            "WRP_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
-            "WRP_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
-            "PMT_PRD_TYPE_CD", #DOES NOT EXIST
-            "TRNS_TYPE_CD", #DOES NOT EXIST
-            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
-            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
-            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
-            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
+            "PYEE_TAX_ID_TYPE",
+            "SSN_NUM", 
+            "PLCY_MMBR_ID", 
+            "PLCY_GRP_NUM", 
+            "PLCY_OWNR_CD", 
+            "INSRNC_PLN_ID", 
+            "INSRNC_CARR_ID_NUM", 
+            "WRP_PRD_STRT_DT", 
+            "WRP_PRD_END_DT", 
+            "PMT_PRD_TYPE_CD",
+            "TRNS_TYPE_CD", 
+            "FED_REIMBRSMT_CTGRY_CD", 
+            "MBESCBES_FORM_GRP", 
+            "MBESCBES_FORM", 
+            "MBESCBES_SRVC_CTGRY_CD",
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #NEEDS RENAME OFST_TYPE_CD
-            "SDP_IND", #DOES NOT EXIST
+            "OFST_TYPE_CD",
+            "SDP_IND",
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #DOES NOT EXIST
-            "PMT_CTGRY_XREF", #DOES NOT EXIST
-            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
-            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND",
+            "PMT_CTGRY_XREF",
+            "APM_MODEL_TYPE_CD",
+            "EXPNDTR_AUTHRTY_TYPE"
         ],
         "FTX00095": [
             "TMSIS_RUN_ID",
-            "MSIS_IDENT_NUM",  #DOES NOT EXIST
+            "MSIS_IDENT_NUM",
             "SUBMTG_STATE_CD",
             "ORGNL_CLM_NUM",
             "ADJSTMT_CLM_NUM",
             "ADJSTMT_IND",
-            "PYMT_OR_RCPMT_DT",   #DOES NOT EXIST
-            "PYMT_OR_RCPMT_AMT",  #DOES NOT EXIST
+            "PYMT_OR_RCPMT_DT",
+            "PYMT_OR_RCPMT_AMT",
             "CHK_EFCTV_DT",
-            "PAYERID", #NEEDS RENAME TO PYR_ID
-            "PAYERID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
+            "PAYERID",
+            "PAYERID_TYPE",
             "PYR_MCR_PLAN_TYPE",
-            
-            
             "PYEE_ID",
-            "PYEE_ID_TYPE", #NEEDS RENAME
-            "PYEE_MCR_PLAN_TYPE", #NEEDS RENAME PYEE_MC_PLN_TYPE_CD
+            "PYEE_ID_TYPE",
+            "PYEE_MCR_PLAN_TYPE",
             "PYEE_TAX_ID",
-            "PYEE_TAX_ID_TYPE", #NEEDS RENAME PYR_ID_TYPE_CD
-            
-            "SSN_NUM", #DOES NOT EXIST
-            "PLCY_MMBR_ID", #DOES NOT EXIST
-            "PLCY_GRP_NUM", #DOES NOT EXIST
-            "PLCY_OWNR_CD", #DOES NOT EXIST
-            "INSRNC_PLN_ID", #NEEDS RENAME INSRNC_PLN_ID
-            "INSRNC_CARR_ID_NUM", #DOES NOT EXIST
-            "PYMT_PRD_STRT_DT", #NEEDS RENAME PMT_PRD_EFF_DT
-            "PYMT_PRD_END_DT", #NEEDS RENAME PMT_PRD_END_DT
-            "PYMT_PRD_TYPE", #DOES NOT EXIST
-            "TRANS_TYPE_CD", #DOES NOT EXIST
-            "FED_REIMBRSMT_CTGRY_CD", #NEEDS RENAME FED_RIMBRSMT_CTGRY
-            "MBESCBES_FORM_GRP", #NEEDS RENAME MBESCBES_FRM_GRP
-            "MBESCBES_FORM", #NEEDS RENAME MBESCBES_FRM
-            "MBESCBES_SRVC_CTGRY_CD", #NEEDS RENAME MBESCBES_SRVC_CTGRY
+            "PYEE_TAX_ID_TYPE",
+            "SSN_NUM", 
+            "PLCY_MMBR_ID",
+            "PLCY_GRP_NUM", 
+            "PLCY_OWNR_CD",
+            "INSRNC_PLN_ID", 
+            "INSRNC_CARR_ID_NUM", 
+            "PYMT_PRD_STRT_DT", 
+            "PYMT_PRD_END_DT",
+            "PYMT_PRD_TYPE",
+            "TRANS_TYPE_CD", 
+            "FED_REIMBRSMT_CTGRY_CD", 
+            "MBESCBES_FORM_GRP",
+            "MBESCBES_FORM", 
+            "MBESCBES_SRVC_CTGRY_CD",
             "WVR_ID",
             "WVR_TYPE_CD",
             "FUNDNG_CD",
             "FUNDNG_SRC_NON_FED_SHR_CD",
-            "OFST_TYPE_CD", #NEEDS RENAME OFST_TYPE_CD
-            "SDP_IND", #DOES NOT EXIST
+            "OFST_TYPE_CD",
+            "SDP_IND", 
             "SRC_LCTN_CD",
             "SPA_NUM",
-            "SUBCPTATN_IND", #DOES NOT EXIST
-            "PYMT_CAT_XREF", #DOES NOT EXIST
-            "APM_MODEL_TYPE_CD", #DOES NOT EXIST
-            "EXPNDTR_AUTHRTY_TYPE" #NEEDS RENAME EXPNDTR_AUTHRTY_TYPE_CD
+            "SUBCPTATN_IND",
+            "PYMT_CAT_XREF",
+            "APM_MODEL_TYPE_CD",
+            "EXPNDTR_AUTHRTY_TYPE"
         ]
         
     }
@@ -627,7 +618,6 @@ class FTX_Metadata:
                 "SUBCPTATN_IND":TAF_Closure.set_as_null,
                 "PMT_CTGRY_XREF":TAF_Closure.set_as_null,
                 "APM_MODEL_TYPE_CD":TAF_Closure.set_as_null,
-                
         },
         "FTX00095":
         {
@@ -837,7 +827,7 @@ class FTX_Metadata:
                 "MMBR_ID",
                 "GRP_NUM",
                 "PLCY_OWNR_CD",
-                "INSRNC_PALN_ID",
+                "INSRNC_PLAN_ID",
                 "INSRNC_CARR_ID_NUM",
                 "PMT_PRD_TYPE",
                 "TRANS_TYPE_CD",
@@ -854,11 +844,11 @@ class FTX_Metadata:
                 "SRC_LCTN_CD",
                 "SPA_NUM",
                 "SUBCPTATN_IND",
-                "PMT_CAT_XREF",
+                "PYMT_CAT_XREF",
                 "VB_PYMT_MODEL_TYPE",
                 "EXPNDTR_AUTHRTY_TYPE_CD"
             }
-    
+
     ftx_cols = [
         "DA_RUN_ID",
         "FTX_VRSN",
