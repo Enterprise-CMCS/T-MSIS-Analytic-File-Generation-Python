@@ -38,6 +38,10 @@ class OT_Runner(TAF_Runner):
         from taf.OT.OT import OT
         from taf.OT.OTH import OTH
         from taf.OT.OTL import OTL
+        from taf.OT.OT_DX import OT_DX
+
+        #TAF 9.0:  Number of DX codes to be backfilled to header file.
+        NUMDX = 2
 
         # -------------------------------------------------
         #   Produces:
@@ -71,16 +75,25 @@ class OT_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
+        #   1 - dx_OTHR_TOC
+        #   2 - dx_wide
+
+        ot = OT(self)
+        ot.select_dx(
+            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC",NUMDX
+        )
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
         #   1 - OTHR_TOC_LINE_IN
         #   2 - OTHR_TOC_LINE
         #   3 - RN_OTHR_TOC
         #   4 - OTHR_TOC_HEADER
         # -------------------------------------------------
-        ot = OT(self)
         ot.AWS_Extract_Line(
             "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
         )
-
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
@@ -106,14 +119,18 @@ class OT_Runner(TAF_Runner):
         # -------------------------------------------------
         #   - OTH
         #   - TAF_OTH
+        #   - TAF_OTL
+        #
         # -------------------------------------------------
         OTH().create(self)
         OTL().create(self)
+        OT_DX().create(self)
 
         grouper.fasc_code("OTHR_TOC")
 
         OTH().build(self)
         OTL().build(self)
+        OT_DX().build(self)
 
 
 # -----------------------------------------------------------------------------

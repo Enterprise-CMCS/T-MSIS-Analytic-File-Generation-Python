@@ -40,6 +40,10 @@ class LT_Runner(TAF_Runner):
         from taf.LT.LT import LT
         from taf.LT.LTH import LTH
         from taf.LT.LTL import LTL
+        from taf.LT.LT_DX import LT_DX
+
+        #number of DX codes to be backfilled to the Header file.
+        NUMDX = 5
 
         # -------------------------------------------------
         #   Produces:
@@ -73,13 +77,21 @@ class LT_Runner(TAF_Runner):
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
+        #   1 - LT_DX
+        #   2 - DX_WIDE
+        # -------------------------------------------------
+        lt = LT(self)
+        lt.select_dx("tmsis", "CLT00004", "tmsis_clm_dx_lt", "LT", "FA_HDR_LT", NUMDX)
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
         #   1 - LT_LINE_IN
         #   2 - LT_LINE
         #   3 - RN_LT
         #   4 - LT_HEADER
         # -------------------------------------------------
-        lt = LT(self)
-        lt.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT")
+        lt.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT",NUMDX)
 
         # -------------------------------------------------
         #   Produces:
@@ -101,11 +113,13 @@ class LT_Runner(TAF_Runner):
         # -------------------------------------------------
         LTH().create(self)
         LTL().create(self)
+        LT_DX().create(self)
 
         grouper.fasc_code("LT")
 
         LTH().build(self)
         LTL().build(self)
+        LT_DX().build(self)
 
 
 # -----------------------------------------------------------------------------

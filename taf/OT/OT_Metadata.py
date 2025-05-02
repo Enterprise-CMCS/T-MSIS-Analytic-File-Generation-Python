@@ -54,6 +54,21 @@ class OT_Metadata:
                             + f" as {OT_Metadata.line_renames.get(item).lower()}"
                         )
 
+            #qualify dx columns
+            if segment_id.casefold() == "cot00004":
+                if item in OT_Metadata.dx_renames.keys():
+                    if item in OT_Metadata.upper:
+                        columns[i] = (
+                            "upper(" + columns[i].lower().split(" as ")[0]
+                            + f") as {OT_Metadata.dx_renames.get(item).lower()}"
+                        )
+                    else:
+                        columns[i] = (
+                            columns[i].lower().split(" as ")[0]
+                            + f" as {OT_Metadata.dx_renames.get(item).lower()}"
+                        )
+
+
         return new_line_comma.join(columns)
 
     def finalFormatter(output_columns):
@@ -108,23 +123,9 @@ class OT_Metadata:
         "ADJSTMT_CLM_NUM": TAF_Closure.coalesce_tilda,
         "ORGNL_CLM_NUM": TAF_Closure.coalesce_tilda,
         "ADMTG_DGNS_CD": TAF_Closure.compress_dots,
-        "DGNS_1_CD": TAF_Closure.compress_dots,
-        "DGNS_10_CD": TAF_Closure.compress_dots,
-        "DGNS_11_CD": TAF_Closure.compress_dots,
-        "DGNS_12_CD": TAF_Closure.compress_dots,
-        "DGNS_2_CD": TAF_Closure.compress_dots,
-        "DGNS_3_CD": TAF_Closure.compress_dots,
-        "DGNS_4_CD": TAF_Closure.compress_dots,
-        "DGNS_5_CD": TAF_Closure.compress_dots,
-        "DGNS_6_CD": TAF_Closure.compress_dots,
-        "DGNS_7_CD": TAF_Closure.compress_dots,
-        "DGNS_8_CD": TAF_Closure.compress_dots,
-        "DGNS_9_CD": TAF_Closure.compress_dots,
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "SRVC_ENDG_DT": dates_of_service,
-        "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
         "COPAY_WVD_IND":TAF_Closure.set_as_null,
         "RFRG_PRVDR_TXNMY_CD":TAF_Closure.set_as_null,
         "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
@@ -135,7 +136,17 @@ class OT_Metadata:
         "CPTATD_AMT_RQSTD_DT":TAF_Closure.set_as_null,
         "HCPCS_RATE":TAF_Closure.set_as_null,
         "CPTATD_PYMT_RQSTD_AMT":TAF_Closure.set_as_null,
-        "TOT_COPAY_AMT":TAF_Closure.set_as_null
+        "TOT_COPAY_AMT":TAF_Closure.set_as_null,
+        "BNFT_TYPE_CD":TAF_Closure.set_as_null,
+        "IMNZTN_TYPE_CD":TAF_Closure.set_as_null,
+        "SRVC_TRKNG_PYMT_AMT":TAF_Closure.set_as_null,
+        "PRVDR_UNDER_SPRVSN_NPI_NUM":TAF_Closure.set_as_null,
+        "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "DGNS_POA_1_CD_IND":TAF_Closure.set_as_null,
+        "DGNS_POA_2_CD_IND":TAF_Closure.set_as_null,
+        "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null,
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
@@ -184,10 +195,6 @@ class OT_Metadata:
             "DAILY_RATE",
             "CPTATD_AMT_RQSTD_DT",
             "BIRTH_DT",
-            "DGNS_1_CD",
-            "DGNS_2_CD",
-            "DGNS_1_CD_IND",
-            "DGNS_2_CD_IND",
             "DGNS_POA_1_CD_IND",
             "DGNS_POA_2_CD_IND",
             "ELGBL_1ST_NAME",
@@ -280,9 +287,7 @@ class OT_Metadata:
             "TOT_BENE_DDCTBL_LBLE_AMT",
             "TOT_BENE_COPMT_LBLE_AMT",
             "TOT_BENE_COINSRNC_LBLE_AMT",
-            "CMBND_BENE_CST_SHRNG_PD_AMT",
-            "ORDRG_PRVDR_NUM",
-            "ORDRG_PRVDR_NPI_NUM"
+            "CMBND_BENE_CST_SHRNG_PD_AMT"
             
         ],
         "COT00003": [
@@ -295,7 +300,7 @@ class OT_Metadata:
             "BNFT_TYPE_CD",
             "BILL_AMT",
             "CLL_STUS_CD",
-            "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+            "FED_REIMBRSMT_CTGRY_CD",
             "BENE_COPMT_PD_AMT",
             "SRVC_ENDG_DT",
             "HCPCS_SRVC_CD",
@@ -343,7 +348,21 @@ class OT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
-            "IHS_SVC_IND"
+            "IHS_SVC_IND",
+            "ORDRG_PRVDR_NUM",
+            "ORDRG_PRVDR_NPI_NUM"
+        ],
+        "COT00004": [
+            "TMSIS_RUN_ID",
+            "SUBMTG_STATE_CD",
+            "ORGNL_CLM_NUM",
+            "ADJSTMT_CLM_NUM",
+            "ADJSTMT_IND",
+            "ADJDCTN_DT",
+            "DGNS_TYPE_CD",
+            "DGNS_SQNC_NUM",
+            "DGNS_CD_IND",
+            "DGNS_CD"
         ],
     }
 
@@ -389,7 +408,6 @@ class OT_Metadata:
         "BLG_PRVDR_TXNMY_CD",
         "BLG_PRVDR_TYPE_CD",
         "BLG_UNIT_CD",
-        "BNFT_TYPE_CD",
         "BRDR_STATE_IND",
         "CHK_NUM",
         "CLL_STUS_CD",
@@ -401,17 +419,7 @@ class OT_Metadata:
         "CLM_STUS_CD",
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
-        "CMS_64_FED_REIMBRSMT_CTGRY_CD",
-        "DGNS_1_CD_IND",
-        "DGNS_2_CD_IND",
-        "DGNS_3_CD_IND",
-        "DGNS_4_CD_IND",
-        "DGNS_5_CD_IND",
-        "DGNS_POA_1_CD_IND",
-        "DGNS_POA_2_CD_IND",
-        "DGNS_POA_3_CD_IND",
-        "DGNS_POA_4_CD_IND",
-        "DGNS_POA_5_CD_IND",
+        "FED_REIMBRSMT_CTGRY_CD",
         "DSCHRG_HR_NUM",
         "ELGBL_1ST_NAME",
         "ELGBL_LAST_NAME",
@@ -426,7 +434,6 @@ class OT_Metadata:
         "HH_PRVDR_IND",
         "HH_PRVDR_NPI_NUM",
         "HLTH_CARE_ACQRD_COND_CD",
-        "IMNZTN_TYPE_CD",
         "MDCR_BENE_ID",
         "MDCR_CMBND_DDCTBL_IND",
         "MDCR_HICN_NUM",
@@ -458,7 +465,6 @@ class OT_Metadata:
         "PRCDR_CD_IND",
         "PRVDR_FAC_TYPE_CD",
         "PRVDR_LCTN_ID",
-        "PRVDR_UNDER_SPRVSN_NPI_NUM",
         "PTNT_CNTL_NUM",
         "PTNT_STUS_CD",
         "PYMT_LVL_IND",
@@ -472,7 +478,6 @@ class OT_Metadata:
         "SELF_DRCTN_TYPE_CD",
         "SPLIT_CLM_IND",
         "SRC_LCTN_CD",
-        "SRVC_TRKNG_TYPE_CD",
         "SRVCNG_PRVDR_NUM",
         "SRVCNG_PRVDR_SPCLTY_CD",
         "SRVCNG_PRVDR_TXNMY_CD",
@@ -486,16 +491,19 @@ class OT_Metadata:
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
-        "XIX_SRVC_CTGRY_CD",
-        "XXI_SRVC_CTGRY_CD",
         "ORDRG_PRVDR_NUM",
         "ORDRG_PRVDR_NPI_NUM",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "DGNS_TYPE_CD",
+        "DGNS_CD_IND"
+        
     ]
 
     renames = {}
 
     header_renames = {"PLAN_ID_NUM": "MC_PLAN_ID"}
+    
+    dx_renames = {}
 
     line_renames = {
         "SUBMTG_STATE_CD": "SUBMTG_STATE_CD_LINE",
@@ -651,8 +659,8 @@ class OT_Metadata:
         "TOT_BENE_COPMT_LBLE_AMT",
         "TOT_BENE_COINSRNC_LBLE_AMT",
         "CMBND_BENE_CST_SHRNG_PD_AMT",
-        "ORDRG_PRVDR_NUM",
-        "ORDRG_PRVDR_NPI_NUM"
+        "ADDTNL_DGNS_PRSNT"
+
     ]
 
     line_columns = [
@@ -702,7 +710,7 @@ class OT_Metadata:
         "TOOTH_NUM",
         "TOOTH_ORAL_CVTY_AREA_DSGNTD_CD",
         "TOOTH_SRFC_CD",
-        "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+        "FED_REIMBRSMT_CTGRY_CD",
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",
         "STATE_NOTN_TXT",
@@ -720,7 +728,29 @@ class OT_Metadata:
         "LINE_NUM",
         "PRCDR_CCS_CTGRY_CD",
         "SRVCNG_PRVDR_NPPES_TXNMY_CD",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "ORDRG_PRVDR_NUM",
+        "ORDRG_PRVDR_NPI_NUM"
+    ]
+    
+    dx_columns = [
+        "DA_RUN_ID",
+        "OT_LINK_KEY",
+        "OT_VRSN",
+        "OT_FIL_DT",
+        "TMSIS_RUN_ID",
+        "MSIS_IDENT_NUM",
+        "SUBMTG_STATE_CD",
+        "ORGNL_CLM_NUM",
+        "ADJSTMT_CLM_NUM",
+        "ADJSTMT_IND",
+        "ADJDCTN_DT",
+        "DGNS_TYPE_CD",
+        "DGNS_SQNC_NUM",
+        "DGNS_CD_IND",
+        "DGNS_CD",
+        "REC_ADD_TS",
+        "REC_UPDT_TS"
     ]
 
 

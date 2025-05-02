@@ -77,8 +77,8 @@ class IPH:
                     else { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2, lowerbound=1, upperbound=33, multiple_condition='YES') }
 
                 , { TAF_Closure.var_set_type1('WVR_ID') }
-                , { TAF_Closure.var_set_type2('srvc_trkng_type_cd', 2, cond1='00', cond2='01', cond3='02', cond4='03', cond5='04', cond6='05', cond7='06') }
-                , { TAF_Closure.var_set_type6('SRVC_TRKNG_PYMT_AMT', cond1='888888888.88') }
+                ,srvc_trkng_type_cd
+                ,SRVC_TRKNG_PYMT_AMT
                 , { TAF_Closure.var_set_type2('OTHR_INSRNC_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2('othr_tpl_clctn_cd', 3, cond1='000', cond2='001', cond3='002', cond4='003', cond5='004', cond6='005', cond7='006', cond8='007') }
                 , { TAF_Closure.var_set_type2('FIXD_PYMT_IND', 0, cond1='0', cond2='1') }
@@ -268,6 +268,7 @@ class IPH:
                     when (SRVC_ENDG_DT < '1600-01-01') then '1599-12-31'
                     else nullif(SRVC_ENDG_DT, '1960-01-01')
                     end as SRVC_ENDG_DT
+                ,ADDTNL_DGNS_PRSNT
             FROM (
                 select
                     *,

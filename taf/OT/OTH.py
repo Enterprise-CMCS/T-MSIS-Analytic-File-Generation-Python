@@ -69,8 +69,8 @@ class OTH:
                 , case when lpad(wvr_type_cd, 2, '0') = '88' then NULL else { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2,lowerbound=1,upperbound=33,multiple_condition='YES') }
 
                 , { TAF_Closure.var_set_type1('WVR_ID') }
-                , { TAF_Closure.var_set_type2('srvc_trkng_type_cd', 2, cond1='00', cond2='01', cond3='02', cond4='03', cond5='04', cond6='05', cond7='06') }
-                , { TAF_Closure.var_set_type6('SRVC_TRKNG_PYMT_AMT', cond1='888888888.88') }
+                ,srvc_trkng_type_cd
+                ,SRVC_TRKNG_PYMT_AMT
                 , { TAF_Closure.var_set_type2('OTHR_INSRNC_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2('othr_tpl_clctn_cd', 3, cond1='000', cond2='001', cond3='002', cond4='003', cond5='004', cond6='005', cond7='006', cond8='007') }
                 , { TAF_Closure.var_set_type2('FIXD_PYMT_IND', 0, cond1='0', cond2='1') }
@@ -83,10 +83,10 @@ class OTH:
                 , { TAF_Closure.var_set_type2('HLTH_CARE_ACQRD_COND_CD', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_fills('DGNS_1_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.var_set_type2('DGNS_1_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
-                , { TAF_Closure.var_set_poa('DGNS_POA_1_CD_IND') }
+                , DGNS_POA_1_CD_IND
                 , { TAF_Closure.var_set_fills('DGNS_2_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.var_set_type2('DGNS_2_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
-                , { TAF_Closure.var_set_poa('DGNS_POA_2_CD_IND') }
+                , DGNS_POA_2_CD_IND
                 , { TAF_Closure.var_set_type1('SRVC_PLC_CD', upper=True, lpad=2) }
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }
                 , { TAF_Closure.var_set_type1('BLG_PRVDR_NUM') }
@@ -101,7 +101,7 @@ class OTH:
                 ,RFRG_PRVDR_SPCLTY_CD
                 ,PRVDR_UNDER_DRCTN_NPI_NUM
                 ,PRVDR_UNDER_DRCTN_TXNMY_CD
-                , { TAF_Closure.var_set_type1('PRVDR_UNDER_SPRVSN_NPI_NUM', upper=True) }
+                ,PRVDR_UNDER_SPRVSN_NPI_NUM
                 ,PRVDR_UNDER_SPRVSN_TXNMY_CD
                 , { TAF_Closure.var_set_type2('HH_PRVDR_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type1('HH_PRVDR_NPI_NUM') }
@@ -183,8 +183,8 @@ class OTH:
                 ,TOT_BENE_COPMT_LBLE_AMT
                 ,TOT_BENE_COINSRNC_LBLE_AMT
                 ,CMBND_BENE_CST_SHRNG_PD_AMT
-                ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
-                ,nullif(trim(ORDRG_PRVDR_NPI_NUM),'') as ORDRG_PRVDR_NPI_NUM
+                ,ADDTNL_DGNS_PRSNT
+
             from (
                 select
                     *,

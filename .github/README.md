@@ -20,10 +20,10 @@ This is a Python Library for the generation of the T-MSIS Analytic File (TAF) wi
 
 The library version is included the source code. It can be updated in ```_init_()``` method of the TAF module.
 ```pytion
-    __version__ = "7.1.16"    # deployed library version
+    __version__ = "#.#"    # set deployed library version to TAF software version, i.e. "9.0"
 ```
 
-## Manual Build and Deploy
+## Manual Build and Deploy (Recommended)
 
 ### Build the library
 
@@ -44,14 +44,15 @@ From the top level folder, run these commands:
 
 ### Upload the WHL file to the Databricks environment
 
-This step uses the Databricks command-line interface (CLI) to interface with the Databricks platform. After installing the CLI, there's a manual step (depdendent on your operating system (OS)) to set up [authentication](https://docs.databricks.com/dev-tools/cli/index.html). Windows users may need to add the ```insecure = True``` option to their profile entries stored in the file ```~/.databrickscfg```.
+This step uses the Databricks UI to upload the whl file to a Volume. Volume path is listed below:
 
-7. > ```databricks --profile val fs cp ./dist/ dbfs:/FileStore/shared_uploads/TAF/lib/ --recursive --overwrite```
+upload to Databricks prod: /Volumes/cms_prod_catalog/taf_python/taf_package_volume_prod \
+upload to Databricks val: /Volumes/uat_val_catalog/taf_python/taf_package_volume_val
 
 
 ### Deploy the library to the Databricks cluster
 
-Deploy the library WHL file to Databricks clusters using [these](https://docs.databricks.com/libraries/cluster-libraries.html) instructions where applicable. Once the library WHL file is saved to DBFS, update any job definitions to install the library WHL file to any job-based clusters at run time.
+Deploy the library WHL file to Databricks clusters using [these](https://docs.databricks.com/libraries/cluster-libraries.html) instructions where applicable. Once the library WHL file is saved to a Volume, update any job definitions to install the library WHL file to any job-based clusters at run time.
 
 ## Automated Build and Deploy
 
