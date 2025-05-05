@@ -165,7 +165,7 @@ class TAF_Claims():
     #  For OT use, create a flag indicating absence of both beg/end service date in claim
     #
     # ---------------------------------------------------------------------------------
-    def AWS_Claims_Family_Table_Link(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, analysis_date):
+    def AWS_Claims_Family_Table_Link(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, analysis_date, denied_flag=False):
         """
         Pull final action claims from claims family tables and join to header records.
         """
@@ -175,6 +175,22 @@ class TAF_Claims():
         #  HEADER_?
         #
         # -----------------------------------------------------------------------------
+        
+        claim_criteria = {
+            True:  f""" (
+                        upper(A.CLM_STUS_CTGRY_CD) = 'F2' or
+                        A.CLM_DND_IND <> '0' or
+                        upper(A.CLM_TYPE_CD) = 'Z' or
+                        A.CLM_STUS_CD in ('542','585','654') or
+                        A.ADJSTMT_IND = '1'
+                        )""",
+            False:f"""(upper(A.CLM_STUS_CTGRY_CD) <> 'F2' or A.CLM_STUS_CTGRY_CD is null) and
+                    (upper(A.CLM_TYPE_CD) <> 'Z' or A.CLM_TYPE_CD is null) and
+                    (A.CLM_DND_IND <> '0' or A.CLM_DND_IND is null) and
+                    (A.CLM_STUS_CD NOT IN('26','87','026','087','542','585','654') or A.CLM_STUS_CD is null) and
+                    (A.ADJSTMT_IND <> '1' or A.ADJSTMT_IND IS NULL)"""
+        }
+
         z = f"""
             create or replace temporary view HEADER_{fl} as
 
@@ -188,12 +204,7 @@ class TAF_Claims():
                 ( {self.where_analysis_date(fl, analysis_date, self.rep_yr, self.rep_mo) } )
                 and
                      A.TMSIS_ACTV_IND = 1 and
-                    (upper(A.CLM_STUS_CTGRY_CD) <> 'F2' or A.CLM_STUS_CTGRY_CD is null) and
-                    (upper(A.CLM_TYPE_CD) <> 'Z' or A.CLM_TYPE_CD is null) and
-                    (A.CLM_DND_IND <> '0' or A.CLM_DND_IND is null) and
-                    (A.CLM_STUS_CD NOT IN('26','87','026','087','542','585','654') or A.CLM_STUS_CD is null) and
-                    (A.ADJSTMT_IND <> '1' or A.ADJSTMT_IND IS NULL)
-
+                     {claim_criteria[denied_flag]}
                 {self.where_state_level_filter(fl, 'a')}
         """
         self.runner.append(fl, z)

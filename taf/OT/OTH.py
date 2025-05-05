@@ -198,7 +198,7 @@ class OTH:
 
         runner.append("OTHR_TOC", z)
 
-    def build(self, runner: OT_Runner):
+    def build(self, runner: OT_Runner,denied_flag=False):
         """
         Build the OT claim-header level segment.
         """
@@ -207,9 +207,13 @@ class OTH:
         if runner.run_stats_only:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
+        
+        output_table = {
+            False: "taf_oth",
+            True:  "taf_oth_d"}
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_oth
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
                 FROM (

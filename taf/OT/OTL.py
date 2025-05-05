@@ -107,7 +107,7 @@ class OTL:
 
         runner.append("OTHR_TOC", z)
 
-    def build(self, runner: OT_Runner):
+    def build(self, runner: OT_Runner,denied_flag=False):
         """
         Build the OT claim-line level segment.
         """
@@ -116,9 +116,15 @@ class OTL:
         if runner.run_stats_only:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
+        
+        output_table = {
+            False: "taf_otl",
+            True:  "taf_otl_d"
+        }
+        
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_otl
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.line_columns) }
                 FROM OTL

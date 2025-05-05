@@ -56,7 +56,7 @@ class OT_DX:
             """
         runner.append("OTHR_TOC", z)
         
-    def build(self, runner: OT_Runner):
+    def build(self, runner: OT_Runner,denied_flag=False):
         """
         Build the OT claim-DX level segment.
         """
@@ -66,8 +66,13 @@ class OT_DX:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
+        output_table = {
+            False: "taf_ot_dx",
+            True:  "taf_ot_dx_d"
+        }
+
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.TAF_OT_DX
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.dx_columns) }
                 FROM OT_DX
