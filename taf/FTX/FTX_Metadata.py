@@ -15,7 +15,6 @@ class FTX_Metadata:
         columns =  FTX_Metadata.columns.get(segment_id).copy()
         cleanser = FTX_Metadata.cleanser.get(segment_id).copy()
         renames =  FTX_Metadata.renames.get(segment_id).copy()
-        #upper = FTX_Metadata.upper.get(segment_id).copy()
         upper = FTX_Metadata.upper.copy()
 
         for i, item in enumerate(columns):
@@ -510,7 +509,6 @@ class FTX_Metadata:
             "PYR_MC_PLN_TYPE_CD":TAF_Closure.set_as_null,
             "PYEE_MC_PLN_TYPE_CD":TAF_Closure.set_as_null,
             "PMT_PRD_TYPE_CD":TAF_Closure.set_as_null,
-            "ofst_trans_type":TAF_Closure.set_as_null,
             "OFST_TYPE_CD":TAF_Closure.set_as_null,
             "SDP_IND":TAF_Closure.set_as_null,
             "SUBCPTATN_IND":TAF_Closure.set_as_null,

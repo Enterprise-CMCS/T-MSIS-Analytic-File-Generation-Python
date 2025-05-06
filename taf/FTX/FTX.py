@@ -38,7 +38,7 @@ class FTX(TAF):
             where
                 a.TMSIS_ACTV_IND = 1
                 and concat(a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})
-                and coalesce(a.ADJSTMT_IND,'1') <> 1
+                and (A.ADJSTMT_IND <> '1' or A.ADJSTMT_IND IS NULL)
                 and (
                         year(coalesce({analysis_date_end.replace('"', '')},{analysis_date_start.replace('"', '')})) = {rep_yr}
                         and date_part ('month', coalesce({analysis_date_end.replace('"', '')},{analysis_date_start.replace('"', '')})) = {rep_mo}
@@ -93,7 +93,6 @@ class FTX(TAF):
                         from {TMSIS_SCHEMA}.tmsis_clm_fmly_{tab_no} as a
                         where clm_fmly_finl_actn_ind  = 1
                                 and concat(submtg_state_cd,tmsis_run_id) in ({self.runner.get_combined_list()})
-                                and coalesce(a.ADJSTMT_IND,'1') <> 1
                         group by
                             1,2,3,4,5
                         having
@@ -156,7 +155,7 @@ class FTX(TAF):
                     when PMT_OR_RCPMT_DT=to_date('1960-01-01') then NULL
                     else PMT_OR_RCPMT_DT
                 end as PMT_OR_RCPMT_DT
-                , { TAF_Closure.var_set_type6('PMT_OR_RCPMT_AMT', cond1='888888888.88', cond2='99999999.90', cond3='99999999.90', cond4='999999.99', cond5='999999.00') }
+                , { TAF_Closure.var_set_type6('PMT_OR_RCPMT_AMT', cond1='888888888.88', cond2='99999999.90', cond3='9999999.99', cond4='999999.99', cond5='999999.00') }
                 , case
                     when (CHK_EFCTV_DT < to_date('1600-01-01')) then to_date('1599-12-31')
                     when CHK_EFCTV_DT=to_date('1960-01-01') then NULL
@@ -219,7 +218,7 @@ class FTX(TAF):
                 , { TAF_Closure.var_set_type2('APM_MODEL_TYPE_CD', 0, cond1='2A', cond2='2B', cond3='2C',
                                                                     cond4='3A', cond5='3B', cond6='3N',
                                                                     cond7='4A', cond8='4B', cond9='4C', cond10='4N') }
-                , { TAF_Closure.var_set_type2('EXPNDTR_AUTHRTY_TYPE_CD', 0, cond1='01', cond2='95') }
+                , { TAF_Closure.var_set_type2('EXPNDTR_AUTHRTY_TYPE_CD', 2, cond1='01', cond2='95') }
                 , from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                 , from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
             from (
