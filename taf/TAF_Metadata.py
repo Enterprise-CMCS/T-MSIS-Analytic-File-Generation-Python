@@ -529,6 +529,12 @@ class TAF_Metadata:
             (1453, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'dx_IP', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd'),
             (1454, 'FTX', '1.1_FTX', 'COMBINED_FTX', 'submtg_state_cd', 'submtg_state_cd'),
             (1455, 'FTX', '1.1_FTX', 'COMBINED_FTX', 'distinct orgnl_clm_num,adjstmt_clm_num,adjstmt_ind', 'submtg_state_cd'),
+            (1500, 'AWS_OT_Macros_D', '1.1 AWS_Extract_Line_OT', '{fl2}_LINE', 'new_submtg_state_cd_line', 'new_submtg_state_cd_line'),
+            (1501, 'AWS_OT_Macros_D', '1.1 AWS_Extract_Line_OT', '{fl2}_LINE', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'new_submtg_state_cd_line'),
+            (1502, 'AWS_OT_Macros_D', '1.1 AWS_Extract_Line_OT', '{fl2}_HEADER', 'new_submtg_state_cd', 'new_submtg_state_cd'),
+            (1503, 'AWS_OT_Macros_D', '1.1 AWS_Extract_Line_OT', '{fl2}_HEADER', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd'),
+            (1504, 'AWS_OT_Macros_D', '1.1 AWS_Extract_Line_OT', 'dx_OTHR_TOC', 'new_submtg_state_cd', 'new_submtg_state_cd'),
+            (1505, 'AWS_OT_Macros_D', '1.1 AWS_Extract_Line_OT', 'dx_OTHR_TOC', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd')
         ]
 
     DGNS_TYPE_CD_values = ['A','D','E','O','P','R']

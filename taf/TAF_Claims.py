@@ -178,11 +178,11 @@ class TAF_Claims():
         
         claim_criteria = {
             True:  f""" (
-                        upper(A.CLM_STUS_CTGRY_CD) = 'F2' or
-                        A.CLM_DND_IND <> '0' or
-                        upper(A.CLM_TYPE_CD) = 'Z' or
-                        A.CLM_STUS_CD in ('542','585','654') or
-                        A.ADJSTMT_IND = '1'
+                        upper(trim(A.CLM_STUS_CTGRY_CD)) = 'F2' or
+                        trim(A.CLM_DND_IND) = '0' or
+                        upper(trim(A.CLM_TYPE_CD)) = 'Z' or
+                        trim(A.CLM_STUS_CD) in ('542','585','654') or
+                        trim(A.ADJSTMT_IND) = '1'
                         )""",
             False:f"""(upper(A.CLM_STUS_CTGRY_CD) <> 'F2' or A.CLM_STUS_CTGRY_CD is null) and
                     (upper(A.CLM_TYPE_CD) <> 'Z' or A.CLM_TYPE_CD is null) and
