@@ -86,7 +86,7 @@ class BASE(APR):
             f"""{TAF_Closure.ever_year('EMER_SRVCS_PRVDR_IND')}""",
             f"""{TAF_Closure.ever_year('TCHNG_IND')}""",
             f"""{TAF_Closure.ever_year('ACPT_NEW_PTNTS_IND')}""",
-            f"""{TAF_Closure.ever_year('ATYPICAL_PRVDR_IND')}""",
+            f"""{TAF_Closure.last_best('ATYPICAL_PRVDR_IND')}""",
             f"""{TAF_Closure.any_month(incols='SUBMTG_STATE_PRVDR_ID',outcol='PRVDR_FLAG', condition='IS NOT NULL')}"""]
 
         outercols = [
