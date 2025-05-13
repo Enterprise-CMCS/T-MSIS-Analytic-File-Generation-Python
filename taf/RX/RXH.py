@@ -1,6 +1,7 @@
 from taf.RX.RX_Runner import RX_Runner
 from taf.RX.RX_Metadata import RX_Metadata
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class RXH:
@@ -110,7 +111,14 @@ class RXH:
                 , TOT_BENE_COINSRNC_LBLE_AMT
                 , CMBND_BENE_CST_SHRNG_PD_AMT
                 , { TAF_Closure.var_set_type1('RX_ORGN_CD')}
-                , DGNS_PRSNT
+                ,LTC_RCP_LBLTY_AMT
+                ,case when upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0')) in {tuple(TAF_Metadata.PRVDR_CLM_FORM_CD_values)}
+                    then upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0'))
+                    else NULL end as PRVDR_CLM_FORM_CD
+                ,TOT_GME_PD_AMT
+                ,TOT_SDP_ALOWD_AMT
+                ,TOT_SDP_PD_AMT
+                ,DGNS_PRSNT
             from (
                 select
                     *,

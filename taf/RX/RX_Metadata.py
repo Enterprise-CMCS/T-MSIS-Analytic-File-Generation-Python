@@ -173,7 +173,12 @@ class RX_Metadata:
             "TOT_BENE_COPMT_LBLE_AMT",
             "TOT_BENE_COINSRNC_LBLE_AMT",
             "CMBND_BENE_CST_SHRNG_PD_AMT",
-            "RX_ORGN_CD"
+            "RX_ORGN_CD",
+            "LTC_RCP_LBLTY_AMT",
+            "PRVDR_CLM_FORM_CD",
+            "TOT_GME_PD_AMT",
+            "TOT_SDP_ALOWD_AMT",
+            "TOT_SDP_PD_AMT"
         ],
         "CRX00003": [
             "MSIS_IDENT_NUM",
@@ -528,6 +533,11 @@ class RX_Metadata:
         "TOT_BENE_COINSRNC_LBLE_AMT",
         "CMBND_BENE_CST_SHRNG_PD_AMT",
         "RX_ORGN_CD",
+        "LTC_RCP_LBLTY_AMT",
+        "PRVDR_CLM_FORM_CD",
+        "TOT_GME_PD_AMT",
+        "TOT_SDP_ALOWD_AMT",
+        "TOT_SDP_PD_AMT",
         "DGNS_PRSNT"
     ]
 
