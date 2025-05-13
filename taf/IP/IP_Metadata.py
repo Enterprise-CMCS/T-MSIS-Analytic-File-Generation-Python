@@ -282,7 +282,24 @@ class IP_Metadata:
             "TOT_BENE_COINSRNC_LBLE_AMT",
             "CMBND_BENE_CST_SHRNG_PD_AMT",
             "SRVC_BGNNG_DT",
-            "SRVC_ENDG_DT"
+            "SRVC_ENDG_DT",
+            "SRVC_FAC_LCTN_ORGNTN_NPI_NUM",
+            "SRVC_FAC_LCTN_LINE_1_ADR",
+            "SRVC_FAC_LCTN_LINE_2_ADR",
+            "SRVC_FAC_LCTN_CITY_NAME",
+            "SRVC_FAC_LCTN_STATE",
+            "SRVC_FAC_LCTN_ZIP_CD",
+            "BLG_PRVDR_LINE_1_ADR",
+            "BLG_PRVDR_LINE_2_ADR",
+            "BLG_PRVDR_CITY_NAME",
+            "BLG_PRVDR_STATE_CD_CD",
+            "BLG_PRVDR_ZIP_CD",
+            "LTC_RCP_LBLTY_AMT",
+            "PRVDR_CLM_FORM_CD",
+            "TOT_GME_PD_AMT",
+            "TOT_SDP_ALOWD_AMT",
+            "TOT_SDP_PD_AMT",
+            
         ],
         "CIP00003": [
             "TMSIS_FIL_NAME",
@@ -372,7 +389,18 @@ class IP_Metadata:
         "DGNS_9_CD",
     }
 
-    header_renames = {}
+    header_renames = {
+        "SRVC_FAC_LCTN_ORGNTN_NPI_NUM":"SRVC_FAC_LCTN_ORG_NPI",
+        "SRVC_FAC_LCTN_LINE_1_ADR":"SRVC_FAC_LCTN_ADR_LINE_1",
+        "SRVC_FAC_LCTN_LINE_2_ADR":"SRVC_FAC_LCTN_ADR_LINE_2",
+        "SRVC_FAC_LCTN_CITY_NAME":"SRVC_FAC_LCTN_CITY",
+        "SRVC_FAC_LCTN_ZIP_CD":"SRVC_FAC_LCTN_ZIP",
+        "BLG_PRVDR_LINE_1_ADR":"BLG_PRVDR_ADR_LINE_1",
+        "BLG_PRVDR_LINE_2_ADR":"BLG_PRVDR_ADR_LINE_2",
+        "BLG_PRVDR_CITY_NAME":"BLG_PRVDR_CITY",
+        "BLG_PRVDR_STATE_CD_CD":"BLG_PRVDR_STATE",
+        "BLG_PRVDR_ZIP_CD":"BLG_PRVDR_ZIP"
+    }
 
     line_renames = {
         "SUBMTG_STATE_CD": "SUBMTG_STATE_CD_LINE",
@@ -486,7 +514,16 @@ class IP_Metadata:
         "IHS_SVC_IND",
         "DGNS_TYPE_CD",
         "DGNS_CD_IND",
-		"DGNS_POA_CD_IND"
+		"DGNS_POA_CD_IND",
+        "SRVC_FAC_LCTN_LINE_1_ADR",
+        "SRVC_FAC_LCTN_LINE_2_ADR",
+        "SRVC_FAC_LCTN_CITY_NAME",
+        "SRVC_FAC_LCTN_STATE",
+        "SRVC_FAC_LCTN_ZIP_CD",
+        "BLG_PRVDR_LINE_1_ADR",
+        "BLG_PRVDR_LINE_2_ADR",
+        "BLG_PRVDR_CITY_NAME",
+        "BLG_PRVDR_STATE_CD_CD"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -695,6 +732,22 @@ class IP_Metadata:
         "CMBND_BENE_CST_SHRNG_PD_AMT",
         "SRVC_BGNNG_DT",
         "SRVC_ENDG_DT",
+        "SRVC_FAC_LCTN_ORG_NPI",
+        "SRVC_FAC_LCTN_ADR_LINE_1",
+        "SRVC_FAC_LCTN_ADR_LINE_2",
+        "SRVC_FAC_LCTN_CITY",
+        "SRVC_FAC_LCTN_STATE",
+        "SRVC_FAC_LCTN_ZIP",
+        "BLG_PRVDR_ADR_LINE_1",
+        "BLG_PRVDR_ADR_LINE_2",
+        "BLG_PRVDR_CITY",
+        "BLG_PRVDR_STATE",
+        "BLG_PRVDR_ZIP",
+        "LTC_RCP_LBLTY_AMT",
+        "PRVDR_CLM_FORM_CD",
+        "TOT_GME_PD_AMT",
+        "TOT_SDP_ALOWD_AMT",
+        "TOT_SDP_PD_AMT",
         "ADDTNL_DGNS_PRSNT"
     ]
 
