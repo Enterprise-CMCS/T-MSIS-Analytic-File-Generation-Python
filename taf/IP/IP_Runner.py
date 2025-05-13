@@ -39,6 +39,8 @@ class IP_Runner(TAF_Runner):
         from taf.IP.IPL import IPL
         from taf.IP.IP_DX import IP_DX
         
+        TMSIS_SCHEMA = "tmsis"
+        
         # number of DX codes to be transposed and added to header file from dx file.
         NUMDX = 12
 
@@ -68,7 +70,7 @@ class IP_Runner(TAF_Runner):
         # -------------------------------------------------
         claims = TAF_Claims(self)
         claims.AWS_Claims_Family_Table_Link(
-            "tmsis", "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT"
+            TMSIS_SCHEMA, "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT"
         )
 
         # -------------------------------------------------
@@ -78,7 +80,7 @@ class IP_Runner(TAF_Runner):
         #   2 - dx_wide
         # -------------------------------------------------
         ip = IP(self)
-        ip.select_dx("tmsis", "CIP00004", "tmsis_clm_dx_ip", "IP","FA_HDR_IP",NUMDX)
+        ip.select_dx(TMSIS_SCHEMA, "CIP00004", "tmsis_clm_dx_ip", "IP","FA_HDR_IP",NUMDX)
 
         # -------------------------------------------------
         #   Produces:
@@ -89,7 +91,7 @@ class IP_Runner(TAF_Runner):
         #   4 - RN_IP
         #   5 - IP_HEADER
         # -------------------------------------------------
-        ip.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP",NUMDX)
+        ip.AWS_Extract_Line(TMSIS_SCHEMA, self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP",NUMDX)
 
         # -------------------------------------------------
         #   Produces:
