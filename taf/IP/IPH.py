@@ -1,6 +1,7 @@
 from taf.IP.IP_Runner import IP_Runner
 from taf.IP.IP_Metadata import IP_Metadata
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class IPH:
@@ -268,6 +269,26 @@ class IPH:
                     when (SRVC_ENDG_DT < '1600-01-01') then '1599-12-31'
                     else nullif(SRVC_ENDG_DT, '1960-01-01')
                     end as SRVC_ENDG_DT
+                    
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ORG_NPI')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_1')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_2')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_CITY')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_STATE')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ZIP')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_1')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_2')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_CITY')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_STATE')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ZIP')}
+                ,LTC_RCP_LBLTY_AMT
+                ,case when upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0')) in {tuple(TAF_Metadata.PRVDR_CLM_FORM_CD_values)}
+                    then upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0'))
+                    else NULL end as PRVDR_CLM_FORM_CD
+                ,TOT_GME_PD_AMT
+                ,TOT_SDP_ALOWD_AMT
+                ,TOT_SDP_PD_AMT
+                ,ADDTNL_DGNS_PRSNT
             FROM (
                 select
                     *,

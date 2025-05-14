@@ -2,8 +2,8 @@ from taf.TAF_Claims import TAF_Claims
 from taf.TAF_Grouper import TAF_Grouper
 from taf.TAF_Runner import TAF_Runner
 
+class FTX_Runner(TAF_Runner):
 
-class IP_Runner(TAF_Runner):
     """
     The TAF-specific module contains executable statements as well as function definitions to
     generate and execute SQL to produce individual segment as well as final output.
@@ -11,20 +11,20 @@ class IP_Runner(TAF_Runner):
     """
 
     def __init__(self,
-                 da_schema: str,
-                 reporting_period: str,
-                 state_code: str,
-                 run_id: str,
-                 job_id: int,
-                 file_version: str,
-                 run_stats_only: int = 0):
+                da_schema: str,
+                reporting_period: str,
+                state_code: str,
+                run_id: str,
+                job_id: int,
+                file_version: str,
+                run_stats_only: int = 0):
         super().__init__(da_schema,
-                         reporting_period,
-                         state_code,
-                         run_id,
-                         job_id,
-                         file_version,
-                         run_stats_only)
+                        reporting_period,
+                        state_code,
+                        run_id,
+                        job_id,
+                        file_version,
+                        run_stats_only)
         self.run_stats_only = self.__forceBool__(run_stats_only)
 
     def init(self):
@@ -33,91 +33,62 @@ class IP_Runner(TAF_Runner):
         At this point, a dictionary has been created for each file segment containing
         SQL queries that will be sequential executed by the run definition to produce output.
         """
+        from taf.FTX.FTX import FTX
+        ftx = FTX(self)
 
-        from taf.IP.IP import IP
-        from taf.IP.IPH import IPH
-        from taf.IP.IPL import IPL
-        from taf.IP.IP_DX import IP_DX
-        
-        TMSIS_SCHEMA = "tmsis"
-        
-        # number of DX codes to be transposed and added to header file from dx file.
-        NUMDX = 12
+        TMSIS_SCHEMA = "state_prod_catalog.tmsis"
 
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - TAXO_SWITCHES
-        #   2 - NPPES_NPI_STEP2
-        #   3 - NPPES_NPI
-        #   4 - CCS_PROC
-        #   5 - CCS_DX
-        # -------------------------------------------------
-        grouper = TAF_Grouper(self)
-        grouper.fetch_nppes("IP")
-        grouper.fetch_ccs("IP")
+        #dictionary of the input tmsis segments and their associated end dt
+        FTX_TMSIS_SEGMENTS = {
+            "tmsis_indvdl_cptatn_pmpm"      :{"start_dt":"cptatn_prd_strt_dt",     "end_dt":"cptatn_prd_end_dt",       "segment":"FTX00002"}
+            ,"tmsis_indvdl_hi_prm_pymt"      :{"start_dt":"prm_prd_strt_dt",        "end_dt":"prm_prd_end_dt",          "segment":"FTX00003"}
+            ,"tmsis_grp_insrnc_prm_pymt"     :{"start_dt":"prm_prd_strt_dt",        "end_dt":"prm_prd_end_dt",          "segment":"FTX00004"}
+            ,"tmsis_cst_shrng_ofst"          :{"start_dt":"cvrg_prd_strt_dt",       "end_dt":"cvrg_prd_end_dt",         "segment":"FTX00005"}
+            ,"tmsis_val_bsd_pymt"            :{"start_dt":"prfmnc_prd_strt_dt",     "end_dt":"prfmnc_prd_end_dt",       "segment":"FTX00006"}
+            ,"tmsis_sdp_seprt_pymt_term"     :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX00007"}
+            ,"tmsis_cst_stlmt_pymt"          :{"start_dt":"cst_stlmt_prd_strt_dt",  "end_dt":"cst_stlmt_prd_end_dt",    "segment":"FTX00008"}
+            ,"tmsis_fqhc_wrp_pymt"           :{'start_dt':'wrp_prd_strt_dt',        'end_dt':'wrp_prd_end_dt',          "segment":"FTX00009"}
+            ,"tmsis_misc_pymt"               :{"start_dt":"pymt_prd_strt_dt",       "end_dt":"pymt_prd_end_dt",         "segment":"FTX00095"}
+        }
 
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - HEADER_IP
-        #   2 - HEADER2_IP
-        #   3 - NO_DISCHARGE_DATES
-        #   4 - CLM_FMLY_IP
-        #   5 - COMBINED_HEADER
-        #   6 - ALL_HEADER_IP
-        #   7 - FA_HDR_IP
-        # -------------------------------------------------
+        # -----------------------------------------------------------------------------
+        #   Produces the following for each segment in the FTX TMSIS SEGMENTS dictionary:
+        # -----------------------------------------------------------------------------
+        #   1.  {_2x_segment}_IN (initial extraction from T-MSIS)
+        #   2.  {_2x_segment}_nodups (keep only records with no dups)
+        #   3.  ALL_{_2x_segment} (dedup claim family table and join to ftx records)
+        # -----------------------------------------------------------------------------
         claims = TAF_Claims(self)
-        claims.AWS_Claims_Family_Table_Link(
-            TMSIS_SCHEMA, "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT"
-        )
+        for key,vals in FTX_TMSIS_SEGMENTS.items():
+            ftx.AWS_Extract_FTX_segment(TMSIS_SCHEMA,
+                                        "FTX",
+                                        vals["segment"],
+                                        key,
+                                        vals["start_dt"],
+                                        vals["end_dt"],
+                                        claims.rep_mo,
+                                        claims.rep_yr)
 
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
-        #   1 - dx_IP
-        #   2 - dx_wide
+        #   1.  COMBINED_FTX
         # -------------------------------------------------
-        ip = IP(self)
-        ip.select_dx(TMSIS_SCHEMA, "CIP00004", "tmsis_clm_dx_ip", "IP","FA_HDR_IP",NUMDX)
+        ftx.stack_segments(FTX_TMSIS_SEGMENTS)
 
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
-        #   1 - IP_LINE_IN
-        #   2 - IP_LINE_PRE_NPPES
-        #   3 - IP_LINE
-        #   4 - RN_IP
-        #   5 - IP_HEADER
+        #   1.  FTX
         # -------------------------------------------------
-        ip.AWS_Extract_Line(TMSIS_SCHEMA, self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP",NUMDX)
+        ftx.create(self)
 
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
-        #   1 - IP_HEADER_STEP1
-        #   2 - IP_TAXONOMY
-        #   3 - IP_HEADER_GROUPER
+        #   1.  {da_schema}.TAF_FTX
         # -------------------------------------------------
-        grouper.AWS_Assign_Grouper_Data_Conv(
-            "IP", "IP_HEADER", "IP_LINE", "DSCHRG_DT", True, True, True, True, True
-        )
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   - IPH
-        # -------------------------------------------------
-        IPH().create(self)
-        IPL().create(self)
-        IP_DX().create(self)
-
-        grouper.fasc_code("IP")
-
-        IPH().build(self)
-        IPL().build(self)
-        IP_DX().build(self)
+        ftx.build(self)
 
 
 # -----------------------------------------------------------------------------
@@ -237,3 +208,4 @@ class IP_Runner(TAF_Runner):
 
 # For more information, please see
 # <http://creativecommons.org/publicdomain/zero/1.0/>
+
