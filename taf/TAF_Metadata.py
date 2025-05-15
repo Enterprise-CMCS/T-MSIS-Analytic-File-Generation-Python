@@ -535,8 +535,6 @@ class TAF_Metadata:
     
     PRVDR_CLM_FORM_CD_values = ['01','02','03','11','12','13','21','22','23','31','95']
 
-    PRVDR_CLM_FORM_CD_values = ['01','02','03','11','12','13','21','22','23','31','95']
-
     MBESCBES_SRVC_CTGRY_values = [
         "00002",
         "00003",
