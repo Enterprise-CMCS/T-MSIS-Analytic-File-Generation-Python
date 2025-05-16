@@ -91,7 +91,26 @@ class RXL:
                 , DSPNS_FEE_PD_AMT
                 , PROFNL_SVC_FEE_SBMTD
                 , PROFNL_SVC_FEE_PD_AMT
-
+                , GME_PD_AMT
+                , case when upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0')) in {tuple(TAF_Metadata.MBESCBES_SRVC_CTGRY_values)}
+                            then upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0'))
+                            else NULL end as MBESCBES_SRVC_CTGRY
+                , case when replace(upper(trim(MBESCBES_FRM)),' ','') in {tuple(x.replace(" ","") for x in TAF_Metadata.MBESCBES_FRM_values)} then upper(trim(MBESCBES_FRM)) else NULL end as MBESCBES_FRM
+                , { TAF_Closure.var_set_type2('MBESCBES_FRM_GRP', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_fillpr('PRCDR_CD', cond1='0', cond2='8', cond3='9', cond4='#', spaces='YES') }
+                , { TAF_Closure.var_set_type1('PRCDR_1_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_2_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_3_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_4_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_5_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_6_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_7_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_8_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_9_MDFR_CD',lpad=2) }
+                , { TAF_Closure.var_set_type1('PRCDR_10_MDFR_CD',lpad=2) }
+                , SDP_ALOWD_AMT
+                , SDP_PD_AMT
+                , { TAF_Closure.var_set_type1('UNIQ_DVC_ID') }
             from (
                 select
                     *,
