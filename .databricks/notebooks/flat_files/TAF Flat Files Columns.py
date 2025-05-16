@@ -529,6 +529,7 @@ flat_file_columns['TAF_ANN_DE_BASE'] = [
   'ELGBLTY_CHG_RSN_CD_11',
   'ELGBLTY_CHG_RSN_CD_12',
   'ELGBL_AFTR_EOY_IND',
+  'MISG_ELGBLTY_DND_CLM_ONLY_IND',
 ]
 
 # COMMAND ----------

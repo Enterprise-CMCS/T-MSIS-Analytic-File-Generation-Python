@@ -291,7 +291,7 @@ class DE(TAF):
                 end as {incol}"""
         return z
 
-    def unique_claims_ids(self, cltype):
+    def unique_claims_ids(self, cltype, denied: int = 0):
         """
         Function unique_claims_ids to join the max da_run_ids for the given claims file back to the monthly TAF and
         create a table of list of unique state/msis IDs with any claim.
@@ -301,11 +301,26 @@ class DE(TAF):
         z = f"""
             select distinct b.submtg_state_cd
                             ,msis_ident_num
+                            ,{denied} as denied
 
             from max_run_id_{cltype}_{self.de.YEAR} a
                 inner join
-                {self.de.DA_SCHEMA}.taf_{cltype}h b
+        """
 
+        if cltype == "FTX":
+            z += f"""
+                {self.de.DA_SCHEMA}.taf_{cltype} b
+            """
+        elif denied == 1:
+            z += f"""
+                {self.de.DA_SCHEMA}.taf_{cltype}h_d b
+            """
+        else:
+            z += f"""
+                {self.de.DA_SCHEMA}.taf_{cltype}h b
+            """
+
+        z += f"""
             on a.submtg_state_cd = b.submtg_state_cd and
                 a.{cltype}_fil_dt = b.{cltype}_fil_dt and
                 a.da_run_id = b.da_run_id
