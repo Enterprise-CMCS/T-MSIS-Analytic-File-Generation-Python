@@ -112,8 +112,10 @@ class OT_Runner(TAF_Runner):
 
         grouper.fasc_code("OTHR_TOC")
 
-        OTH().build(self)
-        OTL().build(self)
+        OTH().build(self, denied_flag=False)
+        OTH().build(self, denied_flag=True)
+        OTL().build(self, denied_flag=False)
+        OTL().build(self, denied_flag=True)
 
 
 # -----------------------------------------------------------------------------

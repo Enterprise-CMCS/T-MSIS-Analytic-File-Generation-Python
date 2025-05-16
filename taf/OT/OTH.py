@@ -185,6 +185,7 @@ class OTH:
                 ,CMBND_BENE_CST_SHRNG_PD_AMT
                 ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
                 ,nullif(trim(ORDRG_PRVDR_NPI_NUM),'') as ORDRG_PRVDR_NPI_NUM
+                ,taf_classic_ind
             from (
                 select
                     *,
@@ -197,11 +198,34 @@ class OTH:
             """
 
         runner.append("OTHR_TOC", z)
+        
+        z = f"""create temporary view OTH_classic as 
+                select * 
+                from OTH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("OTHR_TOC", z)
+        
+        z = f"""create temporary view OTH_denied as 
+                select * 
+                from OTH
+                where TAF_Classic_ind = 0
+        """
+        runner.append("OTHR_TOC", z)
+        
 
-    def build(self, runner: OT_Runner):
+    def build(self, runner: OT_Runner, denied_flag):
         """
         Build the OT claim-header level segment.
         """
+        input_table = {
+            False:"OTH_classic",
+            True:"OTH_Denied"
+        }
+        output_table = {
+            False: "taf_oth",
+            True:  "taf_oth_d"}
+        
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
         if runner.run_stats_only:
@@ -209,13 +233,13 @@ class OTH:
             return
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_oth
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
                 FROM (
                     SELECT h.*
                         ,fasc.fed_srvc_ctgry_cd
-                    FROM OTH AS h
+                    FROM {input_table[denied_flag]} AS h
                         LEFT JOIN OTHR_TOC_HDR_ROLLED AS fasc
                             ON h.ot_link_key = fasc.ot_link_key
                 )

@@ -95,6 +95,7 @@ class OTL:
                 , PRCDR_CCS_CTGRY_CD
                 , SRVCNG_PRVDR_NPPES_TXNMY_CD
                 , { TAF_Closure.var_set_type1('IHS_SVC_IND',upper=True) }
+                , taf_classic_ind
             from (
                 select
                     *,
@@ -108,21 +109,43 @@ class OTL:
 
         runner.append("OTHR_TOC", z)
 
-    def build(self, runner: OT_Runner):
+        z = f"""create temporary view OTL_classic as 
+                select * 
+                from OTL
+                where TAF_Classic_ind = 1
+        """
+        runner.append("OTHR_TOC", z)
+        
+        z = f"""create temporary view OTL_denied as 
+                select * 
+                from OTL
+                where TAF_Classic_ind = 0
+        """
+        runner.append("OTHR_TOC", z)
+
+    def build(self, runner: OT_Runner,denied_flag):
         """
         Build the OT claim-line level segment.
         """
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
+        
+        input_table = {
+            False:"OTL_classic",
+            True:"OTL_Denied"
+        }
+        output_table = {
+            False: "taf_otl",
+            True:  "taf_otl_d"}
         if runner.run_stats_only:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_otl
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.line_columns) }
-                FROM OTL
+                FROM {input_table[denied_flag]}
         """
 
         runner.append(type(self).__name__, z)

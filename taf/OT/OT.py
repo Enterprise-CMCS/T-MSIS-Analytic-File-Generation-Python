@@ -76,7 +76,8 @@ class OT(TAF):
                         a.TMSIS_FIL_NAME,
                         a.REC_NUM
                 ) as RN ,
-                    a.submtg_state_cd as new_submtg_state_cd_line
+                    a.submtg_state_cd as new_submtg_state_cd_line,
+                    H.taf_classic_ind
 
             from
                 {fl2}_LINE_IN as A
