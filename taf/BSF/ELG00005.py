@@ -111,7 +111,7 @@ class ELG00005(ELG):
             coalesce(trim(state_spec_elgblty_fctr_txt),'x')  || coalesce(trim(birth_cncptn_ind),'x')  ||
             coalesce(trim(mas_cd),'x')  || coalesce(trim(rstrctd_bnfts_cd),'x')  ||
             coalesce(trim(tanf_cash_cd),'x')  || coalesce(trim(prmry_elgblty_grp_ind),'x')  ||
-            coalesce(trim(elgblty_chg_rsn_cd),'x')
+            coalesce(trim(elgblty_trmntn_rsn),'x')
             """
 
         self.MultiIds(created_vars, sort_key, "PRMRY_ELGBLTY_GRP_IND='1'")
