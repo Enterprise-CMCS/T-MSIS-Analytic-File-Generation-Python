@@ -1,123 +1,19 @@
-from taf.TAF_Claims import TAF_Claims
-from taf.TAF_Grouper import TAF_Grouper
-from taf.TAF_Runner import TAF_Runner
+import sys
+sys.path.append("../../..")
 
+from taf.FTX.FTX_Runner import FTX_Runner
 
-class IP_Runner(TAF_Runner):
-    """
-    The TAF-specific module contains executable statements as well as function definitions to
-    generate and execute SQL to produce individual segment as well as final output.
-    These statements are intended to initialize the module.
-    """
+ftx = FTX_Runner(
+    da_schema="TAF_PYTHON",
+    reporting_period="2024-04-30",
+    state_code="'04'",
+    run_id="'1179'",
+    job_id="'99999'",
+    file_version="AP"
+)
+ftx.init()
 
-    def __init__(self,
-                 da_schema: str,
-                 reporting_period: str,
-                 state_code: str,
-                 run_id: str,
-                 job_id: int,
-                 file_version: str,
-                 run_stats_only: int = 0):
-        super().__init__(da_schema,
-                         reporting_period,
-                         state_code,
-                         run_id,
-                         job_id,
-                         file_version,
-                         run_stats_only)
-        self.run_stats_only = self.__forceBool__(run_stats_only)
-
-    def init(self):
-        """
-        Import, create, and build out each segment for a given file type.
-        At this point, a dictionary has been created for each file segment containing
-        SQL queries that will be sequential executed by the run definition to produce output.
-        """
-
-        from taf.IP.IP import IP
-        from taf.IP.IPH import IPH
-        from taf.IP.IPL import IPL
-        from taf.IP.IP_DX import IP_DX
-        
-        TMSIS_SCHEMA = "tmsis"
-        
-        # number of DX codes to be transposed and added to header file from dx file.
-        NUMDX = 12
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - TAXO_SWITCHES
-        #   2 - NPPES_NPI_STEP2
-        #   3 - NPPES_NPI
-        #   4 - CCS_PROC
-        #   5 - CCS_DX
-        # -------------------------------------------------
-        grouper = TAF_Grouper(self)
-        grouper.fetch_nppes("IP")
-        grouper.fetch_ccs("IP")
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - HEADER_IP
-        #   2 - HEADER2_IP
-        #   3 - NO_DISCHARGE_DATES
-        #   4 - CLM_FMLY_IP
-        #   5 - COMBINED_HEADER
-        #   6 - ALL_HEADER_IP
-        #   7 - FA_HDR_IP
-        # -------------------------------------------------
-        claims = TAF_Claims(self)
-        claims.AWS_Claims_Family_Table_Link(
-            TMSIS_SCHEMA, "CIP00002", "TMSIS_CLH_REC_IP", "IP", "DSCHRG_DT"
-        )
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - dx_IP
-        #   2 - dx_wide
-        # -------------------------------------------------
-        ip = IP(self)
-        ip.select_dx(TMSIS_SCHEMA, "CIP00004", "tmsis_clm_dx_ip", "IP","FA_HDR_IP",NUMDX)
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - IP_LINE_IN
-        #   2 - IP_LINE_PRE_NPPES
-        #   3 - IP_LINE
-        #   4 - RN_IP
-        #   5 - IP_HEADER
-        # -------------------------------------------------
-        ip.AWS_Extract_Line(TMSIS_SCHEMA, self.DA_SCHEMA, "IP", "IP", "CIP00003", "TMSIS_CLL_REC_IP",NUMDX)
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   1 - IP_HEADER_STEP1
-        #   2 - IP_TAXONOMY
-        #   3 - IP_HEADER_GROUPER
-        # -------------------------------------------------
-        grouper.AWS_Assign_Grouper_Data_Conv(
-            "IP", "IP_HEADER", "IP_LINE", "DSCHRG_DT", True, True, True, True, True
-        )
-
-        # -------------------------------------------------
-        #   Produces:
-        # -------------------------------------------------
-        #   - IPH
-        # -------------------------------------------------
-        IPH().create(self)
-        IPL().create(self)
-        IP_DX().create(self)
-
-        grouper.fasc_code("IP")
-
-        IPH().build(self)
-        IPL().build(self)
-        IP_DX().build(self)
+ftx.view_plan()
 
 
 # -----------------------------------------------------------------------------

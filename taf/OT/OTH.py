@@ -1,6 +1,7 @@
 from taf.OT.OT_Runner import OT_Runner
 from taf.OT.OT_Metadata import OT_Metadata
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class OTH:
@@ -183,6 +184,26 @@ class OTH:
                 ,TOT_BENE_COPMT_LBLE_AMT
                 ,TOT_BENE_COINSRNC_LBLE_AMT
                 ,CMBND_BENE_CST_SHRNG_PD_AMT
+                ,{TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_2_H')}
+                ,{TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_2_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ORG_NPI_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_1_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_2_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_CITY_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_STATE_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ZIP_H')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_1')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_2')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_CITY')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_STATE')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ZIP')}
+                ,LTC_RCP_LBLTY_AMT
+                ,case when upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0')) in {tuple(TAF_Metadata.PRVDR_CLM_FORM_CD_values)}
+                    then upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0'))
+                    else NULL end as PRVDR_CLM_FORM_CD
+                ,TOT_GME_PD_AMT
+                ,TOT_SDP_ALOWD_AMT
+                ,TOT_SDP_PD_AMT
                 ,ADDTNL_DGNS_PRSNT
 
             from (

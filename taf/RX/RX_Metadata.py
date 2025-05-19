@@ -173,7 +173,12 @@ class RX_Metadata:
             "TOT_BENE_COPMT_LBLE_AMT",
             "TOT_BENE_COINSRNC_LBLE_AMT",
             "CMBND_BENE_CST_SHRNG_PD_AMT",
-            "RX_ORGN_CD"
+            "RX_ORGN_CD",
+            "LTC_RCP_LBLTY_AMT",
+            "PRVDR_CLM_FORM_CD",
+            "TOT_GME_PD_AMT",
+            "TOT_SDP_ALOWD_AMT",
+            "TOT_SDP_PD_AMT"
         ],
         "CRX00003": [
             "MSIS_IDENT_NUM",
@@ -222,7 +227,25 @@ class RX_Metadata:
             "INGRDNT_CST_PD_AMT",
             "DSPNS_FEE_PD_AMT",
             "PROFNL_SVC_FEE_SBMTD",
-            "PROFNL_SVC_FEE_PD_AMT"
+            "PROFNL_SVC_FEE_PD_AMT",
+            "GME_PD_AMT",
+            "MBESCBES_SRVC_CTGRY_CD",
+            "MBESCBES_FORM",
+            "MBESCBES_FORM_GRP",
+            "PRCDR_CD",
+            "PRCDR_1_MDFR_CD",
+            "PRCDR_2_MDFR_CD",
+            "PRCDR_3_MDFR_CD",
+            "PRCDR_4_MDFR_CD",
+            "PRCDR_5_MDFR_CD",
+            "PRCDR_6_MDFR_CD",
+            "PRCDR_7_MDFR_CD",
+            "PRCDR_8_MDFR_CD",
+            "PRCDR_9_MDFR_CD",
+            "PRCDR_10_MDFR_CD",
+            "SDP_ALOWD_AMT",
+            "SDP_PD_AMT",
+            "UNIQ_DVC_ID",
         ],
         "CRX00004": [
             "TMSIS_RUN_ID",
@@ -413,7 +436,21 @@ class RX_Metadata:
         "RX_ORGN_CD",
         "IHS_SVC_IND",
         "DGNS_TYPE_CD",
-        "DGNS_CD_IND"
+        "DGNS_CD_IND",
+        "MBESCBES_SRVC_CTGRY_CD",
+        "MBESCBES_FORM",
+        "MBESCBES_FORM_GRP",
+        "PRCDR_CD",
+        "PRCDR_1_MDFR_CD",
+        "PRCDR_2_MDFR_CD",
+        "PRCDR_3_MDFR_CD",
+        "PRCDR_4_MDFR_CD",
+        "PRCDR_5_MDFR_CD",
+        "PRCDR_6_MDFR_CD",
+        "PRCDR_7_MDFR_CD",
+        "PRCDR_8_MDFR_CD",
+        "PRCDR_9_MDFR_CD",
+        "PRCDR_10_MDFR_CD",
     ]
 
     renames = {}
@@ -431,6 +468,9 @@ class RX_Metadata:
         "ADJSTMT_CLM_NUM": "ADJSTMT_CLM_NUM_LINE",
         "ORGNL_CLM_NUM": "ORGNL_CLM_NUM_LINE",
         "STC_CD": "TOS_CD",
+        "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FORM":"MBESCBES_FRM",
+        "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
     }
 
     # ---------------------------------------------------------------------------------
@@ -528,6 +568,11 @@ class RX_Metadata:
         "TOT_BENE_COINSRNC_LBLE_AMT",
         "CMBND_BENE_CST_SHRNG_PD_AMT",
         "RX_ORGN_CD",
+        "LTC_RCP_LBLTY_AMT",
+        "PRVDR_CLM_FORM_CD",
+        "TOT_GME_PD_AMT",
+        "TOT_SDP_ALOWD_AMT",
+        "TOT_SDP_PD_AMT",
         "DGNS_PRSNT"
     ]
 
@@ -585,7 +630,25 @@ class RX_Metadata:
         "INGRDNT_CST_PD_AMT",
         "DSPNS_FEE_PD_AMT",
         "PROFNL_SVC_FEE_SBMTD",
-        "PROFNL_SVC_FEE_PD_AMT"
+        "PROFNL_SVC_FEE_PD_AMT",
+        "GME_PD_AMT",
+        "MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FRM",
+        "MBESCBES_FRM_GRP",
+        "PRCDR_CD",
+        "PRCDR_1_MDFR_CD",
+        "PRCDR_2_MDFR_CD",
+        "PRCDR_3_MDFR_CD",
+        "PRCDR_4_MDFR_CD",
+        "PRCDR_5_MDFR_CD",
+        "PRCDR_6_MDFR_CD",
+        "PRCDR_7_MDFR_CD",
+        "PRCDR_8_MDFR_CD",
+        "PRCDR_9_MDFR_CD",
+        "PRCDR_10_MDFR_CD",
+        "SDP_ALOWD_AMT",
+        "SDP_PD_AMT",
+        "UNIQ_DVC_ID"
     ]
 
     dx_columns = [

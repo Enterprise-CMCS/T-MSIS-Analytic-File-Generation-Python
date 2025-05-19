@@ -39,6 +39,8 @@ class RX_Runner(TAF_Runner):
         from taf.RX.RXH import RXH
         from taf.RX.RXL import RXL
         from taf.RX.RX_DX import RX_DX
+        
+        TMSIS_SCHEMA = "tmsis"
 
         # -------------------------------------------------
         #   Produces:
@@ -66,7 +68,7 @@ class RX_Runner(TAF_Runner):
         # -------------------------------------------------
         claims = TAF_Claims(self)
         claims.AWS_Claims_Family_Table_Link(
-            "tmsis", "CRX00002", "TMSIS_CLH_REC_RX", "RX", "RX_FILL_DT"
+            TMSIS_SCHEMA, "CRX00002", "TMSIS_CLH_REC_RX", "RX", "RX_FILL_DT"
         )
 
         # -------------------------------------------------
@@ -75,7 +77,7 @@ class RX_Runner(TAF_Runner):
         #   1 - dx_RX
         #   2 - dx_wide
         rx = RX(self)
-        rx.select_dx("tmsis", "CRX00004", "tmsis_clm_dx_rx", "RX", "FA_HDR_RX")
+        rx.select_dx(TMSIS_SCHEMA, "CRX00004", "tmsis_clm_dx_rx", "RX", "FA_HDR_RX")
 
         # -------------------------------------------------
         #   Produces:
@@ -85,7 +87,7 @@ class RX_Runner(TAF_Runner):
         #   3 - RN_RX
         #   4 - RX_HEADER
         # -------------------------------------------------
-        rx.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "RX", "RX", "CRX00003", "TMSIS_CLL_REC_RX")
+        rx.AWS_Extract_Line(TMSIS_SCHEMA, self.DA_SCHEMA, "RX", "RX", "CRX00003", "TMSIS_CLL_REC_RX")
 
         # -------------------------------------------------
         #   Produces:

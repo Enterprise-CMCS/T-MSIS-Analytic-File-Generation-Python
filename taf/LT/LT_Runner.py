@@ -41,6 +41,8 @@ class LT_Runner(TAF_Runner):
         from taf.LT.LTH import LTH
         from taf.LT.LTL import LTL
         from taf.LT.LT_DX import LT_DX
+        
+        TMSIS_SCHEMA = "tmsis"
 
         #number of DX codes to be backfilled to the Header file.
         NUMDX = 5
@@ -71,7 +73,7 @@ class LT_Runner(TAF_Runner):
         # -------------------------------------------------
         claims = TAF_Claims(self)
         claims.AWS_Claims_Family_Table_Link(
-            "tmsis", "CLT00002", "TMSIS_CLH_REC_LT", "LT", "SRVC_ENDG_DT"
+            TMSIS_SCHEMA, "CLT00002", "TMSIS_CLH_REC_LT", "LT", "SRVC_ENDG_DT"
         )
 
         # -------------------------------------------------
@@ -81,7 +83,7 @@ class LT_Runner(TAF_Runner):
         #   2 - DX_WIDE
         # -------------------------------------------------
         lt = LT(self)
-        lt.select_dx("tmsis", "CLT00004", "tmsis_clm_dx_lt", "LT", "FA_HDR_LT", NUMDX)
+        lt.select_dx(TMSIS_SCHEMA, "CLT00004", "tmsis_clm_dx_lt", "LT", "FA_HDR_LT", NUMDX)
 
         # -------------------------------------------------
         #   Produces:
@@ -91,7 +93,7 @@ class LT_Runner(TAF_Runner):
         #   3 - RN_LT
         #   4 - LT_HEADER
         # -------------------------------------------------
-        lt.AWS_Extract_Line("tmsis", self.DA_SCHEMA, "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT",NUMDX)
+        lt.AWS_Extract_Line(TMSIS_SCHEMA, self.DA_SCHEMA, "LT", "LT", "CLT00003", "TMSIS_CLL_REC_LT",NUMDX)
 
         # -------------------------------------------------
         #   Produces:

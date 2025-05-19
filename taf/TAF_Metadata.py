@@ -526,10 +526,14 @@ class TAF_Metadata:
             (1450, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'dx_OTHR_TOC', 'new_submtg_state_cd', 'new_submtg_state_cd'),
             (1451, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'dx_OTHR_TOC', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd'),
             (1452, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'dx_IP', 'new_submtg_state_cd', 'new_submtg_state_cd'),
-            (1453, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'dx_IP', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd')
+            (1453, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'dx_IP', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd'),
+            (1454, 'FTX', '1.1_FTX', 'COMBINED_FTX', 'submtg_state_cd', 'submtg_state_cd'),
+            (1455, 'FTX', '1.1_FTX', 'COMBINED_FTX', 'distinct orgnl_clm_num,adjstmt_clm_num,adjstmt_ind', 'submtg_state_cd'),
         ]
 
     DGNS_TYPE_CD_values = ['A','D','E','O','P','R']
+    
+    PRVDR_CLM_FORM_CD_values = ['01','02','03','11','12','13','21','22','23','31','95']
 
     MBESCBES_SRVC_CTGRY_values = [
         "00002",
