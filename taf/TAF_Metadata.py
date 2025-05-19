@@ -234,11 +234,11 @@ class TAF_Metadata:
             (631, 'AWS_Shared_Macros', '0.2 Claim header dedupe', 'HEADER_{fl}', 'submtg_state_cd', 'submtg_state_cd'),
             (633, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', '{fl}_LINE', 'new_submtg_state_cd_line', 'new_submtg_state_cd_line'),
             (634, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', '{fl}_LINE', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'new_submtg_state_cd_line'),
-            (635, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RN_{fl}', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind', 'new_submtg_state_cd_line'),
+            (635, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RN_{fl}', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt_line,line_adjstmt_ind', 'new_submtg_state_cd_line'),
             (636, 'AWS_Shared_Macros', '0.2 Claim header dedupe', 'HEADER_{fl}', 'submtg_state_cd', 'submtg_state_cd'),
             (637, 'AWS_Shared_Macros', '0.2 Claim header dedupe', 'HEADER_{fl}', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
             (644, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTL_classic', 'submtg_state_cd', 'submtg_state_cd'),
-            (645, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTL_classic', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
+            (645, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTL_classic', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
             (646, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTH_classic', 'submtg_state_cd', 'submtg_state_cd'),
             (647, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTH_classic', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
             (732, '003_prvdr_macros.sas', 'process_01_header', 'Prov01_Header', 'submitting_state', 'submitting_state'),
@@ -522,9 +522,9 @@ class TAF_Metadata:
             (1426, '022b_bsf_ELG00022', '0.2. MultiIds', 'ELG00022_MSIS_XWALK_multi', 'distinct msis_ident_num', 'submtg_state_cd'),
             (1427, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_uniq_step1', 'distinct msis_ident_num', 'submtg_state_cd'),
             (1428, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_uniq_step2', 'distinct msis_ident_num', 'submtg_state_cd'),
-            (1429, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_{bsf_file_date}_uniq', 'distinct msis_ident_num', 'submtg_state_cd')
+            (1429, '022b_bsf_ELG00022', '0.3 create segment output', 'ELG00022_{bsf_file_date}_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
             (1500, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTL_denied', 'submtg_state_cd', 'submtg_state_cd'),
-            (1501, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTL_denied', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
+            (1501, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTL_denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
             (1502, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTH_denied', 'submtg_state_cd', 'submtg_state_cd'),
             (1503, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTH_denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd')
         ]
