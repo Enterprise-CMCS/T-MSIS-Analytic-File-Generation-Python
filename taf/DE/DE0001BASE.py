@@ -249,6 +249,10 @@ class DE0001BASE(DE):
             ,ELGBLTY_CHG_RSN_CD_12
             ,ELGBL_AFTR_EOY_IND
             ,FED_PVT_LVL
+            ,ELGBLTY_EXTNSN_CD
+            ,CNTNUS_ELGBLTY_CD
+            ,INCM_STD_CD
+            ,ELGBLTY_RDTRMNTN_DT
         """
         return z
 
@@ -317,6 +321,10 @@ class DE0001BASE(DE):
             {DE.last_best(self, incol='ELGBL_AFTR_EOM_IND',outcol='ELGBL_AFTR_EOM_TEMP')}
             {DE.nonmiss_month2(self, incol='msis_ident_num',outcol='BSF_RECORD',var_type=" ")}
             ,{TAF_Closure.monthly_array(self, incol='ELGBLTY_CHG_RSN_CD')}
+            {DE.last_best(self, incol='ELGBLTY_EXTNSN_CD')}
+            {DE.last_best(self, incol='CNTNUS_ELGBLTY_CD')}
+            {DE.last_best(self, incol='INCM_STD_CD')}
+            {DE.last_best(self, incol='ELGBLTY_RDTRMNTN_DT')}
             """
 
         s2 = f"""{DE.mc_type_rank(self, smonth=3, emonth=4)}"""

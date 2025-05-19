@@ -537,6 +537,11 @@ flat_file_columns['TAF_ANN_DE_BASE'] = [
   'ELGBLTY_CHG_RSN_CD_11',
   'ELGBLTY_CHG_RSN_CD_12',
   'ELGBL_AFTR_EOY_IND',
+  'FED_PVT_LVL',
+  'ELGBLTY_EXTNSN_CD',
+  'CNTNUS_ELGBLTY_CD',
+  'INCM_STD_CD',
+  'ELGBLTY_RDTRMNTN_DT',
 ]
 
 # COMMAND ----------
@@ -765,6 +770,9 @@ flat_file_columns['TAF_ANN_DE_DSBLTY'] = [
   'TPL_OTHR_CVRG_IND_12',
   'REC_ADD_TS',
   'REC_UPDT_TS',
+  'LCKIN_SRVC1',
+  'LCKIN_SRVC2',
+  'LCKIN_SRVC3',
 ]
 
 # COMMAND ----------
