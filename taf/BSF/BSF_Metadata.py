@@ -115,7 +115,6 @@ class BSF_Metadata:
                 t5.CARE_LVL_STUS_CODE,
                 t5.DUAL_ELIGIBLE_FLG as DUAL_ELIGIBLE_FLAG,
                 t5.ELIGIBILITY_GROUP_CATEGORY_FLG as ELIGIBILITY_GROUP_CATEGORY_FLAG,
-                t5.MASBOE,
 
                 {BSF_Metadata.tagAlias('ELG00006', 't6')},
 
@@ -505,9 +504,6 @@ class BSF_Metadata:
                         t1.ELGBLTY_GRP_CD,
                         t1.PRMRY_ELGBLTY_GRP_IND,
                         t1.ELIGIBILITY_GROUP_CATEGORY_FLAG as ELGBLTY_GRP_CTGRY_FLAG,
-                        t1.MAS_CD,
-                        t1.ELGBLTY_MDCD_BASIS_CD,
-                        t1.MASBOE as MASBOE_CD,
                         t1.STATE_SPEC_ELGBLTY_FCTR_TXT,
                         t1.DUAL_ELGBL_CD,
                         t1.DUAL_ELIGIBLE_FLAG as DUAL_ELGBL_FLAG,
@@ -952,7 +948,10 @@ class BSF_Metadata:
     absent = [
         'PRGNT_IND',
         'PRGNCY_FLAG',
-        '_1115A_PRTCPNT_FLAG'
+        '_1115A_PRTCPNT_FLAG',
+        'MAS_CD',
+        'ELGBLTY_MDCD_BASIS_CD',
+        'MASBOE_CD',
     ]
 
     enumcols = [
@@ -1007,7 +1006,6 @@ class BSF_Metadata:
         'HH_PROGRAM_PARTICIPANT_FLAG': 'HH_PGM_PRTCPNT_FLAG',
         'HISPANIC_ETHNICITY_FLAG': 'HSPNC_ETHNCTY_FLAG',
         'HIV_AIDS_HH_CHRONIC_COND_FLAG': 'HIV_AIDS_HH_CHRNC_COND_FLAG',
-        'MASBOE': 'MASBOE_CD',
         'MFP_PARTICIPANT_FLAG': 'MFP_PRTCPNT_FLAG',
         'MFP_PRTCPTN_ENDD_RSN_CODE': 'MFP_PRTCPTN_ENDD_RSN_CD',
         'MFP_QLFYD_INSTN_CODE': 'MFP_QLFYD_INSTN_CD',
@@ -1065,7 +1063,6 @@ class BSF_Metadata:
         'ELGBL_ZIP_CD_MAIL',
         'ELGBLTY_TRMNTN_RSN'
         'ELGBLTY_GRP_CD',
-        'ELGBLTY_MDCD_BASIS_CD',
         'ETHNCTY_CD',
         'SEX_CD',
         'HH_ENT_NAME',
@@ -1073,8 +1070,6 @@ class BSF_Metadata:
         'HSEHLD_SIZE_CD',
         'IMGRTN_VRFCTN_IND',
         'INCM_CD',
-        'MAS_CD',
-        'MASBOE_CD',
         'MDCR_BENE_ID',
         'MDCR_HICN_NUM',
         'MFP_LVS_WTH_FMLY_CD',
@@ -1184,7 +1179,6 @@ class BSF_Metadata:
 
         'ELG00005': [
             'MSIS_CASE_NUM',
-            'ELGBLTY_MDCD_BASIS_CD',
             'CARE_LVL_STUS_CD',
             'SSDI_IND',
             'SSI_IND',
@@ -1192,7 +1186,6 @@ class BSF_Metadata:
             'SSI_STUS_CD',
             'STATE_SPEC_ELGBLTY_FCTR_TXT',
             'BIRTH_CNCPTN_IND',
-            'MAS_CD',
             'RSTRCTD_BNFTS_CD',
             'TANF_CASH_CD',
             'ELGBLTY_DTRMNT_EFCTV_DT',
@@ -1398,7 +1391,6 @@ class BSF_Metadata:
             'DUAL_ELGBL_CD',
             'ELGBLTY_TRMNTN_RSN',
             'MSIS_CASE_NUM',
-            'ELGBLTY_MDCD_BASIS_CD',
             'CARE_LVL_STUS_CD',
             'SSDI_IND',
             'SSI_IND',
@@ -1406,7 +1398,6 @@ class BSF_Metadata:
             'SSI_STUS_CD',
             'STATE_SPEC_ELGBLTY_FCTR_TXT',
             'BIRTH_CNCPTN_IND',
-            'MAS_CD',
             'RSTRCTD_BNFTS_CD',
             'TANF_CASH_CD',
             'ELGBLTY_DTRMNT_EFCTV_DT',
@@ -1648,9 +1639,6 @@ class BSF_Metadata:
              '23', '24', '25', '26', '27', '28', '29', '30', '31'],
         'DUAL_ELGBL_CD':
             ['00', '01', '02', '03', '04', '05', '06', '08', '09', '10', '0', '1', '2', '3', '4', '5', '6', '8', '9'],
-        'ELGBLTY_MDCD_BASIS_CD':
-            ['00', '01', '02', '03', '04', '05', '06', '07', '08', '10', '11',
-              '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8'],
         'CARE_LVL_STUS_CD':
             ['001', '002', '003', '004', '005', '01', '02', '03', '04', '05', '1', '2', '3', '4', '5'],
         'SSDI_IND':
@@ -1663,8 +1651,6 @@ class BSF_Metadata:
             ['000', '001', '002'],
         'BIRTH_CNCPTN_IND':
             ['0', '1'],
-        'MAS_CD':
-            ['0', '1', '2', '3', '4', '5'],
         'RSTRCTD_BNFTS_CD':
             ['0', '1', '2', '3', '4', '5', '6', '7', 'A', 'B', 'C', 'D', 'E', 'F', 'G'],
         'TANF_CASH_CD':
@@ -1921,9 +1907,9 @@ class BSF_Metadata:
         'ELGBLTY_GRP_CD',
         'PRMRY_ELGBLTY_GRP_IND',
         'ELGBLTY_GRP_CTGRY_FLAG',
-        'MAS_CD',
-        'ELGBLTY_MDCD_BASIS_CD',
-        'MASBOE_CD',
+        'cast(NULL as string) as MAS_CD',
+        'cast(NULL as string) as ELGBLTY_MDCD_BASIS_CD',
+        'cast(NULL as string) as MASBOE_CD',
         'STATE_SPEC_ELGBLTY_FCTR_TXT',
         'DUAL_ELGBL_CD',
         'DUAL_ELGBL_FLAG',

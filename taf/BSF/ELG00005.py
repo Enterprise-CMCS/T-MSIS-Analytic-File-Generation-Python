@@ -57,10 +57,7 @@ class ELG00005(ELG):
                 when (({ELGBLTY_GRP_CODE}) in('64','65','66')) then 8
                 when (({ELGBLTY_GRP_CODE}) in('67','68')) then 9
                 when (({ELGBLTY_GRP_CODE}) in('69','70','71'))    then 10
-                else null end as ELIGIBILITY_GROUP_CATEGORY_FLG,
-
-                case when MAS_CD = '.' or ELGBLTY_MDCD_BASIS_CD='.' then '.'
-                    else (MAS_CD || lpad(trim(ELGBLTY_MDCD_BASIS_CD),2,'0')) end as MASBOE
+                else null end as ELIGIBILITY_GROUP_CATEGORY_FLG
         """
 
         #  Create temp table to determine which beneficiaries have multiple records
@@ -104,12 +101,12 @@ class ELG00005(ELG):
         #  ( select count(msis_ident_num) as beneficiaries from {self.tab_no}_uniq )
 
         sort_key = """
-            coalesce(trim(MSIS_CASE_NUM),'x') || coalesce(trim(elgblty_mdcd_basis_cd),'x')  ||
+            coalesce(trim(MSIS_CASE_NUM),'x') ||
             coalesce(trim(dual_elgbl_cd),'x')  || coalesce(trim(elgblty_grp_cd),'x')  ||
             coalesce(trim(care_lvl_stus_cd),'x')  ||coalesce( trim(ssdi_ind),'x')  || coalesce(trim(ssi_ind),'x')  ||
             coalesce(trim(ssi_state_splmt_stus_cd),'x') || coalesce(trim(ssi_stus_cd),'x')  ||
             coalesce(trim(state_spec_elgblty_fctr_txt),'x')  || coalesce(trim(birth_cncptn_ind),'x')  ||
-            coalesce(trim(mas_cd),'x')  || coalesce(trim(rstrctd_bnfts_cd),'x')  ||
+            coalesce(trim(rstrctd_bnfts_cd),'x')  ||
             coalesce(trim(tanf_cash_cd),'x')  || coalesce(trim(prmry_elgblty_grp_ind),'x')  ||
             coalesce(trim(elgblty_trmntn_rsn),'x')
             """
