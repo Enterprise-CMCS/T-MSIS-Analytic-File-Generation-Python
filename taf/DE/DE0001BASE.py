@@ -249,6 +249,10 @@ class DE0001BASE(DE):
             ,ELGBLTY_TRMNTN_RSN_CD_12
             ,ELGBL_AFTR_EOY_IND
             ,FED_PVT_LVL
+            ,ELGBLTY_EXTNSN_CD
+            ,CNTNUS_ELGBLTY_CD
+            ,INCM_STD_CD
+            ,ELGBLTY_RDTRMNTN_DT
         """
         return z
 
@@ -317,6 +321,11 @@ class DE0001BASE(DE):
             {DE.last_best(self, incol='ELGBL_AFTR_EOM_IND',outcol='ELGBL_AFTR_EOM_TEMP')}
             {DE.nonmiss_month2(self, incol='msis_ident_num',outcol='BSF_RECORD',var_type=" ")}
             ,{TAF_Closure.monthly_array(self, incol='ELGBLTY_TRMNTN_RSN_CD')}
+            {DE.last_best(self, incol='FED_PVT_LVL')}
+            {DE.last_best(self, incol='ELGBLTY_EXTNSN_CD')}
+            {DE.last_best(self, incol='CNTNUS_ELGBLTY_CD')}
+            {DE.last_best(self, incol='INCM_STD_CD')}
+            {DE.last_best(self, incol='ELGBLTY_RDTRMNTN_DT')}
             """
 
         s2 = f"""{DE.mc_type_rank(self, smonth=3, emonth=4)}"""
@@ -365,7 +374,6 @@ class DE0001BASE(DE):
                 {DE.last_best(self, incol='ETHNCTY_CD')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_FLAG')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_EXP_FLAG')}
-                {DE.last_best(self, incol='FED_PVT_LVL')}
 
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
@@ -431,7 +439,6 @@ class DE0001BASE(DE):
                             ,msis_case_num
                             ,mdcr_bene_id
                             ,mdcr_hicn_num
-                            ,fed_pvt_lvl
                     from
                         max_run_id_de_{inyear} a
                     inner join
@@ -521,7 +528,6 @@ class DE0001BASE(DE):
                     {DE.last_best(self, 'ETHNCTY_CD',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_FLAG',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_EXP_FLAG',prior=1)}
-                    {DE.last_best(self, 'FED_PVT_LVL',prior=1)}
 
                     ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""+' '
 
@@ -607,8 +613,7 @@ class DE0001BASE(DE):
 
                     b.MSIS_CASE_NUM,
                     b.MDCR_BENE_ID,
-                    b.MDCR_HICN_NUM,
-                    b.FED_PVT_LVL
+                    b.MDCR_HICN_NUM
 
                 from base_nondemo_{self.de.YEAR} a
                         inner join

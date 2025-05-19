@@ -108,6 +108,9 @@ class BSF_Metadata:
                 ELGBLTY_GRP_CODE as ELGBLTY_GRP_CD,
                 DUAL_ELGBL_CODE as DUAL_ELGBL_CD,
                 lpad(trim(ELGBLTY_TRMNTN_RSN), 2, '0') as ELGBLTY_TRMNTN_RSN,
+                lpad(trim(ELGBLTY_EXTNSN_CD), 3, '0') as ELGBLTY_EXTNSN_CD,
+                lpad(trim(CNTNUS_ELGBLTY_CD), 3, '0') as CNTNUS_ELGBLTY_CD,
+                lpad(trim(INCM_STD_CD), 2, '0') as INCM_STD_CD,
 
                 t5.CARE_LVL_STUS_CODE,
                 t5.DUAL_ELIGIBLE_FLG as DUAL_ELIGIBLE_FLAG,
@@ -639,8 +642,11 @@ class BSF_Metadata:
                         t1.LCKIN_SRVC1,
                         t1.LCKIN_SRVC2,
                         t1.LCKIN_SRVC3,
-                        t1.ELGBL_FED_PVT_LVL_PCTG as FED_PVT_LVL
-                        
+                        t1.ELGBL_FED_PVT_LVL_PCTG as FED_PVT_LVL,
+                        t1.ELGBLTY_EXTNSN_CD,
+                        t1.CNTNUS_ELGBLTY_CD,
+                        t1.INCM_STD_CD,   
+                        t1.ELGBLTY_RDTRMNTN_DT
                     from
                         bsf_step1 as t1
                 )
@@ -963,7 +969,8 @@ class BSF_Metadata:
     epochal = [
         'BIRTH_DT',
         'DEATH_DT',
-        'IMGRTN_STUS_5_YR_BAR_END_DT'
+        'IMGRTN_STUS_5_YR_BAR_END_DT',
+        'ELGBLTY_RDTRMNTN_DT',
     ]
 
     renames = {
@@ -1093,6 +1100,9 @@ class BSF_Metadata:
         'TPL_INSRNC_CVRG_IND',
         'TPL_OTHR_CVRG_IND',
         'VET_IND',
+        'ELGBLTY_EXTNSN_CD',
+        'CNTNUS_ELGBLTY_CD',
+        'INCM_STD_CD',
     ]
 
     created_vars = {
@@ -1187,7 +1197,8 @@ class BSF_Metadata:
             'TANF_CASH_CD',
             'ELGBLTY_DTRMNT_EFCTV_DT',
             'ELGBLTY_DTRMNT_END_DT',
-            'PRMRY_ELGBLTY_GRP_IND'
+            'PRMRY_ELGBLTY_GRP_IND',
+            'ELGBLTY_RDTRMNTN_DT',            
         ],
 
         'ELG00006': [
@@ -1371,8 +1382,11 @@ class BSF_Metadata:
             'ELGBL_STATE_CD',
             'ELGBL_ZIP_CD',
             'ELGBL_ADR_EFCTV_DT',
-            'ELGBL_ADR_END_DT'
-
+            'ELGBL_ADR_END_DT',
+            'ELGBLTY_EXTNSN_CD',
+            'CNTNUS_ELGBLTY_CD',
+            'INCM_STD_CD',
+            'ELGBLTY_RDTRMNTN_DT',
         ],
 
         'ELG00005': [
@@ -1723,6 +1737,12 @@ class BSF_Metadata:
             ['0', '1', '2'],
         'AMRCN_INDN_ALSKA_NTV_IND':
             ['0', '1', '2'],
+        'ELGBLTY_EXTNSN_CD':
+            ['1', '2', '3', '01', '02', '03', '001', '002', '003', '995'],
+        'CNTNUS_ELGBLTY_CD':
+            ['1', '2', '01', '02', '001', '002', '995'],
+        'INCM_STD_CD':
+            ['1', '2', '01', '02', '95'],    
     }
 
     prefrd_lang_cd = [
@@ -2039,6 +2059,10 @@ class BSF_Metadata:
         'LCKIN_SRVC2',
         'LCKIN_SRVC3',
         'FED_PVT_LVL',
+        'ELGBLTY_EXTNSN_CD',
+        'CNTNUS_ELGBLTY_CD',
+        'INCM_STD_CD',
+        'ELGBLTY_RDTRMNTN_DT',
     ]
 
 # -----------------------------------------------------------------------------
