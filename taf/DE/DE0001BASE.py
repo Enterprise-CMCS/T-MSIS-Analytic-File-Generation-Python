@@ -253,6 +253,7 @@ class DE0001BASE(DE):
             ,CNTNUS_ELGBLTY_CD
             ,INCM_STD_CD
             ,ELGBLTY_RDTRMNTN_DT
+            ,MISG_ELGBLTY_DND_CLM_ONLY_IND
         """
         return z
 
@@ -754,8 +755,9 @@ class DE0001BASE(DE):
         # Create a table of all unique state/MSIS IDs from claims, to join back to Base and create dummy records for
         # all benes with a claim and not in Base
         z = f"""create or replace temporary view claims_ids as
-                select distinct submtg_state_cd
-                                ,msis_ident_num
+                select submtg_state_cd
+                       ,msis_ident_num
+                       ,min(denied) as only_denied
 
                 from ({DE.unique_claims_ids(self, cltype='IP')}
 
@@ -767,7 +769,24 @@ class DE0001BASE(DE):
 
                     union
                     {DE.unique_claims_ids(self, cltype='RX')}
+
+                    union
+                    {DE.unique_claims_ids(self, cltype='IP', denied=1)}
+
+                    union
+                    {DE.unique_claims_ids(self, cltype='LT', denied=1)}
+
+                    union
+                    {DE.unique_claims_ids(self, cltype='OT', denied=1)}
+
+                    union
+                    {DE.unique_claims_ids(self, cltype='RX', denied=1)}
+
+                    union
+                    {DE.unique_claims_ids(self, cltype='FTX')}
                 )
+
+                group by submtg_state_cd, msis_ident_num
             """
         self.de.append(type(self).__name__, z)
 
@@ -783,6 +802,10 @@ class DE0001BASE(DE):
                     ,case when a.submtg_state_cd is null
                             then 1 else 0
                             end as MISG_ELGBLTY_DATA_IND
+                    
+                    ,case when a.submtg_state_cd is null
+                            then b.only_denied else 0
+                            end as MISG_ELGBLTY_DND_CLM_ONLY_IND
 
 
                 from base_{self.de.YEAR}_final0 a

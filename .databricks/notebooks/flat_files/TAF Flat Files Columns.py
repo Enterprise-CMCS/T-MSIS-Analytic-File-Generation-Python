@@ -542,6 +542,7 @@ flat_file_columns['TAF_ANN_DE_BASE'] = [
   'CNTNUS_ELGBLTY_CD',
   'INCM_STD_CD',
   'ELGBLTY_RDTRMNTN_DT',
+  'MISG_ELGBLTY_DND_CLM_ONLY_IND',
 ]
 
 # COMMAND ----------
