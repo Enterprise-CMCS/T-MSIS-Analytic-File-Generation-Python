@@ -45,7 +45,7 @@ class DE0001BASE(DE):
             ,DCSD_FLAG
             ,AGE_NUM
             ,AGE_GRP_FLAG
-            ,GNDR_CD
+            ,SEX_CD
             ,MRTL_STUS_CD
             ,INCM_CD
             ,VET_IND
@@ -235,20 +235,24 @@ class DE0001BASE(DE):
             ,MISG_ENRLMT_TYPE_IND_11
             ,MISG_ENRLMT_TYPE_IND_12
             ,MISG_ELGBLTY_DATA_IND
-            ,ELGBLTY_CHG_RSN_CD_01
-            ,ELGBLTY_CHG_RSN_CD_02
-            ,ELGBLTY_CHG_RSN_CD_03
-            ,ELGBLTY_CHG_RSN_CD_04
-            ,ELGBLTY_CHG_RSN_CD_05
-            ,ELGBLTY_CHG_RSN_CD_06
-            ,ELGBLTY_CHG_RSN_CD_07
-            ,ELGBLTY_CHG_RSN_CD_08
-            ,ELGBLTY_CHG_RSN_CD_09
-            ,ELGBLTY_CHG_RSN_CD_10
-            ,ELGBLTY_CHG_RSN_CD_11
-            ,ELGBLTY_CHG_RSN_CD_12
+            ,ELGBLTY_TRMNTN_RSN_CD_01
+            ,ELGBLTY_TRMNTN_RSN_CD_02
+            ,ELGBLTY_TRMNTN_RSN_CD_03
+            ,ELGBLTY_TRMNTN_RSN_CD_04
+            ,ELGBLTY_TRMNTN_RSN_CD_05
+            ,ELGBLTY_TRMNTN_RSN_CD_06
+            ,ELGBLTY_TRMNTN_RSN_CD_07
+            ,ELGBLTY_TRMNTN_RSN_CD_08
+            ,ELGBLTY_TRMNTN_RSN_CD_09
+            ,ELGBLTY_TRMNTN_RSN_CD_10
+            ,ELGBLTY_TRMNTN_RSN_CD_11
+            ,ELGBLTY_TRMNTN_RSN_CD_12
             ,ELGBL_AFTR_EOY_IND
             ,FED_PVT_LVL
+            ,ELGBLTY_EXTNSN_CD
+            ,CNTNUS_ELGBLTY_CD
+            ,INCM_STD_CD
+            ,ELGBLTY_RDTRMNTN_DT
             ,MISG_ELGBLTY_DND_CLM_ONLY_IND
         """
         return z
@@ -317,7 +321,12 @@ class DE0001BASE(DE):
             {DE.last_best(self, incol='AGE_GRP_FLAG',outcol=' AGE_GRP_FLAG_TEMP')}
             {DE.last_best(self, incol='ELGBL_AFTR_EOM_IND',outcol='ELGBL_AFTR_EOM_TEMP')}
             {DE.nonmiss_month2(self, incol='msis_ident_num',outcol='BSF_RECORD',var_type=" ")}
-            ,{TAF_Closure.monthly_array(self, incol='ELGBLTY_CHG_RSN_CD')}
+            ,{TAF_Closure.monthly_array(self, incol='ELGBLTY_TRMNTN_RSN_CD')}
+            {DE.last_best(self, incol='FED_PVT_LVL')}
+            {DE.last_best(self, incol='ELGBLTY_EXTNSN_CD')}
+            {DE.last_best(self, incol='CNTNUS_ELGBLTY_CD')}
+            {DE.last_best(self, incol='INCM_STD_CD')}
+            {DE.last_best(self, incol='ELGBLTY_RDTRMNTN_DT')}
             """
 
         s2 = f"""{DE.mc_type_rank(self, smonth=3, emonth=4)}"""
@@ -352,7 +361,7 @@ class DE0001BASE(DE):
                 {DE.last_best(self, incol='DEATH_DT')}
                 {DE.last_best(self, incol='DCSD_FLAG')}
 
-                {DE.last_best(self, incol='GNDR_CD')}
+                {DE.last_best(self, incol='SEX_CD')}
                 {DE.last_best(self, incol='MRTL_STUS_CD')}
                 {DE.last_best(self, incol='INCM_CD')}
                 {DE.last_best(self, incol='VET_IND')}
@@ -366,7 +375,6 @@ class DE0001BASE(DE):
                 {DE.last_best(self, incol='ETHNCTY_CD')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_FLAG')}
                 {DE.last_best(self, incol='RACE_ETHNCTY_EXP_FLAG')}
-                {DE.last_best(self, incol='FED_PVT_LVL')}
 
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_HOME')}
                 ,{TAF_Closure.monthly_array(self, 'ELGBL_LINE_1_ADR_MAIL')}
@@ -412,7 +420,7 @@ class DE0001BASE(DE):
                             ,dcsd_flag
                             ,age_num
                             ,age_grp_flag
-                            ,gndr_cd
+                            ,sex_cd
                             ,mrtl_stus_cd
                             ,incm_cd
                             ,vet_ind
@@ -432,7 +440,6 @@ class DE0001BASE(DE):
                             ,msis_case_num
                             ,mdcr_bene_id
                             ,mdcr_hicn_num
-                            ,fed_pvt_lvl
                     from
                         max_run_id_de_{inyear} a
                     inner join
@@ -507,7 +514,7 @@ class DE0001BASE(DE):
                     {DE.last_best(self, 'DEATH_DT',prior=1)}
                     {DE.last_best(self, 'DCSD_FLAG',prior=1)}
 
-                    {DE.last_best(self, 'GNDR_CD',prior=1)}
+                    {DE.last_best(self, 'SEX_CD',prior=1)}
                     {DE.last_best(self, 'MRTL_STUS_CD',prior=1)}
                     {DE.last_best(self, 'INCM_CD',prior=1)}
                     {DE.last_best(self, 'VET_IND',prior=1)}
@@ -522,7 +529,6 @@ class DE0001BASE(DE):
                     {DE.last_best(self, 'ETHNCTY_CD',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_FLAG',prior=1)}
                     {DE.last_best(self, 'RACE_ETHNCTY_EXP_FLAG',prior=1)}
-                    {DE.last_best(self, 'FED_PVT_LVL',prior=1)}
 
                     ,case when c.ELGBL_LINE_1_ADR is not null then {self.de.YEAR}"""+' '
 
@@ -586,7 +592,7 @@ class DE0001BASE(DE):
                     b.DCSD_FLAG,
                     {self.age_date_calculate(inyear=self.de.YEAR)},
 
-                    b.GNDR_CD,
+                    b.SEX_CD,
                     b.MRTL_STUS_CD,
                     b.INCM_CD,
                     b.VET_IND,
@@ -608,8 +614,7 @@ class DE0001BASE(DE):
 
                     b.MSIS_CASE_NUM,
                     b.MDCR_BENE_ID,
-                    b.MDCR_HICN_NUM,
-                    b.FED_PVT_LVL
+                    b.MDCR_HICN_NUM
 
                 from base_nondemo_{self.de.YEAR} a
                         inner join
