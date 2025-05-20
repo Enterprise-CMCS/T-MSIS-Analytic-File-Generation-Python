@@ -1383,10 +1383,6 @@ class BSF_Metadata:
             'ELGBL_ZIP_CD',
             'ELGBL_ADR_EFCTV_DT',
             'ELGBL_ADR_END_DT',
-            'ELGBLTY_EXTNSN_CD',
-            'CNTNUS_ELGBLTY_CD',
-            'INCM_STD_CD',
-            'ELGBLTY_RDTRMNTN_DT',
         ],
 
         'ELG00005': [
@@ -1411,7 +1407,11 @@ class BSF_Metadata:
             'TANF_CASH_CD',
             'ELGBLTY_DTRMNT_EFCTV_DT',
             'ELGBLTY_DTRMNT_END_DT',
-            'PRMRY_ELGBLTY_GRP_IND'
+            'PRMRY_ELGBLTY_GRP_IND',
+            'ELGBLTY_EXTNSN_CD',
+            'CNTNUS_ELGBLTY_CD',
+            'INCM_STD_CD',
+            'ELGBLTY_RDTRMNTN_DT',
         ],
 
         'ELG00006': [
