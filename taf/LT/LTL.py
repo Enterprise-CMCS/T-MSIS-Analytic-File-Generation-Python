@@ -44,7 +44,7 @@ class LTL:
                 , { TAF_Closure.var_set_tos('TOS_CD') }
 
                 ,IMNZTN_TYPE_CD
-                , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01',  cond2='02', cond3='03', cond4='04') }
+                , { TAF_Closure.var_set_type2('FED_REIMBRSMT_CTGRY_CD', 2, cond1='01',  cond2='02', cond3='03', cond4='04') }
 
                 ,XIX_SRVC_CTGRY_CD
                 ,XXI_SRVC_CTGRY_CD
@@ -86,6 +86,17 @@ class LTL:
 
                 ,RN as LINE_NUM
                 ,{ TAF_Closure.var_set_type1('IHS_SVC_IND') }
+                , GME_PD_AMT
+                , case when upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0')) in {tuple(TAF_Metadata.MBESCBES_SRVC_CTGRY_values)}
+                            then upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0'))
+                            else NULL end as MBESCBES_SRVC_CTGRY
+                , case when replace(upper(trim(MBESCBES_FRM)),' ','') in {tuple(x.replace(" ","") for x in TAF_Metadata.MBESCBES_FRM_values)} then upper(trim(MBESCBES_FRM)) else NULL end as MBESCBES_FRM
+                , { TAF_Closure.var_set_type2('MBESCBES_FRM_GRP', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_L') }
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_L') }
+                , SDP_ALOWD_AMT
+                , SDP_PD_AMT
+                , { TAF_Closure.var_set_type1('UNIQ_DVC_ID') }
             FROM (
                 select
                     *,

@@ -42,6 +42,13 @@ class IP_Metadata:
                         + f" as {IP_Metadata.line_renames.get(item).lower()}"
                     )
 
+            # qualify dx columns
+            if segment_id == "CIP00004":
+                if item in IP_Metadata.dx_renames.keys():
+                    columns[i] = (
+                        columns[i].lower().split(" as ")[0]
+                        + f" as {IP_Metadata.dx_renames.get(item).lower()}"
+                    )
         return new_line_comma.join(columns)
 
     def finalFormatter(output_columns):
@@ -82,19 +89,6 @@ class IP_Metadata:
         "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "ADJSTMT_CLM_NUM": TAF_Closure.coalesce_tilda,
         "ORGNL_CLM_NUM": TAF_Closure.coalesce_tilda,
-        "ADMTG_DGNS_CD": TAF_Closure.compress_dots,
-        "DGNS_1_CD": TAF_Closure.compress_dots,
-        "DGNS_10_CD": TAF_Closure.compress_dots,
-        "DGNS_11_CD": TAF_Closure.compress_dots,
-        "DGNS_12_CD": TAF_Closure.compress_dots,
-        "DGNS_2_CD": TAF_Closure.compress_dots,
-        "DGNS_3_CD": TAF_Closure.compress_dots,
-        "DGNS_4_CD": TAF_Closure.compress_dots,
-        "DGNS_5_CD": TAF_Closure.compress_dots,
-        "DGNS_6_CD": TAF_Closure.compress_dots,
-        "DGNS_7_CD": TAF_Closure.compress_dots,
-        "DGNS_8_CD": TAF_Closure.compress_dots,
-        "DGNS_9_CD": TAF_Closure.compress_dots,
         "NCVRD_CHRGS_AMT": TAF_Closure.cast_as_dollar,
         "PLAN_ID_NUM": plan_id_num,
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
@@ -109,7 +103,8 @@ class IP_Metadata:
         "HCPCS_RATE":TAF_Closure.set_as_null,
         "IMNZTN_TYPE_CD":TAF_Closure.set_as_null,
         "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
-        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null
+        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
@@ -152,8 +147,6 @@ class IP_Metadata:
             "ADMSN_DT",
             "ADMSN_HR_NUM",
             "ADMSN_TYPE_CD",
-            "ADMTG_DGNS_CD",
-            "ADMTG_DGNS_CD_IND",
             "ADMTG_PRVDR_NPI_NUM",
             "ADMTG_PRVDR_NUM",
             "ADMTG_PRVDR_SPCLTY_CD",
@@ -174,42 +167,6 @@ class IP_Metadata:
             "COPAY_WVD_IND",
             "XOVR_IND",
             "BIRTH_DT",
-            "DGNS_1_CD",
-            "DGNS_10_CD",
-            "DGNS_11_CD",
-            "DGNS_12_CD",
-            "DGNS_2_CD",
-            "DGNS_3_CD",
-            "DGNS_4_CD",
-            "DGNS_5_CD",
-            "DGNS_6_CD",
-            "DGNS_7_CD",
-            "DGNS_8_CD",
-            "DGNS_9_CD",
-            "DGNS_1_CD_IND",
-            "DGNS_10_CD_IND",
-            "DGNS_11_CD_IND",
-            "DGNS_12_CD_IND",
-            "DGNS_2_CD_IND",
-            "DGNS_3_CD_IND",
-            "DGNS_4_CD_IND",
-            "DGNS_5_CD_IND",
-            "DGNS_6_CD_IND",
-            "DGNS_7_CD_IND",
-            "DGNS_8_CD_IND",
-            "DGNS_9_CD_IND",
-            "DGNS_POA_1_CD_IND",
-            "DGNS_POA_10_CD_IND",
-            "DGNS_POA_11_CD_IND",
-            "DGNS_POA_12_CD_IND",
-            "DGNS_POA_2_CD_IND",
-            "DGNS_POA_3_CD_IND",
-            "DGNS_POA_4_CD_IND",
-            "DGNS_POA_5_CD_IND",
-            "DGNS_POA_6_CD_IND",
-            "DGNS_POA_7_CD_IND",
-            "DGNS_POA_8_CD_IND",
-            "DGNS_POA_9_CD_IND",
             "DRG_CD",
             "DRG_CD_IND",
             "DSCHRG_DT",
@@ -325,7 +282,24 @@ class IP_Metadata:
             "TOT_BENE_COINSRNC_LBLE_AMT",
             "CMBND_BENE_CST_SHRNG_PD_AMT",
             "SRVC_BGNNG_DT",
-            "SRVC_ENDG_DT"
+            "SRVC_ENDG_DT",
+            "SRVC_FAC_LCTN_ORGNTN_NPI_NUM",
+            "SRVC_FAC_LCTN_LINE_1_ADR",
+            "SRVC_FAC_LCTN_LINE_2_ADR",
+            "SRVC_FAC_LCTN_CITY_NAME",
+            "SRVC_FAC_LCTN_STATE",
+            "SRVC_FAC_LCTN_ZIP_CD",
+            "BLG_PRVDR_LINE_1_ADR",
+            "BLG_PRVDR_LINE_2_ADR",
+            "BLG_PRVDR_CITY_NAME",
+            "BLG_PRVDR_STATE_CD_CD",
+            "BLG_PRVDR_ZIP_CD",
+            "LTC_RCP_LBLTY_AMT",
+            "PRVDR_CLM_FORM_CD",
+            "TOT_GME_PD_AMT",
+            "TOT_SDP_ALOWD_AMT",
+            "TOT_SDP_PD_AMT",
+            
         ],
         "CIP00003": [
             "TMSIS_FIL_NAME",
@@ -336,7 +310,7 @@ class IP_Metadata:
             "SRVC_BGNNG_DT",
             "BNFT_TYPE_CD",
             "CLL_STUS_CD",
-            "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+            "FED_REIMBRSMT_CTGRY_CD",
             "SRVC_ENDG_DT",
             "HCPCS_RATE",
             "ADJSTMT_CLM_NUM",
@@ -368,7 +342,29 @@ class IP_Metadata:
             "XXI_SRVC_CTGRY_CD",
             "MDCD_PD_AMT",
             "OTHR_INSRNC_AMT",
-            "IHS_SVC_IND"
+            "IHS_SVC_IND",
+            "GME_PD_AMT",
+            "MBESCBES_SRVC_CTGRY_CD",
+            "MBESCBES_FORM",
+            "MBESCBES_FORM_GRP",
+            "RFRG_PRVDR_NPI_NUM",
+            "RFRG_PRVDR_NUM",
+            "SDP_ALOWD_AMT",
+            "SDP_PD_AMT",
+            "UNIQ_DVC_ID"
+        ],
+        "CIP00004": [
+            "TMSIS_RUN_ID",
+            "SUBMTG_STATE_CD",
+            "ORGNL_CLM_NUM",
+            "ADJSTMT_CLM_NUM",
+            "ADJSTMT_IND",
+            "ADJDCTN_DT",
+            "DGNS_TYPE_CD",
+            "DGNS_SQNC_NUM",
+            "DGNS_CD_IND",
+            "DGNS_CD",
+            "DGNS_POA_CD_IND"
         ],
     }
 
@@ -402,7 +398,18 @@ class IP_Metadata:
         "DGNS_9_CD",
     }
 
-    header_renames = {}
+    header_renames = {
+        "SRVC_FAC_LCTN_ORGNTN_NPI_NUM":"SRVC_FAC_LCTN_ORG_NPI",
+        "SRVC_FAC_LCTN_LINE_1_ADR":"SRVC_FAC_LCTN_ADR_LINE_1",
+        "SRVC_FAC_LCTN_LINE_2_ADR":"SRVC_FAC_LCTN_ADR_LINE_2",
+        "SRVC_FAC_LCTN_CITY_NAME":"SRVC_FAC_LCTN_CITY",
+        "SRVC_FAC_LCTN_ZIP_CD":"SRVC_FAC_LCTN_ZIP",
+        "BLG_PRVDR_LINE_1_ADR":"BLG_PRVDR_ADR_LINE_1",
+        "BLG_PRVDR_LINE_2_ADR":"BLG_PRVDR_ADR_LINE_2",
+        "BLG_PRVDR_CITY_NAME":"BLG_PRVDR_CITY",
+        "BLG_PRVDR_STATE_CD_CD":"BLG_PRVDR_STATE",
+        "BLG_PRVDR_ZIP_CD":"BLG_PRVDR_ZIP"
+    }
 
     line_renames = {
         "SUBMTG_STATE_CD": "SUBMTG_STATE_CD_LINE",
@@ -414,7 +421,14 @@ class IP_Metadata:
         "ORGNL_CLM_NUM": "ORGNL_CLM_NUM_LINE",
         "STC_CD": "TOS_CD",
         "NDC_UOM_CD": "UOM_CD",
+        "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FORM":"MBESCBES_FRM",
+        "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+        "RFRG_PRVDR_NPI_NUM":"RFRG_PRVDR_NPI_NUM_L",
+        "RFRG_PRVDR_NUM":"RFRG_PRVDR_NUM_L"
     }
+    
+    dx_renames = {"DGNS_POA_CD_IND":"DGNS_POA_IND"}
 
     upper = [
         "ADJSTMT_LINE_NUM",
@@ -437,31 +451,7 @@ class IP_Metadata:
         "CLL_STUS_CD",
         "CLM_STUS_CD",
         "CLM_TYPE_CD",
-        "CMS_64_FED_REIMBRSMT_CTGRY_CD",
-        "DGNS_1_CD_IND",
-        "DGNS_10_CD_IND",
-        "DGNS_11_CD_IND",
-        "DGNS_12_CD_IND",
-        "DGNS_2_CD_IND",
-        "DGNS_3_CD_IND",
-        "DGNS_4_CD_IND",
-        "DGNS_5_CD_IND",
-        "DGNS_6_CD_IND",
-        "DGNS_7_CD_IND",
-        "DGNS_8_CD_IND",
-        "DGNS_9_CD_IND",
-        "DGNS_POA_1_CD_IND",
-        "DGNS_POA_10_CD_IND",
-        "DGNS_POA_11_CD_IND",
-        "DGNS_POA_12_CD_IND",
-        "DGNS_POA_2_CD_IND",
-        "DGNS_POA_3_CD_IND",
-        "DGNS_POA_4_CD_IND",
-        "DGNS_POA_5_CD_IND",
-        "DGNS_POA_6_CD_IND",
-        "DGNS_POA_7_CD_IND",
-        "DGNS_POA_8_CD_IND",
-        "DGNS_POA_9_CD_IND",
+        "FED_REIMBRSMT_CTGRY_CD",
         "DRG_CD_IND",
         "DRG_CD",
         "DRG_DESC",
@@ -535,7 +525,23 @@ class IP_Metadata:
         "SUBMTG_STATE_CD",
         "NDC_UOM_CD",
         "SRC_LCTN_CD",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "DGNS_TYPE_CD",
+        "DGNS_CD_IND",
+		"DGNS_POA_CD_IND",
+        "SRVC_FAC_LCTN_LINE_1_ADR",
+        "SRVC_FAC_LCTN_LINE_2_ADR",
+        "SRVC_FAC_LCTN_CITY_NAME",
+        "SRVC_FAC_LCTN_STATE",
+        "SRVC_FAC_LCTN_ZIP_CD",
+        "BLG_PRVDR_LINE_1_ADR",
+        "BLG_PRVDR_LINE_2_ADR",
+        "BLG_PRVDR_CITY_NAME",
+        "BLG_PRVDR_STATE_CD_CD",
+        "MBESCBES_SRVC_CTGRY_CD",
+        "MBESCBES_FORM",
+        "MBESCBES_FORM_GRP",
+        "UNIQ_DVC_ID"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -743,7 +749,24 @@ class IP_Metadata:
         "TOT_BENE_COINSRNC_LBLE_AMT",
         "CMBND_BENE_CST_SHRNG_PD_AMT",
         "SRVC_BGNNG_DT",
-        "SRVC_ENDG_DT"
+        "SRVC_ENDG_DT",
+        "SRVC_FAC_LCTN_ORG_NPI",
+        "SRVC_FAC_LCTN_ADR_LINE_1",
+        "SRVC_FAC_LCTN_ADR_LINE_2",
+        "SRVC_FAC_LCTN_CITY",
+        "SRVC_FAC_LCTN_STATE",
+        "SRVC_FAC_LCTN_ZIP",
+        "BLG_PRVDR_ADR_LINE_1",
+        "BLG_PRVDR_ADR_LINE_2",
+        "BLG_PRVDR_CITY",
+        "BLG_PRVDR_STATE",
+        "BLG_PRVDR_ZIP",
+        "LTC_RCP_LBLTY_AMT",
+        "PRVDR_CLM_FORM_CD",
+        "TOT_GME_PD_AMT",
+        "TOT_SDP_ALOWD_AMT",
+        "TOT_SDP_PD_AMT",
+        "ADDTNL_DGNS_PRSNT"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -768,7 +791,7 @@ class IP_Metadata:
         "LINE_ADJSTMT_IND",
         "TOS_CD",
         "IMNZTN_TYPE_CD",
-        "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+        "FED_REIMBRSMT_CTGRY_CD",
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",
         "CLL_STUS_CD",
@@ -797,7 +820,37 @@ class IP_Metadata:
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "LINE_NUM",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "GME_PD_AMT",
+        "MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FRM",
+        "MBESCBES_FRM_GRP",
+        "RFRG_PRVDR_NPI_NUM_L",
+        "RFRG_PRVDR_NUM_L",
+        "SDP_ALOWD_AMT",
+        "SDP_PD_AMT",
+        "UNIQ_DVC_ID"
+    ]
+    
+    dx_columns = [
+        "DA_RUN_ID",
+        "IP_LINK_KEY",
+        "IP_VRSN",
+        "IP_FIL_DT",
+        "TMSIS_RUN_ID",
+        "MSIS_IDENT_NUM",
+        "SUBMTG_STATE_CD",
+        "ORGNL_CLM_NUM",
+        "ADJSTMT_CLM_NUM",
+        "ADJSTMT_IND",
+        "ADJDCTN_DT",
+        "DGNS_TYPE_CD",
+        "DGNS_SQNC_NUM",
+        "DGNS_CD_IND",
+        "DGNS_CD",
+        "DGNS_POA_IND",
+        "REC_ADD_TS",
+        "REC_UPDT_TS"
     ]
 
 

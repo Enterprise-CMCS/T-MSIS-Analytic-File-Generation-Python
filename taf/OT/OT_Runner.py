@@ -39,6 +39,11 @@ class OT_Runner(TAF_Runner):
         from taf.OT.OTH import OTH
         from taf.OT.OTL import OTL
         from taf.OT.OT_DX import OT_DX
+        
+        TMSIS_SCHEMA = "tmsis"
+
+        #TAF 9.0:  Number of DX codes to be backfilled to header file.
+        NUMDX = 2
 
         # -------------------------------------------------
         #   Produces:
@@ -66,7 +71,7 @@ class OT_Runner(TAF_Runner):
         # -------------------------------------------------
         claims = TAF_Claims(self)
         claims.AWS_Claims_Family_Table_Link(
-            "tmsis", "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
+            TMSIS_SCHEMA, "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
         )
 
         # -------------------------------------------------
@@ -77,7 +82,7 @@ class OT_Runner(TAF_Runner):
 
         ot = OT(self)
         ot.select_dx(
-            "tmsis", "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC",2
+            TMSIS_SCHEMA, "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC",NUMDX
         )
 
         # -------------------------------------------------
@@ -89,7 +94,7 @@ class OT_Runner(TAF_Runner):
         #   4 - OTHR_TOC_HEADER
         # -------------------------------------------------
         ot.AWS_Extract_Line(
-            "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
+            TMSIS_SCHEMA, self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
         )
         # -------------------------------------------------
         #   Produces:

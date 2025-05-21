@@ -94,6 +94,34 @@ class OTL:
                 , { TAF_Closure.var_set_type1('IHS_SVC_IND',upper=True) }
                 ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
                 ,nullif(trim(ORDRG_PRVDR_NPI_NUM),'') as ORDRG_PRVDR_NPI_NUM
+                ,case when (DGNS_CD_PNTR_1 >= 1 and DGNS_CD_PNTR_1 <= 12) then DGNS_CD_PNTR_1 else NULL end as DGNS_CD_PNTR_1
+                ,case when (DGNS_CD_PNTR_2 >= 1 and DGNS_CD_PNTR_2 <= 12) then DGNS_CD_PNTR_2 else NULL end as DGNS_CD_PNTR_2
+                ,case when (DGNS_CD_PNTR_3 >= 1 and DGNS_CD_PNTR_3 <= 12) then DGNS_CD_PNTR_3 else NULL end as DGNS_CD_PNTR_3
+                ,case when (DGNS_CD_PNTR_4 >= 1 and DGNS_CD_PNTR_4 <= 12) then DGNS_CD_PNTR_4 else NULL end as DGNS_CD_PNTR_4
+                ,GME_PD_AMT
+                , case when upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0')) in {tuple(TAF_Metadata.MBESCBES_SRVC_CTGRY_values)}
+                            then upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0'))
+                            else NULL end as MBESCBES_SRVC_CTGRY
+                , case when replace(upper(trim(MBESCBES_FRM)),' ','') in {tuple(x.replace(" ","") for x in TAF_Metadata.MBESCBES_FRM_values)} then upper(trim(MBESCBES_FRM)) else NULL end as MBESCBES_FRM
+                , { TAF_Closure.var_set_type2('MBESCBES_FRM_GRP', 0, cond1='1', cond2='2', cond3='3') }
+                , case when (SRVC_PLC_CD_L is not NULL and ((length(lpad(SRVC_PLC_CD_L,2, '0')) - coalesce(length(regexp_replace(lpad(SRVC_PLC_CD_L,2, '0'), '[0-9]{2}', '')), 0))) > 0) then
+                    case when (cast(SRVC_PLC_CD_L as int) >= 1 and cast(SRVC_PLC_CD_L as int) <= 99) then lpad(SRVC_PLC_CD_L, 2, '0')
+                        else NULL end
+                    else NULL end
+                    as SRVC_PLC_CD_L
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_L')}
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_2_L')}
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_L')}
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_2_L')}
+                , SDP_ALOWD_AMT
+                , SDP_PD_AMT
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ORG_NPI_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_1_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_2_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_CITY_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_STATE_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ZIP_L')}
+                , {TAF_Closure.var_set_type1('UNIQ_DVC_ID')}
             from (
                 select
                     *,
