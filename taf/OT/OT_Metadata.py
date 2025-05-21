@@ -367,7 +367,29 @@ class OT_Metadata:
             "XXI_SRVC_CTGRY_CD",
             "IHS_SVC_IND",
             "ORDRG_PRVDR_NUM",
-            "ORDRG_PRVDR_NPI_NUM"
+            "ORDRG_PRVDR_NPI_NUM",
+            "DGNS_CD_PNTR_1",
+            "DGNS_CD_PNTR_2",
+            "DGNS_CD_PNTR_3",
+            "DGNS_CD_PNTR_4",
+            "GME_PD_AMT",
+            "MBESCBES_SRVC_CTGRY_CD",
+            "MBESCBES_FORM",
+            "MBESCBES_FORM_GRP",
+            "SRVC_PLC_CD",
+            "RFRG_PRVDR_NPI_NUM",
+            "RFRG_PRVDR_NPI_NUM_2",
+            "RFRG_PRVDR_NUM",
+            "RFRG_PRVDR_NUM_2",
+            "SDP_ALOWD_AMT",
+            "SDP_PD_AMT",
+            "SRVC_FAC_LCTN_ORGNTN_NPI_NUM",
+            "SRVC_FAC_LCTN_LINE_1_ADR",
+            "SRVC_FAC_LCTN_LINE_2_ADR",
+            "SRVC_FAC_LCTN_CITY_NAME",
+            "SRVC_FAC_LCTN_STATE",
+            "SRVC_FAC_LCTN_ZIP_CD",
+            "UNIQ_DVC_ID"
         ],
         "COT00004": [
             "TMSIS_RUN_ID",
@@ -523,7 +545,12 @@ class OT_Metadata:
         "BLG_PRVDR_CITY_NAME",
         "BLG_PRVDR_STATE_CD",
 		"RFRG_PRVDR_NUM_2",
-		"RFRG_PRVDR_NPI_NUM_2"
+		"RFRG_PRVDR_NPI_NUM_2",
+        "MBESCBES_SRVC_CTGRY_CD",
+        "MBESCBES_FORM",
+        "MBESCBES_FORM_GRP",
+        "SRVC_FAC_LCTN_ORGNTN_NPI_NUM",
+        "UNIQ_DVC_ID"
     ]
 
     renames = {}
@@ -561,6 +588,20 @@ class OT_Metadata:
         "HCPCS_SRVC_CD": "HCBS_SRVC_CD",
         "HCPCS_TXNMY_CD": "HCBS_TXNMY",
         "NDC_UOM_CD": "UOM_CD",
+        "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FORM":"MBESCBES_FRM",
+        "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+        "SRVC_PLC_CD":"SRVC_PLC_CD_L",
+        "RFRG_PRVDR_NPI_NUM":"RFRG_PRVDR_NPI_NUM_L",
+        "RFRG_PRVDR_NPI_NUM_2":"RFRG_PRVDR_NPI_NUM_2_L",
+        "RFRG_PRVDR_NUM":"RFRG_PRVDR_NUM_L",
+        "RFRG_PRVDR_NUM_2":"RFRG_PRVDR_NUM_2_L",
+        "SRVC_FAC_LCTN_ORGNTN_NPI_NUM":"SRVC_FAC_LCTN_ORG_NPI_L",
+        "SRVC_FAC_LCTN_LINE_1_ADR":"SRVC_FAC_LCTN_ADR_LINE_1_L",
+        "SRVC_FAC_LCTN_LINE_2_ADR":"SRVC_FAC_LCTN_ADR_LINE_2_L",
+        "SRVC_FAC_LCTN_CITY_NAME":"SRVC_FAC_LCTN_CITY_L",
+        "SRVC_FAC_LCTN_STATE":"SRVC_FAC_LCTN_STATE_L",
+        "SRVC_FAC_LCTN_ZIP_CD":"SRVC_FAC_LCTN_ZIP_L"
     }
 
     header_columns = [
@@ -789,7 +830,29 @@ class OT_Metadata:
         "SRVCNG_PRVDR_NPPES_TXNMY_CD",
         "IHS_SVC_IND",
         "ORDRG_PRVDR_NUM",
-        "ORDRG_PRVDR_NPI_NUM"
+        "ORDRG_PRVDR_NPI_NUM",
+        "DGNS_CD_PNTR_1",
+        "DGNS_CD_PNTR_2",
+        "DGNS_CD_PNTR_3",
+        "DGNS_CD_PNTR_4",
+        "GME_PD_AMT",
+        "MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FRM",
+        "MBESCBES_FRM_GRP",
+        "SRVC_PLC_CD_L",
+        "RFRG_PRVDR_NPI_NUM_L",
+        "RFRG_PRVDR_NPI_NUM_2_L",
+        "RFRG_PRVDR_NUM_L",
+        "RFRG_PRVDR_NUM_2_L",
+        "SDP_ALOWD_AMT",
+        "SDP_PD_AMT",
+        "SRVC_FAC_LCTN_ORG_NPI_L",
+        "SRVC_FAC_LCTN_ADR_LINE_1_L",
+        "SRVC_FAC_LCTN_ADR_LINE_2_L",
+        "SRVC_FAC_LCTN_CITY_L",
+        "SRVC_FAC_LCTN_STATE_L",
+        "SRVC_FAC_LCTN_ZIP_L",
+        "UNIQ_DVC_ID"
     ]
     
     dx_columns = [

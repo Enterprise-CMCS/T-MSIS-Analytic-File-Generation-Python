@@ -335,7 +335,16 @@ class LT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
-            "IHS_SVC_IND"
+            "IHS_SVC_IND",
+            "GME_PD_AMT",
+            "MBESCBES_SRVC_CTGRY_CD",
+            "MBESCBES_FORM",
+            "MBESCBES_FORM_GRP",
+            "RFRG_PRVDR_NPI_NUM",
+            "RFRG_PRVDR_NUM",
+            "SDP_ALOWD_AMT",
+            "SDP_PD_AMT",
+            "UNIQ_DVC_ID"
         ],
         "CLT00004": [
             "TMSIS_RUN_ID",
@@ -414,6 +423,11 @@ class LT_Metadata:
         "STC_CD": "TOS_CD",
         "PRSCRBNG_PRVDR_NPI_NUM": "SRVCNG_PRVDR_NPI_NUM",
         "NDC_UOM_CD": "UOM_CD",
+        "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FORM":"MBESCBES_FRM",
+        "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+        "RFRG_PRVDR_NPI_NUM":"RFRG_PRVDR_NPI_NUM_L",
+        "RFRG_PRVDR_NUM":"RFRG_PRVDR_NUM_L"
     }
 
     dx_renames = {"DGNS_POA_CD_IND":"DGNS_POA_IND"}
@@ -525,7 +539,11 @@ class LT_Metadata:
         "BLG_PRVDR_LINE_1_ADR",
         "BLG_PRVDR_LINE_2_ADR",
         "BLG_PRVDR_CITY_NAME",
-        "BLG_PRVDR_STATE_CD_CD"
+        "BLG_PRVDR_STATE_CD_CD",
+        "MBESCBES_SRVC_CTGRY_CD",
+        "MBESCBES_FORM",
+        "MBESCBES_FORM_GRP",
+        "UNIQ_DVC_ID"
     ]
 
     renames = {}
@@ -761,7 +779,16 @@ class LT_Metadata:
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "LINE_NUM",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "GME_PD_AMT",
+        "MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FRM",
+        "MBESCBES_FRM_GRP",
+        "RFRG_PRVDR_NPI_NUM_L",
+        "RFRG_PRVDR_NUM_L",
+        "SDP_ALOWD_AMT",
+        "SDP_PD_AMT",
+        "UNIQ_DVC_ID"
     ]
 
     dx_columns = [
