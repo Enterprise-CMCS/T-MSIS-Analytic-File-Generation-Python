@@ -533,8 +533,8 @@ class TAF_Metadata:
             (1501, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTL_denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
             (1502, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTH_denied', 'submtg_state_cd', 'submtg_state_cd'),
             (1503, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OTH_denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
-            (1450, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OT_DX_denied', 'submtg_state_cd', 'submtg_state_cd'),
-            (1451, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OT_DX_denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd')
+            (1504, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OT_DX_denied', 'submtg_state_cd', 'submtg_state_cd'),
+            (1505, 'AWS_OT_Macros', '1.1 AWS_Extract_Line_OT', 'OT_DX_denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd')
         ]
 
     DGNS_TYPE_CD_values = ['A','D','E','O','P','R']

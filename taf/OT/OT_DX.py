@@ -57,7 +57,7 @@ class OT_DX:
             """
         runner.append("OTHR_TOC", z)
 
-        z = f"""createor replace temporary view OT_DX_classic as 
+        z = f"""create or replace temporary view OT_DX_classic as 
                 select * 
                 from OT_DX
                 where TAF_Classic_ind = 1
