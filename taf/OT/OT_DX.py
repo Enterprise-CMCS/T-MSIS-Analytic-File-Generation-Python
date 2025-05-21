@@ -44,6 +44,7 @@ class OT_DX:
             ,DGNS_CD
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
+            ,TAF_Classic_ind
             from (
                 select
                     *,
@@ -55,11 +56,35 @@ class OT_DX:
                 )
             """
         runner.append("OTHR_TOC", z)
+
+        z = f"""createor replace temporary view OT_DX_classic as 
+                select * 
+                from OT_DX
+                where TAF_Classic_ind = 1
+        """
+        runner.append("OTHR_TOC", z)
+
+        z = f"""create or replace temporary view OT_DX_denied as 
+                select * 
+                from OT_DX
+                where TAF_Classic_ind = 0
+        """
+        runner.append("OTHR_TOC", z)
+
+
         
-    def build(self, runner: OT_Runner):
+    def build(self, runner: OT_Runner,denied_flag):
         """
         Build the OT claim-DX level segment.
         """
+        
+        input_table = {
+            False:"OT_DX_classic",
+            True:"OT_DX_denied"
+        }
+        output_table = {
+            False: "taf_ot_dx",
+            True:  "taf_ot_dx_d"}
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
         if runner.run_stats_only:
@@ -67,10 +92,10 @@ class OT_DX:
             return
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.TAF_OT_DX
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.dx_columns) }
-                FROM OT_DX
+                FROM {input_table[denied_flag]}
         """
 
         runner.append(type(self).__name__, z)
