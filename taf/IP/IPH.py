@@ -289,6 +289,7 @@ class IPH:
                 ,TOT_SDP_ALOWD_AMT
                 ,TOT_SDP_PD_AMT
                 ,ADDTNL_DGNS_PRSNT
+                ,taf_classic_ind
             FROM (
                 select
                     *,
@@ -298,6 +299,22 @@ class IPH:
                 from
                     IP_HEADER_GROUPER
                 ) H
+        """
+        runner.append("IP", z)
+        
+        z = f"""
+            create or replace temporary view IPH_classic as
+                select *
+                from IPH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("IP", z)
+
+        z = f"""
+            create or replace temporary view IPH_denied as
+                select *
+                from IPH
+                where TAF_Classic_ind = 0
         """
         runner.append("IP", z)
 
@@ -311,19 +328,28 @@ class IPH:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_iph
-                SELECT
-                    { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
-                FROM (
-                    SELECT h.*
-                        ,fasc.fed_srvc_ctgry_cd
-                    FROM IPH AS h
-                        LEFT JOIN IP_HDR_ROLLED AS fasc
-                            ON h.ip_link_key = fasc.ip_link_key
-                )
-        """
-        runner.append(type(self).__name__, z)
+        input_table = {
+            False:"IPH_classic",
+            True:"IPH_Denied"
+        }
+        output_table = {
+            False: "taf_iph",
+            True:  "taf_iph_d"}
+
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
+                    FROM (
+                        SELECT h.*
+                            ,fasc.fed_srvc_ctgry_cd
+                        FROM {input_table[denied_flag]} AS h
+                            LEFT JOIN IP_HDR_ROLLED AS fasc
+                                ON h.ip_link_key = fasc.ip_link_key
+                    )
+            """
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------
