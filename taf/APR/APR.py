@@ -377,7 +377,7 @@ class APR(TAF):
             cases.append(f"when (m{m}.PRVDR_1ST_NAME is not null and m{m}.PRVDR_1ST_NAME not in ('',' ')) or ")
             cases.append(f"     (m{m}.PRVDR_MDL_INITL_NAME is not null and m{m}.PRVDR_MDL_INITL_NAME not in ('',' ')) or ")
             cases.append(f"     (m{m}.PRVDR_LAST_NAME is not null and m{m}.PRVDR_LAST_NAME not in ('',' ')) or ")
-            cases.append(f"     (m{m}.GNDR_CD is not null and m{m}.GNDR_CD not in ('',' ')) or ")
+            cases.append(f"     (m{m}.SEX_CD is not null and m{m}.SEX_CD not in ('',' ')) or ")
             cases.append(f"     (m{m}.BIRTH_DT is not null) or ")
             cases.append(f"     (m{m}.DEATH_DT is not null) or ")
             cases.append(f"     (m{m}.AGE_NUM is not null) then '{m}'")
