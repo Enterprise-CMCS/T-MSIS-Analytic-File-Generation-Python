@@ -2481,7 +2481,7 @@ flat_file_columns['TAF_PRV'] = [
   'PRVDR_1ST_NAME',
   'PRVDR_MDL_INITL_NAME',
   'PRVDR_LAST_NAME',
-  'GNDR_CD',
+  'SEX_CD',
   'OWNRSHP_CD',
   'OWNRSHP_CAT',
   'PRVDR_PRFT_STUS_CD',
@@ -2533,6 +2533,7 @@ flat_file_columns['TAF_PRV'] = [
   'EMER_SRVCS_PRVDR_IND',
   'REC_ADD_TS',
   'REC_UPDT_TS',
+  'ATYPICAL_PRVDR_IND',
 ]
 
 # COMMAND ----------
@@ -2888,7 +2889,7 @@ flat_file_columns['TAF_ANN_PR_BASE'] = [
   'PRVDR_1ST_NAME',
   'PRVDR_MDL_INITL_NAME',
   'PRVDR_LAST_NAME',
-  'GNDR_CD',
+  'SEX_CD',
   'BIRTH_DT',
   'DEATH_DT',
   'AGE_NUM',
@@ -2964,6 +2965,7 @@ flat_file_columns['TAF_ANN_PR_BASE'] = [
   'BED_SPLMTL',
   'REC_ADD_TS',
   'REC_UPDT_TS',
+  'ATYPICAL_PRVDR_IND',
 ]
 
 # COMMAND ----------
