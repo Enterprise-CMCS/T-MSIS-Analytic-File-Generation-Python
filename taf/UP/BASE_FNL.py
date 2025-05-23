@@ -35,7 +35,7 @@ class BASE_FNL(UP):
             SELECT a.*
                  -- DE columns
                 ,b.age_num
-                ,b.gndr_cd
+                ,b.sex_cd
                 ,b.race_ethncty_exp_flag
                 ,b.dual_elgbl_cd_ltst
                 ,b.dual_elgbl_evr
@@ -99,7 +99,7 @@ class BASE_FNL(UP):
 
         # delivery indicator
         z += f"""
-             ,case when gndr_cd='F' and age_num > 9
+             ,case when sex_cd='F' and age_num > 9
                    then coalesce(g.dlvry_ind, '0')
                    else '0'
                    end as dlvry_ind
