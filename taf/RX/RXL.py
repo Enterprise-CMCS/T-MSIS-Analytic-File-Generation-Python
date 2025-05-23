@@ -111,6 +111,7 @@ class RXL:
                 , SDP_ALOWD_AMT
                 , SDP_PD_AMT
                 , { TAF_Closure.var_set_type1('UNIQ_DVC_ID') }
+                , taf_classic_ind
             from (
                 select
                     *,
@@ -124,6 +125,22 @@ class RXL:
 
         runner.append("RX", z)
 
+        z = f"""
+            create or replace temporary view RXL_classic as
+                select *
+                from RXL
+                where TAF_Classic_ind = 1
+        """
+        runner.append("RX", z)
+
+        z = f"""
+            create or replace temporary view RXL_denied as
+                select *
+                from RXL
+                where TAF_Classic_ind = 0
+        """
+        runner.append("RX", z)
+
     def build(self, runner: RX_Runner):
         """
         Build the claim line-level segment.
@@ -134,14 +151,23 @@ class RXL:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_rxl
-                SELECT
-                    { RX_Metadata.finalFormatter(RX_Metadata.line_columns) }
-                FROM RXL
-        """
+        input_table = {
+            False:"RXL_classic",
+            True:"RXL_Denied"
+        }
+        output_table = {
+            False: "taf_rxl",
+            True:  "taf_rxl_d"}
 
-        runner.append(type(self).__name__, z)
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { RX_Metadata.finalFormatter(RX_Metadata.line_columns) }
+                    FROM {input_table[denied_flag]}
+            """
+
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------
