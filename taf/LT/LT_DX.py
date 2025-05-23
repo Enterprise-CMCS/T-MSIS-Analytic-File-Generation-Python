@@ -44,6 +44,7 @@ class LT_DX:
             ,{ TAF_Closure.var_set_type4('DGNS_POA_IND', 'YES', cond1='Y', cond2='N', cond3='U', cond4='W', cond5='1') }
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
+            ,taf_classic_ind
             from (
                 select
                     *,
@@ -55,7 +56,23 @@ class LT_DX:
                 )
             """
         runner.append("LT", z)
-        
+
+        z = f"""
+            create or replace temporary view LT_DX_classic as
+                select *
+                from LT_DX
+                where TAF_Classic_ind = 1
+        """
+        runner.append("LT", z)
+
+        z = f"""
+            create or replace temporary view LT_DX_denied as
+                select *
+                from LT_DX
+                where TAF_Classic_ind = 0
+        """
+        runner.append("LT", z)
+
     def build(self, runner: LT_Runner):
         """
         Build the LT claim-DX level segment.
@@ -65,12 +82,21 @@ class LT_DX:
         if runner.run_stats_only:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
+        
+        input_table = {
+            False:"LT_DX_classic",
+            True:"LT_DX_Denied"
+        }
+        output_table = {
+            False: "taf_lt_dx",
+            True:  "taf_lt_dx_d"}
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.TAF_LT_DX
+        for denied_flag in [False,True]:
+            z = f"""
+
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { LT_Metadata.finalFormatter(LT_Metadata.dx_columns) }
-                FROM LT_DX
-        """
-
-        runner.append(type(self).__name__, z)
+                FROM {input_table[denied_flag]}
+            """
+            runner.append(type(self).__name__, z)
