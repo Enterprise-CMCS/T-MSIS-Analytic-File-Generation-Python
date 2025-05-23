@@ -292,7 +292,7 @@ class IP_Metadata:
             "BLG_PRVDR_LINE_1_ADR",
             "BLG_PRVDR_LINE_2_ADR",
             "BLG_PRVDR_CITY_NAME",
-            "BLG_PRVDR_STATE_CD_CD",
+            "BLG_PRVDR_STATE_CD",
             "BLG_PRVDR_ZIP_CD",
             "LTC_RCP_LBLTY_AMT",
             "PRVDR_CLM_FORM_CD",
@@ -407,7 +407,7 @@ class IP_Metadata:
         "BLG_PRVDR_LINE_1_ADR":"BLG_PRVDR_ADR_LINE_1",
         "BLG_PRVDR_LINE_2_ADR":"BLG_PRVDR_ADR_LINE_2",
         "BLG_PRVDR_CITY_NAME":"BLG_PRVDR_CITY",
-        "BLG_PRVDR_STATE_CD_CD":"BLG_PRVDR_STATE",
+        "BLG_PRVDR_STATE_CD":"BLG_PRVDR_STATE",
         "BLG_PRVDR_ZIP_CD":"BLG_PRVDR_ZIP"
     }
 
@@ -537,7 +537,7 @@ class IP_Metadata:
         "BLG_PRVDR_LINE_1_ADR",
         "BLG_PRVDR_LINE_2_ADR",
         "BLG_PRVDR_CITY_NAME",
-        "BLG_PRVDR_STATE_CD_CD",
+        "BLG_PRVDR_STATE_CD",
         "MBESCBES_SRVC_CTGRY_CD",
         "MBESCBES_FORM",
         "MBESCBES_FORM_GRP",
