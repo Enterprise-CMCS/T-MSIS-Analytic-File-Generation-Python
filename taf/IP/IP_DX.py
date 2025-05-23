@@ -43,6 +43,7 @@ class IP_DX:
             ,{ TAF_Closure.var_set_type4('DGNS_POA_IND', 'YES', cond1='Y', cond2='N', cond3='U', cond4='W', cond5='1') }
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
+            ,taf_classic_ind
             from (
                 select
                     *,
@@ -54,7 +55,23 @@ class IP_DX:
                 )
             """
         runner.append("IP", z)
-        
+
+        z = f"""
+            create or replace temporary view IP_DX_classic as
+                select *
+                from IP_DX
+                where TAF_Classic_ind = 1
+        """
+        runner.append("IP", z)
+
+        z = f"""
+            create or replace temporary view IP_DX_denied as
+                select *
+                from IP_DX
+                where TAF_Classic_ind = 0
+        """
+        runner.append("IP", z)
+
     def build(self, runner: IP_Runner):
         """
         Build the IP claim-DX level segment.
@@ -65,11 +82,20 @@ class IP_DX:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.TAF_IP_DX
-                SELECT
-                    { IP_Metadata.finalFormatter(IP_Metadata.dx_columns) }
-                FROM IP_DX
-        """
+        input_table = {
+            False:"IP_DX_classic",
+            True:"IP_DX_Denied"
+        }
+        output_table = {
+            False: "taf_ip_dx",
+            True:  "taf_ip_dx_d"}
 
-        runner.append(type(self).__name__, z)
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { IP_Metadata.finalFormatter(IP_Metadata.dx_columns) }
+                    FROM {input_table[denied_flag]}
+            """
+
+            runner.append(type(self).__name__, z)

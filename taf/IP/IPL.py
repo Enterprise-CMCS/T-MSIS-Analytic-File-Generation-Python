@@ -94,7 +94,7 @@ class IPL:
                 , SDP_ALOWD_AMT
                 , SDP_PD_AMT
                 , { TAF_Closure.var_set_type1('UNIQ_DVC_ID') }
-
+                ,taf_classic_ind
             FROM (
                 select
                     *,
@@ -108,6 +108,23 @@ class IPL:
 
         runner.append("IP", z)
 
+        z = f"""
+            create or replace temporary view IPL_classic as
+                select *
+                from IPL
+                where TAF_Classic_ind = 1
+        """
+        runner.append("IP", z)
+
+        z = f"""
+            create or replace temporary view IPL_denied as
+                select *
+                from IPL
+                where TAF_Classic_ind = 0
+        """
+        runner.append("IP", z)
+
+
     def build(self, runner: IP_Runner):
         """
         Build SQL query for the line-level segment.
@@ -118,14 +135,22 @@ class IPL:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_ipl
-                SELECT
-                    { IP_Metadata.finalFormatter(IP_Metadata.line_columns) }
-                FROM IPL
-        """
-
-        runner.append(type(self).__name__, z)
+        input_table = {
+            False:"IPL_classic",
+            True:"IPL_Denied"
+        }
+        output_table = {
+            False: "taf_ipl",
+            True:  "taf_ipl_d"}
+        
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { IP_Metadata.finalFormatter(IP_Metadata.line_columns) }
+                    FROM {input_table[denied_flag]}
+            """
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------
