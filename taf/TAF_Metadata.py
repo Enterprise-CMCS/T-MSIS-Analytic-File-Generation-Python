@@ -198,7 +198,7 @@ class TAF_Metadata:
             (586, 'AWS_Shared_Macros', '0.3 Final action headers', 'FA_HDR_{fl}', 'submtg_state_cd', 'submtg_state_cd'),
             (587, 'AWS_Grouper_Macro', '2.1 AWS_ASSIGN_GROUPER_DATA_CONV', '{filetyp}_TAXONOMY', 'new_submtg_state_cd_line', 'new_submtg_state_cd_line'),
             (588, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'IPH_Classic', 'submtg_state_cd', 'submtg_state_cd'),
-            (591, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', '{fl}_HEADER', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'new_submtg_state_cd'),
+            (591, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RXH_Classic', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
             (592, '003_bsf_ELG00003', '0.1. create_initial_table', 'ELG00003_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
             (593, '005_bsf_ELG00005', '0.1. create_initial_table', 'ELG00005_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
             (594, '007_bsf_ELG00007', '0.1. create_initial_table', 'ELG00007_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
@@ -209,7 +209,7 @@ class TAF_Metadata:
             (601, 'AWS_Grouper_Macro', '2.1 AWS_ASSIGN_GROUPER_DATA_CONV', '{filetyp}_TAXONOMY', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind', 'new_submtg_state_cd_line'),
             (602, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'IPH_Classic', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
             (604, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RN_{fl}', 'new_submtg_state_cd_line', 'new_submtg_state_cd_line'),
-            (605, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', '{fl}_LINE', 'new_submtg_state_cd_line', 'new_submtg_state_cd_line'),
+            (605, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RXL_Classic', 'submtg_state_cd', 'submtg_state_cd'),
             (606, '002_bsf_ELG00002', '0.1. create_initial_table', 'ELG00002_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
             (607, '004_bsf_ELG00004', '0.1. create_initial_table', 'ELG00004_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
             (608, '006_bsf_ELG00006', '0.1. create_initial_table', 'ELG00006_uniq', 'distinct msis_ident_num', 'submtg_state_cd'),
@@ -221,7 +221,7 @@ class TAF_Metadata:
             (615, 'AWS_LT_Macros', '1.1 AWS_Extract_Line_LT', 'LTL_Classic', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
             (616, 'AWS_LT_Macros', '1.1 AWS_Extract_Line_LT', 'CONSTRUCTED_{fl2}', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind', 'new_submtg_state_cd_line'),
             (617, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'IPL_Classic', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
-            (620, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', '{fl}_HEADER', 'new_submtg_state_cd', 'new_submtg_state_cd'),
+            (620, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RXH_Classic', 'submtg_state_cd', 'submtg_state_cd'),
             (621, '002_bsf_ELG00002', '0.1. create_initial_table', 'ELG00002_uniq', 'submtg_state_cd', 'submtg_state_cd'),
             (622, '004_bsf_ELG00004', '0.1. create_initial_table', 'ELG00004_uniq', 'submtg_state_cd', 'submtg_state_cd'),
             (623, '006_bsf_ELG00006', '0.1. create_initial_table', 'ELG00006_uniq', 'submtg_state_cd', 'submtg_state_cd'),
@@ -233,7 +233,7 @@ class TAF_Metadata:
             (629, 'AWS_LT_Macros', '1.1 AWS_Extract_Line_LT', 'LTL_Classic', 'submtg_state_cd', 'submtg_state_cd'),
             (631, 'AWS_Shared_Macros', '0.2 Claim header dedupe', 'HEADER_{fl}', 'submtg_state_cd', 'submtg_state_cd'),
             (633, 'AWS_IP_Macros', '1.1 AWS_Extract_Line_IP', 'IPL_Classic', 'submtg_state_cd', 'submtg_state_cd'),
-            (634, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', '{fl}_LINE', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'new_submtg_state_cd_line'),
+            (634, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RXL_Classic', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
             (635, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RN_{fl}', 'distinct orgnl_clm_num_line,adjstmt_clm_num_line,adjdctn_dt_line,line_adjstmt_ind', 'new_submtg_state_cd_line'),
             (636, 'AWS_Shared_Macros', '0.2 Claim header dedupe', 'HEADER_{fl}', 'submtg_state_cd', 'submtg_state_cd'),
             (637, 'AWS_Shared_Macros', '0.2 Claim header dedupe', 'HEADER_{fl}', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
@@ -548,7 +548,15 @@ class TAF_Metadata:
             (1516, 'AWS_LT_Macros', '1.1 AWS_Extract_Line_LT', 'LTL_Denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
             (1517, 'AWS_LT_Macros', '1.1 AWS_Extract_Line_LT', 'LTL_Denied', 'submtg_state_cd', 'submtg_state_cd'),
             (1518, 'AWS_LT_Macros', '1.1 AWS_Extract_Line_LT', 'LT_DX_Denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
-            (1519, 'AWS_LT_Macros', '1.1 AWS_Extract_Line_LT', 'LT_DX_Denied', 'submtg_state_cd', 'submtg_state_cd')
+            (1519, 'AWS_LT_Macros', '1.1 AWS_Extract_Line_LT', 'LT_DX_Denied', 'submtg_state_cd', 'submtg_state_cd'),
+            (1520, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RXH_Denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
+            (1521, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RXL_Denied', 'submtg_state_cd', 'submtg_state_cd'),
+            (1522, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RXH_Denied', 'submtg_state_cd', 'submtg_state_cd'),
+            (1523, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RXL_Denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,line_adjstmt_ind,orgnl_line_num,adjstmt_line_num', 'submtg_state_cd'),
+            (1524, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RX_DX_Denied', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
+            (1525, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RX_DX_Denied', 'submtg_state_cd', 'submtg_state_cd'),
+            (1526, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RX_DX_Classic', 'distinct orgnl_clm_num,adjstmt_clm_num,adjdctn_dt,adjstmt_ind', 'submtg_state_cd'),
+            (1527, 'AWS_RX_Macros', '1.1 AWS_Extract_Line_RX', 'RX_DX_Classic', 'submtg_state_cd', 'submtg_state_cd')
         ]
 
     DGNS_TYPE_CD_values = ['A','D','E','O','P','R']

@@ -119,6 +119,7 @@ class RXH:
                 ,TOT_SDP_ALOWD_AMT
                 ,TOT_SDP_PD_AMT
                 ,DGNS_PRSNT
+                ,taf_classic_ind
             from (
                 select
                     *,
@@ -131,6 +132,22 @@ class RXH:
             """
 
         runner.append("RX", z)
+        
+        z = f"""
+            create or replace temporary view RXH_classic as
+                select *
+                from RXH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("RX", z)
+
+        z = f"""
+            create or replace temporary view RXH_denied as
+                select *
+                from RXH
+                where TAF_Classic_ind = 0
+        """
+        runner.append("RX", z)
 
     def build(self, runner: RX_Runner):
         """
@@ -142,20 +159,29 @@ class RXH:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_rxh
-                SELECT
-                    { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
-                FROM (
-                    SELECT h.*
-                        ,fasc.fed_srvc_ctgry_cd
-                    FROM RXH AS h
-                        LEFT JOIN RX_HDR_ROLLED AS fasc
-                            ON h.rx_link_key = fasc.rx_link_key
-                )
-        """
+        input_table = {
+            False:"RXH_classic",
+            True:"RXH_Denied"
+        }
+        output_table = {
+            False: "taf_rxh",
+            True:  "taf_rxh_d"}
 
-        runner.append(type(self).__name__, z)
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
+                    FROM (
+                        SELECT h.*
+                            ,fasc.fed_srvc_ctgry_cd
+                        FROM {input_table[denied_flag]} AS h
+                            LEFT JOIN RX_HDR_ROLLED AS fasc
+                                ON h.rx_link_key = fasc.rx_link_key
+                    )
+            """
+
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

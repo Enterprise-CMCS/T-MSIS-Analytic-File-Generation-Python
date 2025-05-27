@@ -43,6 +43,7 @@ class RX_DX:
             ,DGNS_CD
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
+            ,taf_classic_ind
             from (
                 select
                     *,
@@ -55,6 +56,22 @@ class RX_DX:
             """
         runner.append("RX", z)
         
+        z = f"""
+            create or replace temporary view RX_DX_classic as
+                select *
+                from RX_DX
+                where TAF_Classic_ind = 1
+        """
+        runner.append("RX", z)
+
+        z = f"""
+            create or replace temporary view RX_DX_denied as
+                select *
+                from RX_DX
+                where TAF_Classic_ind = 0
+        """
+        runner.append("RX", z)
+        
     def build(self, runner: RX_Runner):
         """
         Build the RX claim-DX level segment.
@@ -64,12 +81,21 @@ class RX_DX:
         if runner.run_stats_only:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
+        
+        input_table = {
+            False:"RX_DX_classic",
+            True:"RX_DX_Denied"
+        }
+        output_table = {
+            False: "taf_rx_dx",
+            True:  "taf_rx_dx_d"}
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.TAF_RX_DX
-                SELECT
-                    { RX_Metadata.finalFormatter(RX_Metadata.dx_columns) }
-                FROM RX_DX
-        """
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { RX_Metadata.finalFormatter(RX_Metadata.dx_columns) }
+                    FROM {input_table[denied_flag]}
+            """
 
-        runner.append(type(self).__name__, z)
+            runner.append(type(self).__name__, z)
