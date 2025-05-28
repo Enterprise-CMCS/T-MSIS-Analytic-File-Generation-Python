@@ -570,7 +570,9 @@ class OT_Metadata:
         "BLG_PRVDR_CITY_NAME":"BLG_PRVDR_CITY",
         "BLG_PRVDR_STATE_CD":"BLG_PRVDR_STATE",
         "BLG_PRVDR_ZIP_CD":"BLG_PRVDR_ZIP",
-        "SRVC_PLC_CD":"SRVC_PLC_CD_H"
+        "SRVC_PLC_CD":"SRVC_PLC_CD_H",
+        "RFRG_PRVDR_NPI_NUM":"RFRG_PRVDR_NPI_NUM_H",
+        "RFRG_PRVDR_NUM":"RFRG_PRVDR_NUM_H",
     }
 
     dx_renames = {}
@@ -657,8 +659,8 @@ class OT_Metadata:
         "BLG_PRVDR_TXNMY_CD",
         "BLG_PRVDR_TYPE_CD",
         "BLG_PRVDR_SPCLTY_CD",
-        "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_NPI_NUM",
+        "RFRG_PRVDR_NUM_H",
+        "RFRG_PRVDR_NPI_NUM_H",
         "RFRG_PRVDR_TXNMY_CD",
         "RFRG_PRVDR_TYPE_CD",
         "RFRG_PRVDR_SPCLTY_CD",

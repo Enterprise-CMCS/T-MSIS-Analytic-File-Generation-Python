@@ -114,8 +114,8 @@ class LTH:
                 , { TAF_Closure.var_set_taxo('BLG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 , { TAF_Closure.var_set_prtype(var='BLG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty(var='BLG_PRVDR_SPCLTY_CD') }
-                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NUM') }
-                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NPI_NUM') }
+                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NUM_H') }
+                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NPI_NUM_H') }
                 ,RFRG_PRVDR_TYPE_CD
                 ,RFRG_PRVDR_SPCLTY_CD
                 , { TAF_Closure.var_set_type1(var='PRVDR_LCTN_ID') }
