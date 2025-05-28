@@ -88,7 +88,7 @@ class OTH:
                 , { TAF_Closure.var_set_fills('DGNS_2_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.var_set_type2('DGNS_2_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
                 , DGNS_POA_2_CD_IND
-                , { TAF_Closure.var_set_type1('SRVC_PLC_CD_H', upper=True, lpad=2) }
+                , { TAF_Closure.var_set_type1('SRVC_PLC_CD', upper=True, lpad=2) }
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }
                 , { TAF_Closure.var_set_type1('BLG_PRVDR_NUM') }
                 , { TAF_Closure.var_set_type1('BLG_PRVDR_NPI_NUM') }
