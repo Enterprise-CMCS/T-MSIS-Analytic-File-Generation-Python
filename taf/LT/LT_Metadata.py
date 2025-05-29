@@ -409,7 +409,9 @@ class LT_Metadata:
         "BLG_PRVDR_LINE_2_ADR":"BLG_PRVDR_ADR_LINE_2",
         "BLG_PRVDR_CITY_NAME":"BLG_PRVDR_CITY",
         "BLG_PRVDR_STATE_CD":"BLG_PRVDR_STATE",
-        "BLG_PRVDR_ZIP_CD":"BLG_PRVDR_ZIP"
+        "BLG_PRVDR_ZIP_CD":"BLG_PRVDR_ZIP",
+        "RFRG_PRVDR_NPI_NUM":"RFRG_PRVDR_NPI_NUM_H",
+        "RFRG_PRVDR_NUM":"RFRG_PRVDR_NUM_H"
     }
 
     line_renames = {
@@ -632,8 +634,8 @@ class LT_Metadata:
         "BLG_PRVDR_TXNMY_CD",
         "BLG_PRVDR_TYPE_CD",
         "BLG_PRVDR_SPCLTY_CD",
-        "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_NPI_NUM",
+        "RFRG_PRVDR_NUM_H",
+        "RFRG_PRVDR_NPI_NUM_H",
         "RFRG_PRVDR_TYPE_CD",
         "RFRG_PRVDR_SPCLTY_CD",
         "PRVDR_LCTN_ID",

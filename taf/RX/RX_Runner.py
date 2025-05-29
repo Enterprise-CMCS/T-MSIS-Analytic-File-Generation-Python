@@ -40,7 +40,7 @@ class RX_Runner(TAF_Runner):
         from taf.RX.RXL import RXL
         from taf.RX.RX_DX import RX_DX
         
-        TMSIS_SCHEMA = "tmsis"
+        TMSIS_SCHEMA = "state_prod_catalog.tmsis"
 
         # -------------------------------------------------
         #   Produces:

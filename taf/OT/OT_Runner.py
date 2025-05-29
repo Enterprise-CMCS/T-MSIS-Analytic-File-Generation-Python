@@ -40,7 +40,7 @@ class OT_Runner(TAF_Runner):
         from taf.OT.OTL import OTL
         from taf.OT.OT_DX import OT_DX
         
-        TMSIS_SCHEMA = "tmsis"
+        TMSIS_SCHEMA = "state_prod_catalog.tmsis"
 
         #TAF 9.0:  Number of DX codes to be backfilled to header file.
         NUMDX = 2
