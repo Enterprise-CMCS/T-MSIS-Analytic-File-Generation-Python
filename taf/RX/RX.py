@@ -74,6 +74,7 @@ class RX(TAF):
                     WHEN A.DRUG_UTLZTN_CD IS NULL THEN NULL
                     ELSE SUBSTRING(A.DRUG_UTLZTN_CD,5,2)
                     END AS RSLT_SRVC_CD
+                , HEADER.taf_classic_ind
 
             from
                 {fl2}_LINE_IN as A
@@ -162,6 +163,7 @@ class RX(TAF):
                 select dx_all.*
                 ,h.msis_ident_num
                 ,h.new_submtg_state_cd
+                ,h.taf_classic_ind
                 from
                     (
                     select

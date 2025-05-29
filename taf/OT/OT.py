@@ -77,7 +77,8 @@ class OT(TAF):
                         a.TMSIS_FIL_NAME,
                         a.REC_NUM
                 ) as RN ,
-                    a.submtg_state_cd as new_submtg_state_cd_line
+                    a.submtg_state_cd as new_submtg_state_cd_line,
+                    H.taf_classic_ind
 
             from
                 {fl2}_LINE_IN as A
@@ -189,6 +190,7 @@ class OT(TAF):
                 select dx_all.*
                 ,h.msis_ident_num
                 ,h.new_submtg_state_cd
+                ,h.taf_classic_ind
                 ,row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
                                                 ,dx_all.adjstmt_ind,dx_all.adjdctn_dt order by dx_all.null_flag, dx_all.admitting_flag, dx_all.DGNS_SQNC_NUM,sort_val) as h_iteration
                 from

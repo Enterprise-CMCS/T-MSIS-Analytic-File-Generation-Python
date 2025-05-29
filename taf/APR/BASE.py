@@ -33,7 +33,7 @@ class BASE(APR):
             f"""{ TAF_Closure.monthly_array(self, incol='PRVDR_1ST_NAME') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='PRVDR_MDL_INITL_NAME') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='PRVDR_LAST_NAME') }""",
-            f"""{ TAF_Closure.monthly_array(self, incol='GNDR_CD') }""",
+            f"""{ TAF_Closure.monthly_array(self, incol='SEX_CD') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='BIRTH_DT') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='DEATH_DT') }""",
             f"""{ TAF_Closure.monthly_array(self, incol='AGE_NUM') }""",
@@ -86,13 +86,14 @@ class BASE(APR):
             f"""{TAF_Closure.ever_year('EMER_SRVCS_PRVDR_IND')}""",
             f"""{TAF_Closure.ever_year('TCHNG_IND')}""",
             f"""{TAF_Closure.ever_year('ACPT_NEW_PTNTS_IND')}""",
+            f"""{TAF_Closure.last_best('ATYPICAL_PRVDR_IND')}""",
             f"""{TAF_Closure.any_month(incols='SUBMTG_STATE_PRVDR_ID',outcol='PRVDR_FLAG', condition='IS NOT NULL')}"""]
 
         outercols = [
             f"""{ APR.assign_nonmiss_month(self,'PRVDR_1ST_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_1ST_NAME','ind_any_MN','PRVDR_1ST_NAME') }""",
             f"""{ APR.assign_nonmiss_month(self,'PRVDR_MDL_INITL_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_MDL_INITL_NAME','ind_any_MN','PRVDR_MDL_INITL_NAME') }""",
             f"""{ APR.assign_nonmiss_month(self,'PRVDR_LAST_NAME','FAC_GRP_INDVDL_CD_MN','PRVDR_LAST_NAME','ind_any_MN','PRVDR_LAST_NAME') }""",
-            f"""{ APR.assign_nonmiss_month(self,'GNDR_CD','FAC_GRP_INDVDL_CD_MN','GNDR_CD','ind_any_MN','GNDR_CD') }""",
+            f"""{ APR.assign_nonmiss_month(self,'SEX_CD','FAC_GRP_INDVDL_CD_MN','SEX_CD','ind_any_MN','SEX_CD') }""",
             f"""{ APR.assign_nonmiss_month(self,'BIRTH_DT','FAC_GRP_INDVDL_CD_MN','BIRTH_DT','ind_any_MN','BIRTH_DT') }""",
             f"""{ APR.assign_nonmiss_month(self,'DEATH_DT','FAC_GRP_INDVDL_CD_MN','DEATH_DT','ind_any_MN','DEATH_DT') }""",
             f"""{ APR.assign_nonmiss_month(self,'AGE_NUM','FAC_GRP_INDVDL_CD_MN','AGE_NUM','ind_any_MN','AGE_NUM') }"""]
@@ -154,7 +155,7 @@ class BASE(APR):
             'PRVDR_1ST_NAME',
             'PRVDR_MDL_INITL_NAME',
             'PRVDR_LAST_NAME',
-            'GNDR_CD',
+            'SEX_CD',
             'BIRTH_DT',
             'DEATH_DT',
             'AGE_NUM',
@@ -227,7 +228,11 @@ class BASE(APR):
             'PGM_SPLMTL',
             'TXNMY_SPLMTL',
             'ENRLMT_SPLMTL',
-            'BED_SPLMTL']
+            'BED_SPLMTL',
+            "from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS",
+            'cast(NULL as timestamp) as REC_UPDT_TS',
+            'ATYPICAL_PRVDR_IND',
+            ]
 
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
@@ -240,8 +245,6 @@ class BASE(APR):
                 SELECT
                     { self.table_id_cols() }
                     ,{ ','.join(basecols) }
-                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
-                    ,cast(NULL as timestamp) as REC_UPDT_TS
                 FROM base_{self.year}_final"""
 
             self.apr.append(type(self).__name__, z)

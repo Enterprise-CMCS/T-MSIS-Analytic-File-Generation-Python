@@ -114,8 +114,8 @@ class LTH:
                 , { TAF_Closure.var_set_taxo('BLG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 , { TAF_Closure.var_set_prtype(var='BLG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty(var='BLG_PRVDR_SPCLTY_CD') }
-                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NUM') }
-                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NPI_NUM') }
+                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NUM_H') }
+                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NPI_NUM_H') }
                 ,RFRG_PRVDR_TYPE_CD
                 ,RFRG_PRVDR_SPCLTY_CD
                 , { TAF_Closure.var_set_type1(var='PRVDR_LCTN_ID') }
@@ -211,6 +211,7 @@ class LTH:
                 ,TOT_SDP_ALOWD_AMT
                 ,TOT_SDP_PD_AMT
                 ,ADDTNL_DGNS_PRSNT
+                ,taf_classic_ind
             FROM (
                 select
                     *,
@@ -223,6 +224,22 @@ class LTH:
             """
 
         runner.append("LT", z)
+        
+        z = f"""
+            create or replace temporary view LTH_classic as
+                select *
+                from LTH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("LT", z)
+
+        z = f"""
+            create or replace temporary view LTH_denied as
+                select *
+                from LTH
+                where TAF_Classic_ind = 0
+        """
+        runner.append("LT", z)        
 
     def build(self, runner: LT_Runner):
         """
@@ -234,20 +251,29 @@ class LTH:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_lth
-                SELECT
-                    { LT_Metadata.finalFormatter(LT_Metadata.header_columns) }
-                FROM (
-                    SELECT h.*
-                        ,fasc.fed_srvc_ctgry_cd
-                    FROM LTH AS h
-                        LEFT JOIN LT_HDR_ROLLED AS fasc
-                            ON h.lt_link_key = fasc.lt_link_key
-                )
-        """
+        input_table = {
+            False:"LTH_classic",
+            True:"LTH_Denied"
+        }
+        output_table = {
+            False: "taf_lth",
+            True:  "taf_lth_d"}
 
-        runner.append(type(self).__name__, z)
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { LT_Metadata.finalFormatter(LT_Metadata.header_columns) }
+                    FROM (
+                        SELECT h.*
+                            ,fasc.fed_srvc_ctgry_cd
+                        FROM {input_table[denied_flag]} AS h
+                            LEFT JOIN LT_HDR_ROLLED AS fasc
+                                ON h.lt_link_key = fasc.lt_link_key
+                    )
+            """
+
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------
