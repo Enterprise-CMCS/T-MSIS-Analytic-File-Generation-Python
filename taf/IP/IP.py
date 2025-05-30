@@ -73,7 +73,8 @@ class IP(TAF):
                         a.TMSIS_FIL_NAME,
                         a.REC_NUM
                 ) as RN,
-                a.submtg_state_cd as new_submtg_state_cd_line
+                a.submtg_state_cd as new_submtg_state_cd_line,
+                H.taf_classic_ind
 
             from
                 {fl2}_LINE_IN as A
@@ -206,6 +207,7 @@ class IP(TAF):
                 select dx_all.*
                 ,h.msis_ident_num
                 ,h.new_submtg_state_cd
+                ,h.taf_classic_ind
                 ,case when trim(upper(dgns_type_cd)) = "A"
                     and null_flag = 0
                     and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num

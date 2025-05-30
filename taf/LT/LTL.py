@@ -97,6 +97,7 @@ class LTL:
                 , SDP_ALOWD_AMT
                 , SDP_PD_AMT
                 , { TAF_Closure.var_set_type1('UNIQ_DVC_ID') }
+                , taf_classic_ind
             FROM (
                 select
                     *,
@@ -110,6 +111,24 @@ class LTL:
 
         runner.append("LT", z)
 
+
+        z = f"""
+            create or replace temporary view LTL_classic as
+                select *
+                from LTL
+                where TAF_Classic_ind = 1
+        """
+        runner.append("LT", z)
+
+        z = f"""
+            create or replace temporary view LTL_denied as
+                select *
+                from LTL
+                where TAF_Classic_ind = 0
+        """
+        runner.append("LT", z)
+
+
     def build(self, runner: LT_Runner):
         """
         Build the LT claim-line level segment.
@@ -120,14 +139,23 @@ class LTL:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_ltl
-                SELECT
-                    { LT_Metadata.finalFormatter(LT_Metadata.line_columns) }
-                FROM LTL
-        """
+        input_table = {
+            False:"LTL_classic",
+            True:"LTL_Denied"
+        }
+        output_table = {
+            False: "taf_ltl",
+            True:  "taf_ltl_d"}
+        
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { LT_Metadata.finalFormatter(LT_Metadata.line_columns) }
+                    FROM {input_table[denied_flag]}
+            """
 
-        runner.append(type(self).__name__, z)
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

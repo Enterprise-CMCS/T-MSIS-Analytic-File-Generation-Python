@@ -46,7 +46,7 @@ class UP(TAF):
         #self.chipmos = ["nonchip_mdcd", "mchip", "schip"]
 
         self.basecols = ["AGE_NUM"
-                            ,"GNDR_CD"
+                            ,"SEX_CD"
                             ,"RACE_ETHNCTY_EXP_FLAG"
                             ,"ELGBLTY_GRP_CD_LTST"
                             ,"MASBOE_CD_LTST"

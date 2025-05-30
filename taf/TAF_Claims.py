@@ -175,12 +175,30 @@ class TAF_Claims():
         #  HEADER_?
         #
         # -----------------------------------------------------------------------------
+
+        claim_criteria = {
+            'denied':  f"""upper(trim(A.CLM_STUS_CTGRY_CD)) = 'F2' or
+                        trim(A.CLM_DND_IND) = '0' or
+                        upper(trim(A.CLM_TYPE_CD)) = 'Z' or
+                        trim(A.CLM_STUS_CD) in ('542','585','654') or
+                        trim(A.ADJSTMT_IND) = '1'
+                        """,
+            'classic': f"""
+                    (upper(A.CLM_STUS_CTGRY_CD) <> 'F2' or A.CLM_STUS_CTGRY_CD is null) and
+                    (upper(A.CLM_TYPE_CD) <> 'Z' or A.CLM_TYPE_CD is null) and
+                    (A.CLM_DND_IND <> '0' or A.CLM_DND_IND is null) and
+                    (A.CLM_STUS_CD NOT IN('26','87','026','087','542','585','654') or A.CLM_STUS_CD is null) and
+                    (A.ADJSTMT_IND <> '1' or A.ADJSTMT_IND IS NULL)"""
+        }
+
+
         z = f"""
             create or replace temporary view HEADER_{fl} as
 
             select
                 { self.selectDataElements(fl, tab_no, 'a') }
                 { self.analysis_date(fl, analysis_date) }
+                ,case when {claim_criteria['classic']} then 1 else 0 end as taf_classic_ind
 
             from
                 {TMSIS_SCHEMA}.{_2x_segment} as a
@@ -188,11 +206,15 @@ class TAF_Claims():
                 ( {self.where_analysis_date(fl, analysis_date, self.rep_yr, self.rep_mo) } )
                 and
                      A.TMSIS_ACTV_IND = 1 and
-                    (upper(A.CLM_STUS_CTGRY_CD) <> 'F2' or A.CLM_STUS_CTGRY_CD is null) and
-                    (upper(A.CLM_TYPE_CD) <> 'Z' or A.CLM_TYPE_CD is null) and
-                    (A.CLM_DND_IND <> '0' or A.CLM_DND_IND is null) and
-                    (A.CLM_STUS_CD NOT IN('26','87','026','087','542','585','654') or A.CLM_STUS_CD is null) and
-                    (A.ADJSTMT_IND <> '1' or A.ADJSTMT_IND IS NULL)
+                    (
+                        (
+                        {claim_criteria['classic']}
+                        )
+                        or
+                        (
+                        {claim_criteria['denied']}
+                        )
+                    )
 
                 {self.where_state_level_filter(fl, 'a')}
         """

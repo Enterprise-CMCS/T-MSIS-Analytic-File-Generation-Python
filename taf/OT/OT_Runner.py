@@ -40,7 +40,7 @@ class OT_Runner(TAF_Runner):
         from taf.OT.OTL import OTL
         from taf.OT.OT_DX import OT_DX
         
-        TMSIS_SCHEMA = "tmsis"
+        TMSIS_SCHEMA = "state_prod_catalog.tmsis"
 
         #TAF 9.0:  Number of DX codes to be backfilled to header file.
         NUMDX = 2
@@ -130,9 +130,12 @@ class OT_Runner(TAF_Runner):
 
         grouper.fasc_code("OTHR_TOC")
 
-        OTH().build(self)
-        OTL().build(self)
-        OT_DX().build(self)
+        OTH().build(self, denied_flag=False)
+        OTH().build(self, denied_flag=True)
+        OTL().build(self, denied_flag=False)
+        OTL().build(self, denied_flag=True)
+        OT_DX().build(self, denied_flag=False)
+        OT_DX().build(self, denied_flag=True)
 
 
 # -----------------------------------------------------------------------------

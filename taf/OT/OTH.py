@@ -95,8 +95,8 @@ class OTH:
                 , { TAF_Closure.var_set_taxo('BLG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 , { TAF_Closure.var_set_prtype('blg_prvdr_type_cd') }
                 , { TAF_Closure.var_set_spclty('BLG_PRVDR_SPCLTY_CD') }
-                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM') }
-                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM') }
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_H') }
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_H') }
                 ,RFRG_PRVDR_TXNMY_CD
                 ,RFRG_PRVDR_TYPE_CD
                 ,RFRG_PRVDR_SPCLTY_CD
@@ -205,7 +205,7 @@ class OTH:
                 ,TOT_SDP_ALOWD_AMT
                 ,TOT_SDP_PD_AMT
                 ,ADDTNL_DGNS_PRSNT
-
+                ,taf_classic_ind
             from (
                 select
                     *,
@@ -219,10 +219,35 @@ class OTH:
 
         runner.append("OTHR_TOC", z)
 
-    def build(self, runner: OT_Runner):
+        z = f"""create or replace temporary view OTH_classic as 
+                select * 
+                from OTH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("OTHR_TOC", z)
+
+        z = f"""create or replace temporary view OTH_denied as 
+                select * 
+                from OTH
+                where TAF_Classic_ind = 0
+        """
+        runner.append("OTHR_TOC", z)
+
+
+
+    def build(self, runner: OT_Runner, denied_flag):
         """
         Build the OT claim-header level segment.
         """
+        input_table = {
+            False:"OTH_classic",
+            True:"OTH_Denied"
+        }
+        output_table = {
+            False: "taf_oth",
+            True:  "taf_oth_d"}
+        
+        
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
         if runner.run_stats_only:
@@ -230,13 +255,13 @@ class OTH:
             return
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_oth
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
                 FROM (
                     SELECT h.*
                         ,fasc.fed_srvc_ctgry_cd
-                    FROM OTH AS h
+                    FROM {input_table[denied_flag]}  AS h
                         LEFT JOIN OTHR_TOC_HDR_ROLLED AS fasc
                             ON h.ot_link_key = fasc.ot_link_key
                 )

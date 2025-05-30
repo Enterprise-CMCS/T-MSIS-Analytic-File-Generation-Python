@@ -39,7 +39,7 @@ class IP_Runner(TAF_Runner):
         from taf.IP.IPL import IPL
         from taf.IP.IP_DX import IP_DX
         
-        TMSIS_SCHEMA = "tmsis"
+        TMSIS_SCHEMA = "state_prod_catalog.tmsis"
         
         # number of DX codes to be transposed and added to header file from dx file.
         NUMDX = 12
