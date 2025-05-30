@@ -771,16 +771,16 @@ class DE0001BASE(DE):
                     {DE.unique_claims_ids(self, cltype='RX')}
 
                     union
-                    {DE.unique_claims_ids(self, cltype='IP', denied=1)}
+                    {DE.unique_claims_ids(self, cltype='IP', denied=True)}
 
                     union
-                    {DE.unique_claims_ids(self, cltype='LT', denied=1)}
+                    {DE.unique_claims_ids(self, cltype='LT', denied=True)}
 
                     union
-                    {DE.unique_claims_ids(self, cltype='OT', denied=1)}
+                    {DE.unique_claims_ids(self, cltype='OT', denied=True)}
 
                     union
-                    {DE.unique_claims_ids(self, cltype='RX', denied=1)}
+                    {DE.unique_claims_ids(self, cltype='RX', denied=True)}
 
                     union
                     {DE.unique_claims_ids(self, cltype='FTX')}
