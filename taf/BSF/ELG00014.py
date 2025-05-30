@@ -18,7 +18,7 @@ class ELG00014(ELG):
             if i <= max_keep:
                 mc_plans.append(f"""
                     , t{i}.MC_PLAN_IDENTIFIER as MC_PLAN_ID{i}
-                    , t{i}.ENRLD_MC_PLAN_TYPE_CODE as MC_PLAN_TYPE_CD{i}
+                    , t{i}.MC_PLAN_TYPE_CODE as MC_PLAN_TYPE_CD{i}
                 """.format())
             else:
                 mc_plans.append(f"""
@@ -30,7 +30,7 @@ class ELG00014(ELG):
 
     def create(self):
 
-        ENRLD_MC_PLAN_TYPE_CODE = "lpad(trim(enrld_mc_plan_type_cd),2,'0')"
+        MC_PLAN_TYPE_CODE = "lpad(trim(MC_PLAN_TYPE_cd),2,'0')"
 
         mc_plan = f"""
             case when trim(mc_plan_id)  in ('0','00','000','0000','00000','000000','0000000',
@@ -54,14 +54,14 @@ class ELG00014(ELG):
                 {self.end_date},
                 tmsis_rptg_prd,
                 {mc_plan} as MC_PLAN_IDENTIFIER,
-                case when ({mc_plan}) is null and {ENRLD_MC_PLAN_TYPE_CODE} = '00' then null
-                    else {ENRLD_MC_PLAN_TYPE_CODE} end as ENRLD_MC_PLAN_TYPE_CODE,
+                case when ({mc_plan}) is null and {MC_PLAN_TYPE_CODE} = '00' then null
+                    else {MC_PLAN_TYPE_CODE} end as MC_PLAN_TYPE_CODE,
 
                 row_number() over (partition by submtg_state_cd,
                                         msis_ident_num,
                                         {mc_plan},
-                                        (case when ({mc_plan}) is null and {ENRLD_MC_PLAN_TYPE_CODE} = '00' then null
-                                         else {ENRLD_MC_PLAN_TYPE_CODE} end)
+                                        (case when ({mc_plan}) is null and {MC_PLAN_TYPE_CODE} = '00' then null
+                                         else {MC_PLAN_TYPE_CODE} end)
 
                             order by submtg_state_cd,
                                         msis_ident_num,
@@ -70,11 +70,11 @@ class ELG00014(ELG):
                                         {self.end_date} desc,
                                         REC_NUM desc,
                                         {mc_plan},
-                                        (case when ({mc_plan}) is null and {ENRLD_MC_PLAN_TYPE_CODE} = '00' then null
-                                         else {ENRLD_MC_PLAN_TYPE_CODE} end)) as mc_deduper
+                                        (case when ({mc_plan}) is null and {MC_PLAN_TYPE_CODE} = '00' then null
+                                         else {MC_PLAN_TYPE_CODE} end)) as mc_deduper
 
                 from (select * from {self.tab_no}
-                    where enrld_mc_plan_type_cd is not null
+                    where mc_plan_type_cd is not null
                         or mc_plan_id is not null) t1
                 """
         self.bsf.append(type(self).__name__, z)
@@ -92,10 +92,10 @@ class ELG00014(ELG):
                                         {self.end_date} desc,
                                         REC_NUM desc,
                                         MC_PLAN_IDENTIFIER,
-                                        ENRLD_MC_PLAN_TYPE_CODE) as keeper
+                                        MC_PLAN_TYPE_CODE) as keeper
 
                 from (select * from {self.tab_no}_step1
-                    where (enrld_mc_plan_type_code is not null
+                    where (MC_PLAN_TYPE_code is not null
                         or mc_plan_identifier is not null) and mc_deduper=1) t1
                 """
         self.bsf.append(type(self).__name__, z)

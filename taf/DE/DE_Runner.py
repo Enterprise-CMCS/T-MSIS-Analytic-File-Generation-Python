@@ -113,6 +113,7 @@ class DE_Runner(TAF_Runner):
         self.max_run_id(file="LT", inyear=self.YEAR)
         self.max_run_id(file="OT", inyear=self.YEAR)
         self.max_run_id(file="RX", inyear=self.YEAR)
+        self.max_run_id(file="FTX", inyear=self.YEAR)
 
     def ST_FILTER(self):
         """
@@ -163,7 +164,18 @@ class DE_Runner(TAF_Runner):
                 SELECT substring(job_parms_txt, 1, 4) || substring(job_parms_txt, 6, 2) AS {file}_fil_dt
                     ,da_run_id
                 FROM {self.DA_SCHEMA}.job_cntl_parms
+        """
+
+        if file.casefold() == "ftx":
+            z += f"""
+                WHERE upper(fil_type) = "{file}"
+            """
+        else:
+            z += f"""
                 WHERE upper(substring(fil_type, 2)) = "{file}"
+            """
+
+        z += f"""
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
         """
@@ -190,7 +202,18 @@ class DE_Runner(TAF_Runner):
                     ,regexp_extract(substring(job_parms_txt, 10), '([0-9]{{2}})') AS submtg_state_cd
                     ,da_run_id
                 FROM {self.DA_SCHEMA}.job_cntl_parms
+        """
+
+        if file.casefold() == "ftx":
+            z += f"""
+                WHERE upper(fil_type) = "{file}"
+            """
+        else:
+            z += f"""
                 WHERE upper(substring(fil_type, 2)) = "{file}"
+            """
+
+        z += f"""
                     AND sucsfl_ind = 1
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
         """

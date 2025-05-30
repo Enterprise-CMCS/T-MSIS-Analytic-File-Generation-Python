@@ -31,12 +31,12 @@ class ELG00002(ELG):
         # select recCt, count(msis_ident_num) as beneficiaries from ELG00002_recCt group by recCt
 
         # Set aside table data for benes with only one record
-        #  -- why is there GNDR_CD and GNDR_CODE?
+        #  -- why is there SEX_CD and SEX_CODE?
         z = f"""
                 create or replace temporary view {self.tab_no}_uniq as
                 select
                     t1.*,
-                    upper(GNDR_CD) as GNDR_CODE,
+                    upper(SEX_CD) as SEX_CODE,
                     1 as KEEP_FLAG
                 from
                     {self.tab_no} as t1
@@ -48,8 +48,8 @@ class ELG00002(ELG):
             """
         self.bsf.append(type(self).__name__, z)
 
-        created_vars = "upper(GNDR_CD) as GNDR_CODE"
-        sort_key = "coalesce(gndr_cd,'xx')||coalesce(cast(birth_dt as char(10)),'xx')||coalesce(cast(death_dt as char(10)),'xx')"
+        created_vars = "upper(SEX_CD) as SEX_CODE"
+        sort_key = "coalesce(sex_cd,'xx')||coalesce(cast(birth_dt as char(10)),'xx')||coalesce(cast(death_dt as char(10)),'xx')"
         self.MultiIds(created_vars, sort_key)
 
         # Number of beneficiary with unique records in {self.tab_no}
