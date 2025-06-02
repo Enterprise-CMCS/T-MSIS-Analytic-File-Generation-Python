@@ -1687,8 +1687,13 @@ class TAF_Grouper:
             z += f"""
                 ,case when cmc_php =0  and
                 other_pmpm =0 and
-                (clm_type_cd in ('4','X','5','Y') and
-                    ever_dsh_xix_srvc_ctgry=1)
+                (
+                    (clm_type_cd in ('4','D','X','5','E','Y') and
+                    ever_dsh_tos=1)
+                    or
+                    (clm_type_cd in ('4','X','5','Y') and
+                        ever_dsh_xix_srvc_ctgry=1)
+                )
             """
 
             z += f"""
