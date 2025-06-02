@@ -1539,7 +1539,7 @@ class TAF_Grouper:
                         '0001B'
                         ,'0002B'
                         )
-                    AND MBESCBES_FRM_GRP = 1
+                    AND MBESCBES_FRM_GRP = '1'
                     THEN 1
                 ELSE 0
                 END) OVER (
