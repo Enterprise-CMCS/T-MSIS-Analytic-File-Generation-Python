@@ -42,7 +42,7 @@ class LT_Runner(TAF_Runner):
         from taf.LT.LTL import LTL
         from taf.LT.LT_DX import LT_DX
         
-        TMSIS_SCHEMA = "state_prod_catalog.tmsis"
+        TMSIS_SCHEMA = "tmsis"
 
         #number of DX codes to be backfilled to the Header file.
         NUMDX = 5
