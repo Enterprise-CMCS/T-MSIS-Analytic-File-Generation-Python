@@ -1148,6 +1148,8 @@ class TAF_Grouper:
                 ,tos_cd
                 ,xxi_srvc_ctgry_cd
                 ,bnft_type_cd
+                ,MBESCBES_FRM_GRP
+                ,MBESCBES_SRVC_CTGRY
         """
 
         if filetyp.casefold() != "rx":
@@ -1533,10 +1535,11 @@ class TAF_Grouper:
         z += f"""
             ) AS ever_dme_hhs_tos
         ,max(CASE
-                WHEN xix_srvc_ctgry_cd IN (
-                        '001B'
-                        ,'002B'
+                WHEN MBESCBES_SRVC_CTGRY IN (
+                        '0001B'
+                        ,'0002B'
                         )
+                    AND MBESCBES_FRM_GRP = 1
                     THEN 1
                 ELSE 0
                 END) OVER (
@@ -1684,26 +1687,11 @@ class TAF_Grouper:
             z += f"""
                 ,case when cmc_php =0  and
                 other_pmpm =0 and
-                ((clm_type_cd in ('4','D','X','5','E','Y') and
-                (srvc_trkng_type_cd in ('02') or
-                    ever_dsh_tos=1))
-                or
-
                 (clm_type_cd in ('4','X','5','Y') and
                     ever_dsh_xix_srvc_ctgry=1)
             """
 
-            if filetyp.casefold() == "ip":
-                z += f"""
-                    or
-                    (clm_type_cd in ('1') and
-                    (mdcd_dsh_pd_amt is not null or mdcd_dsh_pd_amt !=0 ) and
-                    ever_dsh_xix_srvc_ctgry=1
-                    )
-                """
-
             z += f"""
-                )
                 then 1 else 0 end as dsh_flag
             """
 
@@ -1722,6 +1710,8 @@ class TAF_Grouper:
                         ,l.xxi_srvc_ctgry_cd
                         ,l.bnft_type_cd
                         ,l.ever_icf_bnft_typ
+                        ,l.MBESCBES_FRM_GRP
+                        ,l.MBESCBES_SRVC_CTGRY
         """
 
         if filetyp.casefold() != "rx":
@@ -1772,7 +1762,7 @@ class TAF_Grouper:
 
         # cmc php and pmpm
         z += f"""
-                        ,case when (srvc_trkng_type_cd not in ('01') or srvc_trkng_type_cd is null) and
+                        ,case when
         """
 
         if filetyp.casefold() == "othr_toc":
@@ -1806,7 +1796,7 @@ class TAF_Grouper:
                                 then 1 else 0 end as cmc_php
 
 
-                            ,case when (srvc_trkng_type_cd not in ('01') or srvc_trkng_type_cd is null) and
+                            ,case when
         """
 
         if filetyp.casefold() == "othr_toc":
@@ -1979,6 +1969,7 @@ class TAF_Grouper:
                                             (prcdr_cd in ('T2025') and srvc_plc_cd in ('12') ) or
                                             (hcpcs_rate in ('T2025') and srvc_plc_cd in ('12') ) or
                                             bnft_type_cd in ('045') or
+                                            tos_cd in ('051','065') or
                                             hcbs_txnmy in {tuple(TAF_Metadata.vs_Othr_HCBS_Taxo)}
                                     )
                                     then 1 else 0 end as othr_hcbs_lne_clms
