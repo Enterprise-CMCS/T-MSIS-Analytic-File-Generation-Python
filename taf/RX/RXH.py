@@ -1,6 +1,7 @@
 from taf.RX.RX_Runner import RX_Runner
 from taf.RX.RX_Metadata import RX_Metadata
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class RXH:
@@ -65,8 +66,8 @@ class RXH:
                 , { TAF_Closure.fix_old_dates('BIRTH_DT') }
                 , { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2, lowerbound=1, upperbound=33) }
                 , { TAF_Closure.var_set_type1('WVR_ID') }
-                , { TAF_Closure.var_set_type2('srvc_trkng_type_cd', 2, cond1='00', cond2='01', cond3='02', cond4='03', cond5='04', cond6='05', cond7='06') }
-                , { TAF_Closure.var_set_type6('SRVC_TRKNG_PYMT_AMT', cond1='888888888.88') }
+                ,srvc_trkng_type_cd
+                ,SRVC_TRKNG_PYMT_AMT
                 , { TAF_Closure.var_set_type2('OTHR_INSRNC_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2('othr_tpl_clctn_cd', 3, cond1='000', cond2='001', cond3='002', cond4='003', cond5='004', cond6='005', cond7='006', cond8='007') }
                 , { TAF_Closure.var_set_type2('FIXD_PYMT_IND', 0, cond1='0', cond2='1') }
@@ -110,6 +111,15 @@ class RXH:
                 , TOT_BENE_COINSRNC_LBLE_AMT
                 , CMBND_BENE_CST_SHRNG_PD_AMT
                 , { TAF_Closure.var_set_type1('RX_ORGN_CD')}
+                ,LTC_RCP_LBLTY_AMT
+                ,case when upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0')) in {tuple(TAF_Metadata.PRVDR_CLM_FORM_CD_values)}
+                    then upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0'))
+                    else NULL end as PRVDR_CLM_FORM_CD
+                ,TOT_GME_PD_AMT
+                ,TOT_SDP_ALOWD_AMT
+                ,TOT_SDP_PD_AMT
+                ,DGNS_PRSNT
+                ,taf_classic_ind
             from (
                 select
                     *,
@@ -122,6 +132,22 @@ class RXH:
             """
 
         runner.append("RX", z)
+        
+        z = f"""
+            create or replace temporary view RXH_classic as
+                select *
+                from RXH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("RX", z)
+
+        z = f"""
+            create or replace temporary view RXH_denied as
+                select *
+                from RXH
+                where TAF_Classic_ind = 0
+        """
+        runner.append("RX", z)
 
     def build(self, runner: RX_Runner):
         """
@@ -133,20 +159,29 @@ class RXH:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_rxh
-                SELECT
-                    { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
-                FROM (
-                    SELECT h.*
-                        ,fasc.fed_srvc_ctgry_cd
-                    FROM RXH AS h
-                        LEFT JOIN RX_HDR_ROLLED AS fasc
-                            ON h.rx_link_key = fasc.rx_link_key
-                )
-        """
+        input_table = {
+            False:"RXH_classic",
+            True:"RXH_Denied"
+        }
+        output_table = {
+            False: "taf_rxh",
+            True:  "taf_rxh_d"}
 
-        runner.append(type(self).__name__, z)
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { RX_Metadata.finalFormatter(RX_Metadata.header_columns) }
+                    FROM (
+                        SELECT h.*
+                            ,fasc.fed_srvc_ctgry_cd
+                        FROM {input_table[denied_flag]} AS h
+                            LEFT JOIN RX_HDR_ROLLED AS fasc
+                                ON h.rx_link_key = fasc.rx_link_key
+                    )
+            """
+
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

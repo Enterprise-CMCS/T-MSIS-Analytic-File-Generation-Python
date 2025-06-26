@@ -48,8 +48,7 @@ class OTL:
                 , { TAF_Closure.fix_old_dates('PRCDR_CD_DT') }
                 , { TAF_Closure.var_set_proc('PRCDR_CD_IND', upper=True) }
                 , { TAF_Closure.var_set_type1('PRCDR_1_MDFR_CD', upper=True, lpad=2) }
-                , case when lpad(IMNZTN_TYPE_CD, 2, '0') = '88' then NULL
-                    else { TAF_Closure.var_set_type5('IMNZTN_type_cd', lpad=2, lowerbound=0, upperbound=29, multiple_condition='YES') }
+                , IMNZTN_type_cd
                 , { TAF_Closure.var_set_type6('BILL_AMT', cond1='888888888.88', cond2='9999999999.99', cond3='999999.99', cond4='999999') }
                 , { TAF_Closure.var_set_type6('ALOWD_AMT', cond1='99999999.00', cond2='888888888.88', cond3='9999999999.99') }
                 , { TAF_Closure.var_set_type6('BENE_COPMT_PD_AMT', cond1='88888888888.00', cond2='888888888.88') }
@@ -61,7 +60,7 @@ class OTL:
                 , { TAF_Closure.var_set_type6('SVC_QTY_ACTL', new ='SRVC_QTY_ACTL', cond1='999999.000', cond2='888888.000', cond3='999999.99') }
                 , { TAF_Closure.var_set_type6('SVC_QTY_ALOWD', new ='SRVC_QTY_ALOWD', cond1='999999.000', cond2='888888.000', cond3='888888.880', cond4='99999.999', cond5='99999') }
                 , { TAF_Closure.var_set_tos('TOS_CD') }
-                , { TAF_Closure.var_set_type5('BNFT_TYPE_CD', lpad=3, lowerbound='001', upperbound='108') }
+                ,BNFT_TYPE_CD
                 , { TAF_Closure.var_set_type2('HCBS_SRVC_CD', 0, cond1=1, cond2=2, cond3=3, cond4=4, cond5=5, cond6=6, cond7=7, upper=True) }
                 , { TAF_Closure.var_set_type1('HCBS_TXNMY', upper=True, lpad=5) }
                 , { TAF_Closure.var_set_type1('SRVCNG_PRVDR_NUM') }
@@ -74,11 +73,9 @@ class OTL:
                 , case when lpad(upper(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD), 2, '0') in ('20', '30', '40') then lpad(upper(TOOTH_ORAL_CVTY_AREA_DSGNTD_CD), 2, '0')
                     else { TAF_Closure.var_set_type5('TOOTH_ORAL_CVTY_AREA_DSGNTD_CD', lpad=2, lowerbound=0, upperbound=10, multiple_condition='YES', upper=True) }
                 , { TAF_Closure.var_set_type4('TOOTH_SRFC_CD', 'YES', cond1='B', cond2='D', cond3='F', cond4='I', cond5='L', cond6='M', cond7='O') }
-                , { TAF_Closure.var_set_type2('CMS_64_FED_REIMBRSMT_CTGRY_CD', 2, cond1='01', cond2='02', cond3='03', cond4='04') }
-                , case when XIX_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XIX_SRVC_CTGRY_CD_values) } then XIX_SRVC_CTGRY_CD
-                else NULL end as XIX_SRVC_CTGRY_CD
-                , case when XXI_SRVC_CTGRY_CD in { tuple(TAF_Metadata.XXI_SRVC_CTGRY_CD_values) } then XXI_SRVC_CTGRY_CD
-                    else NULL end as XXI_SRVC_CTGRY_CD
+                , { TAF_Closure.var_set_type2('FED_REIMBRSMT_CTGRY_CD', 2, cond1='01', cond2='02', cond3='03', cond4='04') }
+                ,XIX_SRVC_CTGRY_CD
+                ,XXI_SRVC_CTGRY_CD
                 , { TAF_Closure.var_set_type1('STATE_NOTN_TXT') }
                 , { TAF_Closure.var_set_fills('NDC_CD', cond1='0', cond2='8', cond3='9', cond4='#', spaces=True) }
                 , { TAF_Closure.var_set_type1('PRCDR_2_MDFR_CD', upper=True, lpad=2) }
@@ -95,6 +92,37 @@ class OTL:
                 , PRCDR_CCS_CTGRY_CD
                 , SRVCNG_PRVDR_NPPES_TXNMY_CD
                 , { TAF_Closure.var_set_type1('IHS_SVC_IND',upper=True) }
+                ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
+                ,nullif(trim(ORDRG_PRVDR_NPI_NUM),'') as ORDRG_PRVDR_NPI_NUM
+                ,case when (DGNS_CD_PNTR_1 >= 1 and DGNS_CD_PNTR_1 <= 12) then DGNS_CD_PNTR_1 else NULL end as DGNS_CD_PNTR_1
+                ,case when (DGNS_CD_PNTR_2 >= 1 and DGNS_CD_PNTR_2 <= 12) then DGNS_CD_PNTR_2 else NULL end as DGNS_CD_PNTR_2
+                ,case when (DGNS_CD_PNTR_3 >= 1 and DGNS_CD_PNTR_3 <= 12) then DGNS_CD_PNTR_3 else NULL end as DGNS_CD_PNTR_3
+                ,case when (DGNS_CD_PNTR_4 >= 1 and DGNS_CD_PNTR_4 <= 12) then DGNS_CD_PNTR_4 else NULL end as DGNS_CD_PNTR_4
+                ,GME_PD_AMT
+                , case when upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0')) in {tuple(TAF_Metadata.MBESCBES_SRVC_CTGRY_values)}
+                            then upper(lpad(trim(MBESCBES_SRVC_CTGRY),5,'0'))
+                            else NULL end as MBESCBES_SRVC_CTGRY
+                , case when replace(upper(trim(MBESCBES_FRM)),' ','') in {tuple(x.replace(" ","") for x in TAF_Metadata.MBESCBES_FRM_values)} then upper(trim(MBESCBES_FRM)) else NULL end as MBESCBES_FRM
+                , { TAF_Closure.var_set_type2('MBESCBES_FRM_GRP', 0, cond1='1', cond2='2', cond3='3') }
+                , case when (SRVC_PLC_CD_L is not NULL and ((length(lpad(SRVC_PLC_CD_L,2, '0')) - coalesce(length(regexp_replace(lpad(SRVC_PLC_CD_L,2, '0'), '[0-9]{2}', '')), 0))) > 0) then
+                    case when (cast(SRVC_PLC_CD_L as int) >= 1 and cast(SRVC_PLC_CD_L as int) <= 99) then lpad(SRVC_PLC_CD_L, 2, '0')
+                        else NULL end
+                    else NULL end
+                    as SRVC_PLC_CD_L
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_L')}
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_2_L')}
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_L')}
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_2_L')}
+                , SDP_ALOWD_AMT
+                , SDP_PD_AMT
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ORG_NPI_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_1_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_2_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_CITY_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_STATE_L')}
+                , {TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ZIP_L')}
+                , {TAF_Closure.var_set_type1('UNIQ_DVC_ID')}
+                , taf_classic_ind
             from (
                 select
                     *,
@@ -108,21 +136,44 @@ class OTL:
 
         runner.append("OTHR_TOC", z)
 
-    def build(self, runner: OT_Runner):
+        z = f"""create or replace temporary view OTL_classic as 
+                select * 
+                from OTL
+                where TAF_Classic_ind = 1
+        """
+        runner.append("OTHR_TOC", z)
+        
+        z = f"""create or replace temporary view OTL_denied as 
+                select * 
+                from OTL
+                where TAF_Classic_ind = 0
+        """
+        runner.append("OTHR_TOC", z)
+
+    def build(self, runner: OT_Runner, denied_flag):
         """
         Build the OT claim-line level segment.
         """
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
+
+        input_table = {
+            False:"OTL_classic",
+            True:"OTL_Denied"
+        }
+        output_table = {
+            False: "taf_otl",
+            True:  "taf_otl_d"}
+
         if runner.run_stats_only:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_otl
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.line_columns) }
-                FROM OTL
+                FROM {input_table[denied_flag]}
         """
 
         runner.append(type(self).__name__, z)

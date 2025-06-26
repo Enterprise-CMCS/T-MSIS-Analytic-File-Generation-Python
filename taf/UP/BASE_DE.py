@@ -43,7 +43,7 @@ class BASE_DE(UP):
                 SELECT a.submtg_state_cd
                 ,msis_ident_num
                 ,age_num
-                ,gndr_cd
+                ,sex_cd
                 ,race_ethncty_exp_flag
                 ,dual_elgbl_cd_ltst
                 ,chip_cd_ltst

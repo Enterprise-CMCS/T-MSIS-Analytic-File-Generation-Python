@@ -57,7 +57,7 @@ class BASE_DELIV(UP):
         self.up.append(type(self).__name__, z)
 
         # Now join IP and OT bene-level files together and create delivery indicator based on any maternal and/or newborn claim.
-        # When we join all bene-level tables together, will need to reset to '0' for any bene with gndr_cd != F or age_num < 10
+        # When we join all bene-level tables together, will need to reset to '0' for any bene with sex_cd != F or age_num < 10
 
         # distkey(msis_ident_num)
         # sortkey(submtg_state_cd,msis_ident_num)

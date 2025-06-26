@@ -1,6 +1,7 @@
 from taf.IP.IP_Runner import IP_Runner
 from taf.IP.IP_Metadata import IP_Metadata
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class IPH:
@@ -77,8 +78,8 @@ class IPH:
                     else { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2, lowerbound=1, upperbound=33, multiple_condition='YES') }
 
                 , { TAF_Closure.var_set_type1('WVR_ID') }
-                , { TAF_Closure.var_set_type2('srvc_trkng_type_cd', 2, cond1='00', cond2='01', cond3='02', cond4='03', cond5='04', cond6='05', cond7='06') }
-                , { TAF_Closure.var_set_type6('SRVC_TRKNG_PYMT_AMT', cond1='888888888.88') }
+                ,srvc_trkng_type_cd
+                ,SRVC_TRKNG_PYMT_AMT
                 , { TAF_Closure.var_set_type2('OTHR_INSRNC_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2('othr_tpl_clctn_cd', 3, cond1='000', cond2='001', cond3='002', cond4='003', cond5='004', cond6='005', cond7='006', cond8='007') }
                 , { TAF_Closure.var_set_type2('FIXD_PYMT_IND', 0, cond1='0', cond2='1') }
@@ -174,8 +175,8 @@ class IPH:
                 , { TAF_Closure.var_set_taxo('BLG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 , { TAF_Closure.var_set_prtype('blg_prvdr_type_cd') }
                 , { TAF_Closure.var_set_spclty('BLG_PRVDR_SPCLTY_CD') }
-                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM') }
-                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM') }
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_H') }
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_H') }
                 ,rfrg_prvdr_type_cd
                 ,RFRG_PRVDR_SPCLTY_CD
 
@@ -268,6 +269,27 @@ class IPH:
                     when (SRVC_ENDG_DT < '1600-01-01') then '1599-12-31'
                     else nullif(SRVC_ENDG_DT, '1960-01-01')
                     end as SRVC_ENDG_DT
+                    
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ORG_NPI')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_1')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_2')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_CITY')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_STATE')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ZIP')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_1')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_2')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_CITY')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_STATE')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ZIP')}
+                ,LTC_RCP_LBLTY_AMT
+                ,case when upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0')) in {tuple(TAF_Metadata.PRVDR_CLM_FORM_CD_values)}
+                    then upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0'))
+                    else NULL end as PRVDR_CLM_FORM_CD
+                ,TOT_GME_PD_AMT
+                ,TOT_SDP_ALOWD_AMT
+                ,TOT_SDP_PD_AMT
+                ,ADDTNL_DGNS_PRSNT
+                ,taf_classic_ind
             FROM (
                 select
                     *,
@@ -277,6 +299,22 @@ class IPH:
                 from
                     IP_HEADER_GROUPER
                 ) H
+        """
+        runner.append("IP", z)
+        
+        z = f"""
+            create or replace temporary view IPH_classic as
+                select *
+                from IPH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("IP", z)
+
+        z = f"""
+            create or replace temporary view IPH_denied as
+                select *
+                from IPH
+                where TAF_Classic_ind = 0
         """
         runner.append("IP", z)
 
@@ -290,19 +328,28 @@ class IPH:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_iph
-                SELECT
-                    { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
-                FROM (
-                    SELECT h.*
-                        ,fasc.fed_srvc_ctgry_cd
-                    FROM IPH AS h
-                        LEFT JOIN IP_HDR_ROLLED AS fasc
-                            ON h.ip_link_key = fasc.ip_link_key
-                )
-        """
-        runner.append(type(self).__name__, z)
+        input_table = {
+            False:"IPH_classic",
+            True:"IPH_Denied"
+        }
+        output_table = {
+            False: "taf_iph",
+            True:  "taf_iph_d"}
+
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { IP_Metadata.finalFormatter(IP_Metadata.header_columns) }
+                    FROM (
+                        SELECT h.*
+                            ,fasc.fed_srvc_ctgry_cd
+                        FROM {input_table[denied_flag]} AS h
+                            LEFT JOIN IP_HDR_ROLLED AS fasc
+                                ON h.ip_link_key = fasc.ip_link_key
+                    )
+            """
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

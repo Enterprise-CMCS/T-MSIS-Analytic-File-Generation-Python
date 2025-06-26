@@ -174,7 +174,13 @@ class PRV(TAF):
                          and T.tms_reporting_period >= to_date('{self.prv.st_dt}')
                      )
                      or (upper(coalesce(s.submsn_type, 'X')) = 'CSO')
-                 ))
+                 )
+                 
+                 and (
+                         T.submitting_state_prov_id is not null
+                         and T.submitting_state_prov_id != ''
+                     )
+                )
 
             order by { self.write_keyprefix(keyvars, 'T') }
             """

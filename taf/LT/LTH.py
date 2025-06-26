@@ -1,6 +1,7 @@
 from taf.LT.LT_Runner import LT_Runner
 from taf.LT.LT_Metadata import LT_Metadata
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class LTH:
@@ -66,8 +67,8 @@ class LTH:
                 , case when lpad(wvr_type_cd, 2, '0') = '88' then NULL
                    else { TAF_Closure.var_set_type5(var='wvr_type_cd', lpad=2, lowerbound='1', upperbound='33', multiple_condition='YES') }
                 , { TAF_Closure.var_set_type1(var='WVR_ID') }
-                , { TAF_Closure.var_set_type2(var='SRVC_TRKNG_TYPE_CD', lpad=2, cond1='00', cond2='01', cond3='02', cond4='03', cond5='04', cond6='05', cond7='06') }
-                , { TAF_Closure.var_set_type6('SRVC_TRKNG_PYMT_AMT', cond1='888888888.88') }
+                ,SRVC_TRKNG_TYPE_CD
+                ,SRVC_TRKNG_PYMT_AMT
                 , { TAF_Closure.var_set_type2(var='OTHR_INSRNC_IND', lpad=0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2(var='OTHR_TPL_CLCTN_CD', lpad=3, cond1='000', cond2='001', cond3='002', cond4='003', cond5='004', cond6='005', cond7='006', cond8='007') }
                 , { TAF_Closure.var_set_type2('FIXD_PYMT_IND', 0, cond1='0', cond2='1') }
@@ -113,12 +114,12 @@ class LTH:
                 , { TAF_Closure.var_set_taxo('BLG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 , { TAF_Closure.var_set_prtype(var='BLG_PRVDR_TYPE_CD') }
                 , { TAF_Closure.var_set_spclty(var='BLG_PRVDR_SPCLTY_CD') }
-                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NUM') }
-                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NPI_NUM') }
+                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NUM_H') }
+                , { TAF_Closure.var_set_type1(var='RFRG_PRVDR_NPI_NUM_H') }
                 ,RFRG_PRVDR_TYPE_CD
                 ,RFRG_PRVDR_SPCLTY_CD
                 , { TAF_Closure.var_set_type1(var='PRVDR_LCTN_ID') }
-                , { TAF_Closure.var_set_type6('DAILY_RATE', cond1='88888.80', cond2='88888.00', cond3='88888.88') }
+                ,DAILY_RATE
                 , { TAF_Closure.var_set_type2(var='PYMT_LVL_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
                 , { TAF_Closure.var_set_type6('LTC_RCP_LBLTY_AMT', cond1='9999999999.99', cond2='888888888.88') }
                 , { TAF_Closure.var_set_type6('MDCR_PD_AMT', cond1='9999999999.99', cond2='888888888.88', cond3='88888888888.00', cond4='88888888888.88', cond5='8888888.88', cond6='99999999999.00') }
@@ -192,6 +193,25 @@ class LTH:
                 ,TOT_BENE_COPMT_LBLE_AMT
                 ,TOT_BENE_COINSRNC_LBLE_AMT
                 ,CMBND_BENE_CST_SHRNG_PD_AMT
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ORG_NPI')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_1')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_2')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_CITY')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_STATE')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ZIP')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_1')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_2')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_CITY')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_STATE')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ZIP')}
+                ,case when upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0')) in {tuple(TAF_Metadata.PRVDR_CLM_FORM_CD_values)}
+                    then upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0'))
+                    else NULL end as PRVDR_CLM_FORM_CD
+                ,TOT_GME_PD_AMT
+                ,TOT_SDP_ALOWD_AMT
+                ,TOT_SDP_PD_AMT
+                ,ADDTNL_DGNS_PRSNT
+                ,taf_classic_ind
             FROM (
                 select
                     *,
@@ -204,6 +224,22 @@ class LTH:
             """
 
         runner.append("LT", z)
+        
+        z = f"""
+            create or replace temporary view LTH_classic as
+                select *
+                from LTH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("LT", z)
+
+        z = f"""
+            create or replace temporary view LTH_denied as
+                select *
+                from LTH
+                where TAF_Classic_ind = 0
+        """
+        runner.append("LT", z)        
 
     def build(self, runner: LT_Runner):
         """
@@ -215,20 +251,29 @@ class LTH:
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
-        z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_lth
-                SELECT
-                    { LT_Metadata.finalFormatter(LT_Metadata.header_columns) }
-                FROM (
-                    SELECT h.*
-                        ,fasc.fed_srvc_ctgry_cd
-                    FROM LTH AS h
-                        LEFT JOIN LT_HDR_ROLLED AS fasc
-                            ON h.lt_link_key = fasc.lt_link_key
-                )
-        """
+        input_table = {
+            False:"LTH_classic",
+            True:"LTH_Denied"
+        }
+        output_table = {
+            False: "taf_lth",
+            True:  "taf_lth_d"}
 
-        runner.append(type(self).__name__, z)
+        for denied_flag in [False,True]:
+            z = f"""
+                    INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
+                    SELECT
+                        { LT_Metadata.finalFormatter(LT_Metadata.header_columns) }
+                    FROM (
+                        SELECT h.*
+                            ,fasc.fed_srvc_ctgry_cd
+                        FROM {input_table[denied_flag]} AS h
+                            LEFT JOIN LT_HDR_ROLLED AS fasc
+                                ON h.lt_link_key = fasc.lt_link_key
+                    )
+            """
+
+            runner.append(type(self).__name__, z)
 
 
 # -----------------------------------------------------------------------------

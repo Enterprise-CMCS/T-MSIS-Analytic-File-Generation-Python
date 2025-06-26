@@ -5,6 +5,7 @@ import re
 from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
+from taf import __version__
 
 
 class TAF_Runner():
@@ -344,14 +345,14 @@ class TAF_Runner():
                 ,lower("{file_type}")
                 ,1
                 ,"{parms}"
-                ,concat("{self.ITERATION}", ",", "7.1")
+                ,concat("{self.ITERATION}", ",", "{__version__}")
                 ,NULL
                 ,NULL
                 ,False
                 ,from_utc_timestamp(current_timestamp(), "EST")
                 ,NULL
                 ,False
-                ,concat("{self.ITERATION}", ",", "7.1")
+                ,concat("{self.ITERATION}", ",", "{__version__}")
                 )
             """
             self.logger.debug(insert_query)
@@ -828,13 +829,13 @@ class TAF_Runner():
         from pyspark.sql import SparkSession
         spark = SparkSession.getActiveSession()
 
-        df = pd.DataFrame(BSF_Metadata.prmry_lang_cd, columns=['LANG_CD'])
+        df = pd.DataFrame(BSF_Metadata.prefrd_lang_cd, columns=['LANG_CD'])
         schema = StructType([StructField("LANG_CD", StringType(), True)])
 
-        self.logger.info('Creating Primary Language Code Table...')
+        self.logger.info('Creating Preferred Language Code Table...')
 
         sdf = spark.createDataFrame(data=df, schema=schema)
-        sdf.registerTempTable('prmry_lang_cd')
+        sdf.registerTempTable('prefrd_lang_cd')
 
         # Run CCS parsing during each run
         # the ccs_sp_mapping_input table contains rolled up ccs codes
@@ -912,11 +913,11 @@ class TAF_Runner():
 
         if spark:
 
-            df = pd.DataFrame(BSF_Metadata.prmry_lang_cd, columns=['LANG_CD'])
+            df = pd.DataFrame(BSF_Metadata.prefrd_lang_cd, columns=['LANG_CD'])
             schema = StructType([StructField("LANG_CD", StringType(), True)])
 
             sdf = spark.createDataFrame(data=df, schema=schema)
-            sdf.registerTempTable('prmry_lang_cd')
+            sdf.registerTempTable('prefrd_lang_cd')
 
             self.logger.info('Auditing  "0.1. create_initial_table" - "distinct msis_ident_num" ...')
 

@@ -54,6 +54,19 @@ class LT_Metadata:
                             + f" as {LT_Metadata.line_renames.get(item).lower()}"
                         )
 
+            # qualify dx columns
+            if segment_id.casefold() == "clt00004":
+                if item in LT_Metadata.dx_renames.keys():
+                    if item in LT_Metadata.upper:
+                        columns[i] = (
+                            "upper(" + columns[i].lower().split(" as ")[0]
+                            + f") as {LT_Metadata.dx_renames.get(item).lower()}"
+                        )
+                    else:
+                        columns[i] = (
+                            columns[i].lower().split(" as ")[0]
+                            + f" as {LT_Metadata.dx_renames.get(item).lower()}"
+                        )
         return new_line_comma.join(columns)
 
     def finalFormatter(output_columns):
@@ -71,20 +84,21 @@ class LT_Metadata:
         "ADJDCTN_DT": TAF_Closure.coalesce_date,
         "ADJSTMT_CLM_NUM": TAF_Closure.coalesce_tilda,
         "ORGNL_CLM_NUM": TAF_Closure.coalesce_tilda,
-        "ADMTG_DGNS_CD": TAF_Closure.compress_dots,
-        "DGNS_1_CD": TAF_Closure.compress_dots,
-        "DGNS_2_CD": TAF_Closure.compress_dots,
-        "DGNS_3_CD": TAF_Closure.compress_dots,
-        "DGNS_4_CD": TAF_Closure.compress_dots,
-        "DGNS_5_CD": TAF_Closure.compress_dots,
-        "XIX_SRVC_CTGRY_CD": TAF_Closure.cleanXIX_SRVC_CTGRY_CD,
-        "XXI_SRVC_CTGRY_CD": TAF_Closure.cleanXXI_SRVC_CTGRY_CD,
         "ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "LINE_ADJSTMT_IND": TAF_Closure.cleanADJSTMT_IND,
         "COPAY_WVD_IND":TAF_Closure.set_as_null,
         "RFRG_PRVDR_TYPE_CD":TAF_Closure.set_as_null,
         "RFRG_PRVDR_SPCLTY_CD":TAF_Closure.set_as_null,
-        "SRVCNG_PRVDR_TXNMY_CD": TAF_Closure.set_as_null
+        "SRVCNG_PRVDR_TXNMY_CD": TAF_Closure.set_as_null,
+        "BNFT_TYPE_CD":TAF_Closure.set_as_null,
+        "DAILY_RATE":TAF_Closure.set_as_null,
+        "HCPCS_RATE":TAF_Closure.set_as_null,
+        "IMNZTN_TYPE_CD":TAF_Closure.set_as_null,
+        "SRVC_TRKNG_PYMT_AMT":TAF_Closure.set_as_null,
+        "SRVC_TRKNG_TYPE_CD":TAF_Closure.set_as_null,
+        "XIX_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "XXI_SRVC_CTGRY_CD":TAF_Closure.set_as_null,
+        "DGNS_CD":TAF_Closure.compress_dots
     }
 
     validator = {}
@@ -113,8 +127,6 @@ class LT_Metadata:
             "ADJSTMT_RSN_CD",
             "ADMSN_DT",
             "ADMSN_HR_NUM",
-            "ADMTG_DGNS_CD",
-            "ADMTG_DGNS_CD_IND",
             "ADMTG_PRVDR_NPI_NUM",
             "ADMTG_PRVDR_NUM",
             "ADMTG_PRVDR_SPCLTY_CD",
@@ -147,21 +159,6 @@ class LT_Metadata:
             "XOVR_IND",
             "DAILY_RATE",
             "BIRTH_DT",
-            "DGNS_1_CD",
-            "DGNS_2_CD",
-            "DGNS_3_CD",
-            "DGNS_4_CD",
-            "DGNS_5_CD",
-            "DGNS_1_CD_IND",
-            "DGNS_2_CD_IND",
-            "DGNS_3_CD_IND",
-            "DGNS_4_CD_IND",
-            "DGNS_5_CD_IND",
-            "DGNS_POA_1_CD_IND",
-            "DGNS_POA_2_CD_IND",
-            "DGNS_POA_3_CD_IND",
-            "DGNS_POA_4_CD_IND",
-            "DGNS_POA_5_CD_IND",
             "DSCHRG_DT",
             "DSCHRG_HR_NUM",
             "ELGBL_1ST_NAME",
@@ -264,7 +261,22 @@ class LT_Metadata:
             "TOT_BENE_DDCTBL_LBLE_AMT",
             "TOT_BENE_COPMT_LBLE_AMT",
             "TOT_BENE_COINSRNC_LBLE_AMT",
-            "CMBND_BENE_CST_SHRNG_PD_AMT"
+            "CMBND_BENE_CST_SHRNG_PD_AMT",
+            "SRVC_FAC_LCTN_ORGNTN_NPI_NUM",
+            "SRVC_FAC_LCTN_LINE_1_ADR",
+            "SRVC_FAC_LCTN_LINE_2_ADR",
+            "SRVC_FAC_LCTN_CITY_NAME",
+            "SRVC_FAC_LCTN_STATE",
+            "SRVC_FAC_LCTN_ZIP_CD",
+            "BLG_PRVDR_LINE_1_ADR",
+            "BLG_PRVDR_LINE_2_ADR",
+            "BLG_PRVDR_CITY_NAME",
+            "BLG_PRVDR_STATE_CD",
+            "BLG_PRVDR_ZIP_CD",
+            "PRVDR_CLM_FORM_CD",
+            "TOT_GME_PD_AMT",
+            "TOT_SDP_ALOWD_AMT",
+            "TOT_SDP_PD_AMT",
         ],
         "CLT00003": [
             "TMSIS_RUN_ID",
@@ -285,7 +297,7 @@ class LT_Metadata:
             "BNFT_TYPE_CD",
             "BLG_UNIT_CD",
             "CLL_STUS_CD",
-            "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+            "FED_REIMBRSMT_CTGRY_CD",
             "SRVC_ENDG_DT",
             "HCPCS_RATE",
             "ADJSTMT_CLM_NUM",
@@ -323,7 +335,29 @@ class LT_Metadata:
             "STC_CD",
             "XIX_SRVC_CTGRY_CD",
             "XXI_SRVC_CTGRY_CD",
-            "IHS_SVC_IND"
+            "IHS_SVC_IND",
+            "GME_PD_AMT",
+            "MBESCBES_SRVC_CTGRY_CD",
+            "MBESCBES_FORM",
+            "MBESCBES_FORM_GRP",
+            "RFRG_PRVDR_NPI_NUM",
+            "RFRG_PRVDR_NUM",
+            "SDP_ALOWD_AMT",
+            "SDP_PD_AMT",
+            "UNIQ_DVC_ID"
+        ],
+        "CLT00004": [
+            "TMSIS_RUN_ID",
+            "SUBMTG_STATE_CD",
+            "ORGNL_CLM_NUM",
+            "ADJSTMT_CLM_NUM",
+            "ADJSTMT_IND",
+            "ADJDCTN_DT",
+            "DGNS_TYPE_CD",
+            "DGNS_SQNC_NUM",
+            "DGNS_CD_IND",
+            "DGNS_CD",
+            "DGNS_POA_CD_IND"
         ],
     }
 
@@ -364,7 +398,21 @@ class LT_Metadata:
         "DGNS_9_CD",
     }
 
-    header_renames = {"PLAN_ID_NUM": "MC_PLAN_ID"}
+    header_renames = {
+        "PLAN_ID_NUM": "MC_PLAN_ID",
+        "SRVC_FAC_LCTN_ORGNTN_NPI_NUM":"SRVC_FAC_LCTN_ORG_NPI",
+        "SRVC_FAC_LCTN_LINE_1_ADR":"SRVC_FAC_LCTN_ADR_LINE_1",
+        "SRVC_FAC_LCTN_LINE_2_ADR":"SRVC_FAC_LCTN_ADR_LINE_2",
+        "SRVC_FAC_LCTN_CITY_NAME":"SRVC_FAC_LCTN_CITY",
+        "SRVC_FAC_LCTN_ZIP_CD":"SRVC_FAC_LCTN_ZIP",
+        "BLG_PRVDR_LINE_1_ADR":"BLG_PRVDR_ADR_LINE_1",
+        "BLG_PRVDR_LINE_2_ADR":"BLG_PRVDR_ADR_LINE_2",
+        "BLG_PRVDR_CITY_NAME":"BLG_PRVDR_CITY",
+        "BLG_PRVDR_STATE_CD":"BLG_PRVDR_STATE",
+        "BLG_PRVDR_ZIP_CD":"BLG_PRVDR_ZIP",
+        "RFRG_PRVDR_NPI_NUM":"RFRG_PRVDR_NPI_NUM_H",
+        "RFRG_PRVDR_NUM":"RFRG_PRVDR_NUM_H"
+    }
 
     line_renames = {
         "SUBMTG_STATE_CD": "SUBMTG_STATE_CD_LINE",
@@ -377,17 +425,21 @@ class LT_Metadata:
         "STC_CD": "TOS_CD",
         "PRSCRBNG_PRVDR_NPI_NUM": "SRVCNG_PRVDR_NPI_NUM",
         "NDC_UOM_CD": "UOM_CD",
+        "MBESCBES_SRVC_CTGRY_CD":"MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FORM":"MBESCBES_FRM",
+        "MBESCBES_FORM_GRP":"MBESCBES_FRM_GRP",
+        "RFRG_PRVDR_NPI_NUM":"RFRG_PRVDR_NPI_NUM_L",
+        "RFRG_PRVDR_NUM":"RFRG_PRVDR_NUM_L"
     }
 
+    dx_renames = {"DGNS_POA_CD_IND":"DGNS_POA_IND"}
+    
     upper = [
         "ADJSTMT_LINE_NUM",
         "ADJSTMT_LINE_RSN_CD",
         "BLG_UNIT_CD",
-        "BNFT_TYPE_CD",
         "CLL_STUS_CD",
-        "CMS_64_FED_REIMBRSMT_CTGRY_CD",
-        "HCPCS_RATE",
-        "IMNZTN_TYPE_CD",
+        "FED_REIMBRSMT_CTGRY_CD",
         "MSIS_IDENT_NUM",
         "NDC_CD",
         "NDC_UOM_CD",
@@ -407,7 +459,6 @@ class LT_Metadata:
         "SUBMTG_STATE_CD",
         "ADJSTMT_RSN_CD",
         "ADMSN_HR_NUM",
-        "ADMTG_DGNS_CD_IND",
         "ADMTG_PRVDR_NPI_NUM",
         "ADMTG_PRVDR_NUM",
         "ADMTG_PRVDR_SPCLTY_CD",
@@ -429,17 +480,6 @@ class LT_Metadata:
         "CLM_STUS_CD",
         "CLM_STUS_CTGRY_CD",
         "CLM_TYPE_CD",
-
-        "DGNS_1_CD_IND",
-        "DGNS_2_CD_IND",
-        "DGNS_3_CD_IND",
-        "DGNS_4_CD_IND",
-        "DGNS_5_CD_IND",
-        "DGNS_POA_1_CD_IND",
-        "DGNS_POA_2_CD_IND",
-        "DGNS_POA_3_CD_IND",
-        "DGNS_POA_4_CD_IND",
-        "DGNS_POA_5_CD_IND",
         "DSCHRG_HR_NUM",
         "ELGBL_1ST_NAME",
         "ELGBL_LAST_NAME",
@@ -452,8 +492,6 @@ class LT_Metadata:
         "HH_PRVDR_IND",
         "HH_PRVDR_NPI_NUM",
         "HLTH_CARE_ACQRD_COND_CD",
-        "XIX_SRVC_CTGRY_CD",
-        "XXI_SRVC_CTGRY_CD",
         "MDCR_BENE_ID",
         "MDCR_CMBND_DDCTBL_IND",
         "MDCR_HICN_NUM",
@@ -486,13 +524,28 @@ class LT_Metadata:
         "SECT_1115A_DEMO_IND",
         "SPLIT_CLM_IND",
         "SRC_LCTN_CD",
-        "SRVC_TRKNG_TYPE_CD",
         "STATE_NOTN_TXT",
         "TMSIS_FIL_NAME",
         "WVR_ID",
         "WVR_TYPE_CD",
         "XOVR_IND",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "DGNS_TYPE_CD",
+        "DGNS_CD_IND",
+		"DGNS_POA_CD_IND",
+        "SRVC_FAC_LCTN_LINE_1_ADR",
+        "SRVC_FAC_LCTN_LINE_2_ADR",
+        "SRVC_FAC_LCTN_CITY_NAME",
+        "SRVC_FAC_LCTN_STATE",
+        "SRVC_FAC_LCTN_ZIP_CD",
+        "BLG_PRVDR_LINE_1_ADR",
+        "BLG_PRVDR_LINE_2_ADR",
+        "BLG_PRVDR_CITY_NAME",
+        "BLG_PRVDR_STATE_CD_CD",
+        "MBESCBES_SRVC_CTGRY_CD",
+        "MBESCBES_FORM",
+        "MBESCBES_FORM_GRP",
+        "UNIQ_DVC_ID"
     ]
 
     renames = {}
@@ -581,12 +634,12 @@ class LT_Metadata:
         "BLG_PRVDR_TXNMY_CD",
         "BLG_PRVDR_TYPE_CD",
         "BLG_PRVDR_SPCLTY_CD",
-        "RFRG_PRVDR_NUM",
-        "RFRG_PRVDR_NPI_NUM",
+        "RFRG_PRVDR_NUM_H",
+        "RFRG_PRVDR_NPI_NUM_H",
         "RFRG_PRVDR_TYPE_CD",
         "RFRG_PRVDR_SPCLTY_CD",
         "PRVDR_LCTN_ID",
-        "cast(DAILY_RATE as numeric(13,2)) as DAILY_RATE",
+        "DAILY_RATE",
         "PYMT_LVL_IND",
         "LTC_RCP_LBLTY_AMT",
         "MDCR_PD_AMT",
@@ -657,7 +710,23 @@ class LT_Metadata:
         "TOT_BENE_DDCTBL_LBLE_AMT",
         "TOT_BENE_COPMT_LBLE_AMT",
         "TOT_BENE_COINSRNC_LBLE_AMT",
-        "CMBND_BENE_CST_SHRNG_PD_AMT"
+        "CMBND_BENE_CST_SHRNG_PD_AMT",
+        "SRVC_FAC_LCTN_ORG_NPI",
+        "SRVC_FAC_LCTN_ADR_LINE_1",
+        "SRVC_FAC_LCTN_ADR_LINE_2",
+        "SRVC_FAC_LCTN_CITY",
+        "SRVC_FAC_LCTN_STATE",
+        "SRVC_FAC_LCTN_ZIP",
+        "BLG_PRVDR_ADR_LINE_1",
+        "BLG_PRVDR_ADR_LINE_2",
+        "BLG_PRVDR_CITY",
+        "BLG_PRVDR_STATE",
+        "BLG_PRVDR_ZIP",
+        "PRVDR_CLM_FORM_CD",
+        "TOT_GME_PD_AMT",
+        "TOT_SDP_ALOWD_AMT",
+        "TOT_SDP_PD_AMT",
+        "ADDTNL_DGNS_PRSNT"
     ]
 
     # ---------------------------------------------------------------------------------
@@ -682,7 +751,7 @@ class LT_Metadata:
         "LINE_ADJSTMT_IND",
         "TOS_CD",
         "IMNZTN_TYPE_CD",
-        "CMS_64_FED_REIMBRSMT_CTGRY_CD",
+        "FED_REIMBRSMT_CTGRY_CD",
         "XIX_SRVC_CTGRY_CD",
         "XXI_SRVC_CTGRY_CD",
         "CLL_STUS_CD",
@@ -712,9 +781,38 @@ class LT_Metadata:
         "REC_ADD_TS",
         "REC_UPDT_TS",
         "LINE_NUM",
-        "IHS_SVC_IND"
+        "IHS_SVC_IND",
+        "GME_PD_AMT",
+        "MBESCBES_SRVC_CTGRY",
+        "MBESCBES_FRM",
+        "MBESCBES_FRM_GRP",
+        "RFRG_PRVDR_NPI_NUM_L",
+        "RFRG_PRVDR_NUM_L",
+        "SDP_ALOWD_AMT",
+        "SDP_PD_AMT",
+        "UNIQ_DVC_ID"
     ]
 
+    dx_columns = [
+        "DA_RUN_ID",
+        "LT_LINK_KEY",
+        "LT_VRSN",
+        "LT_FIL_DT",
+        "TMSIS_RUN_ID",
+        "MSIS_IDENT_NUM",
+        "SUBMTG_STATE_CD",
+        "ORGNL_CLM_NUM",
+        "ADJSTMT_CLM_NUM",
+        "ADJSTMT_IND",
+        "ADJDCTN_DT",
+        "DGNS_TYPE_CD",
+        "DGNS_SQNC_NUM",
+        "DGNS_CD_IND",
+        "DGNS_CD",
+        "DGNS_POA_IND",
+        "REC_ADD_TS",
+        "REC_UPDT_TS"
+    ]
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

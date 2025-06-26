@@ -1,6 +1,7 @@
 from taf.OT.OT_Runner import OT_Runner
 from taf.OT.OT_Metadata import OT_Metadata
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class OTH:
@@ -69,8 +70,8 @@ class OTH:
                 , case when lpad(wvr_type_cd, 2, '0') = '88' then NULL else { TAF_Closure.var_set_type5('wvr_type_cd', lpad=2,lowerbound=1,upperbound=33,multiple_condition='YES') }
 
                 , { TAF_Closure.var_set_type1('WVR_ID') }
-                , { TAF_Closure.var_set_type2('srvc_trkng_type_cd', 2, cond1='00', cond2='01', cond3='02', cond4='03', cond5='04', cond6='05', cond7='06') }
-                , { TAF_Closure.var_set_type6('SRVC_TRKNG_PYMT_AMT', cond1='888888888.88') }
+                ,srvc_trkng_type_cd
+                ,SRVC_TRKNG_PYMT_AMT
                 , { TAF_Closure.var_set_type2('OTHR_INSRNC_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type2('othr_tpl_clctn_cd', 3, cond1='000', cond2='001', cond3='002', cond4='003', cond5='004', cond6='005', cond7='006', cond8='007') }
                 , { TAF_Closure.var_set_type2('FIXD_PYMT_IND', 0, cond1='0', cond2='1') }
@@ -83,10 +84,10 @@ class OTH:
                 , { TAF_Closure.var_set_type2('HLTH_CARE_ACQRD_COND_CD', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_fills('DGNS_1_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.var_set_type2('DGNS_1_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
-                , { TAF_Closure.var_set_poa('DGNS_POA_1_CD_IND') }
+                , DGNS_POA_1_CD_IND
                 , { TAF_Closure.var_set_fills('DGNS_2_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
                 , { TAF_Closure.var_set_type2('DGNS_2_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
-                , { TAF_Closure.var_set_poa('DGNS_POA_2_CD_IND') }
+                , DGNS_POA_2_CD_IND
                 , { TAF_Closure.var_set_type1('SRVC_PLC_CD', upper=True, lpad=2) }
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }
                 , { TAF_Closure.var_set_type1('BLG_PRVDR_NUM') }
@@ -94,14 +95,14 @@ class OTH:
                 , { TAF_Closure.var_set_taxo('BLG_PRVDR_TXNMY_CD', cond1='8888888888', cond2='9999999999', cond3='000000000X', cond4='999999999X', cond5='NONE', cond6='XXXXXXXXXX', cond7='NO TAXONOMY') }
                 , { TAF_Closure.var_set_prtype('blg_prvdr_type_cd') }
                 , { TAF_Closure.var_set_spclty('BLG_PRVDR_SPCLTY_CD') }
-                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM') }
-                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM') }
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_H') }
+                , { TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_H') }
                 ,RFRG_PRVDR_TXNMY_CD
                 ,RFRG_PRVDR_TYPE_CD
                 ,RFRG_PRVDR_SPCLTY_CD
                 ,PRVDR_UNDER_DRCTN_NPI_NUM
                 ,PRVDR_UNDER_DRCTN_TXNMY_CD
-                , { TAF_Closure.var_set_type1('PRVDR_UNDER_SPRVSN_NPI_NUM', upper=True) }
+                ,PRVDR_UNDER_SPRVSN_NPI_NUM
                 ,PRVDR_UNDER_SPRVSN_TXNMY_CD
                 , { TAF_Closure.var_set_type2('HH_PRVDR_IND', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_type1('HH_PRVDR_NPI_NUM') }
@@ -183,8 +184,28 @@ class OTH:
                 ,TOT_BENE_COPMT_LBLE_AMT
                 ,TOT_BENE_COINSRNC_LBLE_AMT
                 ,CMBND_BENE_CST_SHRNG_PD_AMT
-                ,nullif(trim(ORDRG_PRVDR_NUM),'') as ORDRG_PRVDR_NUM
-                ,nullif(trim(ORDRG_PRVDR_NPI_NUM),'') as ORDRG_PRVDR_NPI_NUM
+                ,{TAF_Closure.var_set_type1('RFRG_PRVDR_NUM_2_H')}
+                ,{TAF_Closure.var_set_type1('RFRG_PRVDR_NPI_NUM_2_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ORG_NPI_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_1_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ADR_LINE_2_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_CITY_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_STATE_H')}
+                ,{TAF_Closure.var_set_type1('SRVC_FAC_LCTN_ZIP_H')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_1')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ADR_LINE_2')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_CITY')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_STATE')}
+                ,{TAF_Closure.var_set_type1('BLG_PRVDR_ZIP')}
+                ,LTC_RCP_LBLTY_AMT
+                ,case when upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0')) in {tuple(TAF_Metadata.PRVDR_CLM_FORM_CD_values)}
+                    then upper(lpad(trim(PRVDR_CLM_FORM_CD),2,'0'))
+                    else NULL end as PRVDR_CLM_FORM_CD
+                ,TOT_GME_PD_AMT
+                ,TOT_SDP_ALOWD_AMT
+                ,TOT_SDP_PD_AMT
+                ,ADDTNL_DGNS_PRSNT
+                ,taf_classic_ind
             from (
                 select
                     *,
@@ -198,10 +219,35 @@ class OTH:
 
         runner.append("OTHR_TOC", z)
 
-    def build(self, runner: OT_Runner):
+        z = f"""create or replace temporary view OTH_classic as 
+                select * 
+                from OTH
+                where TAF_Classic_ind = 1
+        """
+        runner.append("OTHR_TOC", z)
+
+        z = f"""create or replace temporary view OTH_denied as 
+                select * 
+                from OTH
+                where TAF_Classic_ind = 0
+        """
+        runner.append("OTHR_TOC", z)
+
+
+
+    def build(self, runner: OT_Runner, denied_flag):
         """
         Build the OT claim-header level segment.
         """
+        input_table = {
+            False:"OTH_classic",
+            True:"OTH_Denied"
+        }
+        output_table = {
+            False: "taf_oth",
+            True:  "taf_oth_d"}
+        
+        
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
         if runner.run_stats_only:
@@ -209,13 +255,13 @@ class OTH:
             return
 
         z = f"""
-                INSERT INTO {runner.DA_SCHEMA}.taf_oth
+                INSERT INTO {runner.DA_SCHEMA}.{output_table[denied_flag]}
                 SELECT
                     { OT_Metadata.finalFormatter(OT_Metadata.header_columns) }
                 FROM (
                     SELECT h.*
                         ,fasc.fed_srvc_ctgry_cd
-                    FROM OTH AS h
+                    FROM {input_table[denied_flag]}  AS h
                         LEFT JOIN OTHR_TOC_HDR_ROLLED AS fasc
                             ON h.ot_link_key = fasc.ot_link_key
                 )

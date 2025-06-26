@@ -2,26 +2,27 @@ from taf.IP.IP_Metadata import IP_Metadata
 from taf.IP.IP_Runner import IP_Runner
 from taf.TAF import TAF
 from taf.TAF_Closure import TAF_Closure
+from taf.TAF_Metadata import TAF_Metadata
 
 
 class IP(TAF):
     """
-    Inpatient (IP) TAF: The IP TAF contains information about fee-for-service claims, managed care 
-    encounter claims, service tracking claims, capitated payments, and supplemental payments for 
-    Medicaid, Medicaid-expansion CHIP, and Separate CHIP.  Inclusion in the IP TAF is based on the 
-    month/year of the discharge date or, when the discharge date is unavailable, the most recent 
-    service end date associated with the claim. If the most recent service end date is unavailable, 
-    the most recent service begin date will be used. Records in TAF begin when the state officially 
-    cut over to submitting T-MSIS data. Each file provides T-MSIS source data as well as constructed 
-    variables designed to support research and analysis. The constructed variables are designed to 
-    facilitate analysis such as outcomes measurement, public reporting, quality improvement initiatives, 
+    Inpatient (IP) TAF: The IP TAF contains information about fee-for-service claims, managed care
+    encounter claims, service tracking claims, capitated payments, and supplemental payments for
+    Medicaid, Medicaid-expansion CHIP, and Separate CHIP.  Inclusion in the IP TAF is based on the
+    month/year of the discharge date or, when the discharge date is unavailable, the most recent
+    service end date associated with the claim. If the most recent service end date is unavailable,
+    the most recent service begin date will be used. Records in TAF begin when the state officially
+    cut over to submitting T-MSIS data. Each file provides T-MSIS source data as well as constructed
+    variables designed to support research and analysis. The constructed variables are designed to
+    facilitate analysis such as outcomes measurement, public reporting, quality improvement initiatives,
     and quality monitoring, among other items.
 
-    The IP TAF are comprised of two files: a claim header-level file and a claim line-level file. 
-    The claims included in these files are active, final-action, non-voided, non-denied claims. 
-    Only claim header records with a date in the TAF month/year, along with their associated claim 
-    line records, are included. Both files can be linked together using a unique key that is constructed 
-    based on various claim header and claim line data elements. The two IP TAF are produced for each 
+    The IP TAF are comprised of two files: a claim header-level file and a claim line-level file.
+    The claims included in these files are active, final-action, non-voided, non-denied claims.
+    Only claim header records with a date in the TAF month/year, along with their associated claim
+    line records, are included. Both files can be linked together using a unique key that is constructed
+    based on various claim header and claim line data elements. The two IP TAF are produced for each
     calendar month for which data are reported.
     """
 
@@ -29,7 +30,9 @@ class IP(TAF):
         super().__init__(runner)
         self.st_fil_type = "IP"
 
-    def AWS_Extract_Line(self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment):
+    def AWS_Extract_Line(
+        self, TMSIS_SCHEMA, DA_SCHEMA, fl2, fl, tab_no, _2x_segment, numdx
+    ):
         """
         Pull line item records for header records linked with claims family table dataset.
         """
@@ -70,7 +73,8 @@ class IP(TAF):
                         a.TMSIS_FIL_NAME,
                         a.REC_NUM
                 ) as RN,
-                a.submtg_state_cd as new_submtg_state_cd_line
+                a.submtg_state_cd as new_submtg_state_cd_line,
+                H.taf_classic_ind
 
             from
                 {fl2}_LINE_IN as A
@@ -125,23 +129,163 @@ class IP(TAF):
         self.runner.append(self.st_fil_type, z)
 
         # Attach num_cll variable to header records as per instruction
+        # Use this step to add in transposed DX codes and flags
+        # If there's no line in the dx file, set the additional dgns prsnt flag to 0.
         z = f"""
             create or replace temporary view {fl2}_HEADER as
             select
                 HEADER.*
                 ,coalesce(RN.NUM_CLL,0) as NUM_CLL
-
+                ,coalesce(dx.addtnl_dgns_prsnt,0) as addtnl_dgns_prsnt
+                ,dx.ADMTG_DGNS_CD
+                ,dx.ADMTG_DGNS_CD_IND"""
+        for i in range(1, numdx + 1):
+            z += f"""
+                ,dx.dgns_{i}_cd
+                ,dx.DGNS_{i}_CD_IND
+                ,dx.dgns_poa_{i}_cd_ind"""
+        z += f"""
             from
                 FA_HDR_{fl2} HEADER left join RN_{fl2} RN
-
             on
                 HEADER.NEW_SUBMTG_STATE_CD = RN.NEW_SUBMTG_STATE_CD_LINE and
                 HEADER.ORGNL_CLM_NUM = RN.ORGNL_CLM_NUM_LINE and
                 HEADER.ADJSTMT_CLM_NUM = RN.ADJSTMT_CLM_NUM_LINE and
                 HEADER.ADJDCTN_DT = RN.ADJDCTN_DT_LINE and
                 HEADER.ADJSTMT_IND = RN.LINE_ADJSTMT_IND
+            left join dx_wide_{fl} as dx
+            on (
+                    HEADER.NEW_SUBMTG_STATE_CD = dx.NEW_SUBMTG_STATE_CD and
+                    HEADER.ORGNL_CLM_NUM = dx.ORGNL_CLM_NUM and
+                    HEADER.ADJSTMT_CLM_NUM = dx.ADJSTMT_CLM_NUM and
+                    HEADER.ADJDCTN_DT = dx.ADJDCTN_DT and
+                    HEADER.ADJSTMT_IND = dx.ADJSTMT_IND
+            )
         """
         self.runner.append(self.st_fil_type, z)
+
+    def select_dx(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, header_in, numdx=0):
+        """
+        Added for T-MSIS v4 changes, as TAF 9.0
+
+        Extract elements from DX table, keeping rows associated wtih headers currently being processed.
+        Apply data cleaning to elements
+        Prepare DX level table for output
+        Transpose DX table
+
+        Function inputs:
+            TMSIS_SCHEMA:  Name of the schema holding the raw data
+            tab_no:  number for the segment ie CIP00004
+            _2x_segment:  name of the input T-MSIS DX segment
+            fl:  file type (IP, OTHR_TOC, LT, RX)
+            header_in:  name of header view to use for limiting dx records to only claims being processed.  Also used for joining back to header file.
+            numdx = the number of DX fields to be transposed and joined to header file.
+        """
+
+        # h_iteration corresponds to the iteration in the header file for that row to be backfilled. 1 will go to the row with type = "P" with lowest sqnc number.
+        # If there is no P, iteration 1 will be populated with the lowest sequence number row.
+        #
+        # null_flag is 1 if Sqnc number is null, or the type code is null, or the type code is invalid.
+        # DX rows with null_flag = 1 will not be backfilled to the header file but will be output to the DX level file.
+        # null_flag used in sort order to sort to the bottom before assinging h_iteration.  This prevents gaps in h_iteration.
+        #
+        # principal flag is 1 for the DX row with type = "P" and the lowest sqnc number.  This row will be backfilled into
+        # iteration 1 of the header file.  Used in sort order to sort this row to the top before assigning h_iteration.
+        #
+        # admitting flag is 1 for the DX row with type = "A" and the lowest sqnc number.   This row will be backfilled into the Admitting DGNS field on the header file.
+        # This field is used in the sort order to sort to the bottom before assigning h_iteration.  This prevents gaps in h_iteration.
+        #
+        # is_admitting_flag is 1 if the type = "A".  This is used to keep from backfilling any type = "A" rows into _1 - _12 on header file.  Field is used to sort to the
+        # bottom before assigning h_iteration.  This prevents gaps in h_iteration.
+
+        z = f"""
+            create or replace temporary view dx_{fl} as
+              select *,
+                    row_number() over (Partition by new_submtg_state_cd, orgnl_clm_num, adjstmt_clm_num
+                                                    ,adjstmt_ind,adjdctn_dt order by null_flag,is_admitting_flag, admitting_flag, principal_flag desc, DGNS_SQNC_NUM,sort_val) as h_iteration
+            from (
+                select dx_all.*
+                ,h.msis_ident_num
+                ,h.new_submtg_state_cd
+                ,h.taf_classic_ind
+                ,case when trim(upper(dgns_type_cd)) = "A"
+                    and null_flag = 0
+                    and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
+                                                ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, trim(dx_all.dgns_type_cd) order by null_flag, dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as admitting_flag
+                ,case when trim(upper(dgns_type_cd)) = "P"
+                    and null_flag = 0
+                    and row_number() over (Partition by h.new_submtg_state_cd, dx_all.orgnl_clm_num,dx_all.adjstmt_clm_num
+                                                ,dx_all.adjstmt_ind,dx_all.adjdctn_dt, trim(dx_all.dgns_type_cd) order by null_flag, dx_all.DGNS_SQNC_NUM) = 1 then 1 else 0 end as principal_flag
+                from
+                    (
+                    select
+                    { IP_Metadata.selectDataElements(tab_no, 'a') }
+                    ,case
+                            when trim(upper(dgns_type_cd)) = "P" then 1
+                            when trim(upper(dgns_type_cd)) = "A" then 2
+                            when trim(upper(dgns_type_cd)) = "D" then 3
+                            when trim(upper(dgns_type_cd)) = "O" then 4
+                            when trim(upper(dgns_type_cd)) = "E" then 5
+                            when trim(upper(dgns_type_cd)) = "R" then 6
+                            else 7 end as sort_val
+                    ,case when DGNS_SQNC_NUM is null or
+                        nullif(trim(dgns_type_cd),'') is null or
+                        trim(upper(dgns_type_cd)) not in {tuple(TAF_Metadata.DGNS_TYPE_CD_values)}
+                        then 1 else 0 end as null_flag
+                    ,case when trim(upper(dgns_type_cd)) = "A" then 1 else 0 end as is_admitting_flag
+                    from
+                        {TMSIS_SCHEMA}.{_2x_segment} as a
+                    where
+                        concat(a.submtg_state_cd, a.tmsis_run_id) in ({self.runner.get_combined_list()})
+                    ) as dx_all
+                inner join
+                    {header_in} as h
+                on (
+                    dx_all.TMSIS_RUN_ID = h.TMSIS_RUN_ID and
+                    dx_all.ORGNL_CLM_NUM = h.ORGNL_CLM_NUM and
+                    dx_all.ADJSTMT_CLM_NUM = h.ADJSTMT_CLM_NUM and
+                    dx_all.ADJDCTN_DT = h.ADJDCTN_DT and
+                    dx_all.ADJSTMT_IND = h.ADJSTMT_IND
+                    )
+                where (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^0]+', '')), 0))!= 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^8]+', '')), 0)) != 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^9]+', '')), 0)) != 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^#]+', '')), 0)) != 0
+                    and nullif(trim(DGNS_CD),'') is not null
+            )
+            """
+        self.runner.append(fl, z)
+
+        # transpose the DX file to the appropriate number of DX fields.
+        z = f"""
+            create or replace temporary view dx_wide_{fl} as
+            select
+                new_submtg_state_cd
+                ,orgnl_clm_num
+                ,adjstmt_clm_num
+                ,adjstmt_ind
+                ,adjdctn_dt
+                ,max(case when h_iteration > {numdx} and admitting_flag = 0 then 1
+                        when null_flag = 1 then 1
+                        when admitting_flag = 0 and is_admitting_flag = 1 then 1
+                        else 0 end) as addtnl_dgns_prsnt
+                ,max(case when admitting_flag = 1 then DGNS_CD else null end) as ADMTG_DGNS_CD
+                ,max(case when admitting_flag = 1 then DGNS_CD_IND else null end) as ADMTG_DGNS_CD_IND"""
+        for i in range(1, numdx + 1):
+            z += f"""
+                ,max(case when h_iteration = {i} and greatest(null_flag,is_admitting_flag) <> 1 then DGNS_CD else null end) as dgns_{i}_cd
+                ,max(case when h_iteration = {i} and greatest(null_flag,is_admitting_flag) <> 1 then dgns_cd_ind else null end) as DGNS_{i}_CD_IND
+                ,max(case when h_iteration = {i} and greatest(null_flag,is_admitting_flag) <> 1 then DGNS_POA_IND else null end) as dgns_poa_{i}_cd_ind"""
+        z += f"""
+            from dx_{fl}
+            group by
+                new_submtg_state_cd
+                ,orgnl_clm_num
+                ,adjstmt_clm_num
+                ,adjstmt_ind
+                ,adjdctn_dt
+        """
+        self.runner.append(fl, z)
 
 
 # -----------------------------------------------------------------------------

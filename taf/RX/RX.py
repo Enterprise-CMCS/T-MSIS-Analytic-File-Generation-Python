@@ -74,6 +74,7 @@ class RX(TAF):
                     WHEN A.DRUG_UTLZTN_CD IS NULL THEN NULL
                     ELSE SUBSTRING(A.DRUG_UTLZTN_CD,5,2)
                     END AS RSLT_SRVC_CD
+                , HEADER.taf_classic_ind
 
             from
                 {fl2}_LINE_IN as A
@@ -119,7 +120,8 @@ class RX(TAF):
             select
                 HEADER.*
                 , coalesce(RN.NUM_CLL,0) as NUM_CLL
-
+                , coalesce(dx.DGNS_PRSNT,0) as DGNS_PRSNT
+                
             from
                 FA_HDR_{fl} HEADER left join RN_{fl2} RN
 
@@ -129,9 +131,83 @@ class RX(TAF):
                     HEADER.ADJSTMT_CLM_NUM = RN.ADJSTMT_CLM_NUM_LINE and
                     HEADER.ADJDCTN_DT = RN.ADJDCTN_DT_LINE and
                     HEADER.ADJSTMT_IND = RN.LINE_ADJSTMT_IND
+            left join dx_wide_{fl} as dx
+            on (
+                    HEADER.NEW_SUBMTG_STATE_CD = dx.NEW_SUBMTG_STATE_CD and
+                    HEADER.ORGNL_CLM_NUM = dx.ORGNL_CLM_NUM and
+                    HEADER.ADJSTMT_CLM_NUM = dx.ADJSTMT_CLM_NUM and
+                    HEADER.ADJDCTN_DT = dx.ADJDCTN_DT and
+                    HEADER.ADJSTMT_IND = dx.ADJSTMT_IND
+            )
         """
         self.runner.append(self.st_fil_type, z)
 
+    def select_dx(self, TMSIS_SCHEMA, tab_no, _2x_segment, fl, header_in):
+        """
+        Added for T-MSIS v4 changes, as TAF 9.0
+
+        Extract elements from DX table, keeping rows associated wtih headers currently being processed.
+        Apply data cleaning to elements
+        Prepare DX level table for output
+
+        Function inputs:
+            TMSIS_SCHEMA:  Name of the schema holding the raw data
+            tab_no:  number for the segment ie COT00004
+            _2x_segment:  name of the input T-MSIS DX segment
+            fl:  file type (IP, OTHR_TOC, LT, RX)
+            header_in:  name of header view to use for limiting dx records to only claims being processed.
+        """
+
+        z = f"""
+            create or replace temporary view dx_{fl} as
+                select dx_all.*
+                ,h.msis_ident_num
+                ,h.new_submtg_state_cd
+                ,h.taf_classic_ind
+                from
+                    (
+                    select
+                    { RX_Metadata.selectDataElements(tab_no, 'a') }
+                    from
+                        {TMSIS_SCHEMA}.{_2x_segment} as a
+                    where
+                        concat(a.submtg_state_cd, a.tmsis_run_id) in ({self.runner.get_combined_list()})
+                    ) as dx_all
+                inner join
+                    {header_in} as h
+                on (
+                    dx_all.TMSIS_RUN_ID = h.TMSIS_RUN_ID and
+                    dx_all.ORGNL_CLM_NUM = h.ORGNL_CLM_NUM and
+                    dx_all.ADJSTMT_CLM_NUM = h.ADJSTMT_CLM_NUM and
+                    dx_all.ADJDCTN_DT = h.ADJDCTN_DT and
+                    dx_all.ADJSTMT_IND = h.ADJSTMT_IND
+                    )
+                where (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^0]+', '')), 0))!= 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^8]+', '')), 0)) != 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^9]+', '')), 0)) != 0
+                    and (length(trim(DGNS_CD)) - coalesce(length(regexp_replace(trim(DGNS_CD), '[^#]+', '')), 0)) != 0
+                    and nullif(trim(DGNS_CD),'') is not null
+            """
+        self.runner.append(fl, z)
+
+        z = f"""
+            create or replace temporary view dx_wide_{fl} as
+            select
+                new_submtg_state_cd
+                ,orgnl_clm_num
+                ,adjstmt_clm_num
+                ,adjstmt_ind
+                ,adjdctn_dt
+                ,1 as dgns_prsnt
+            from dx_{fl}
+            group by
+                new_submtg_state_cd
+                ,orgnl_clm_num
+                ,adjstmt_clm_num
+                ,adjstmt_ind
+                ,adjdctn_dt
+        """
+        self.runner.append(fl, z)
 
 # -----------------------------------------------------------------------------
 # CC0 1.0 Universal

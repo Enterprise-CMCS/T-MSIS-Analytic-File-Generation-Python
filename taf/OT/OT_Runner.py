@@ -38,6 +38,12 @@ class OT_Runner(TAF_Runner):
         from taf.OT.OT import OT
         from taf.OT.OTH import OTH
         from taf.OT.OTL import OTL
+        from taf.OT.OT_DX import OT_DX
+        
+        TMSIS_SCHEMA = "tmsis"
+
+        #TAF 9.0:  Number of DX codes to be backfilled to header file.
+        NUMDX = 2
 
         # -------------------------------------------------
         #   Produces:
@@ -65,7 +71,18 @@ class OT_Runner(TAF_Runner):
         # -------------------------------------------------
         claims = TAF_Claims(self)
         claims.AWS_Claims_Family_Table_Link(
-            "tmsis", "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
+            TMSIS_SCHEMA, "COT00002", "TMSIS_CLH_REC_OTHR_TOC", "OTHR_TOC", "a.SRVC_ENDG_DT"
+        )
+
+        # -------------------------------------------------
+        #   Produces:
+        # -------------------------------------------------
+        #   1 - dx_OTHR_TOC
+        #   2 - dx_wide
+
+        ot = OT(self)
+        ot.select_dx(
+            TMSIS_SCHEMA, "COT00004", "tmsis_clm_dx_othr_toc", "OTHR_TOC","FA_HDR_OTHR_TOC",NUMDX
         )
 
         # -------------------------------------------------
@@ -76,11 +93,9 @@ class OT_Runner(TAF_Runner):
         #   3 - RN_OTHR_TOC
         #   4 - OTHR_TOC_HEADER
         # -------------------------------------------------
-        ot = OT(self)
         ot.AWS_Extract_Line(
-            "tmsis", self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
+            TMSIS_SCHEMA, self.DA_SCHEMA, "OTHR_TOC", "OTHR_TOC", "COT00003", "TMSIS_CLL_REC_OTHR_TOC"
         )
-
         # -------------------------------------------------
         #   Produces:
         # -------------------------------------------------
@@ -106,14 +121,21 @@ class OT_Runner(TAF_Runner):
         # -------------------------------------------------
         #   - OTH
         #   - TAF_OTH
+        #   - TAF_OTL
+        #
         # -------------------------------------------------
         OTH().create(self)
         OTL().create(self)
+        OT_DX().create(self)
 
         grouper.fasc_code("OTHR_TOC")
 
-        OTH().build(self)
-        OTL().build(self)
+        OTH().build(self, denied_flag=False)
+        OTH().build(self, denied_flag=True)
+        OTL().build(self, denied_flag=False)
+        OTL().build(self, denied_flag=True)
+        OT_DX().build(self, denied_flag=False)
+        OT_DX().build(self, denied_flag=True)
 
 
 # -----------------------------------------------------------------------------
