@@ -1,0 +1,55 @@
+# -----------------------------------------------------------------------------
+# GitHub Actions Workflow: generate-codejson.yml
+#
+# This workflow automates the process of updating the `code.json` file in the
+# repository. It can be triggered manually or runs automatically on the first
+# day of each month. The workflow:
+#   1. Checks out the repository.
+#   2. Uses the DSACMS/automated-codejson-generator action to update `code.json`
+#      and create a pull request with the changes.
+#   3. Waits briefly to ensure the pull request is registered.
+#   4. Automatically merges the pull request if it is found, then deletes the
+#      branch.
+#
+# Required permissions: contents, pull-requests, issues (write access).
+# -----------------------------------------------------------------------------
+name: Generate code.json
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *" # monthly on day 1
+     
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+ 
+jobs:
+  update-code-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+ 
+      - name: Update code.json
+        uses: DSACMS/automated-codejson-generator@v1.0.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: "main"
+           
+      - name: Wait for PR to register
+        run: sleep 10
+         
+      - name: Merge pull request
+        run: |
+          pr_number=$(gh pr list --state open --label "codejson-initialized" --json number -q '.[0].number')
+          if [ -n "$pr_number" ]; then
+            gh pr merge "$pr_number" --merge --delete-branch --admin
+            echo "Merged pull request #$pr_number"
+          else
+            echo "No matching pull request found to merge."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
