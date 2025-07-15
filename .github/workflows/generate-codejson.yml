@@ -13,7 +13,7 @@
 #
 # Required permissions: contents, pull-requests, issues (write access).
 # -----------------------------------------------------------------------------
-name: Generate code.json
+name: Update code.json
 on:
   workflow_dispatch:
   schedule:
