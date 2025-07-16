@@ -104,7 +104,7 @@ class OTL:
                             else NULL end as MBESCBES_SRVC_CTGRY
                 , case when replace(upper(trim(MBESCBES_FRM)),' ','') in {tuple(x.replace(" ","") for x in TAF_Metadata.MBESCBES_FRM_values)} then upper(trim(MBESCBES_FRM)) else NULL end as MBESCBES_FRM
                 , { TAF_Closure.var_set_type2('MBESCBES_FRM_GRP', 0, cond1='1', cond2='2', cond3='3') }
-                , case when (SRVC_PLC_CD_L is not NULL and ((length(lpad(SRVC_PLC_CD_L,2, '0')) - coalesce(length(regexp_replace(lpad(SRVC_PLC_CD_L,2, '0'), '[0-9]{2}', '')), 0))) > 0) then
+                , case when (SRVC_PLC_CD_L is not NULL and ((length(lpad(SRVC_PLC_CD_L,2, '0')) - coalesce(length(regexp_replace(lpad(SRVC_PLC_CD_L,2, '0'), '[0-9]{{2}}', '')), 0))) > 0) then
                     case when (cast(SRVC_PLC_CD_L as int) >= 1 and cast(SRVC_PLC_CD_L as int) <= 99) then lpad(SRVC_PLC_CD_L, 2, '0')
                         else NULL end
                     else NULL end
