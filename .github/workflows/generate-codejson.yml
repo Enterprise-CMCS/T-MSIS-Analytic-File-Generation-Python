@@ -38,18 +38,3 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: "main"
-           
-      - name: Wait for PR to register
-        run: sleep 10
-         
-      - name: Merge pull request
-        run: |
-          pr_number=$(gh pr list --state open --label "codejson-initialized" --json number -q '.[0].number')
-          if [ -n "$pr_number" ]; then
-            gh pr merge "$pr_number" --merge --delete-branch --admin
-            echo "Merged pull request #$pr_number"
-          else
-            echo "No matching pull request found to merge."
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

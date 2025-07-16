@@ -1,6 +1,6 @@
 {
   "name": "T-MSIS-Analytic-File-Generation-Python",
-  "description": "CMS T-MSIS Analytic File (TAF) generation python code",
+  "description": "Databricks Python code library to create T-MSIS Analytic Files (TAF)",
   "longDescription": "This is a Python Library for the generation of the T-MSIS Analytic File (TAF) with distributed computing framework using Databricks",
   "status": "Development",
   "permissions": {
