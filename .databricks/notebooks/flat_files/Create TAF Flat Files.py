@@ -11,6 +11,10 @@ from pyspark.sql.types import StructType,StructField, StringType, IntegerType
 
 # COMMAND ----------
 
+SOURCE_SCHEMA = 'taf_python'
+
+# COMMAND ----------
+
 bucket_name = 'dataconnect-taf-data-val/FinalFiles'
 
 # COMMAND ----------
@@ -86,7 +90,7 @@ query_reporting_period = query_reporting_period.replace(day=1)
 query_year_month = query_reporting_period.strftime('%Y-%m-%d')
 
 query = (
-  f"select distinct da_run_id from taf_python.CCW_TEST_RUN_IDS where year_month='{query_year_month}'"
+  f"select distinct da_run_id from {SOURCE_SCHEMA}.CCW_TEST_RUN_IDS where year_month='{query_year_month}'"
 )
 df = spark.sql(query)
 da_run_ids = [str(row.da_run_id) for row in df.collect()]
@@ -95,7 +99,7 @@ query_da_run_ids = "'" + ("', '").join(da_run_ids) + "'"
 joined_file_type_list = "'" + ("', '").join(file_type_list) + "'"
 
 query = (
-  f'select distinct itrtn_num, fil_dt, da_run_id, fil_4th_node_txt from taf_python.efts_fil_meta '
+  f'select distinct itrtn_num, fil_dt, da_run_id, fil_4th_node_txt from {SOURCE_SCHEMA}.efts_fil_meta '
   f'where da_run_id in ({query_da_run_ids}) and '
   f"fil_4th_node_txt in ({joined_file_type_list});"
 )
@@ -216,7 +220,7 @@ def write_header_and_part(file_type, table_name, da_run_id, seq):
     SELECT 
       {query_columns}
     FROM
-      taf_python.{taf_table}
+      {SOURCE_SCHEMA}.{taf_table}
     WHERE
       da_run_id = {da_run_id}
     """.format(
@@ -388,7 +392,7 @@ def make_zipfile(output_filename, source_dir):
 def write_metadata(file_type, metadata_file_name, file_hash, da_run_id, itrtn_num, seq):
   total_record_count = spark.sql(f"""
       SELECT sum(rec_cnt_by_state_cd)
-      FROM taf_python.efts_fil_meta
+      FROM {SOURCE_SCHEMA}.efts_fil_meta
       WHERE fil_4th_node_txt = '{file_type}'
         AND itrtn_num = '{itrtn_num}'
         AND da_run_id = {da_run_id}
@@ -403,7 +407,7 @@ def write_metadata(file_type, metadata_file_name, file_hash, da_run_id, itrtn_nu
         rec_cnt_by_state_cd as Record_Count,
         '{metadata_file_name}' as File_Name,
         '{file_hash.hexdigest()}' as Checksum
-      FROM taf_python.efts_fil_meta
+      FROM {SOURCE_SCHEMA}.efts_fil_meta
       WHERE fil_4th_node_txt = '{file_type}'
         AND itrtn_num = '{itrtn_num}'
         AND da_run_id = {da_run_id}
