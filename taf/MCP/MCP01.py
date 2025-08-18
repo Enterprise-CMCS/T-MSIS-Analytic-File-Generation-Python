@@ -4,7 +4,7 @@ from taf.MCP.MCP_Metadata import MCP_Metadata
 
 class MCP01(MCP):
     """
-    Description:  Selection Functions for the T-MSIS provider segments
+    Description:  Selection Functions for the T-MSIS managed care segments
     """
      
     def __init__(self, mcp: MCP_Runner):
@@ -19,12 +19,12 @@ class MCP01(MCP):
          
         cols01 = ["tms_run_id", "submitting_state"]
 
-        # copy provider header table
+        # copy managed care header table
         self.copy_activerows_nts(
-            "tmsis.File_Header_Record_Provider", cols01, "MC01_Header_Copy"
+            "tmsis.file_header_record_managed_care", cols01, "MC01_Header_Copy"
         )
 
-        # self.mcp.countrows('Prov01_Header_Copy', 'cnt_active', 'PRV01_Active')
+        # self.mcp.countrows('MC01_Header_Copy', 'cnt_active', 'MC01_Active')
 
         # extract the latest (largest) run for each state and identify CHIP/TPA states
         # distkey(submitting_state)
