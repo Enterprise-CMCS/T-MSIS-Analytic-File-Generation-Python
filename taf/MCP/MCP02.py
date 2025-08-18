@@ -5,7 +5,7 @@ from taf.TAF_Closure import TAF_Closure
 
 class MCP02(MCP):
     """
-    Description:  Selection Functions for the T-MSIS provider segments
+    Description:  Selection Functions for the T-MSIS managed care segments
     """
      
     def __init__(self, mcp: MCP_Runner):
