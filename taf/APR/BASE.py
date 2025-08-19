@@ -229,8 +229,10 @@ class BASE(APR):
             'TXNMY_SPLMTL',
             'ENRLMT_SPLMTL',
             'BED_SPLMTL',
-            "from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS",
-            'cast(NULL as timestamp) as REC_UPDT_TS',
+            ]
+
+        # columns added in v9.0 or later, to be appended *AFTER* REC_ADD_TS and REC_UPDT_TS
+        newcols = [
             'ATYPICAL_PRVDR_IND',
             ]
 
@@ -242,9 +244,13 @@ class BASE(APR):
         else:
             z = f"""
                 INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BASE
+                ( { self.id_col_spec() }, { ','.join([col.split(' ')[-1] for col in basecols]) }, REC_ADD_TS, REC_UPDT_TS, { ','.join(newcols) } )
                 SELECT
                     { self.table_id_cols() }
                     ,{ ','.join(basecols) }
+                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
+                    ,cast(NULL as timestamp) as REC_UPDT_TS
+                    ,{ ','.join(newcols) }                    
                 FROM base_{self.year}_final"""
 
             self.apr.append(type(self).__name__, z)

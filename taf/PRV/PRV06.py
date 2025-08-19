@@ -703,10 +703,25 @@ class PRV06(PRV):
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
+        columns = [
+            'DA_RUN_ID',
+            'PRV_LINK_KEY',
+            'PRV_FIL_DT',
+            'PRV_VRSN',
+            'TMSIS_RUN_ID',
+            'SUBMTG_STATE_CD',
+            'SUBMTG_STATE_PRVDR_ID',
+            'PRVDR_CLSFCTN_TYPE_CD',
+            'PRVDR_CLSFCTN_CD',
+            'REC_ADD_TS',
+            'REC_UPDT_TS',
+        ]
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_tax
+                ({ ','.join(columns) })
                 SELECT
-                    *
+                    { ','.join(columns) }
                 FROM
                     Prov06_Taxonomies_seg
         """

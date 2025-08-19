@@ -235,7 +235,7 @@ class PRV07(PRV):
                 select M.DA_RUN_ID,
                         M.prv_link_key,
                         M.PRV_FIL_DT,
-                        M.PRV_VRSN ,
+                        M.PRV_VRSN,
                         M.tmsis_run_id,
                         M.submtg_state_cd,
                         M.submtg_state_prvdr_id,
@@ -321,20 +321,114 @@ class PRV07(PRV):
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
+        base_columns = [
+            'DA_RUN_ID',
+            'PRV_LINK_KEY',
+            'PRV_FIL_DT',
+            'PRV_VRSN',
+            'TMSIS_RUN_ID',
+            'SUBMTG_STATE_CD',
+            'SUBMTG_STATE_PRVDR_ID',
+            'REG_FLAG',
+            'PRVDR_DBA_NAME',
+            'PRVDR_LGL_NAME',
+            'PRVDR_ORG_NAME',
+            'PRVDR_TAX_NAME',
+            'FAC_GRP_INDVDL_CD',
+            'TCHNG_IND',
+            'PRVDR_1ST_NAME',
+            'PRVDR_MDL_INITL_NAME',
+            'PRVDR_LAST_NAME',
+            'SEX_CD',
+            'OWNRSHP_CD',
+            'OWNRSHP_CAT',
+            'PRVDR_PRFT_STUS_CD',
+            'BIRTH_DT',
+            'DEATH_DT',
+            'ACPT_NEW_PTNTS_IND',
+            'AGE_NUM',
+            'PRVDR_MDCD_ENRLMT_IND',
+            'MDCD_ENRLMT_IND',
+            'CHIP_ENRLMT_IND',
+            'MDCD_CHIP_ENRLMT_IND',
+            'NOT_SP_AFLTD_IND',
+            'PRVDR_ENRLMT_STUS_ACTV_IND',
+            'PRVDR_ENRLMT_STUS_DND_IND',
+            'PRVDR_ENRLMT_STUS_TRMNTD_IND',
+            'PRVDR_ENRLMT_STUS_PENDG_IND',
+            'MLT_SNGL_SPCLTY_GRP_IND',
+            'ALPTHC_OSTPTHC_PHYSN_IND',
+            'BHVRL_HLTH_SCL_SRVC_PRVDR_IND',
+            'CHRPRCTIC_PRVDR_IND',
+            'DNTL_PRVDR_IND',
+            'DTRY_NTRTNL_SRVC_PRVDR_IND',
+            'EMER_MDCL_SRVC_PRVDR_IND',
+            'EYE_VSN_SRVC_PRVDR_IND',
+            'NRSNG_SRVC_PRVDR_IND',
+            'NRSNG_SRVC_RLTD_IND',
+            'OTHR_INDVDL_SRVC_PRVDR_IND',
+            'PHRMCY_SRVC_PRVDR_IND',
+            'PA_ADVCD_PRCTC_NRSNG_PRVDR_IND',
+            'POD_MDCN_SRGRY_SRVCS_IND',
+            'RESP_DEV_REH_RESTOR_PRVDR_IND',
+            'SPCH_LANG_HEARG_SRVC_PRVDR_IND',
+            'STDNT_HLTH_CARE_PRVDR_IND',
+            'TT_OTHR_TCHNCL_SRVC_PRVDR_IND',
+            'AGNCY_PRVDR_IND',
+            'AMB_HLTH_CARE_FAC_PRVDR_IND',
+            'HOSP_UNIT_PRVDR_IND',
+            'HOSP_PRVDR_IND',
+            'LAB_PRVDR_IND',
+            'MCO_PRVDR_IND',
+            'NRSNG_CSTDL_CARE_FAC_IND',
+            'OTHR_NONINDVDL_SRVC_PRVDRS_IND',
+            'RSDNTL_TRTMT_FAC_PRVDR_IND',
+            'RESP_CARE_FAC_PRVDR_IND',
+            'SUPLR_PRVDR_IND',
+            'TRNSPRTN_SRVCS_PRVDR_IND',
+            'SUD_SRVC_PRVDR_IND',
+            'MH_SRVC_PRVDR_IND',
+            'EMER_SRVCS_PRVDR_IND',
+            'REC_ADD_TS',
+            'REC_UPDT_TS',
+            'ATYPICAL_PRVDR_IND',
+        ]
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv
+                ({ ','.join(base_columns) })
                 SELECT
-                    *
+                    { ','.join(base_columns) }
                 FROM
                     Prov02_Base
         """
 
         self.prv.append(type(self).__name__, z)
 
+        enr_columns = [
+            'DA_RUN_ID',
+            'PRV_LINK_KEY',
+            'PRV_FIL_DT',
+            'PRV_VRSN',
+            'TMSIS_RUN_ID',
+            'SUBMTG_STATE_CD',
+            'SUBMTG_STATE_PRVDR_ID',
+            'PRVDR_MDCD_EFCTV_DT',
+            'PRVDR_MDCD_END_DT',
+            'PRVDR_MDCD_ENRLMT_STUS_CD',
+            'STATE_PLAN_ENRLMT_CD',
+            'PRVDR_MDCD_ENRLMT_MTHD_CD',
+            'APLCTN_DT',
+            'PRVDR_MDCD_ENRLMT_STUS_CTGRY',
+            'REC_ADD_TS',
+            'REC_UPDT_TS',
+        ]
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_enr
+                ({ ','.join(enr_columns) })
                 SELECT
-                    *
+                    { ','.join(enr_columns) }
                 FROM
                     Prov07_Medicaid_ENRPOP
         """
