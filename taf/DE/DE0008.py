@@ -32,6 +32,109 @@ class DE0008(DE):
         self.create_temp()
         self.create_hh_spo_splmtl_table()
 
+    def basecols(self):
+        """
+        Define base columns.
+        """
+
+        z = """
+            ,HH_PGM_PRTCPNT_FLAG_01
+            ,HH_PGM_PRTCPNT_FLAG_02
+            ,HH_PGM_PRTCPNT_FLAG_03
+            ,HH_PGM_PRTCPNT_FLAG_04
+            ,HH_PGM_PRTCPNT_FLAG_05
+            ,HH_PGM_PRTCPNT_FLAG_06
+            ,HH_PGM_PRTCPNT_FLAG_07
+            ,HH_PGM_PRTCPNT_FLAG_08
+            ,HH_PGM_PRTCPNT_FLAG_09
+            ,HH_PGM_PRTCPNT_FLAG_10
+            ,HH_PGM_PRTCPNT_FLAG_11
+            ,HH_PGM_PRTCPNT_FLAG_12
+            ,HH_PRVDR_NUM
+            ,HH_ENT_NAME
+            ,MH_HH_CHRNC_COND_FLAG
+            ,SA_HH_CHRNC_COND_FLAG
+            ,ASTHMA_HH_CHRNC_COND_FLAG
+            ,DBTS_HH_CHRNC_COND_FLAG
+            ,HRT_DIS_HH_CHRNC_COND_FLAG
+            ,OVRWT_HH_CHRNC_COND_FLAG
+            ,HIV_AIDS_HH_CHRNC_COND_FLAG
+            ,OTHR_HH_CHRNC_COND_FLAG
+            ,CMNTY_1ST_CHS_SPO_FLAG_01
+            ,CMNTY_1ST_CHS_SPO_FLAG_02
+            ,CMNTY_1ST_CHS_SPO_FLAG_03
+            ,CMNTY_1ST_CHS_SPO_FLAG_04
+            ,CMNTY_1ST_CHS_SPO_FLAG_05
+            ,CMNTY_1ST_CHS_SPO_FLAG_06
+            ,CMNTY_1ST_CHS_SPO_FLAG_07
+            ,CMNTY_1ST_CHS_SPO_FLAG_08
+            ,CMNTY_1ST_CHS_SPO_FLAG_09
+            ,CMNTY_1ST_CHS_SPO_FLAG_10
+            ,CMNTY_1ST_CHS_SPO_FLAG_11
+            ,CMNTY_1ST_CHS_SPO_FLAG_12
+            ,_1915I_SPO_FLAG_01
+            ,_1915I_SPO_FLAG_02
+            ,_1915I_SPO_FLAG_03
+            ,_1915I_SPO_FLAG_04
+            ,_1915I_SPO_FLAG_05
+            ,_1915I_SPO_FLAG_06
+            ,_1915I_SPO_FLAG_07
+            ,_1915I_SPO_FLAG_08
+            ,_1915I_SPO_FLAG_09
+            ,_1915I_SPO_FLAG_10
+            ,_1915I_SPO_FLAG_11
+            ,_1915I_SPO_FLAG_12
+            ,_1915J_SPO_FLAG_01
+            ,_1915J_SPO_FLAG_02
+            ,_1915J_SPO_FLAG_03
+            ,_1915J_SPO_FLAG_04
+            ,_1915J_SPO_FLAG_05
+            ,_1915J_SPO_FLAG_06
+            ,_1915J_SPO_FLAG_07
+            ,_1915J_SPO_FLAG_08
+            ,_1915J_SPO_FLAG_09
+            ,_1915J_SPO_FLAG_10
+            ,_1915J_SPO_FLAG_11
+            ,_1915J_SPO_FLAG_12
+            ,_1932A_SPO_FLAG_01
+            ,_1932A_SPO_FLAG_02
+            ,_1932A_SPO_FLAG_03
+            ,_1932A_SPO_FLAG_04
+            ,_1932A_SPO_FLAG_05
+            ,_1932A_SPO_FLAG_06
+            ,_1932A_SPO_FLAG_07
+            ,_1932A_SPO_FLAG_08
+            ,_1932A_SPO_FLAG_09
+            ,_1932A_SPO_FLAG_10
+            ,_1932A_SPO_FLAG_11
+            ,_1932A_SPO_FLAG_12
+            ,_1915A_SPO_FLAG_01
+            ,_1915A_SPO_FLAG_02
+            ,_1915A_SPO_FLAG_03
+            ,_1915A_SPO_FLAG_04
+            ,_1915A_SPO_FLAG_05
+            ,_1915A_SPO_FLAG_06
+            ,_1915A_SPO_FLAG_07
+            ,_1915A_SPO_FLAG_08
+            ,_1915A_SPO_FLAG_09
+            ,_1915A_SPO_FLAG_10
+            ,_1915A_SPO_FLAG_11
+            ,_1915A_SPO_FLAG_12
+            ,_1937_ABP_SPO_FLAG_01
+            ,_1937_ABP_SPO_FLAG_02
+            ,_1937_ABP_SPO_FLAG_03
+            ,_1937_ABP_SPO_FLAG_04
+            ,_1937_ABP_SPO_FLAG_05
+            ,_1937_ABP_SPO_FLAG_06
+            ,_1937_ABP_SPO_FLAG_07
+            ,_1937_ABP_SPO_FLAG_08
+            ,_1937_ABP_SPO_FLAG_09
+            ,_1937_ABP_SPO_FLAG_10
+            ,_1937_ABP_SPO_FLAG_11
+            ,_1937_ABP_SPO_FLAG_12
+        """
+        return z
+
     def create_temp(self):
         """
         Create a temporary table.  
@@ -107,103 +210,11 @@ class DE0008(DE):
             return
         else:
             z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.table_name}
+                    (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
                     select
 
                         {DE.table_id_cols_pre(self)}
-                        ,HH_PGM_PRTCPNT_FLAG_01
-                        ,HH_PGM_PRTCPNT_FLAG_02
-                        ,HH_PGM_PRTCPNT_FLAG_03
-                        ,HH_PGM_PRTCPNT_FLAG_04
-                        ,HH_PGM_PRTCPNT_FLAG_05
-                        ,HH_PGM_PRTCPNT_FLAG_06
-                        ,HH_PGM_PRTCPNT_FLAG_07
-                        ,HH_PGM_PRTCPNT_FLAG_08
-                        ,HH_PGM_PRTCPNT_FLAG_09
-                        ,HH_PGM_PRTCPNT_FLAG_10
-                        ,HH_PGM_PRTCPNT_FLAG_11
-                        ,HH_PGM_PRTCPNT_FLAG_12
-                        ,HH_PRVDR_NUM
-                        ,HH_ENT_NAME
-                        ,MH_HH_CHRNC_COND_FLAG
-                        ,SA_HH_CHRNC_COND_FLAG
-                        ,ASTHMA_HH_CHRNC_COND_FLAG
-                        ,DBTS_HH_CHRNC_COND_FLAG
-                        ,HRT_DIS_HH_CHRNC_COND_FLAG
-                        ,OVRWT_HH_CHRNC_COND_FLAG
-                        ,HIV_AIDS_HH_CHRNC_COND_FLAG
-                        ,OTHR_HH_CHRNC_COND_FLAG
-                        ,CMNTY_1ST_CHS_SPO_FLAG_01
-                        ,CMNTY_1ST_CHS_SPO_FLAG_02
-                        ,CMNTY_1ST_CHS_SPO_FLAG_03
-                        ,CMNTY_1ST_CHS_SPO_FLAG_04
-                        ,CMNTY_1ST_CHS_SPO_FLAG_05
-                        ,CMNTY_1ST_CHS_SPO_FLAG_06
-                        ,CMNTY_1ST_CHS_SPO_FLAG_07
-                        ,CMNTY_1ST_CHS_SPO_FLAG_08
-                        ,CMNTY_1ST_CHS_SPO_FLAG_09
-                        ,CMNTY_1ST_CHS_SPO_FLAG_10
-                        ,CMNTY_1ST_CHS_SPO_FLAG_11
-                        ,CMNTY_1ST_CHS_SPO_FLAG_12
-                        ,_1915I_SPO_FLAG_01
-                        ,_1915I_SPO_FLAG_02
-                        ,_1915I_SPO_FLAG_03
-                        ,_1915I_SPO_FLAG_04
-                        ,_1915I_SPO_FLAG_05
-                        ,_1915I_SPO_FLAG_06
-                        ,_1915I_SPO_FLAG_07
-                        ,_1915I_SPO_FLAG_08
-                        ,_1915I_SPO_FLAG_09
-                        ,_1915I_SPO_FLAG_10
-                        ,_1915I_SPO_FLAG_11
-                        ,_1915I_SPO_FLAG_12
-                        ,_1915J_SPO_FLAG_01
-                        ,_1915J_SPO_FLAG_02
-                        ,_1915J_SPO_FLAG_03
-                        ,_1915J_SPO_FLAG_04
-                        ,_1915J_SPO_FLAG_05
-                        ,_1915J_SPO_FLAG_06
-                        ,_1915J_SPO_FLAG_07
-                        ,_1915J_SPO_FLAG_08
-                        ,_1915J_SPO_FLAG_09
-                        ,_1915J_SPO_FLAG_10
-                        ,_1915J_SPO_FLAG_11
-                        ,_1915J_SPO_FLAG_12
-                        ,_1932A_SPO_FLAG_01
-                        ,_1932A_SPO_FLAG_02
-                        ,_1932A_SPO_FLAG_03
-                        ,_1932A_SPO_FLAG_04
-                        ,_1932A_SPO_FLAG_05
-                        ,_1932A_SPO_FLAG_06
-                        ,_1932A_SPO_FLAG_07
-                        ,_1932A_SPO_FLAG_08
-                        ,_1932A_SPO_FLAG_09
-                        ,_1932A_SPO_FLAG_10
-                        ,_1932A_SPO_FLAG_11
-                        ,_1932A_SPO_FLAG_12
-                        ,_1915A_SPO_FLAG_01
-                        ,_1915A_SPO_FLAG_02
-                        ,_1915A_SPO_FLAG_03
-                        ,_1915A_SPO_FLAG_04
-                        ,_1915A_SPO_FLAG_05
-                        ,_1915A_SPO_FLAG_06
-                        ,_1915A_SPO_FLAG_07
-                        ,_1915A_SPO_FLAG_08
-                        ,_1915A_SPO_FLAG_09
-                        ,_1915A_SPO_FLAG_10
-                        ,_1915A_SPO_FLAG_11
-                        ,_1915A_SPO_FLAG_12
-                        ,_1937_ABP_SPO_FLAG_01
-                        ,_1937_ABP_SPO_FLAG_02
-                        ,_1937_ABP_SPO_FLAG_03
-                        ,_1937_ABP_SPO_FLAG_04
-                        ,_1937_ABP_SPO_FLAG_05
-                        ,_1937_ABP_SPO_FLAG_06
-                        ,_1937_ABP_SPO_FLAG_07
-                        ,_1937_ABP_SPO_FLAG_08
-                        ,_1937_ABP_SPO_FLAG_09
-                        ,_1937_ABP_SPO_FLAG_10
-                        ,_1937_ABP_SPO_FLAG_11
-                        ,_1937_ABP_SPO_FLAG_12
+                        {self.basecols()}
                         {DE.table_id_cols_sfx(self)}
 
                         from {self.table_name}_{self.de.YEAR}2

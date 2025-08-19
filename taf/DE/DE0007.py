@@ -28,6 +28,33 @@ class DE0007(DE):
         self.create_temp()
         self.create_mfp_suppl_table()
 
+    def basecols(self):
+        """
+        Define base columns.
+        """
+
+        z = """
+            ,MFP_PRTCPTN_ENDD_RSN_CD
+            ,MFP_LVS_WTH_FMLY_CD
+            ,MFP_QLFYD_INSTN_CD
+            ,MFP_RINSTLZD_RSN_CD
+            ,MFP_QLFYD_RSDNC_CD
+            ,MFP_PRTCPNT_FLAG_01
+            ,MFP_PRTCPNT_FLAG_02
+            ,MFP_PRTCPNT_FLAG_03
+            ,MFP_PRTCPNT_FLAG_04
+            ,MFP_PRTCPNT_FLAG_05
+            ,MFP_PRTCPNT_FLAG_06
+            ,MFP_PRTCPNT_FLAG_07
+            ,MFP_PRTCPNT_FLAG_08
+            ,MFP_PRTCPNT_FLAG_09
+            ,MFP_PRTCPNT_FLAG_10
+            ,MFP_PRTCPNT_FLAG_11
+            ,MFP_PRTCPNT_FLAG_12
+            ,MFP_PRTCPNT_FLAG_LTST
+        """
+        return z
+
     def create_temp(self):
         """
         Create a temporary table.
@@ -83,27 +110,11 @@ class DE0007(DE):
         else:
 
             z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+                    (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
                     select
 
                         {DE.table_id_cols_pre(self)}
-                        ,MFP_PRTCPTN_ENDD_RSN_CD
-                        ,MFP_LVS_WTH_FMLY_CD
-                        ,MFP_QLFYD_INSTN_CD
-                        ,MFP_RINSTLZD_RSN_CD
-                        ,MFP_QLFYD_RSDNC_CD
-                        ,MFP_PRTCPNT_FLAG_01
-                        ,MFP_PRTCPNT_FLAG_02
-                        ,MFP_PRTCPNT_FLAG_03
-                        ,MFP_PRTCPNT_FLAG_04
-                        ,MFP_PRTCPNT_FLAG_05
-                        ,MFP_PRTCPNT_FLAG_06
-                        ,MFP_PRTCPNT_FLAG_07
-                        ,MFP_PRTCPNT_FLAG_08
-                        ,MFP_PRTCPNT_FLAG_09
-                        ,MFP_PRTCPNT_FLAG_10
-                        ,MFP_PRTCPNT_FLAG_11
-                        ,MFP_PRTCPNT_FLAG_12
-                        ,MFP_PRTCPNT_FLAG_LTST
+                        {self.basecols()}
                         {DE.table_id_cols_sfx(self)}
 
                     from mfp_{self.de.YEAR}
