@@ -83,10 +83,10 @@ class OTH:
                 , { TAF_Closure.var_set_type1('MDCR_BENE_ID') }
                 , { TAF_Closure.var_set_type2('HLTH_CARE_ACQRD_COND_CD', 0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_fills('DGNS_1_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_1_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_1_CD_IND', 0, cond1='1', cond2='2') }
                 , DGNS_POA_1_CD_IND
                 , { TAF_Closure.var_set_fills('DGNS_2_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_2_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_2_CD_IND', 0, cond1='1', cond2='2') }
                 , DGNS_POA_2_CD_IND
                 , { TAF_Closure.var_set_type1('SRVC_PLC_CD', upper=True, lpad=2) }
                 , { TAF_Closure.var_set_type1('PRVDR_LCTN_ID') }

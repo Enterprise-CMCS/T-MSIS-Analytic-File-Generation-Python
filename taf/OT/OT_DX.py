@@ -40,7 +40,7 @@ class OT_DX:
                 end as ADJDCTN_DT
             , case when trim(upper(dgns_type_cd)) in {tuple(TAF_Metadata.DGNS_TYPE_CD_values)} then trim(upper(dgns_type_cd)) else NULL end as DGNS_TYPE_CD
             , DGNS_SQNC_NUM
-            ,{ TAF_Closure.var_set_type2('DGNS_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+            ,{ TAF_Closure.var_set_type2('DGNS_CD_IND', 0, cond1='1', cond2='2') }
             ,DGNS_CD
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
             ,from_utc_timestamp(current_timestamp(), 'EST') as REC_UPDT_TS             --this must be equal to REC_ADD_TS for CCW pipeline
