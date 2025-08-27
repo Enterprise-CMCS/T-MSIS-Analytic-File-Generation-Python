@@ -82,21 +82,21 @@ class LTH:
                 , { TAF_Closure.var_set_type2(var='HLTH_CARE_ACQRD_COND_CD', lpad=0, cond1='0', cond2='1') }
                 , { TAF_Closure.var_set_ptstatus('PTNT_STUS_CD') }
                 , { TAF_Closure.var_set_fills('ADMTG_DGNS_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2(var='ADMTG_DGNS_CD_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2(var='ADMTG_DGNS_CD_IND', lpad=0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_fills('DGNS_1_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2(var='DGNS_1_CD_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2(var='DGNS_1_CD_IND', lpad=0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_1_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_2_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2(var='DGNS_2_CD_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2(var='DGNS_2_CD_IND', lpad=0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_2_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_3_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2(var='DGNS_3_CD_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2(var='DGNS_3_CD_IND', lpad=0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_3_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_4_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2(var='DGNS_4_CD_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2(var='DGNS_4_CD_IND', lpad=0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_4_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_5_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2(var='DGNS_5_CD_IND', lpad=0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2(var='DGNS_5_CD_IND', lpad=0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_5_CD_IND') }
                 , { TAF_Closure.var_set_type6('NCVRD_DAYS_CNT', cond1='88888') }
                 , { TAF_Closure.var_set_type6('NCVRD_CHRGS_AMT', cond1='888888888.88') }
