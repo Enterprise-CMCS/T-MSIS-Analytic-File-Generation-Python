@@ -97,42 +97,42 @@ class IPH:
                     else cast(BIRTH_WT_GRMS_QTY as decimal(9, 3)) end as BIRTH_WT_GRMS_QTY
 
                 , { TAF_Closure.var_set_fills('ADMTG_DGNS_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('ADMTG_DGNS_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('ADMTG_DGNS_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_fills('DGNS_1_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_1_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_1_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_1_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_2_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_2_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_2_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_2_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_3_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_3_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_3_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_3_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_4_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_4_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_4_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_4_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_5_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_5_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_5_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_5_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_6_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_6_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_6_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_6_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_7_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_7_CD_IND', 0, cond1='1', cond2=2, cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_7_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_7_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_8_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_8_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_8_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_8_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_9_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_9_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_9_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_9_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_10_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_10_CD_IND', 0, cond1=1, cond2=2, cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_10_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_10_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_11_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_11_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_11_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_11_CD_IND') }
                 , { TAF_Closure.var_set_fills('DGNS_12_CD', cond1='0', cond2='8', cond3='9', cond4='#') }
-                , { TAF_Closure.var_set_type2('DGNS_12_CD_IND', 0, cond1='1', cond2='2', cond3='3') }
+                , { TAF_Closure.var_set_type2('DGNS_12_CD_IND', 0, cond1='1', cond2='2') }
                 , { TAF_Closure.var_set_poa('DGNS_POA_12_CD_IND') }
 
                 , DRG_CD
