@@ -786,6 +786,7 @@ class DE0001BASE(DE):
                     {DE.unique_claims_ids(self, cltype='FTX')}
                 )
 
+                where submtg_state_cd in ({self.de.state_code})
                 group by submtg_state_cd, msis_ident_num
             """
         self.de.append(type(self).__name__, z)
