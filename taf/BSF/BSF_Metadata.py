@@ -63,7 +63,7 @@ class BSF_Metadata:
             if col in BSF_Metadata.renames.keys():
                 columns[i] = f"{BSF_Metadata.renames.get(col).upper()}"
             else:
-                columns[i] = col
+                columns[i] = col.upper()
             
         return new_line_comma.join(columns)
 

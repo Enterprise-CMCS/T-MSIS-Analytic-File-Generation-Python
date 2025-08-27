@@ -437,11 +437,12 @@ class MCP07(MCP):
                             "OPRTG_AUTHRTY_1932A_1915K_IND",
                             "OPRTG_AUTHRTY_1915BK_CONC_IND",
                             "OPRTG_AUTHRTY_1115_1915K_IND",
-                            "ACRDTN_JCAHO"
+                            "ACRDTN_JCAHO",
                         ]
 
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mcp
+                ({', '.join(base_col_list)}, REC_ADD_TS, REC_UPDT_TS)
                 SELECT
                     { ', '.join(base_col_list) }
                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
