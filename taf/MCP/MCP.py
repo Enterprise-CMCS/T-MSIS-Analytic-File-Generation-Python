@@ -132,7 +132,7 @@ class MCP(TAF):
                 state_submsn_type s
             on
                 T.submitting_state = s.submtg_state_cd
-                and upper(s.fil_type) = 'MCP'
+                and upper(s.fil_type) = 'MCR'
 
             where
                 (
