@@ -513,6 +513,7 @@ class DE0005(DE):
         else:
 
             z = f"""insert into {self.de.DA_SCHEMA}.TAF_ANN_DE_{self.tbl_suffix}
+                    (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
                     select
 
                         {DE.table_id_cols_pre(self)}

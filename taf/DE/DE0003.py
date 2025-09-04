@@ -30,6 +30,27 @@ class DE0003(DE):
         self.address_phone(runyear=self.de.YEAR)
         self.create_CNTCT_DTLS()
 
+    def basecols(self):
+        """
+        Define base columns.
+        """
+
+        z = """
+            ,ELGBL_1ST_NAME
+            ,ELGBL_LAST_NAME
+            ,ELGBL_MDL_INITL_NAME
+            ,ELGBL_ADR_MAIL_FLAG
+            ,ELGBL_LINE_1_ADR
+            ,ELGBL_LINE_2_ADR
+            ,ELGBL_LINE_3_ADR
+            ,ELGBL_CITY_NAME
+            ,ELGBL_ZIP_CD
+            ,ELGBL_CNTY_CD
+            ,ELGBL_STATE_CD
+            ,ELGBL_PHNE_NUM_HOME
+        """
+        return z
+
     def address_phone(self, runyear):
         """
         Pull in address and phone, for which we DO look to prior year.
@@ -208,20 +229,10 @@ class DE0003(DE):
         else:
 
             z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{self.tbl_suffix}
+                    (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM {self.basecols()}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
                     select
                         {DE.table_id_cols_pre(self)}
-                        ,ELGBL_1ST_NAME
-                        ,ELGBL_LAST_NAME
-                        ,ELGBL_MDL_INITL_NAME
-                        ,ELGBL_ADR_MAIL_FLAG
-                        ,ELGBL_LINE_1_ADR
-                        ,ELGBL_LINE_2_ADR
-                        ,ELGBL_LINE_3_ADR
-                        ,ELGBL_CITY_NAME
-                        ,ELGBL_ZIP_CD
-                        ,ELGBL_CNTY_CD
-                        ,ELGBL_STATE_CD
-                        ,ELGBL_PHNE_NUM_HOME
+                        {self.basecols()}
                         {DE.table_id_cols_sfx(self)}
 
                     from name_address_phone_{self.de.YEAR}

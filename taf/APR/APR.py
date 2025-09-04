@@ -476,6 +476,36 @@ class APR(TAF):
 
         return ','.join(cols.copy())
 
+    def id_col_spec(self, loctype=0):
+        """
+        Function id_col_spec to add the 6 cols that are the same across all tables into the column specification 
+        of the final insert select statement (DA_RUN_ID, {fil_typ}_LINK_KEY, {fil_typ}_FIL_DT, ANN_{fil_typ}_VRSN, 
+        SUBMTG_STATE_CD, &main_id) link key includes supplemental state submission code for 'CHIP' or 'TPA' from 
+        the monthly TAF link key.
+        fil_typ - so this can be used for more than one TAF file type
+        loctype - controls whether to use *_LINK_KEY (0), *_LOC_LINK_KEY (2), or both (1)
+        """
+
+        cols = []
+
+        cols.append(f"DA_RUN_ID")
+
+        if loctype == 0 or loctype == 1:
+            cols.append(f"""{self.fil_typ}_LINK_KEY""")
+
+            if loctype == 1:
+                cols.append(f"""{self.fil_typ}_LOC_LINK_KEY""")
+
+        elif loctype == 2:
+            cols.append(f"""{self.fil_typ}_LOC_LINK_KEY""")
+
+        cols.append(f"""{self.fil_typ}_FIL_DT""")
+        cols.append(f"""{self.fil_typ}_VRSN""")
+        cols.append(f"""SUBMTG_STATE_CD""")
+        cols.append(f"""{self.main_id}""")
+
+        return ','.join(cols.copy())
+    
     def get_ann_count(self, tblname):
         """
         Function get_ann_cnt to get the count of the given table and put the count into a Function var

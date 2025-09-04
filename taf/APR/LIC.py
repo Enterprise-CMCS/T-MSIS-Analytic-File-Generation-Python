@@ -66,6 +66,7 @@ class LIC(APR):
 
         z = f"""
             INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_LCNS
+            ( { self.id_col_spec(loctype=2) }, { ', '.join(basecols) }, REC_ADD_TS, REC_UPDT_TS )
             SELECT
                 {self.table_id_cols(loctype=2)}
                 ,{ ', '.join(basecols) }

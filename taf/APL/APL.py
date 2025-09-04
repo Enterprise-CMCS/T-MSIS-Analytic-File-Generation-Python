@@ -454,12 +454,13 @@ class APL(TAF):
         """
         self.apl.append(type(self).__name__, z)
 
-    def table_id_cols(self, loctype=0):
+    def table_id_cols(self, colspec=0):
         """
         Function table_id_cols to add the 6 cols that are the same across all tables into the final insert select
         statement (DA_RUN_ID, {fil_typ}_LINK_KEY, {fil_typ}_FIL_DT, ANN_{fil_typ}_VRSN, SUBMTG_STATE_CD, &main_id)
         link key includes supplimental state submission code for 'CHIP' or 'TPA' from the monthly TAF link key.
         fil_typ - so this can be used for more than one TAF file type
+        colspec - include only final column name, for use in column spec
         """
 
         cols = []
@@ -526,6 +527,9 @@ class APL(TAF):
         cols.append(f"""'{self.apl.VERSION}' as {self.fil_typ}_VRSN""")
         cols.append("SUBMTG_STATE_CD")
         cols.append(f"""{self.main_id}""")
+
+        if colspec == 1:
+            cols = [col.strip().split(' ')[-1] for col in cols]
 
         return ",".join(cols.copy())
  

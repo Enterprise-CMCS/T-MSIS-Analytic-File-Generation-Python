@@ -65,7 +65,7 @@ class ENR(APR):
                     'PRVDR_ENRLMT_FLAG_09',
                     'PRVDR_ENRLMT_FLAG_10',
                     'PRVDR_ENRLMT_FLAG_11',
-                    'PRVDR_ENRLMT_FLAG_12']
+                    'PRVDR_ENRLMT_FLAG_12',]
 
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
@@ -76,6 +76,7 @@ class ENR(APR):
 
             z = f"""
                 INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_ENRLMT
+                ( { self.id_col_spec() }, { ', '.join(basecols) }, REC_ADD_TS, REC_UPDT_TS )
                 SELECT
                     {self.table_id_cols()}
                     ,{ ', '.join(basecols) }

@@ -211,6 +211,7 @@ class OA(APL):
 
         z = f"""
             INSERT INTO {self.apl.DA_SCHEMA}.TAF_ANN_PL_OA
+            ({self.table_id_cols(colspec=1)}, {','.join(self.basecols)}, REC_ADD_TS, REC_UPDT_TS)
             SELECT
                  {self.table_id_cols()}
                 ,{",".join(self.basecols)}

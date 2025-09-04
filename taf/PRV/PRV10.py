@@ -266,19 +266,62 @@ class PRV10(PRV):
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
+        bed_columns = [
+            'DA_RUN_ID',
+            'PRV_LOC_LINK_KEY',
+            'PRV_FIL_DT',
+            'PRV_VRSN',
+            'TMSIS_RUN_ID',
+            'SUBMTG_STATE_CD',
+            'SUBMTG_STATE_PRVDR_ID',
+            'PRVDR_LCTN_ID',
+            'BED_TYPE_CD',
+            'BED_CNT',
+            'REC_ADD_TS',
+            'REC_UPDT_TS',
+        ]
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_bed
+                ({ ','.join(bed_columns) })
                 SELECT
-                    *
+                    { ','.join(bed_columns) }
                 FROM
                     Prov10_BedType_CNST
         """
         self.prv.append(type(self).__name__, z)
 
+        loc_columns = [
+            'DA_RUN_ID',
+            'PRV_LINK_KEY',
+            'PRV_LOC_LINK_KEY',
+            'PRV_FIL_DT',
+            'PRV_VRSN',
+            'TMSIS_RUN_ID',
+            'SUBMTG_STATE_CD',
+            'SUBMTG_STATE_PRVDR_ID',
+            'PRVDR_LCTN_ID',
+            'PRVDR_ADR_BLG_IND',
+            'PRVDR_ADR_PRCTC_IND',
+            'PRVDR_ADR_SRVC_IND',
+            'ADR_LINE_1_TXT',
+            'ADR_LINE_2_TXT',
+            'ADR_LINE_3_TXT',
+            'ADR_CITY_NAME',
+            'ADR_STATE_CD',
+            'ADR_ZIP_CD',
+            'ADR_CNTY_CD',
+            'ADR_BRDR_STATE_IND',
+            'PRVDR_SRVC_ST_DFRNT_SUBMTG_ST',
+            'REC_ADD_TS',
+            'REC_UPDT_TS',
+        ]
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_loc
+                ({ ','.join(loc_columns) })
                 SELECT
-                    *
+                    { ','.join(loc_columns) }
                 FROM
                     loc__g2
         """

@@ -238,10 +238,24 @@ class MCP06(MCP):
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
+        base_col_list = [
+                            "DA_RUN_ID",
+                            "MCP_LINK_KEY",
+                            "MCP_FIL_DT",
+                            "MCP_VRSN",
+                            "TMSIS_RUN_ID",
+                            "SUBMTG_STATE_CD",
+                            "MC_PLAN_ID",
+                            "MC_PLAN_POP_EFCTV_DT",
+                            "MC_PLAN_POP_END_DT",
+                            "MC_PLAN_POP",
+                        ]
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_mce
+                ({', '.join(base_col_list)}, REC_ADD_TS, REC_UPDT_TS)
                 SELECT
-                    *
+                    { ', '.join(base_col_list) }
                    ,from_utc_timestamp(current_timestamp(), 'EST') as REC_ADD_TS
                    ,cast(NULL as timestamp) as REC_UPDT_TS
                 FROM

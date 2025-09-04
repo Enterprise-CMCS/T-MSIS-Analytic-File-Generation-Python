@@ -59,7 +59,7 @@ class BED(APR):
                     'PRVDR_BED_FLAG_09',
                     'PRVDR_BED_FLAG_10',
                     'PRVDR_BED_FLAG_11',
-                    'PRVDR_BED_FLAG_12']
+                    'PRVDR_BED_FLAG_12',]
 
         # if this flag is set them don't insert to the tables
         # we're running to grab statistics only
@@ -69,6 +69,7 @@ class BED(APR):
         else:
             z = f"""
                 INSERT INTO {self.apr.DA_SCHEMA}.TAF_ANN_PR_BED
+                ( { self.id_col_spec(loctype=2) }, { ', '.join(basecols) }, REC_ADD_TS, REC_UPDT_TS )
                 SELECT
                     {self.table_id_cols(loctype=2)}
                     ,{ ', '.join(basecols) }

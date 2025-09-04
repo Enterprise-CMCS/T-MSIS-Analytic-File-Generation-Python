@@ -138,10 +138,27 @@ class PRV05(PRV):
             runner.logger.info(f"** {self.__class__.__name__}: Run Stats Only is set to True. We will skip the table inserts and run post job functions only **")
             return
 
+        columns = [
+            'DA_RUN_ID',
+            'PRV_LOC_LINK_KEY',
+            'PRV_FIL_DT',
+            'PRV_VRSN',
+            'TMSIS_RUN_ID',
+            'SUBMTG_STATE_CD',
+            'SUBMTG_STATE_PRVDR_ID',
+            'PRVDR_LCTN_ID',
+            'PRVDR_ID_TYPE_CD',
+            'PRVDR_ID',
+            'PRVDR_ID_ISSG_ENT_ID_TXT',
+            'REC_ADD_TS',
+            'REC_UPDT_TS',
+        ]
+
         z = f"""
                 INSERT INTO {runner.DA_SCHEMA}.taf_prv_idt
+                ({ ','.join(columns) })
                 SELECT
-                    *
+                    { ','.join(columns) }
                 FROM
                     Prov05_Identifiers_CNST
         """

@@ -47,6 +47,27 @@ class BSF_Metadata:
         return new_line_comma.join(columns)
 
     @staticmethod
+    def columnSpec():
+        """
+        Function to create list of columns on destination table in which to write output.
+        """
+
+        new_line_comma = '\n\t\t\t,'
+
+        columns = BSF_Metadata.output_columns.copy()
+
+        for i, column in enumerate(columns):
+            # extract column name for items in list with aliases
+            col = column.split(' ')[-1]
+            # apply renames where applicable
+            if col in BSF_Metadata.renames.keys():
+                columns[i] = f"{BSF_Metadata.renames.get(col).upper()}"
+            else:
+                columns[i] = col.upper()
+            
+        return new_line_comma.join(columns)
+
+    @staticmethod
     def tagAlias(segment_id: str, alias: str):
         """
         Function to tag aliased names.  
@@ -357,7 +378,9 @@ class BSF_Metadata:
             return
 
         z = f"""
-                INSERT INTO {bsf.DA_SCHEMA}.taf_mon_bsf
+                INSERT INTO {bsf.DA_SCHEMA}.taf_mon_bsf (
+                    { BSF_Metadata.columnSpec() }
+                )
                 select
                     { BSF_Metadata.finalFormatter() }
                 from (

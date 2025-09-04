@@ -843,6 +843,7 @@ class DE(TAF):
                       'ENRLMT_END_CY_DT'
                      ]
         z = f"""insert into {self.de.DA_SCHEMA}.taf_ann_de_{DE0002.tbl_abrv}
+                (DE_LINK_KEY, DE_FIL_DT, ANN_DE_VRSN, MSIS_IDENT_NUM, {", ".join(extra_cols)}{DE.table_id_cols_sfx(self, extra_cols=[], as_select=True)})
                 select
                     {DE.table_id_cols_pre(self, suffix="", extra_cols=extra_cols)}
                     {DE.table_id_cols_sfx(self)}
