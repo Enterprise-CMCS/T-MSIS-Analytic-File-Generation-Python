@@ -18,7 +18,7 @@ class PRV09(PRV):
                    'submitting_state',
                    'submitting_state_prov_id']
 
-        self.screen_runid('tmsis.Prov_Affiliated_Programs',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Afltd_Pgm',
                           maintbl,
                           runlist,
                           'Prov09_AffPgms_Latest1')
@@ -26,19 +26,19 @@ class PRV09(PRV):
         # row count
         # self.prv.countrows(Prov09_AffPgms_Latest1, cnt_latest, PRV09_Latest)
 
-        cols09 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'record_number',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
-                  '%upper_case(affiliated_program_id) as affiliated_program_id',
-                  'affiliated_program_type',
-                  'prov_affiliated_program_eff_date',
-                  'prov_affiliated_program_end_date']
+        cols09 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'rec_num as record_number',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  '%upper_case(submtg_state_prvdr_id) as submitting_state_prov_id',
+                  '%upper_case(afltd_pgm_id) as affiliated_program_id',
+                  'afltd_pgm_type_cd as affiliated_program_type',
+                  'prvdr_afltd_pgm_efctv_dt as prov_affiliated_program_eff_date',
+                  'prvdr_afltd_pgm_end_dt as prov_affiliated_program_end_date']
 
         # copy 09(Affiliated Programs) provider rows
-        whr09 = 'upper(affiliated_program_id) is not null'
+        whr09 = 'upper(afltd_pgm_id) is not null'
 
         self.copy_activerows('Prov09_AffPgms_Latest1',
                              cols09,

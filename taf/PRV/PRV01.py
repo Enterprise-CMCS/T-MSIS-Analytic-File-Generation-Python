@@ -18,7 +18,7 @@ class PRV01(PRV):
         cols01 = ['tms_run_id', 'submitting_state']
 
         # copy provider header table
-        self.copy_activerows_nts("tmsis.File_Header_Record_Provider", cols01, 'Prov01_Header_Copy')
+        self.copy_activerows_nts("tmsis.Tmsis_Fhdr_Rec_Prvdr", cols01, 'Prov01_Header_Copy')
 
         # self.prv.countrows('Prov01_Header_Copy', 'cnt_active', 'PRV01_Active')
 

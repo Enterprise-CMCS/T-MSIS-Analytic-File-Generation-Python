@@ -626,12 +626,16 @@ class TAF_Closure:
 
         return "\n    ".join(result)
 
-    def fix_old_dates(date_var):
+    def fix_old_dates(date_var, out_as=None):
         """
         For dates older than 1600-01-01, default the dates to 1599-12-31.
+        out_as: specify output column name - default = input column name
         """
 
-        return f"case when ({date_var} < to_date('1600-01-01')) then to_date('1599-12-31') else {date_var} end as {date_var}"
+        if out_as is None:
+            out_as = date_var
+
+        return f"case when ({date_var} < to_date('1600-01-01')) then to_date('1599-12-31') else {date_var} end as {out_as}"
 
     def set_end_dt(enddt):
         """
@@ -663,16 +667,20 @@ class TAF_Closure:
 
         return "lpad(trim(col), 4, '0')"
 
-    def zero_pad(var_cd, var_len):
+    def zero_pad(var_cd, var_len, out_as=None):
         """
         Another zero pad function.
+        out_as: specify output column name - default = input column name
         """
+
+        if out_as is None:
+            out_as = var_cd
 
         return f"""case
                      when length(trim({var_cd}))<{var_len} and length(trim({var_cd}))>0 and {var_cd} is not null
                      then lpad(trim(upper({var_cd})),{var_len},'0')
                      else nullif(trim(upper({var_cd})),'')
-                   end as {var_cd}
+                   end as {out_as}
         """
 
     typecast = {

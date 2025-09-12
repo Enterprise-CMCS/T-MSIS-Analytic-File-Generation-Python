@@ -70,14 +70,29 @@ class PRV(TAF):
                         T.submitting_state = R.submitting_state and
                         upper(T.submitting_state_prov_id) = R.submitting_state_prov_id"""
 
+        # retain tmsis table column names used in subsequent merge and in TAF_Metadata.py
+        renames = [
+            'tmsis_run_id as tms_run_id',
+            'submtg_state_cd as submitting_state',
+            'submtg_state_prvdr_id as submitting_state_prov_id',
+        ]
+
+        if runtyp == 'L':
+            renames.append('prvdr_lctn_id as prov_location_id')
+
         # diststyle key distkey(submitting_state_prov_id)
         # compound sortkey (&&&runvars) as
         z = f"""
             create or replace temporary view {outtbl} as
             select
                 T.*
-            from
-                {intbl} T
+            from (
+                select
+                    *,
+                    { ','.join(renames) }
+                from
+                    {intbl}
+                ) T
             inner join {runtbl} R
                 { on.format(runvars) }
             order by
@@ -105,7 +120,7 @@ class PRV(TAF):
             from
                 { intbl }
             where
-                tms_is_active=1
+                tmsis_actv_ind=1
                 { whr }
             order by
                 tms_run_id,
@@ -125,14 +140,15 @@ class PRV(TAF):
                 from (
                     select
                         *,
-                        submitting_state as submtg_state_cd
+                        tmsis_run_id as tms_run_id,
+                        submtg_state_cd as submitting_state
                     from
                         {intbl}
                     where
-                        tms_is_active = 1 and
-                        tms_reporting_period is not null and
+                        tmsis_actv_ind = 1 and
+                        tmsis_rptg_prd is not null and
                         tot_rec_cnt > 0 and
-                        trim(TRAILING FROM submitting_state) not in ('94','96')
+                        trim(TRAILING FROM submtg_state_cd) not in ('94','96')
                     )
                 where
                     1=1 { self.prv.ST_FILTER() }

@@ -18,7 +18,7 @@ class PRV06(PRV):
                    'submitting_state',
                    'submitting_state_prov_id']
 
-        self.screen_runid('tmsis.Prov_Taxonomy_Classification',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Txnmy_Clsfctn',
                           maintbl,
                           runlist,
                           'Prov06_Taxonomy_Latest1')
@@ -26,26 +26,26 @@ class PRV06(PRV):
         # row count
         # self.prv.countrows(Prov06_Taxonomy_Latest1, cnt_latest, PRV06_Latest)
 
-        cols06 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'record_number',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  'upper(submitting_state_prov_id) as submitting_state_prov_id',
+        cols06 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'rec_num as record_number',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  'upper(submtg_state_prvdr_id) as submitting_state_prov_id',
                   """case
-                      when (prov_classification_type='2' or prov_classification_type='3') and
-                      length(trim(prov_classification_code))<2 and length(trim(prov_classification_code))>0 and
-                      nullif(trim(upper(prov_classification_code)),'') is not null then lpad(trim(upper(prov_classification_code)),2,'0')
-                      when prov_classification_type='4' and
-                      length(trim(prov_classification_code))<3 and length(trim(prov_classification_code))>0 and
-                      nullif(trim(upper(prov_classification_code)),'') is not null then lpad(trim(upper(prov_classification_code)),3,'0')
-                      else nullif(trim(upper(prov_classification_code)),'')
+                      when (prvdr_clsfctn_type_cd='2' or prvdr_clsfctn_type_cd='3') and
+                      length(trim(prvdr_clsfctn_cd))<2 and length(trim(prvdr_clsfctn_cd))>0 and
+                      nullif(trim(upper(prvdr_clsfctn_cd)),'') is not null then lpad(trim(upper(prvdr_clsfctn_cd)),2,'0')
+                      when prvdr_clsfctn_type_cd='4' and
+                      length(trim(prvdr_clsfctn_cd))<3 and length(trim(prvdr_clsfctn_cd))>0 and
+                      nullif(trim(upper(prvdr_clsfctn_cd)),'') is not null then lpad(trim(upper(prvdr_clsfctn_cd)),3,'0')
+                      else nullif(trim(upper(prvdr_clsfctn_cd)),'')
                    end as prov_classification_code""",
-                  'prov_classification_type',
-                  'prov_taxonomy_classification_eff_date',
-                  'prov_taxonomy_classification_end_date']
+                  'prvdr_clsfctn_type_cd as prov_classification_type',
+                  'prvdr_txnmy_clsfctn_efctv_dt as prov_taxonomy_classification_eff_date',
+                  'prvdr_txnmy_clsfctn_end_dt as prov_taxonomy_classification_end_date']
 
-        whr06 = 'prov_classification_type is not null and upper(prov_classification_code) is not null'
+        whr06 = 'prvdr_clsfctn_type_cd is not null and upper(prvdr_clsfctn_cd) is not null'
 
         self.copy_activerows('Prov06_Taxonomy_Latest1',
                              cols06,
