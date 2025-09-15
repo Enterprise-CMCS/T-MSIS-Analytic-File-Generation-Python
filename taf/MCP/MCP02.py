@@ -20,31 +20,31 @@ class MCP02(MCP):
         runlist = ["tms_run_id", "submitting_state"]
 
         self.screen_runid(
-            "tmsis.Managed_Care_Main", runtbl, runlist, "MC02_Main_Latest1", "M"
+            "tmsis.Tmsis_Mc_Mn_Data", runtbl, runlist, "MC02_Main_Latest1", "M"
         )
 
         # row count
         self.count_rows("MC02_Main_Latest1", "cnt_latest", "MC02_Latest")
 
         cols02 = [
-            "tms_run_id",
-            "tms_reporting_period",
-            "submitting_state",
-            "submitting_state as submtg_state_cd",
-            "record_number",
+            "tmsis_run_id as tms_run_id",
+            "tmsis_rptg_prd as tms_reporting_period",
+            "submtg_state_cd as submitting_state",
+            "submtg_state_cd",
+            "rec_num as record_number",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
-            "managed_care_main_rec_eff_date",
-            "managed_care_main_rec_end_date",
-            "%fix_old_dates(managed_care_contract_eff_date)",
-            "case when managed_care_contract_eff_date is not null and managed_care_contract_end_date is null then to_date('9999-12-31') when to_date('1600-01-01') > managed_care_contract_end_date then to_date('1599-12-31') else managed_care_contract_end_date end as MC_CNTRCT_END_DT",
-            "managed_care_name",
-            "managed_care_program",
-            "managed_care_plan_type",
-            "reimbursement_arrangement",
-            "managed_care_profit_status",
-            "core_based_statistical_area_code",
-            "percent_business",
-            "managed_care_service_area",
+            "mc_mn_rec_efctv_dt as managed_care_main_rec_eff_date",
+            "mc_mn_rec_end_dt as managed_care_main_rec_end_date",
+            "%fix_old_dates(mc_cntrct_efctv_dt, managed_care_contract_eff_date)",
+            "case when mc_cntrct_efctv_dt is not null and mc_cntrct_end_dt is null then to_date('9999-12-31') when to_date('1600-01-01') > mc_cntrct_end_dt then to_date('1599-12-31') else mc_cntrct_end_dt end as MC_CNTRCT_END_DT",
+            "mc_name as managed_care_name",
+            "mc_pgm_cd as managed_care_program",
+            "mc_plan_type_cd as managed_care_plan_type",
+            "reimbrsmt_arngmt_cd as reimbursement_arrangement",
+            "mc_prft_stus_cd as managed_care_profit_status",
+            "cbsa_cd as core_based_statistical_area_code",
+            "busns_pct as percent_business",
+            "mc_sarea_cd as managed_care_service_area",
         ]
 
         whr02 = "upper(state_plan_id_num) is not null"

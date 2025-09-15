@@ -19,7 +19,7 @@ class MCP05(MCP):
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
         self.screen_runid(
-            "tmsis.Managed_care_operating_authority",
+            "tmsis.Tmsis_Mc_Oprtg_Authrty",
             runtbl,
             runlist,
             "MC05_Operating_Authority_Latest1",
@@ -29,26 +29,26 @@ class MCP05(MCP):
         self.count_rows("MC05_Operating_Authority_Latest1", "cnt_latest", "MC05_Latest")
 
         cols05 = [
-            "tms_run_id",
-            "tms_reporting_period",
-            "record_number",
-            "submitting_state",
-            "submitting_state as submtg_state_cd",
+            "tmsis_run_id as tms_run_id",
+            "tmsis_rptg_prd as tms_reporting_period",
+            "rec_num as record_number",
+            "submtg_state_cd as submitting_state",
+            "submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             """case
-                when length(trim(TRAILING FROM operating_authority))<2 and length(trim(TRAILING FROM operating_authority))>0 and operating_authority in ('1','2','3','4','5','6','7','8','9') 
-                    then lpad(trim(TRAILING FROM operating_authority),2,'0')
-                when trim(TRAILING FROM operating_authority) in ('01','02','03','04','05','06','07','08','09') or 
-                    trim(TRAILING FROM operating_authority) in ('10','11','12','13','14','15','16','17','18','19','20','21','22','23')
-                    then trim(TRAILING FROM operating_authority)
+                when length(trim(TRAILING FROM oprtg_authrty_cd))<2 and length(trim(TRAILING FROM oprtg_authrty_cd))>0 and oprtg_authrty_cd in ('1','2','3','4','5','6','7','8','9') 
+                    then lpad(trim(TRAILING FROM oprtg_authrty_cd),2,'0')
+                when trim(TRAILING FROM oprtg_authrty_cd) in ('01','02','03','04','05','06','07','08','09') or 
+                    trim(TRAILING FROM oprtg_authrty_cd) in ('10','11','12','13','14','15','16','17','18','19','20','21','22','23')
+                    then trim(TRAILING FROM oprtg_authrty_cd)
                 else null
             end as operating_authority""",
-            "%upper_case(waiver_id) as waiver_id",
-            "managed_care_op_authority_eff_date",
-            "managed_care_op_authority_end_date",
+            "%upper_case(wvr_id) as waiver_id",
+            "mc_op_authrty_efctv_dt as managed_care_op_authority_eff_date",
+            "mc_op_authrty_end_dt as managed_care_op_authority_end_date",
         ]
 
-        whr05 = "(trim(TRAILING FROM operating_authority) in ('1','2','3','4','5','6','7','8','9') or trim(TRAILING FROM operating_authority) in ('01','02','03','04','05','06','07','08','09') or trim(TRAILING FROM operating_authority) in ('10','11','12','13','14','15','16','17','18','19','20','21','22','23')) or (upper(waiver_id) is not null)"
+        whr05 = "(trim(TRAILING FROM oprtg_authrty_cd) in ('1','2','3','4','5','6','7','8','9') or trim(TRAILING FROM oprtg_authrty_cd) in ('01','02','03','04','05','06','07','08','09') or trim(TRAILING FROM oprtg_authrty_cd) in ('10','11','12','13','14','15','16','17','18','19','20','21','22','23')) or (upper(wvr_id) is not null)"
 
         self.copy_activerows(
             "MC05_Operating_Authority_Latest1",

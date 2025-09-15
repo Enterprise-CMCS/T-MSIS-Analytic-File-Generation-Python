@@ -20,7 +20,7 @@ class MCP07(MCP):
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
         self.screen_runid(
-            "tmsis.Managed_care_accreditation_organization",
+            "tmsis.Tmsis_Mc_Acrdtn_Org",
             runtbl,
             runlist,
             "MC07_Accreditation_Latest1",
@@ -31,18 +31,18 @@ class MCP07(MCP):
         self.count_rows("MC07_Accreditation_Latest1", "cnt_latest", "MC07_Latest")
 
         cols07 = [
-            "tms_run_id",
-            "tms_reporting_period",
-            "record_number",
-            "submitting_state",
-            "submitting_state as submtg_state_cd",
+            "tmsis_run_id as tms_run_id",
+            "tmsis_rptg_prd as tms_reporting_period",
+            "rec_num as record_number",
+            "submtg_state_cd as submitting_state",
+            "submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
-            "%zero_pad(accreditation_organization, 2)",
-            "%fix_old_dates(date_accreditation_achieved)",
-            "%set_end_dt(date_accreditation_end) as date_accreditation_end",
+            "%zero_pad(acrdtn_org_cd, 2, accreditation_organization)",
+            "%fix_old_dates(acrdtn_achvmt_dt, date_accreditation_achieved)",
+            "%set_end_dt(acrdtn_end_dt) as date_accreditation_end",
         ]
 
-        whr07 = "accreditation_organization is not null"
+        whr07 = "acrdtn_org_cd is not null"
 
         self.copy_activerows(
             "MC07_Accreditation_Latest1", cols07, whr07, "MC07_Accreditation_Copy"

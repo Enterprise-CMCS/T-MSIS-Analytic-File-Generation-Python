@@ -19,7 +19,7 @@ class MCP03(MCP):
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
         self.screen_runid(
-            "tmsis.Managed_care_location_and_contact_info",
+            "tmsis.Tmsis_Mc_Lctn_Cntct",
             runtbl,
             runlist,
             "MC03_Location_Latest1",
@@ -30,26 +30,26 @@ class MCP03(MCP):
         self.count_rows("MC03_Location_Latest1", "cnt_latest", "MC03_Latest")
 
         cols03 = [
-            "tms_run_id",
-            "tms_reporting_period",
-            "record_number",
-            "submitting_state",
-            "submitting_state as submtg_state_cd",
+            "tmsis_run_id as tms_run_id",
+            "tmsis_rptg_prd as tms_reporting_period",
+            "rec_num as record_number",
+            "submtg_state_cd as submitting_state",
+            "submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
-            "%upper_case(managed_care_location_id) as managed_care_location_id",
-            "%fix_old_dates(managed_care_location_and_contact_info_eff_date)",
-            "%set_end_dt(managed_care_location_and_contact_info_end_date) as managed_care_location_and_contact_info_end_date",
-            "%upper_case(managed_care_addr_ln1) as managed_care_addr_ln1",
-            "managed_care_addr_ln2",
-            "managed_care_addr_ln3",
-            "managed_care_addr_type",
-            "managed_care_city",
-            "managed_care_county",
-            "%upper_case(managed_care_state) as managed_care_state",
-            "managed_care_zip_code",
+            "%upper_case(mc_lctn_id) as managed_care_location_id",
+            "%fix_old_dates(mc_lctn_cntct_efctv_dt, managed_care_location_and_contact_info_eff_date)",
+            "%set_end_dt(mc_lctn_cntct_end_dt) as managed_care_location_and_contact_info_end_date",
+            "%upper_case(mc_line_1_adr) as managed_care_addr_ln1",
+            "mc_line_2_adr as managed_care_addr_ln2",
+            "mc_line_3_adr as managed_care_addr_ln3",
+            "mc_adr_type_cd as managed_care_addr_type",
+            "mc_city_name as managed_care_city",
+            "mc_cnty_cd as managed_care_county",
+            "%upper_case(mc_state_cd) as managed_care_state",
+            "mc_zip_cd as managed_care_zip_code",
         ]
 
-        whr03 = "managed_care_addr_type=3"
+        whr03 = "mc_adr_type_cd=3"
 
         self.copy_activerows(
             "MC03_Location_Latest1", cols03, whr03, "MC03_Location_Copy"
