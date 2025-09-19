@@ -133,6 +133,8 @@ class PRV(TAF):
     def copy_activerows_nts(self, intbl, collist, outtbl):
          
         # diststyle even compound sortkey(tms_run_id, submitting_state)
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         z = f"""
                 create or replace temporary view {outtbl} as
                 select

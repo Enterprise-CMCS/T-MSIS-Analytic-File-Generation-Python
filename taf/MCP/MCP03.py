@@ -29,6 +29,8 @@ class MCP03(MCP):
         # row count
         self.count_rows("MC03_Location_Latest1", "cnt_latest", "MC03_Latest")
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols03 = [
             "tmsis_run_id as tms_run_id",
             "tmsis_rptg_prd as tms_reporting_period",
@@ -37,7 +39,7 @@ class MCP03(MCP):
             "submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             "%upper_case(mc_lctn_id) as managed_care_location_id",
-            "%fix_old_dates(mc_lctn_cntct_efctv_dt, managed_care_location_and_contact_info_eff_date)",
+            "%fix_old_dates_rename(mc_lctn_cntct_efctv_dt, managed_care_location_and_contact_info_eff_date)",
             "%set_end_dt(mc_lctn_cntct_end_dt) as managed_care_location_and_contact_info_end_date",
             "%upper_case(mc_line_1_adr) as managed_care_addr_ln1",
             "mc_line_2_adr as managed_care_addr_ln2",

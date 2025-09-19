@@ -26,6 +26,8 @@ class PRV06(PRV):
         # row count
         # self.prv.countrows(Prov06_Taxonomy_Latest1, cnt_latest, PRV06_Latest)
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols06 = ['tmsis_run_id as tms_run_id',
                   'tmsis_rptg_prd as tms_reporting_period',
                   'rec_num as record_number',

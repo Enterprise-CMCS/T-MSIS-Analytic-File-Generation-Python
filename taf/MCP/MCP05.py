@@ -28,6 +28,8 @@ class MCP05(MCP):
         # row count
         self.count_rows("MC05_Operating_Authority_Latest1", "cnt_latest", "MC05_Latest")
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols05 = [
             "tmsis_run_id as tms_run_id",
             "tmsis_rptg_prd as tms_reporting_period",

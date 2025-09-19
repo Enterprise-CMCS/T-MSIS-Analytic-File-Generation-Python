@@ -28,6 +28,8 @@ class MCP04(MCP):
         # row count
         self.count_rows("MC04_Service_Area_Latest1", "cnt_latest", "MC04_Latest")
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols04 = [
             "tmsis_run_id as tms_run_id",
             "tmsis_rptg_prd as tms_reporting_period",
@@ -36,7 +38,7 @@ class MCP04(MCP):
             "submtg_state_cd",
             f"""{ TAF_Closure.upper_case('state_plan_id_num')} as state_plan_id_num""",
             f"""{ TAF_Closure.upper_case('mc_sarea_name')} as managed_care_service_area_name""",
-            f"""{ TAF_Closure.fix_old_dates('mc_sarea_efctv_dt','managed_care_service_area_eff_date')}""",
+            f"""{ TAF_Closure.fix_old_dates_rename('mc_sarea_efctv_dt','managed_care_service_area_eff_date')}""",
             f"""{ TAF_Closure.set_end_dt('mc_sarea_end_dt')} as managed_care_service_area_end_date"""
         ]
 

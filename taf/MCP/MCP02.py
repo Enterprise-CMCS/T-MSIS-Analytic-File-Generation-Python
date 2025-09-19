@@ -26,6 +26,8 @@ class MCP02(MCP):
         # row count
         self.count_rows("MC02_Main_Latest1", "cnt_latest", "MC02_Latest")
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols02 = [
             "tmsis_run_id as tms_run_id",
             "tmsis_rptg_prd as tms_reporting_period",
@@ -35,7 +37,7 @@ class MCP02(MCP):
             "%upper_case(state_plan_id_num) as state_plan_id_num",
             "mc_mn_rec_efctv_dt as managed_care_main_rec_eff_date",
             "mc_mn_rec_end_dt as managed_care_main_rec_end_date",
-            "%fix_old_dates(mc_cntrct_efctv_dt, managed_care_contract_eff_date)",
+            "%fix_old_dates_rename(mc_cntrct_efctv_dt, managed_care_contract_eff_date)",
             "case when mc_cntrct_efctv_dt is not null and mc_cntrct_end_dt is null then to_date('9999-12-31') when to_date('1600-01-01') > mc_cntrct_end_dt then to_date('1599-12-31') else mc_cntrct_end_dt end as MC_CNTRCT_END_DT",
             "mc_name as managed_care_name",
             "mc_pgm_cd as managed_care_program",

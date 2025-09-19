@@ -26,6 +26,8 @@ class PRV09(PRV):
         # row count
         # self.prv.countrows(Prov09_AffPgms_Latest1, cnt_latest, PRV09_Latest)
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols09 = ['tmsis_run_id as tms_run_id',
                   'tmsis_rptg_prd as tms_reporting_period',
                   'rec_num as record_number',

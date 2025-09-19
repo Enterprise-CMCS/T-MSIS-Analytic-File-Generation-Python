@@ -28,6 +28,8 @@ class PRV04(PRV):
         # row count
         # self.prv.countrows(Prov04_Licensing_Latest1, cnt_latest, PRV04_Latest)
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols04 = ['tmsis_run_id as tms_run_id',
                   'tmsis_rptg_prd as tms_reporting_period',
                   'rec_num as record_number',

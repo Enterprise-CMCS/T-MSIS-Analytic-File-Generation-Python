@@ -30,6 +30,8 @@ class MCP07(MCP):
         # row count
         self.count_rows("MC07_Accreditation_Latest1", "cnt_latest", "MC07_Latest")
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols07 = [
             "tmsis_run_id as tms_run_id",
             "tmsis_rptg_prd as tms_reporting_period",
@@ -37,8 +39,8 @@ class MCP07(MCP):
             "submtg_state_cd as submitting_state",
             "submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
-            "%zero_pad(acrdtn_org_cd, 2, accreditation_organization)",
-            "%fix_old_dates(acrdtn_achvmt_dt, date_accreditation_achieved)",
+            "%zero_pad_rename(acrdtn_org_cd, 2, accreditation_organization)",
+            "%fix_old_dates_rename(acrdtn_achvmt_dt, date_accreditation_achieved)",
             "%set_end_dt(acrdtn_end_dt) as date_accreditation_end",
         ]
 

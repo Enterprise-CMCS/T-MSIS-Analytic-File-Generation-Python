@@ -31,6 +31,8 @@ class PRV02(PRV):
                         'cnt_latest',
                         'PRV02_Latest')
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols02 = ['tmsis_run_id as tms_run_id',
                   'tmsis_rptg_prd as tms_reporting_period',
                   'submtg_state_cd as submitting_state',
@@ -51,8 +53,8 @@ class PRV02(PRV):
                   'sex_cd as sex',
                   'ownrshp_cd as ownership_code',
                   'prvdr_prft_stus_cd as prov_profit_status',
-                  '%fix_old_dates(birth_dt, date_of_birth)',
-                  '%fix_old_dates(death_dt, date_of_death)',
+                  '%fix_old_dates_rename(birth_dt, date_of_birth)',
+                  '%fix_old_dates_rename(death_dt, date_of_death)',
                   'acpt_new_ptnts_ind as accepting_new_patients_ind',
                   'atyp_prov_ind as atypical_prov_ind',
                   ]

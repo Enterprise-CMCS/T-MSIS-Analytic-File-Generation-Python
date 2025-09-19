@@ -29,6 +29,8 @@ class MCP06(MCP):
         # row count
         self.count_rows("MC06_Population_Latest1", "cnt_latest", "MC06_Latest")
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols06 = [
             "tmsis_run_id as tms_run_id",
             "tmsis_rptg_prd as tms_reporting_period",
@@ -36,8 +38,8 @@ class MCP06(MCP):
             "submtg_state_cd as submitting_state",
             "submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
-            "%zero_pad(mc_plan_pop_cnt, 2, managed_care_plan_pop)",
-            "%fix_old_dates(mc_plan_pop_efctv_dt, managed_care_plan_pop_eff_date)",
+            "%zero_pad_rename(mc_plan_pop_cnt, 2, managed_care_plan_pop)",
+            "%fix_old_dates_rename(mc_plan_pop_efctv_dt, managed_care_plan_pop_eff_date)",
             "%set_end_dt(mc_plan_pop_end_dt) as managed_care_plan_pop_end_date",
         ]
 
