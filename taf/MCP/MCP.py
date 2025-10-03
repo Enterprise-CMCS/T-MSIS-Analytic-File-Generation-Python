@@ -40,14 +40,25 @@ class MCP(TAF):
                         T.submitting_state = R.submitting_state and
                         upper(T.state_plan_id_num) = R.state_plan_id_num"""
 
+        # retain tmsis table column names used in subsequent merge and in TAF_Metadata.py
+        renames = [
+            'tmsis_run_id as tms_run_id',
+            'submtg_state_cd as submitting_state',
+        ]
+
         # diststyle key distkey(state_plan_id_num)
         # compound sortkey (&&&runvars) as
         z = f"""
             create or replace temporary view {outtbl} as
             select
                 T.*
-            from
-                {intbl} T
+            from (
+                select
+                    *,
+                    { ','.join(renames) }
+                from
+                    {intbl}
+                ) T
             inner join {runtbl} R
                 { on.format(runvars) }
             order by
@@ -78,7 +89,7 @@ class MCP(TAF):
             from
                 { intbl }
             where
-                tms_is_active=1
+                tmsis_actv_ind=1
                 { whr }
             order by
                 tms_run_id,
@@ -90,6 +101,8 @@ class MCP(TAF):
     def copy_activerows_nts(self, intbl, collist, outtbl):
          
         # diststyle even compound sortkey(tms_run_id, submitting_state)
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         z = f"""
                 create or replace temporary view {outtbl} as
                 select
@@ -97,14 +110,15 @@ class MCP(TAF):
                 from (
                     select
                         *,
-                        submitting_state as submtg_state_cd
+                        tmsis_run_id as tms_run_id,
+                        submtg_state_cd as submitting_state
                     from
                         {intbl}
                     where
-                        tms_is_active = 1 and
-                        tms_reporting_period is not null and
+                        tmsis_actv_ind = 1 and
+                        tmsis_rptg_prd is not null and
                         tot_rec_cnt > 0 and
-                        trim(submitting_state) not in ('94','96'))
+                        trim(submtg_state_cd) not in ('94','96'))
                 where 
                     1=1 { self.mcp.ST_FILTER() }
                 order by

@@ -19,7 +19,7 @@ class PRV05(PRV):
                    'submitting_state_prov_id',
                    'prov_location_id']
 
-        self.screen_runid('tmsis.Prov_Identifiers',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Id',
                           loctbl,
                           runlist,
                           'Prov05_Identifiers_Latest1',
@@ -28,21 +28,23 @@ class PRV05(PRV):
         # row count
         # self.prv.countrows(Prov05_Identifiers_Latest1, cnt_latest, PRV05_Latest)
 
-        cols05 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'record_number',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
-                  '%upper_case(prov_location_id) as prov_location_id',
-                  '%upper_case(prov_identifier) as prov_identifier',
-                  'prov_identifier_type',
-                  '%upper_case(prov_identifier_issuing_entity_id) as prov_identifier_issuing_entity_id',
-                  'prov_identifier_eff_date',
-                  'prov_identifier_end_date']
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
+        cols05 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'rec_num as record_number',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  '%upper_case(submtg_state_prvdr_id) as submitting_state_prov_id',
+                  '%upper_case(prvdr_lctn_id) as prov_location_id',
+                  '%upper_case(prvdr_id) as prov_identifier',
+                  'prvdr_id_type_cd as prov_identifier_type',
+                  '%upper_case(prvdr_id_issg_ent_id_txt) as prov_identifier_issuing_entity_id',
+                  'prvdr_id_efctv_dt as prov_identifier_eff_date',
+                  'prvdr_id_end_dt as prov_identifier_end_date']
 
         # copy 05(identifiers) provider rows
-        whr05 = 'prov_identifier_type is not null and upper(prov_identifier) is not null'
+        whr05 = 'prvdr_id_type_cd is not null and upper(prvdr_id) is not null'
 
         self.copy_activerows('Prov05_Identifiers_Latest1',
                              cols05,

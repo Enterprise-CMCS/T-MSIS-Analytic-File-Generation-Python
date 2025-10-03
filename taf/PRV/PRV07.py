@@ -18,7 +18,7 @@ class PRV07(PRV):
                    'submitting_state',
                    'submitting_state_prov_id']
 
-        self.screen_runid('tmsis.Prov_Medicaid_Enrollment',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Mdcd_Enrlmt',
                           maintbl,
                           runlist,
                           'Prov07_Medicaid_Latest1')
@@ -26,20 +26,22 @@ class PRV07(PRV):
         # row count
         # self.prv.countrows(Prov07_Medicaid_Latest1, cnt_latest, PRV07_Latest)
 
-        cols07 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'record_number',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
-                  '%zero_pad(prov_medicaid_enrollment_status_code, 2)',
-                  'state_plan_enrollment',
-                  'prov_enrollment_method',
-                  '%fix_old_dates(appl_date)',
-                  '%fix_old_dates(prov_medicaid_eff_date)',
-                  '%set_end_dt(prov_medicaid_end_date) as prov_medicaid_end_date']
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
+        cols07 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'rec_num as record_number',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  '%upper_case(submtg_state_prvdr_id) as submitting_state_prov_id',
+                  '%zero_pad_rename(prvdr_mdcd_enrlmt_stus_cd, 2, prov_medicaid_enrollment_status_code)',
+                  'state_plan_enrlmt_cd as state_plan_enrollment',
+                  'prvdr_mdcd_enrlmt_mthd_cd as prov_enrollment_method',
+                  '%fix_old_dates_rename(appl_dt, appl_date)',
+                  '%fix_old_dates_rename(prvdr_mdcd_efctv_dt, prov_medicaid_eff_date)',
+                  '%set_end_dt(prvdr_mdcd_end_dt) as prov_medicaid_end_date']
 
-        whr07 = 'prov_medicaid_enrollment_status_code is not null'
+        whr07 = 'prvdr_mdcd_enrlmt_stus_cd is not null'
 
         self.copy_activerows('Prov07_Medicaid_Latest1',
                              cols07,

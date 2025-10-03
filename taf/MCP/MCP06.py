@@ -20,7 +20,7 @@ class MCP06(MCP):
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
         self.screen_runid(
-            "tmsis.Managed_care_plan_population_enrolled",
+            "tmsis.Tmsis_Mc_Plan_Pop_Enrld",
             runtbl,
             runlist,
             "MC06_Population_Latest1",
@@ -29,19 +29,21 @@ class MCP06(MCP):
         # row count
         self.count_rows("MC06_Population_Latest1", "cnt_latest", "MC06_Latest")
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols06 = [
-            "tms_run_id",
-            "tms_reporting_period",
-            "record_number",
-            "submitting_state",
-            "submitting_state as submtg_state_cd",
+            "tmsis_run_id as tms_run_id",
+            "tmsis_rptg_prd as tms_reporting_period",
+            "rec_num as record_number",
+            "submtg_state_cd as submitting_state",
+            "submtg_state_cd",
             "%upper_case(state_plan_id_num) as state_plan_id_num",
-            "%zero_pad(managed_care_plan_pop, 2)",
-            "%fix_old_dates(managed_care_plan_pop_eff_date)",
-            "%set_end_dt(managed_care_plan_pop_end_date) as managed_care_plan_pop_end_date",
+            "%zero_pad_rename(mc_plan_pop_cnt, 2, managed_care_plan_pop)",
+            "%fix_old_dates_rename(mc_plan_pop_efctv_dt, managed_care_plan_pop_eff_date)",
+            "%set_end_dt(mc_plan_pop_end_dt) as managed_care_plan_pop_end_date",
         ]
 
-        whr06 = "managed_care_plan_pop is not null"
+        whr06 = "mc_plan_pop_cnt is not null"
 
         self.copy_activerows(
             "MC06_Population_Latest1", cols06, whr06, "MC06_Population_Copy"

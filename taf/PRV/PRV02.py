@@ -20,7 +20,7 @@ class PRV02(PRV):
         # screen out all but the latest run id
         runlist = ['tms_run_id', 'submitting_state']
 
-        self.screen_runid('tmsis.Prov_Attributes_Main',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Attr_Mn',
                           runtbl,
                           runlist,
                           'Prov02_Main_Latest1',
@@ -31,33 +31,35 @@ class PRV02(PRV):
                         'cnt_latest',
                         'PRV02_Latest')
 
-        cols02 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  'record_number',
-                  '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
-                  'prov_attributes_eff_date',
-                  'prov_attributes_end_date',
-                  'prov_doing_business_as_name',
-                  'prov_legal_name',
-                  'prov_organization_name',
-                  'prov_tax_name',
-                  'facility_group_individual_code',
-                  'teaching_ind',
-                  'prov_first_name',
-                  'prov_middle_initial',
-                  'prov_last_name',
-                  'sex',
-                  'ownership_code',
-                  'prov_profit_status',
-                  '%fix_old_dates(date_of_birth)',
-                  '%fix_old_dates(date_of_death)',
-                  'accepting_new_patients_ind',
-                  'atypical_prov_ind',
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
+        cols02 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  'rec_num as record_number',
+                  '%upper_case(submtg_state_prvdr_id) as submitting_state_prov_id',
+                  'prvdr_attr_efctv_dt as prov_attributes_eff_date',
+                  'prvdr_attr_end_dt as prov_attributes_end_date',
+                  'prvdr_dba_name as prov_doing_business_as_name',
+                  'prvdr_lgl_name as prov_legal_name',
+                  'prvdr_org_name as prov_organization_name',
+                  'prvdr_tax_name as prov_tax_name',
+                  'fac_grp_indvdl_cd as facility_group_individual_code',
+                  'tchng_ind as teaching_ind',
+                  'prvdr_1st_name as prov_first_name',
+                  'prvdr_mdl_initl_name as prov_middle_initial',
+                  'prvdr_last_name as prov_last_name',
+                  'sex_cd as sex',
+                  'ownrshp_cd as ownership_code',
+                  'prvdr_prft_stus_cd as prov_profit_status',
+                  '%fix_old_dates_rename(birth_dt, date_of_birth)',
+                  '%fix_old_dates_rename(death_dt, date_of_death)',
+                  'acpt_new_ptnts_ind as accepting_new_patients_ind',
+                  'atyp_prov_ind as atypical_prov_ind',
                   ]
 
-        whr02 = 'upper(submitting_state_prov_id) is not null'
+        whr02 = 'upper(submtg_state_prvdr_id) is not null'
 
         self.copy_activerows('Prov02_Main_Latest1',
                              cols02,

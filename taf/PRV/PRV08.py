@@ -18,7 +18,7 @@ class PRV08(PRV):
                    'submitting_state',
                    'submitting_state_prov_id']
 
-        self.screen_runid('tmsis.Prov_Affiliated_Groups',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Afltd_Grp',
                           maintbl,
                           runlist,
                           'Prov08_AffGrps_Latest1')
@@ -26,18 +26,20 @@ class PRV08(PRV):
         # row count
         # self.prv.countrows(Prov08_AffGrps_Latest1, cnt_latest, PRV08_Latest)
 
-        cols08 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'record_number',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
-                  '%upper_case(submitting_state_prov_id_of_affiliated_entity) as submitting_state_prov_id_of_affiliated_entity',
-                  'prov_affiliated_group_eff_date',
-                  'prov_affiliated_group_end_date']
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
+        cols08 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'rec_num as record_number',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  '%upper_case(submtg_state_prvdr_id) as submitting_state_prov_id',
+                  '%upper_case(submtg_state_afltd_prvdr_id) as submitting_state_prov_id_of_affiliated_entity',
+                  'prvdr_afltd_grp_efctv_dt as prov_affiliated_group_eff_date',
+                  'prvdr_afltd_grp_end_dt as prov_affiliated_group_end_date']
 
         # copy 08(Affiliated Groups) provider rows
-        whr08 = 'upper(submitting_state_prov_id_of_affiliated_entity) is not null'
+        whr08 = 'upper(submtg_state_afltd_prvdr_id) is not null'
 
         self.copy_activerows('Prov08_AffGrps_Latest1',
                              cols08,

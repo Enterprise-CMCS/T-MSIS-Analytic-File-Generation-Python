@@ -18,7 +18,7 @@ class PRV10(PRV):
                    'submitting_state_prov_id',
                    'prov_location_id']
 
-        self.screen_runid('tmsis.Prov_Bed_Type_Info',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Bed_Type',
                           loctbl,
                           runlist,
                           'Prov10_BedType_Latest1',
@@ -27,23 +27,25 @@ class PRV10(PRV):
         # row count
         # self.prv.countrows(Prov10_BedType_Latest1, cnt_latest, PRV10_Latest)
 
-        cols10 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'record_number',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
-                  '%upper_case(prov_location_id) as prov_location_id',
-                  'bed_count',
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
+        cols10 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'rec_num as record_number',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  '%upper_case(submtg_state_prvdr_id) as submitting_state_prov_id',
+                  '%upper_case(prvdr_lctn_id) as prov_location_id',
+                  'bed_cnt as bed_count',
                   """case
-                      when trim(TRAILING FROM bed_type_code) in ('1','2','3','4','5','6','7') then trim(TRAILING FROM bed_type_code)
+                      when trim(TRAILING FROM bed_type_cd) in ('1','2','3','4','5','6','7') then trim(TRAILING FROM bed_type_cd)
                       else null
                    end as bed_type_code""",
-                  'bed_type_eff_date',
-                  'bed_type_end_date']
+                  'bed_type_efctv_dt as bed_type_eff_date',
+                  'bed_type_end_dt as bed_type_end_date']
 
         # copy 10(bed type) provider rows
-        whr10 = "(trim(TRAILING FROM bed_type_code) in ('1','2','3','4','5','6','7')) or (bed_count is not null and bed_count<>0)"
+        whr10 = "(trim(TRAILING FROM bed_type_cd) in ('1','2','3','4','5','6','7')) or (bed_cnt is not null and bed_cnt<>0)"
 
         self.copy_activerows('Prov10_BedType_Latest1',
                              cols10,

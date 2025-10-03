@@ -18,7 +18,7 @@ class PRV03(PRV):
                    'submitting_state',
                    'submitting_state_prov_id']
 
-        self.screen_runid('tmsis.Prov_Location_And_Contact_Info',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Lctn_Cntct',
                           maintbl,
                           runlist,
                           'Prov03_Locations_Latest1')
@@ -26,27 +26,29 @@ class PRV03(PRV):
         # row count
         # self.prv.countrows(Prov03_Locations_Latest1, cnt_latest, PRV03_Latest)
 
-        cols03 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'record_number',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
-                  '%upper_case(prov_location_id) as prov_location_id',
-                  'prov_addr_type',
-                  'prov_location_and_contact_info_eff_date',
-                  'prov_location_and_contact_info_end_date',
-                  'addr_ln1',
-                  'addr_ln2',
-                  'addr_ln3',
-                  'addr_city',
-                  '%upper_case(addr_state) as addr_state',
-                  'addr_zip_code',
-                  'addr_county',
-                  'addr_border_state_ind']
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
+        cols03 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'rec_num as record_number',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  '%upper_case(submtg_state_prvdr_id) as submitting_state_prov_id',
+                  '%upper_case(prvdr_lctn_id) as prov_location_id',
+                  'prvdr_adr_type_cd as prov_addr_type',
+                  'prvdr_lctn_cntct_efctv_dt as prov_location_and_contact_info_eff_date',
+                  'prvdr_lctn_cntct_end_dt as prov_location_and_contact_info_end_date',
+                  'adr_line_1_txt as addr_ln1',
+                  'adr_line_2_txt as addr_ln2',
+                  'adr_line_3_txt as addr_ln3',
+                  'adr_city_name as addr_city',
+                  '%upper_case(adr_state_cd) as addr_state',
+                  'adr_zip_cd as addr_zip_code',
+                  'adr_cnty_cd as addr_county',
+                  'adr_brdr_state_ind as addr_border_state_ind']
 
         # copy 03(Location) provider rows
-        whr03 = 'prov_addr_type=1 or prov_addr_type=3 or prov_addr_type=4'
+        whr03 = 'prvdr_adr_type_cd=1 or prvdr_adr_type_cd=3 or prvdr_adr_type_cd=4'
 
         self.copy_activerows('Prov03_Locations_Latest1',
                              cols03,
@@ -101,14 +103,14 @@ class PRV03(PRV):
 
             left join
                 (select
-                    tms_run_id,
-                    submitting_state,
-                    submitting_state_prov_id,
-                    prov_location_id
+                    tmsis_run_id as tms_run_id,
+                    submtg_state_cd as submitting_state,
+                    submtg_state_prvdr_id as submitting_state_prov_id,
+                    prvdr_lctn_id as prov_location_id
                 from
-                    TMSIS.Prov_Licensing_Info
+                    TMSIS.Tmsis_Prvdr_Lcnsg
                 where
-                    prov_location_id='000') L
+                    prvdr_lctn_id='000') L
             on
                 M.tms_run_id=L.tms_run_id and
                 M.submitting_state=L.submitting_state and
@@ -116,14 +118,14 @@ class PRV03(PRV):
 
              left join
                 (select
-                    tms_run_id,
-                    submitting_state,
-                    submitting_state_prov_id,
-                    prov_location_id
+                    tmsis_run_id as tms_run_id,
+                    submtg_state_cd as submitting_state,
+                    submtg_state_prvdr_id as submitting_state_prov_id,
+                    prvdr_lctn_id as prov_location_id
                 from
-                    TMSIS.Prov_Identifiers
+                    TMSIS.Tmsis_Prvdr_Id
                 where
-                    prov_location_id='000') I
+                    prvdr_lctn_id='000') I
 			 on
                 M.tms_run_id=I.tms_run_id and
                 M.submitting_state=I.submitting_state and
@@ -131,14 +133,14 @@ class PRV03(PRV):
 
              left join
                 (select
-                    tms_run_id,
-                    submitting_state,
-                    submitting_state_prov_id,
-                    prov_location_id
+                    tmsis_run_id as tms_run_id,
+                    submtg_state_cd as submitting_state,
+                    submtg_state_prvdr_id as submitting_state_prov_id,
+                    prvdr_lctn_id as prov_location_id
                 from
-                    TMSIS.Prov_Bed_Type_Info
+                    TMSIS.Tmsis_Prvdr_Bed_Type
                 where
-                    prov_location_id='000') B
+                    prvdr_lctn_id='000') B
 			 on
                 M.tms_run_id=B.tms_run_id and
                 M.submitting_state=B.submitting_state and

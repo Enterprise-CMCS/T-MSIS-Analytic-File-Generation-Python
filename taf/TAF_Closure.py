@@ -633,6 +633,19 @@ class TAF_Closure:
 
         return f"case when ({date_var} < to_date('1600-01-01')) then to_date('1599-12-31') else {date_var} end as {date_var}"
 
+    def fix_old_dates_rename(date_var, out_as=None):
+        """
+        For dates older than 1600-01-01, default the dates to 1599-12-31.
+        Add ability to rename output column - for use with MCP/PRV after
+        converting from using TMSIS tables to using TMSIS views. 
+        out_as: specify output column name - default = input column name
+        """
+
+        if out_as is None:
+            out_as = date_var
+
+        return f"case when ({date_var} < to_date('1600-01-01')) then to_date('1599-12-31') else {date_var} end as {out_as}"
+
     def set_end_dt(enddt):
         """
         For dates older than 1600-01-01, default the dates to 1599-12-31.
@@ -673,6 +686,24 @@ class TAF_Closure:
                      then lpad(trim(upper({var_cd})),{var_len},'0')
                      else nullif(trim(upper({var_cd})),'')
                    end as {var_cd}
+        """
+
+    def zero_pad_rename(var_cd, var_len, out_as=None):
+        """
+        Another zero pad function.
+        Add ability to rename output column - for use with MCP/PRV after
+        converting from using TMSIS tables to using TMSIS views. 
+        out_as: specify output column name - default = input column name
+        """
+
+        if out_as is None:
+            out_as = var_cd
+
+        return f"""case
+                     when length(trim({var_cd}))<{var_len} and length(trim({var_cd}))>0 and {var_cd} is not null
+                     then lpad(trim(upper({var_cd})),{var_len},'0')
+                     else nullif(trim(upper({var_cd})),'')
+                   end as {out_as}
         """
 
     typecast = {
@@ -1040,6 +1071,7 @@ class TAF_Closure:
         "%count_rec": count_rec,
         "%ever_year": ever_year,
         "%fix_old_dates": fix_old_dates,
+        "%fix_old_dates_rename": fix_old_dates_rename,
         "%getmax": getmax,
         "%last_best": last_best,
         "%monthly_array": monthly_array,
@@ -1048,6 +1080,7 @@ class TAF_Closure:
         "%sumrecs": sumrecs,
         "%upper_case": upper_case,
         "%zero_pad": zero_pad,
+        "%zero_pad_rename": zero_pad_rename,
         }
 
     @staticmethod

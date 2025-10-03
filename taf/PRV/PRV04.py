@@ -19,7 +19,7 @@ class PRV04(PRV):
                    'submitting_state_prov_id',
                    'prov_location_id']
 
-        self.screen_runid('tmsis.Prov_Licensing_Info',
+        self.screen_runid('tmsis.Tmsis_Prvdr_Lcnsg',
                           loctbl,
                           runlist,
                           'Prov04_Licensing_Latest1',
@@ -28,21 +28,23 @@ class PRV04(PRV):
         # row count
         # self.prv.countrows(Prov04_Licensing_Latest1, cnt_latest, PRV04_Latest)
 
-        cols04 = ['tms_run_id',
-                  'tms_reporting_period',
-                  'record_number',
-                  'submitting_state',
-                  'submitting_state as submtg_state_cd',
-                  '%upper_case(submitting_state_prov_id) as submitting_state_prov_id',
-                  '%upper_case(prov_location_id) as prov_location_id',
-                  '%upper_case(license_or_accreditation_number) as license_or_accreditation_number',
-                  'license_type',
-                  '%upper_case(license_issuing_entity_id) as license_issuing_entity_id',
-                  'prov_license_eff_date',
-                  'prov_license_end_date']
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
+        cols04 = ['tmsis_run_id as tms_run_id',
+                  'tmsis_rptg_prd as tms_reporting_period',
+                  'rec_num as record_number',
+                  'submtg_state_cd as submitting_state',
+                  'submtg_state_cd',
+                  '%upper_case(submtg_state_prvdr_id) as submitting_state_prov_id',
+                  '%upper_case(prvdr_lctn_id) as prov_location_id',
+                  '%upper_case(lcns_or_acrdtn_num) as license_or_accreditation_number',
+                  'lcns_type_cd as license_type',
+                  '%upper_case(lcns_issg_ent_id_txt) as license_issuing_entity_id',
+                  'prvdr_lcns_efctv_dt as prov_license_eff_date',
+                  'prvdr_lcns_end_dt as prov_license_end_date']
 
         # copy 04(Licensing) provider rows
-        whr04 = 'license_type is not null and upper(license_or_accreditation_number) is not null'
+        whr04 = 'lcns_type_cd is not null and upper(lcns_or_acrdtn_num) is not null'
 
         self.copy_activerows('Prov04_Licensing_Latest1',
                              cols04,

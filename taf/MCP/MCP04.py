@@ -19,7 +19,7 @@ class MCP04(MCP):
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
         self.screen_runid(
-            "tmsis.Managed_care_service_area",
+            "tmsis.Tmsis_Mc_Sarea",
             runtbl,
             runlist,
             "MC04_Service_Area_Latest1",
@@ -28,19 +28,21 @@ class MCP04(MCP):
         # row count
         self.count_rows("MC04_Service_Area_Latest1", "cnt_latest", "MC04_Latest")
 
+        # upon conversion from using TMSIS tables to using TMSIS views
+        # retain TMSIS table column names to preserve downstream processing
         cols04 = [
-            "tms_run_id",
-            "tms_reporting_period",
-            "record_number",
-            "submitting_state",
-            "submitting_state as submtg_state_cd",
+            "tmsis_run_id as tms_run_id",
+            "tmsis_rptg_prd as tms_reporting_period",
+            "rec_num as record_number",
+            "submtg_state_cd as submitting_state",
+            "submtg_state_cd",
             f"""{ TAF_Closure.upper_case('state_plan_id_num')} as state_plan_id_num""",
-            f"""{ TAF_Closure.upper_case('managed_care_service_area_name')} as managed_care_service_area_name""",
-            f"""{ TAF_Closure.fix_old_dates('managed_care_service_area_eff_date')}""",
-            f"""{ TAF_Closure.set_end_dt('managed_care_service_area_end_date')} as managed_care_service_area_end_date"""
+            f"""{ TAF_Closure.upper_case('mc_sarea_name')} as managed_care_service_area_name""",
+            f"""{ TAF_Closure.fix_old_dates_rename('mc_sarea_efctv_dt','managed_care_service_area_eff_date')}""",
+            f"""{ TAF_Closure.set_end_dt('mc_sarea_end_dt')} as managed_care_service_area_end_date"""
         ]
 
-        whr04 = "upper(managed_care_service_area_name) is not null"
+        whr04 = "upper(mc_sarea_name) is not null"
 
         self.copy_activerows(
             "MC04_Service_Area_Latest1", cols04, whr04, "MC04_Service_Area_Copy"
