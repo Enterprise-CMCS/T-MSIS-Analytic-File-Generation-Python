@@ -19,7 +19,7 @@
   "repositoryHost": "github.com/Enterprise-CMCS",
   "repositoryVisibility": "private",
   "vcs": "git",
-  "laborHours": 10290,
+  "laborHours": 10341,
   "reuseFrequency": {
     "forks": 0
   },
@@ -38,8 +38,8 @@
   "contractNumber": "75FCMC19D0091/75FCMC21F0001",
   "date": {
     "created": "2021-11-30T17:05:47Z",
-    "lastModified": "2025-09-04T16:15:06Z",
-    "metaDataLastUpdated": "2025-10-01T00:18:41.662Z"
+    "lastModified": "2025-11-17T14:41:28Z",
+    "metaDataLastUpdated": "2026-01-01T00:20:48.147Z"
   },
   "tags": [
     "Medicaid",
