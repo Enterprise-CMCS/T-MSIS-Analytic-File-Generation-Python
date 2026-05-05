@@ -20,7 +20,7 @@ class PRV02(PRV):
         # screen out all but the latest run id
         runlist = ['tms_run_id', 'submitting_state']
 
-        self.screen_runid('tmsis.Tmsis_Prvdr_Attr_Mn',
+        self.screen_runid('dc_prod_data_sources_catalog.tmsis.Tmsis_Prvdr_Attr_Mn',
                           runtbl,
                           runlist,
                           'Prov02_Main_Latest1',

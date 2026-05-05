@@ -120,7 +120,7 @@ class PRV(TAF):
             from
                 { intbl }
             where
-                tmsis_actv_ind=1
+                tmsis_actv_ind = true
                 { whr }
             order by
                 tms_run_id,
@@ -147,7 +147,7 @@ class PRV(TAF):
                     from
                         {intbl}
                     where
-                        tmsis_actv_ind = 1 and
+                        tmsis_actv_ind = true and
                         tmsis_rptg_prd is not null and
                         tot_rec_cnt > 0 and
                         trim(TRAILING FROM submtg_state_cd) not in ('94','96')

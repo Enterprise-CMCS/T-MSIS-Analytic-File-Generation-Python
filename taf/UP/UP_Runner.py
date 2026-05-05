@@ -112,7 +112,7 @@ class UP_Runner(TAF_Runner):
                     ,da_run_id
                 FROM {self.DA_SCHEMA}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
-                    AND sucsfl_ind = 1
+                    AND sucsfl_ind = true
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
         """
 
@@ -157,7 +157,7 @@ class UP_Runner(TAF_Runner):
                     ,da_run_id
                 FROM {self.DA_SCHEMA}.job_cntl_parms
                 WHERE upper(substring(fil_type, 2)) = "{file}"
-                    AND sucsfl_ind = 1
+                    AND sucsfl_ind = true
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
         """
 

@@ -40,7 +40,7 @@ class ELG():
                         , upper(a.MSIS_IDENT_NUM) as MSIS_IDENT_NUM
                         , a.TMSIS_RPTG_PRD
                     from
-                        tmsis.{self._2x_segment} as a
+                        dc_prod_data_sources_catalog.tmsis.{self._2x_segment} as a
 
                     left join
                         state_submsn_type s
@@ -50,7 +50,7 @@ class ELG():
 
                     where
                         (
-                        a.TMSIS_ACTV_IND = 1
+                        a.TMSIS_ACTV_IND = true
                         and (
                             {self.eff_date} <= to_date('{self.bsf.RPT_PRD}')
                             and (
@@ -83,7 +83,7 @@ class ELG():
                         , upper(a.MSIS_IDENT_NUM) as MSIS_IDENT_NUM
                         , a.TMSIS_RPTG_PRD
                     from
-                        tmsis.{self._2x_segment} as a
+                        dc_prod_data_sources_catalog.tmsis.{self._2x_segment} as a
 
                     left join
                         state_submsn_type s
@@ -93,7 +93,7 @@ class ELG():
 
                     where
                         (
-                        a.TMSIS_ACTV_IND = 1
+                        a.TMSIS_ACTV_IND = true
                         and (
                             {self.eff_date} <= to_date('{self.bsf.RPT_PRD}')
                             and (

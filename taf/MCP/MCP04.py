@@ -19,7 +19,7 @@ class MCP04(MCP):
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
         self.screen_runid(
-            "tmsis.Tmsis_Mc_Sarea",
+            "dc_prod_data_sources_catalog.tmsis.Tmsis_Mc_Sarea",
             runtbl,
             runlist,
             "MC04_Service_Area_Latest1",

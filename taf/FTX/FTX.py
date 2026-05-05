@@ -36,7 +36,7 @@ class FTX(TAF):
             from
                 {TMSIS_SCHEMA}.{_2x_segment} A
             where
-                a.TMSIS_ACTV_IND = 1
+                a.TMSIS_ACTV_IND = true
                 and concat(a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})
                 and (A.ADJSTMT_IND <> '1' or A.ADJSTMT_IND IS NULL)
                 and (
@@ -91,7 +91,7 @@ class FTX(TAF):
                             ,trim(SUBMTG_STATE_CD) as SUBMTG_STATE_CD
                             ,COALESCE(UPPER(ADJSTMT_IND),'X') as ADJSTMT_IND
                         from {TMSIS_SCHEMA}.tmsis_clm_fmly_{tab_no} as a
-                        where clm_fmly_finl_actn_ind  = 1
+                        where clm_fmly_finl_actn_ind  = true
                                 and concat(submtg_state_cd,tmsis_run_id) in ({self.runner.get_combined_list()})
                         group by
                             1,2,3,4,5

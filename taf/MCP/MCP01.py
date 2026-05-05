@@ -21,7 +21,7 @@ class MCP01(MCP):
 
         # copy managed care header table
         self.copy_activerows_nts(
-            "tmsis.tmsis_fhdr_rec_mc", cols01, "MC01_Header_Copy"
+            "dc_prod_data_sources_catalog.tmsis.tmsis_fhdr_rec_mc", cols01, "MC01_Header_Copy"
         )
 
         # self.mcp.countrows('MC01_Header_Copy', 'cnt_active', 'MC01_Active')

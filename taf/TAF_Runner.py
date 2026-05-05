@@ -239,8 +239,8 @@ class TAF_Runner():
                 submtg_state_cd,
                 max(tmsis_run_id) as tmsis_run_id
             from
-                tmsis.tmsis_fhdr_rec_elgblty
-            where tmsis_actv_ind = 1 and
+                dc_prod_data_sources_catalog.tmsis.tmsis_fhdr_rec_elgblty
+            where tmsis_actv_ind = true and
                 tmsis_rptg_prd is not null and
                 tot_rec_cnt > 0 and
                 ssn_ind in ('1','0')
@@ -283,8 +283,8 @@ class TAF_Runner():
         return f"""
                 create or replace temporary view ssn_ind as
                 select distinct submtg_state_cd, ssn_ind
-                from tmsis.tmsis_fhdr_rec_elgblty
-                where tmsis_actv_ind = 1
+                from dc_prod_data_sources_catalog.tmsis.tmsis_fhdr_rec_elgblty
+                where tmsis_actv_ind = true
                     and tmsis_rptg_prd is not null
                     and tot_rec_cnt > 0
                     and ssn_ind IN ('1','0')
@@ -954,7 +954,7 @@ class TAF_Runner():
                                 pdf = sdf_audit_cnt.toPandas()
                             else:
                                 print("appending - " + obj_name)
-                                pdf = pdf.append(sdf_audit_cnt.toPandas())
+                                pdf = pd.concat([pdf, sdf_audit_cnt.toPandas()])
 
             for segment, chain in self.plan.items():
                 self.logger.info('\t' + segment + '...')
@@ -988,7 +988,7 @@ class TAF_Runner():
                                 pdf = sdf_audit_cnt.toPandas()
                             else:
                                 print("appending - " + obj_name)
-                                pdf = pdf.append(sdf_audit_cnt.toPandas())
+                                pdf = pd.concat([pdf, sdf_audit_cnt.toPandas()])
 
             return pdf
         else:

@@ -47,7 +47,7 @@ class IP(TAF):
             from
                 {TMSIS_SCHEMA}.{_2x_segment} A
             where
-                a.TMSIS_ACTV_IND = 1
+                a.TMSIS_ACTV_IND = true
                 and concat(a.submtg_state_cd,a.tmsis_run_id) in ({self.runner.get_combined_list()})
         """
         self.runner.append(self.st_fil_type, z)
