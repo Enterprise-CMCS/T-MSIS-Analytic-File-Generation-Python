@@ -18,7 +18,7 @@ class PRV06(PRV):
                    'submitting_state',
                    'submitting_state_prov_id']
 
-        self.screen_runid('tmsis.Tmsis_Prvdr_Txnmy_Clsfctn',
+        self.screen_runid('dc_prod_data_sources_catalog.tmsis.Tmsis_Prvdr_Txnmy_Clsfctn',
                           maintbl,
                           runlist,
                           'Prov06_Taxonomy_Latest1')

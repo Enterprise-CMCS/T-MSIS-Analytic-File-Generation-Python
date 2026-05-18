@@ -19,7 +19,7 @@ class PRV05(PRV):
                    'submitting_state_prov_id',
                    'prov_location_id']
 
-        self.screen_runid('tmsis.Tmsis_Prvdr_Id',
+        self.screen_runid('dc_prod_data_sources_catalog.tmsis.Tmsis_Prvdr_Id',
                           loctbl,
                           runlist,
                           'Prov05_Identifiers_Latest1',

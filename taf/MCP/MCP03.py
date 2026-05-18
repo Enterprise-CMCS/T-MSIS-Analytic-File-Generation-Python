@@ -19,7 +19,7 @@ class MCP03(MCP):
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
         self.screen_runid(
-            "tmsis.Tmsis_Mc_Lctn_Cntct",
+            "dc_prod_data_sources_catalog.tmsis.Tmsis_Mc_Lctn_Cntct",
             runtbl,
             runlist,
             "MC03_Location_Latest1",

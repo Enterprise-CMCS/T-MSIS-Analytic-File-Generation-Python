@@ -18,7 +18,7 @@ class PRV03(PRV):
                    'submitting_state',
                    'submitting_state_prov_id']
 
-        self.screen_runid('tmsis.Tmsis_Prvdr_Lctn_Cntct',
+        self.screen_runid('dc_prod_data_sources_catalog.tmsis.Tmsis_Prvdr_Lctn_Cntct',
                           maintbl,
                           runlist,
                           'Prov03_Locations_Latest1')
@@ -108,7 +108,7 @@ class PRV03(PRV):
                     submtg_state_prvdr_id as submitting_state_prov_id,
                     prvdr_lctn_id as prov_location_id
                 from
-                    TMSIS.Tmsis_Prvdr_Lcnsg
+                    dc_prod_data_sources_catalog.TMSIS.Tmsis_Prvdr_Lcnsg
                 where
                     prvdr_lctn_id='000') L
             on
@@ -123,7 +123,7 @@ class PRV03(PRV):
                     submtg_state_prvdr_id as submitting_state_prov_id,
                     prvdr_lctn_id as prov_location_id
                 from
-                    TMSIS.Tmsis_Prvdr_Id
+                    dc_prod_data_sources_catalog.TMSIS.Tmsis_Prvdr_Id
                 where
                     prvdr_lctn_id='000') I
 			 on
@@ -138,7 +138,7 @@ class PRV03(PRV):
                     submtg_state_prvdr_id as submitting_state_prov_id,
                     prvdr_lctn_id as prov_location_id
                 from
-                    TMSIS.Tmsis_Prvdr_Bed_Type
+                    dc_prod_data_sources_catalog.TMSIS.Tmsis_Prvdr_Bed_Type
                 where
                     prvdr_lctn_id='000') B
 			 on

@@ -18,7 +18,7 @@ class PRV10(PRV):
                    'submitting_state_prov_id',
                    'prov_location_id']
 
-        self.screen_runid('tmsis.Tmsis_Prvdr_Bed_Type',
+        self.screen_runid('dc_prod_data_sources_catalog.tmsis.Tmsis_Prvdr_Bed_Type',
                           loctbl,
                           runlist,
                           'Prov10_BedType_Latest1',

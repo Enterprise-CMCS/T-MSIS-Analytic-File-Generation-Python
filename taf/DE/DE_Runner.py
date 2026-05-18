@@ -64,7 +64,7 @@ class DE_Runner(TAF_Runner):
         # self.VERSION: int = 0
         # self.DA_RUN_ID: int = run_id
         self.ROWCOUNT: int = 0
-        self.TMSIS_SCHEMA = "TMSIS"
+        self.TMSIS_SCHEMA = "dc_prod_data_sources_catalog.TMSIS"
         self.GETPRIOR: int = 1
         self.PYEAR = self.YEAR - 1
         self.PYEAR2 = self.YEAR - 2
@@ -176,7 +176,7 @@ class DE_Runner(TAF_Runner):
             """
 
         z += f"""
-                    AND sucsfl_ind = 1
+                    AND sucsfl_ind = true
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
         """
 
@@ -214,7 +214,7 @@ class DE_Runner(TAF_Runner):
             """
 
         z += f"""
-                    AND sucsfl_ind = 1
+                    AND sucsfl_ind = true
                     AND substring(job_parms_txt, 1, 4) = "{inyear}"
         """
 

@@ -19,7 +19,7 @@ class MCP05(MCP):
         runlist = ["tms_run_id", "submitting_state", "state_plan_id_num"]
 
         self.screen_runid(
-            "tmsis.Tmsis_Mc_Oprtg_Authrty",
+            "dc_prod_data_sources_catalog.tmsis.Tmsis_Mc_Oprtg_Authrty",
             runtbl,
             runlist,
             "MC05_Operating_Authority_Latest1",

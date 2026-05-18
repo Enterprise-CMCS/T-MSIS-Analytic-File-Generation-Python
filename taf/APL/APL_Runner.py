@@ -92,7 +92,7 @@ class APL_Runner(TAF_Runner):
                         ,da_run_id
                     FROM {self.DA_SCHEMA}.job_cntl_parms
                     WHERE upper(fil_type) = '{file}'
-                        AND sucsfl_ind = 1
+                        AND sucsfl_ind = true
                         AND substring(job_parms_txt, 1, 4) = '{inyear}'
                         AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) = 0
                     )
@@ -114,7 +114,7 @@ class APL_Runner(TAF_Runner):
                         ,da_run_id
                     FROM {self.DA_SCHEMA}.job_cntl_parms
                     WHERE upper(fil_type) = '{file}'
-                        AND sucsfl_ind = 1
+                        AND sucsfl_ind = true
                         AND substring(job_parms_txt, 1, 4) = '{inyear}'
                         AND charindex('submtg_state_cd in', regexp_replace(job_parms_txt, '\\\s+', ' ')) > 0
                     )

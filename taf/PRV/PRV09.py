@@ -18,7 +18,7 @@ class PRV09(PRV):
                    'submitting_state',
                    'submitting_state_prov_id']
 
-        self.screen_runid('tmsis.Tmsis_Prvdr_Afltd_Pgm',
+        self.screen_runid('dc_prod_data_sources_catalog.tmsis.Tmsis_Prvdr_Afltd_Pgm',
                           maintbl,
                           runlist,
                           'Prov09_AffPgms_Latest1')

@@ -36,7 +36,7 @@ class FTX_Runner(TAF_Runner):
         from taf.FTX.FTX import FTX
         ftx = FTX(self)
 
-        TMSIS_SCHEMA = "tmsis"
+        TMSIS_SCHEMA = "dc_prod_data_sources_catalog.tmsis"
 
         #dictionary of the input tmsis segments and their associated end dt
         FTX_TMSIS_SEGMENTS = {

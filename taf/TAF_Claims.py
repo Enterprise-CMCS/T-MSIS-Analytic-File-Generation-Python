@@ -205,7 +205,7 @@ class TAF_Claims():
             where
                 ( {self.where_analysis_date(fl, analysis_date, self.rep_yr, self.rep_mo) } )
                 and
-                     A.TMSIS_ACTV_IND = 1 and
+                     A.TMSIS_ACTV_IND = true and
                     (
                         (
                         {claim_criteria['classic']}
@@ -298,7 +298,7 @@ class TAF_Claims():
                             H.ADJSTMT_IND = upper(coalesce(L.LINE_ADJSTMT_IND,'X'))
 
                         where
-                            L.TMSIS_ACTV_IND = 1 and
+                            L.TMSIS_ACTV_IND = true and
                             {self.exclude_missing_end_date(fl)}
                             {self.where_state_level_filter(fl, 'L')}
 
@@ -382,7 +382,7 @@ class TAF_Claims():
                 ) as F
 
                 where
-                    clm_fmly_finl_actn_ind  = 1
+                    clm_fmly_finl_actn_ind  = true
                     {self.where_state_level_filter(fl, 'F')}
 
                 group by
