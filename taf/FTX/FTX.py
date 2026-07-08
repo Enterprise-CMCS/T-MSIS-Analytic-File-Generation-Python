@@ -75,7 +75,7 @@ class FTX(TAF):
                     nodups.ORGNL_CLM_NUM = b.ORGNL_CLM_NUM and
                     nodups.ADJSTMT_CLM_NUM = b.ADJSTMT_CLM_NUM and
                     nodups.ADJSTMT_IND = b.ADJSTMT_IND and
-                    nodups.PMT_OR_RCPMT_DT = b.PMT_OR_RCPMT_DT
+                    nodups.PMT_OR_RCPMT_DT <=> b.PMT_OR_RCPMT_DT
                 )
             """
         self.runner.append(self.st_fil_type, z)
@@ -115,7 +115,7 @@ class FTX(TAF):
                     and H.ADJSTMT_IND = F.ADJSTMT_IND
                     and H.SUBMTG_STATE_CD = F.SUBMTG_STATE_CD
                     and H.TMSIS_RUN_ID = F.TMSIS_RUN_ID
-                    and H.PMT_OR_RCPMT_DT = F.PMT_OR_RCPMT_DT
+                    and H.PMT_OR_RCPMT_DT <=> F.PMT_OR_RCPMT_DT
                 )
         """
         self.runner.append(self.st_fil_type, z)
