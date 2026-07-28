@@ -91,7 +91,7 @@ class FTX(TAF):
                             TMSIS_RUN_ID
                             ,coalesce(upper(ORGNL_CLM_NUM), '~') as ORGNL_CLM_NUM
                             ,coalesce(upper(ADJSTMT_CLM_NUM), '~') as ADJSTMT_CLM_NUM
-                            ,trim(SUBMTG_STATE_CD) as SUBMTG_STATE_CD
+                            ,trim(upper(SUBMTG_STATE_CD)) as SUBMTG_STATE_CD
                             ,COALESCE(UPPER(ADJSTMT_IND),'X') as ADJSTMT_IND
                             ,PYMT_OR_RCPMT_DT as PMT_OR_RCPMT_DT
                         from {TMSIS_SCHEMA}.tmsis_clm_fmly_{tab_no} as a
