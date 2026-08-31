@@ -57,12 +57,14 @@ class FTX(TAF):
                         ,ORGNL_CLM_NUM
                         ,ADJSTMT_CLM_NUM
                         ,ADJSTMT_IND
+                        ,PMT_OR_RCPMT_DT
                     from {_2x_segment}_IN
                     group by TMSIS_RUN_ID
                         ,SUBMTG_STATE_CD
                         ,ORGNL_CLM_NUM
                         ,ADJSTMT_CLM_NUM
                         ,ADJSTMT_IND
+                        ,PMT_OR_RCPMT_DT
                     having count(TMSIS_RUN_ID) = 1
                 ) 
             select b.*
@@ -72,7 +74,8 @@ class FTX(TAF):
                     nodups.SUBMTG_STATE_CD = b.SUBMTG_STATE_CD and
                     nodups.ORGNL_CLM_NUM = b.ORGNL_CLM_NUM and
                     nodups.ADJSTMT_CLM_NUM = b.ADJSTMT_CLM_NUM and
-                    nodups.ADJSTMT_IND = b.ADJSTMT_IND
+                    nodups.ADJSTMT_IND = b.ADJSTMT_IND and
+                    coalesce(nodups.PMT_OR_RCPMT_DT, to_date('1960-01-01')) = coalesce(b.PMT_OR_RCPMT_DT, to_date('1960-01-01'))
                 )
             """
         self.runner.append(self.st_fil_type, z)
@@ -88,13 +91,14 @@ class FTX(TAF):
                             TMSIS_RUN_ID
                             ,coalesce(upper(ORGNL_CLM_NUM), '~') as ORGNL_CLM_NUM
                             ,coalesce(upper(ADJSTMT_CLM_NUM), '~') as ADJSTMT_CLM_NUM
-                            ,trim(SUBMTG_STATE_CD) as SUBMTG_STATE_CD
+                            ,trim(upper(SUBMTG_STATE_CD)) as SUBMTG_STATE_CD
                             ,COALESCE(UPPER(ADJSTMT_IND),'X') as ADJSTMT_IND
+                            ,PYMT_OR_RCPMT_DT as PMT_OR_RCPMT_DT
                         from {TMSIS_SCHEMA}.tmsis_clm_fmly_{tab_no} as a
                         where clm_fmly_finl_actn_ind  = true
                                 and concat(submtg_state_cd,tmsis_run_id) in ({self.runner.get_combined_list()})
                         group by
-                            1,2,3,4,5
+                            1,2,3,4,5,6
                         having
                             count(tmsis_run_id) = 1
                     )
@@ -111,6 +115,7 @@ class FTX(TAF):
                     and H.ADJSTMT_IND = F.ADJSTMT_IND
                     and H.SUBMTG_STATE_CD = F.SUBMTG_STATE_CD
                     and H.TMSIS_RUN_ID = F.TMSIS_RUN_ID
+                    and coalesce(H.PMT_OR_RCPMT_DT, to_date('1960-01-01')) = coalesce(F.PMT_OR_RCPMT_DT, to_date('1960-01-01'))
                 )
         """
         self.runner.append(self.st_fil_type, z)
