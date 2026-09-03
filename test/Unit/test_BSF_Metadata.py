@@ -54,3 +54,19 @@ def test_mask_invalid_values_for_new_valid_codes():
 
         for value in new_values:
             assert f"'{value}'" in sql
+
+"""Negative tests to ensure that invalid values are not included in the validator"""
+
+def test_invalid_values_are_not_in_validator():
+    test_cases = {
+        "ELGBLTY_TRMNTN_RSN": ["999"],
+        "WVR_TYPE_CD": ["999"],
+        "IMGRTN_STUS_CD": ["999"],
+        "ELGBLTY_GRP_CD": ["999"],
+    }
+
+    for column, invalid_values in test_cases.items():
+        valid_values = BSF_Metadata.validator.get(column)
+
+        for value in invalid_values:
+            assert value not in valid_values
