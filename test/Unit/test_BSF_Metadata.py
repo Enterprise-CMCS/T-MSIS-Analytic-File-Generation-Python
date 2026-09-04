@@ -55,14 +55,15 @@ def test_mask_invalid_values_for_new_valid_codes():
         for value in new_values:
             assert f"'{value}'" in sql
 
-"""Negative tests to ensure that invalid values are not included in the validator"""
+"""****Negative tests to ensure that invalid values are not included in the validator****
+Use the next highest invalid values for each column to test that they are not included in the validator"""
 
 def test_invalid_values_are_not_in_validator():
     test_cases = {
-        "ELGBLTY_TRMNTN_RSN": ["999"],
-        "WVR_TYPE_CD": ["999"],
-        "IMGRTN_STUS_CD": ["999"],
-        "ELGBLTY_GRP_CD": ["999"],
+        "ELGBLTY_TRMNTN_RSN": ["37"],
+        "WVR_TYPE_CD": ["35"],
+        "IMGRTN_STUS_CD": ["5"],
+        "ELGBLTY_GRP_CD": ["78"],
     }
 
     for column, invalid_values in test_cases.items():
