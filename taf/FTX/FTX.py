@@ -198,7 +198,7 @@ class FTX(TAF):
                     else PMT_PRD_END_DT
                 end as PMT_PRD_END_DT
                 , { TAF_Closure.var_set_type2('PMT_PRD_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='05', cond6 = '95') }
-                , { TAF_Closure.var_set_type2('TRNS_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='95') }
+                , { TAF_Closure.var_set_type2('TRNS_TYPE_CD', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='05', cond6= '95') }
                 , { TAF_Closure.var_set_type2('FED_RIMBRSMT_CTGRY', 2, cond1='01', cond2='02', cond3='03', cond4 = '04', cond5='95') }
                 , { TAF_Closure.var_set_type2('MBESCBES_FRM_GRP', 0, cond1='1', cond2='2', cond3='3') }
                 , case when replace(upper(trim(MBESCBES_FRM)),' ','') in {tuple(x.replace(" ","") for x in TAF_Metadata.MBESCBES_FRM_values)} then upper(trim(MBESCBES_FRM)) else NULL end as MBESCBES_FRM
