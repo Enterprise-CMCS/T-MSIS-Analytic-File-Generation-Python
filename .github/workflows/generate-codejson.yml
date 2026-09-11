@@ -8,9 +8,8 @@
 #   2. Uses the DSACMS/automated-codejson-generator action to update `code.json`
 #      and create a pull request with the changes.
 #
-# The generated pull request is left open for review and is NOT merged
-# automatically. No branch protection ruleset is configured on `main`, so a
-# maintainer must merge it manually.
+# The generated pull request is left open for review and is not merged
+# automatically; a maintainer must merge it manually.
 #
 # Required permissions: contents, pull-requests, issues (write access).
 # -----------------------------------------------------------------------------
