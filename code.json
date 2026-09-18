@@ -1,5 +1,6 @@
 {
   "name": "T-MSIS-Analytic-File-Generation-Python",
+  "version": "",
   "description": "Databricks Python code library to create interim T-MSIS Analytic Files (TAF)",
   "longDescription": "This is a Python Library for the generation of the T-MSIS Analytic File (TAF) with distributed computing framework using Databricks",
   "status": "Development",
@@ -15,13 +16,17 @@
   },
   "organization": "Centers for Medicare & Medicaid Services",
   "repositoryURL": "https://github.com/Enterprise-CMCS/T-MSIS-Analytic-File-Generation-Python",
-  "projectURL": "",
   "repositoryHost": "github.com/Enterprise-CMCS",
-  "repositoryVisibility": "private",
+  "repositoryVisibility": "public",
+  "homepageURL": "",
+  "downloadURL": "",
+  "disclaimerURL": "",
+  "disclaimerText": "",
   "vcs": "git",
-  "laborHours": 10343,
+  "laborHours": 10297,
   "reuseFrequency": {
-    "forks": 0
+    "forks": 6,
+    "clones": 0
   },
   "platforms": [
     "other"
@@ -35,11 +40,17 @@
     "PowerShell"
   ],
   "maintenance": "contract",
-  "contractNumber": "75FCMC19D0091/75FCMC21F0001",
+  "contractNumber": [
+    "75FCMC19D0091/75FCMC21F0001"
+  ],
+  "SBOM": "https://github.com/Enterprise-CMCS/T-MSIS-Analytic-File-Generation-Python/network/dependencies",
+  "relatedCode": [],
+  "reusedCode": [],
+  "partners": [],
   "date": {
     "created": "2021-11-30T17:05:47Z",
-    "lastModified": "2026-08-10T13:59:53Z",
-    "metaDataLastUpdated": "2026-09-01T00:30:07.013Z"
+    "lastModified": "2026-09-17T18:12:13Z",
+    "metadataLastUpdated": "2026-09-18T16:18:27.240Z"
   },
   "tags": [
     "Medicaid",
@@ -49,9 +60,8 @@
     "email": "rbhasker@index-analytics.com",
     "name": "Ganapathi Raman Bhasker"
   },
-  "feedbackMechanisms": [
-    "https://github.com/Enterprise-CMCS/T-MSIS-Analytic-File-Generation-Python/issues"
-  ],
+  "feedbackMechanism": "https://github.com/Enterprise-CMCS/T-MSIS-Analytic-File-Generation-Python/issues",
+  "AIUseCaseID": "0",
   "localisation": false,
   "repositoryType": "data",
   "userInput": false,
@@ -63,7 +73,6 @@
   "systems": [
     "DataConnect"
   ],
-  "upstream": "",
   "subsetInHealthcare": [
     "Medicaid"
   ],
