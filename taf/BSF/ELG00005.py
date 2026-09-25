@@ -47,7 +47,7 @@ class ELG00005(ELG):
                      (({ELGBLTY_GRP_CODE}) between '20' and '26') then 2
                 when (({ELGBLTY_GRP_CODE}) between '27' and '29') or
                      (({ELGBLTY_GRP_CODE}) between '30' and '36') or
-                     (({ELGBLTY_GRP_CODE}) = '76')                then 3
+                     (({ELGBLTY_GRP_CODE}) in ('76','77'))        then 3
                 when (({ELGBLTY_GRP_CODE}) between '37' and '39') or
                      (({ELGBLTY_GRP_CODE}) between '40' and '49') or
                      (({ELGBLTY_GRP_CODE}) between '50' and '52') then 4

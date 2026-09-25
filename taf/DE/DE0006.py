@@ -352,7 +352,10 @@ class DE0006(DE):
 
         self.de.append(type(self).__name__, z)
 
-        z = f"""create table if not exists {self.de.DA_SCHEMA}.numbers_two
+        z = f"""drop table if exists {self.de.DA_SCHEMA}.numbers_two"""
+        self.de.append(type(self).__name__, z)
+
+        z = f"""create table {self.de.DA_SCHEMA}.numbers_two
                 (slot int, month string)
                 using delta"""
         self.de.append(type(self).__name__, z)

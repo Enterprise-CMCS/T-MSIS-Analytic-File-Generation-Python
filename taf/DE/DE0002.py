@@ -59,7 +59,10 @@ class DE0002(DE):
         Create dummy table with one record per slot/month to join to dates and get to long form.
         """
 
-        z = f"""create table if not exists {self.de.DA_SCHEMA}.numbers
+        z = f"""drop table if exists {self.de.DA_SCHEMA}.numbers"""
+        self.de.append(type(self).__name__, z)
+
+        z = f"""create table {self.de.DA_SCHEMA}.numbers
                 (slot int, month string)
                 using delta"""
         self.de.append(type(self).__name__, z)
@@ -70,7 +73,7 @@ class DE0002(DE):
             for m in range(1, 13):
                 mm = str(m)
                 if len(mm) == 1:
-                    mm="0"+mm
+                    mm = "0" + mm
                 z += f"""({s}, '{mm}')"""
                 if s < 16 or m < 12:
                     z += ","
