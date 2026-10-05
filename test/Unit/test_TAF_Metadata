@@ -1,0 +1,128 @@
+"""Unit tests for MBESCBES_FRM valid value list update, MDA-2300.
+
+Ticket: DBDAART-14623 / DBDAART-14626
+Change:  Align MBESCBES_FRM_values with T-MSIS v4 data guide (37 values).
+         Removed 64.10BASE, 64.9A. Added 64.9VIII WAIVER.
+
+Critical: FTX.create() uppercases the INPUT but only strips spaces from
+          the LIST, so every list value MUST be uppercase.
+"""
+
+MBESCBES_FRM_values = [
+    "64.9BASE", "64.9P", "64.21U", "64.21UP", "21BASE", "21P", "21",
+    "21 WAIVER", "21PWAIVER", "64.21", "64.21 WAIVER", "64.21P",
+    "64.21P WAIVER", "64.21U WAIVER", "64.21UP WAIVER", "64.9 200K",
+    "64.9 WAIVER", "64.9E", "64.9EP", "64.9EPWAIV", "64.9EWAIV",
+    "64.9I", "64.9P 200K", "64.9P WAIVER", "64.9PE", "64.9PEP",
+    "64.9PEPWAIV", "64.9PEWAIV", "64.9PI", "64.9T", "64.9T WAIVER",
+    "64.9TP", "64.9TP WAIVER", "64.9VIII", "64.9VIII WAIVER",
+    "64.9VIIIP", "64.9VIIIP WAIVER",
+]
+
+# Data guide values exactly as listed in T-MSIS v4 (CMS prefix included)
+DATA_GUIDE_VALUES = [
+    "CMS 64.9BASE", "CMS 64.9P", "CMS 64.21U", "CMS 64.21UP",
+    "CMS 21BASE", "CMS 21P", "CMS 21", "CMS 21 WAIVER",
+    "CMS 21PWAIVER", "CMS 64.21", "CMS 64.21 WAIVER", "CMS 64.21P",
+    "CMS 64.21P WAIVER", "CMS 64.21U WAIVER", "CMS 64.21UP WAIVER",
+    "CMS 64.9 200K", "CMS 64.9 WAIVER", "CMS 64.9E", "CMS 64.9EP",
+    "CMS 64.9EPWAIV", "CMS 64.9EWAIV", "CMS 64.9I", "CMS 64.9P 200K",
+    "CMS 64.9P WAIVER", "CMS 64.9PE", "CMS 64.9PEP", "CMS 64.9PEPWAIV",
+    "CMS 64.9PEWAIV", "CMS 64.9PI", "CMS 64.9T", "CMS 64.9T WAIVER",
+    "CMS 64.9TP", "CMS 64.9TP WAIVER", "CMS 64.9VIII",
+    "CMS 64.9VIII WAIVER", "CMS 64.9VIIIP", "CMS 64.9VIIIP WAIVER",
+]
+
+# Strip the "CMS " prefix (data guide label, not part of the T-MSIS value),
+# then uppercase and remove spaces to match the SQL comparison logic.
+_strip_cms = lambda v: v[4:] if v.upper().startswith("CMS ") else v
+_norm = lambda v: _strip_cms(v).upper().replace(" ", "")
+
+#generates the exact SQL CASE expression that FTX.create() produces in TAF build 
+def _build_sql():
+    tup = tuple(x.replace(" ", "") for x in MBESCBES_FRM_values)
+    return (
+        f"case when replace(upper(trim(MBESCBES_FRM)),' ','') "
+        f"in {tup} then upper(trim(MBESCBES_FRM)) else NULL end as MBESCBES_FRM"
+    )
+
+MBESCBES_SQL = _build_sql()
+
+# run same CASE expression against a single test value via Spark SQL
+def _eval(input_value):
+    """Run the CASE expression against a single value via Spark SQL."""
+    tup = tuple(x.replace(" ", "") for x in MBESCBES_FRM_values)
+    sql = f"""
+        SELECT case when replace(upper(trim(v)),' ','') in {tup}
+                    then upper(trim(v)) else NULL end as result
+        FROM (SELECT '{input_value}' AS v)
+    """
+    return spark.sql(sql).collect()[0]["result"]
+
+
+# --- Tests ----------------------------------------------------------------
+
+# List must be 37 values, match the data guide exactly, and have no dupes.
+def test_list_matches_data_guide():
+    """37 values, 1:1 normalized match with T-MSIS v4 data guide, no dupes."""
+    assert len(MBESCBES_FRM_values) == 37  # was 38; removed 2, added 1
+    new_n  = {_norm(v) for v in MBESCBES_FRM_values}
+    guide_n = {_norm(v) for v in DATA_GUIDE_VALUES}
+    assert new_n == guide_n, f"diff: +{new_n - guide_n} -{guide_n - new_n}"
+    assert len(new_n) == len(MBESCBES_FRM_values), "duplicates found"
+
+
+# All values must be uppercase since the code only uppercases the input, not the list.
+def test_all_values_uppercase():
+    """List must be all-caps (code only uppercases the input, not the list)."""
+    bad = [v for v in MBESCBES_FRM_values if v != v.upper()]
+    assert not bad, f"Mixed-case values: {bad}"
+
+
+# 64.10BASE and 64.9A removed, 64.9VIII WAIVER added per data guide.
+def test_removed_and_added_values():
+    """64.10BASE and 64.9A removed; 64.9VIII WAIVER added."""
+    norms = {_norm(v) for v in MBESCBES_FRM_values}
+    assert _norm("64.10BASE") not in norms
+    assert _norm("64.9A") not in norms
+    assert _norm("64.9VIII WAIVER") in norms
+
+
+# SQL must upper+trim the input before the IN check, and NULL non-matches.
+def test_sql_applies_upper_before_comparison():
+    """Generated SQL must upper+trim input, strip spaces, and NULL non-matches."""
+    assert "replace(upper(trim(MBESCBES_FRM)),' ','')" in MBESCBES_SQL
+    assert "else NULL end as MBESCBES_FRM" in MBESCBES_SQL
+    tup = tuple(x.replace(" ", "") for x in MBESCBES_FRM_values)
+    assert all(v == v.upper() and " " not in v for v in tup)
+
+
+# Valid values in any casing or whitespace form should pass through uppercased.
+def test_spark_valid_values_pass():
+    """Valid values (exact, lowercase, with spaces) pass through uppercased."""
+    assert _eval("64.21U") == "64.21U"                     
+    assert _eval("64.9base") == "64.9BASE"                   
+    assert _eval("64.9p waiver") == "64.9P WAIVER"            
+    assert _eval("  64.21U  ") == "64.21U"                    
+    assert _eval("64.9VIII WAIVER") == "64.9VIII WAIVER"      
+
+
+# Removed, invalid, and unknown values must be set to NULL.
+def test_spark_invalid_values_nulled():
+    """Removed, unknown, and never-valid values are set to NULL."""
+    assert _eval("64.10BASE") is None     
+    assert _eval("64.9A") is None         
+    assert _eval("21Summary") is None     
+    assert _eval("64.1") is None          
+    assert _eval("BOGUS") is None         
+
+# NULL input should remain NULL.
+def test_spark_null_input_stays_null():
+    """NULL input stays NULL."""
+    tup = tuple(x.replace(" ", "") for x in MBESCBES_FRM_values)
+    r = spark.sql(f"""
+        SELECT case when replace(upper(trim(v)),' ','') in {tup}
+                    then upper(trim(v)) else NULL end as result
+        FROM (SELECT CAST(NULL AS STRING) AS v)
+    """).collect()[0]["result"]
+    assert r is None
