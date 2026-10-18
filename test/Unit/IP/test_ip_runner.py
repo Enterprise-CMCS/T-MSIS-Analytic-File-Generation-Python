@@ -5,6 +5,7 @@ from unittest.mock import patch
 from taf.IP.IP_Runner import IP_Runner
 
 
+# Test case: Verify the runner invokes the expected IP build components.
 def test_init_calls_expected_build_steps():
     """Verify IP_Runner.init orchestrates the expected IP build steps."""
     runner = IP_Runner.__new__(IP_Runner)
