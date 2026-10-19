@@ -32,19 +32,24 @@ EXPECTED_SEGMENTS = [
 ]
 
 
-# Test class: Checks IP segment and column metadata.
+# TEST PURPOSE:
+# Verify that IP metadata defines the expected segments and required columns.
+# These checks help catch missing segments or incomplete column definitions.
 class TestColumns:
 
-    # Test case: Verify all expected IP segments are defined.
+    # TEST CASE:
+    # Check that all expected IP segments are defined.
     def test_expected_segments_exist(self, meta):
         assert set(meta.columns.keys()) == set(EXPECTED_SEGMENTS)
 
-    # Test case: Verify each segment has column definitions.
+    # TEST CASE:
+    # Check that each supported segment has column definitions.
     @pytest.mark.parametrize("segment", EXPECTED_SEGMENTS)
     def test_each_segment_has_columns(self, meta, segment):
         assert len(meta.columns[segment]) > 0
 
-    # Test case: Verify each segment includes TMSIS_RUN_ID.
+    # TEST CASE:
+    # Check that each segment includes the required TMSIS_RUN_ID column.
     @pytest.mark.parametrize("segment", EXPECTED_SEGMENTS)
     def test_each_segment_has_tmsis_run_id(self, meta, segment):
         assert "TMSIS_RUN_ID" in meta.columns[segment]
@@ -54,56 +59,69 @@ class TestColumns:
 # selectDataElements
 # ===========================================================================
 
-# Test class: Checks metadata-driven column selection and SQL expressions.
+# TEST PURPOSE:
+# Verify that metadata is converted into the expected SQL column expressions.
+# These tests cover aliases, transformations, renaming, supported segments,
+# and error handling for invalid segment identifiers.
 class TestSelectDataElements:
 
-    # Test case: Verify the expected behavior for 'returns string'.
+    # TEST CASE:
+    # Check that the helper returns the expected type of result.
     def test_returns_string(self, meta):
         result = meta.selectDataElements("CIP00002", "a")
         assert isinstance(result, str)
 
-    # Test case: Verify the expected behavior for 'output contains expected separator'.
+    # TEST CASE:
+    # Check that generated column expressions use the expected separator.
     def test_output_contains_expected_separator(self, meta):
         result = meta.selectDataElements("CIP00002", "a")
         assert "\n\t\t\t," in result
 
-    # Test case: Verify ordinary columns use the supplied table alias.
+    # TEST CASE:
+    # Check that ordinary columns are qualified with the supplied table alias.
     def test_plain_column_uses_table_alias(self, meta):
         result = meta.selectDataElements("CIP00002", "a")
         assert "a.TMSIS_RUN_ID" in result
 
-    # Test case: Verify the expected behavior for 'alias is parameterized'.
+    # TEST CASE:
+    # Check that the supplied table alias is used in the generated expressions.
     def test_alias_is_parameterized(self, meta):
         result = meta.selectDataElements("CIP00002", "x")
         assert "x.TMSIS_RUN_ID" in result
 
-    # Test case: Verify configured columns use uppercase conversion.
+    # TEST CASE:
+    # Check that configured columns use the expected uppercase transformation.
     def test_upper_column_is_transformed(self, meta):
         result = meta.selectDataElements("CIP00002", "a")
         assert "upper(a.SUBMTG_STATE_CD)" in result
 
-    # Test case: Verify header columns use their expected output names.
+    # TEST CASE:
+    # Check that header columns receive their expected output names.
     def test_header_columns_are_renamed(self, meta):
         result = meta.selectDataElements("CIP00002", "a")
         assert "srvc_fac_lctn_adr_line_1" in result.lower()
 
-    # Test case: Verify line columns use their expected output names.
+    # TEST CASE:
+    # Check that line columns receive their expected output names.
     def test_line_columns_are_renamed(self, meta):
         result = meta.selectDataElements("CIP00003", "a")
         assert "submtg_state_cd_line" in result.lower()
 
-    # Test case: Verify diagnosis columns use their expected output names.
+    # TEST CASE:
+    # Check that diagnosis columns receive their expected output names.
     def test_diagnosis_columns_are_renamed(self, meta):
         result = meta.selectDataElements("CIP00004", "a")
         assert "dgns_poa_ind" in result.lower()
 
-    # Test case: Verify every supported segment produces output.
+    # TEST CASE:
+    # Check that every supported segment produces column-selection output.
     @pytest.mark.parametrize("segment", EXPECTED_SEGMENTS)
     def test_all_segments_produce_output(self, meta, segment):
         result = meta.selectDataElements(segment, "a")
         assert result.strip()
 
-    # Test case: Verify metadata definitions remain unchanged.
+    # TEST CASE:
+    # Check that selecting columns does not modify the original metadata.
     def test_does_not_mutate_column_definitions(self, meta):
         original = meta.columns["CIP00002"].copy()
 
@@ -111,7 +129,8 @@ class TestSelectDataElements:
 
         assert meta.columns["CIP00002"] == original
 
-    # Test case: Verify an invalid segment raises an error.
+    # TEST CASE:
+    # Check that an unsupported segment raises the expected error.
     def test_invalid_segment_raises_error(self, meta):
         with pytest.raises(AttributeError):
             meta.selectDataElements("INVALID_SEGMENT", "a")
@@ -121,29 +140,37 @@ class TestSelectDataElements:
 # finalFormatter
 # ===========================================================================
 
-# Test class: Checks formatting and ordering of column expressions.
+# TEST PURPOSE:
+# Verify that column expressions are formatted correctly for SQL generation.
+# These checks cover the return type, separators, column order, empty input,
+# and preservation of the original input list.
 class TestFinalFormatter:
 
-    # Test case: Verify the expected behavior for 'returns string'.
+    # TEST CASE:
+    # Check that the helper returns the expected type of result.
     def test_returns_string(self, meta):
         result = meta.finalFormatter(["DA_RUN_ID", "IP_VRSN"])
         assert isinstance(result, str)
 
-    # Test case: Verify formatting preserves column order.
+    # TEST CASE:
+    # Check that formatting preserves the original column order.
     def test_preserves_column_order(self, meta):
         result = meta.finalFormatter(["DA_RUN_ID", "IP_VRSN"])
         assert result.split("\n\t\t\t,") == ["DA_RUN_ID", "IP_VRSN"]
 
-    # Test case: Verify the expected behavior for 'uses expected separator'.
+    # TEST CASE:
+    # Check that the formatted output uses the expected separator.
     def test_uses_expected_separator(self, meta):
         result = meta.finalFormatter(["DA_RUN_ID", "IP_VRSN"])
         assert "\n\t\t\t," in result
 
-    # Test case: Verify an empty input list returns an empty string.
+    # TEST CASE:
+    # Check that an empty input list produces an empty string.
     def test_empty_list_returns_empty_string(self, meta):
         assert meta.finalFormatter([]) == ""
 
-    # Test case: Verify the helper does not modify its input.
+    # TEST CASE:
+    # Check that formatting leaves the original input unchanged.
     def test_does_not_mutate_input(self, meta):
         columns = ["DA_RUN_ID", "IP_VRSN"]
         original = columns.copy()
@@ -157,35 +184,43 @@ class TestFinalFormatter:
 # dates_of_service
 # ===========================================================================
 
-# Test class: Checks date-of-service SQL expressions.
+# TEST PURPOSE:
+# Verify that the date-of-service helper builds the expected SQL expressions.
+# These tests check aliases, date derivation, default values, and null handling.
 class TestDatesOfService:
 
-    # Test case: Verify the expected behavior for 'returns string'.
+    # TEST CASE:
+    # Check that the helper returns the expected type of result.
     def test_returns_string(self, meta):
         result = meta.dates_of_service("DSCHRG_DT", "a")
         assert isinstance(result, str)
 
-    # Test case: Verify the expected behavior for 'uses table alias and column'.
+    # TEST CASE:
+    # Check that the date expression uses the supplied alias and column.
     def test_uses_table_alias_and_column(self, meta):
         result = meta.dates_of_service("DSCHRG_DT", "a")
         assert "a.DSCHRG_DT" in result
 
-    # Test case: Verify the service end date expression is generated.
+    # TEST CASE:
+    # Check that the service end date expression is generated correctly.
     def test_derives_service_end_date(self, meta):
         result = meta.dates_of_service("DSCHRG_DT", "a")
         assert "SRVC_ENDG_DT_DRVD_H" in result
 
-    # Test case: Verify the service end date code expression is generated.
+    # TEST CASE:
+    # Check that the service end date code expression is generated correctly.
     def test_derives_service_end_date_code(self, meta):
         result = meta.dates_of_service("DSCHRG_DT", "a")
         assert "SRVC_ENDG_DT_CD_H" in result
 
-    # Test case: Verify the expected behavior for 'uses default date'.
+    # TEST CASE:
+    # Check that the expected default date is used.
     def test_uses_default_date(self, meta):
         result = meta.dates_of_service("DSCHRG_DT", "a")
         assert "'1960-01-01'" in result
 
-    # Test case: Verify the generated expression checks for null values.
+    # TEST CASE:
+    # Check that the generated date expression handles null values.
     def test_uses_null_check(self, meta):
         result = meta.dates_of_service("DSCHRG_DT", "a")
         assert "is not null" in result
@@ -195,20 +230,25 @@ class TestDatesOfService:
 # plan_id_num
 # ===========================================================================
 
-# Test class: Checks generation of plan ID expressions.
+# TEST PURPOSE:
+# Verify that the plan ID helper generates the expected SQL expression.
+# These tests also check whether custom aliases and column names are respected.
 class TestPlanIdNum:
 
-    # Test case: Verify the expected SQL expression is returned.
+    # TEST CASE:
+    # Check that the plan ID helper returns the expected SQL expression.
     def test_returns_expected_expression(self, meta):
         result = meta.plan_id_num("PLAN_ID_NUM", "a")
         assert result == "upper(a.PLAN_ID_NUM) as mc_plan_id"
 
-    # Test case: Verify a custom table alias is used.
+    # TEST CASE:
+    # Check that the plan ID expression uses the requested table alias.
     def test_uses_custom_alias(self, meta):
         result = meta.plan_id_num("PLAN_ID_NUM", "x")
         assert result == "upper(x.PLAN_ID_NUM) as mc_plan_id"
 
-    # Test case: Verify a custom column name is used.
+    # TEST CASE:
+    # Check that the plan ID expression uses the requested column name.
     def test_uses_custom_column_name(self, meta):
         result = meta.plan_id_num("CUSTOM_PLAN_COL", "a")
         assert result == "upper(a.CUSTOM_PLAN_COL) as mc_plan_id"
