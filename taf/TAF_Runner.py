@@ -739,6 +739,12 @@ class TAF_Runner():
 
         self.preplan.append(z + ";")
 
+    @staticmethod
+    def _obj_name(z: str):
+        """Safely extract the SQL object name without indexing past available tokens."""
+        vs = '\n'.join(z.split('\n')[0:2]).split()
+        return vs[5] if len(vs) >= 6 else None
+
     def append(self, segment: str, z: str):
         """
         Helper function to append segments to the query plan.
@@ -747,11 +753,9 @@ class TAF_Runner():
         if segment not in self.plan.keys():
             self.plan[segment] = []
 
-        v = '\n'.join(z.split('\n')[0:2])
-        vs = v.split()
-
-        if len(vs) >= 5:
-            self.sql[vs[5]] = z
+        obj_name = self._obj_name(z)
+        if obj_name:
+            self.sql[obj_name] = z
 
         # self.log(f"{self.tab_no}", z)
         self.plan[segment].append(z)
@@ -783,15 +787,13 @@ class TAF_Runner():
             print('\tpreplan...')
             for z in chain:
 
-                v = '\n'.join(z.split('\n')[0:2])
-                vs = v.split()
-
-                if len(vs) >= 5:
-                    # fn = './test/sql/python/' + 'preplan' + '/' + vs[5] + '.sql'
+                obj_name = self._obj_name(z)
+                if obj_name:
+                    # fn = './test/sql/python/' + 'preplan' + '/' + obj_name + '.sql'
                     if module != '':
-                        fn = '../../sql/python/' + module + '/' + 'preplan' + '/' + vs[5] + '.sql'
+                        fn = '../../sql/python/' + module + '/' + 'preplan' + '/' + obj_name + '.sql'
                     else:
-                        fn = '../../sql/python/' + 'preplan' + '/' + vs[5] + '.sql'
+                        fn = '../../sql/python/' + 'preplan' + '/' + obj_name + '.sql'
                     print(fn)
                     f = open(fn, 'w')
                     f.write(z)
@@ -802,15 +804,13 @@ class TAF_Runner():
             print('\t' + segment + '...')
             for z in chain:
 
-                v = '\n'.join(z.split('\n')[0:2])
-                vs = v.split()
-
-                if len(vs) >= 5:
-                    # fn = './test/sql/python/' + segment + '/' + vs[5] + '.sql'
+                obj_name = self._obj_name(z)
+                if obj_name:
+                    # fn = './test/sql/python/' + segment + '/' + obj_name + '.sql'
                     if module != '':
-                        fn = '../../sql/python/' + module + '/' + segment + '/' + vs[5] + '.sql'
+                        fn = '../../sql/python/' + module + '/' + segment + '/' + obj_name + '.sql'
                     else:
-                        fn = '../../sql/python/' + segment + '/' + vs[5] + '.sql'
+                        fn = '../../sql/python/' + segment + '/' + obj_name + '.sql'
                     print(fn)
                     f = open(fn, 'w')
                     f.write(z)
@@ -888,12 +888,10 @@ class TAF_Runner():
                 self.logger.debug(z)
                 self.logger.info('\n'.join(z.split('\n')[0:2]))
 
-                v = '\n'.join(z.split('\n')[0:2])
-                vs = v.split()
-
-                if len(vs) >= 5:
-                    print('\t\t' + vs[5])
-                    self.logger.info('\t\t' + v.split()[5])
+                obj_name = self._obj_name(z)
+                if obj_name:
+                    print('\t\t' + obj_name)
+                    self.logger.info('\t\t' + obj_name)
 
                 spark.sql(z)
 
@@ -925,13 +923,8 @@ class TAF_Runner():
             for chain in self.preplan:
                 self.logger.info('\tpreplan...')
                 for z in chain:
-                    v = '\n'.join(z.split('\n')[0:2])
-                    vs = v.split()
-
-                    if len(vs) >= 5:
-                        # print('\t\t' + vs[5])
-
-                        obj_name = v.split()[5]
+                    obj_name = self._obj_name(z)
+                    if obj_name:
                         if obj_name in ['ELG00002', 'ELG00003', 'ELG00004', 'ELG00005', 'ELG00006', 'ELG00007', 'ELG00008', 'ELG00009', 'ELG00010',
                                         'ELG00011', 'ELG00012', 'ELG00013', 'ELG00014', 'ELG00015', 'ELG00016', 'ELG00017', 'ELG00018', 'ELG00020',
                                         'ELG00021', 'TPL00002']:
@@ -959,13 +952,8 @@ class TAF_Runner():
             for segment, chain in self.plan.items():
                 self.logger.info('\t' + segment + '...')
                 for z in chain:
-                    v = '\n'.join(z.split('\n')[0:2])
-                    vs = v.split()
-
-                    if len(vs) >= 5:
-                        # print('\t\t' + vs[5])
-
-                        obj_name = v.split()[5]
+                    obj_name = self._obj_name(z)
+                    if obj_name:
                         if obj_name in ['ELG00002', 'ELG00003', 'ELG00004', 'ELG00005', 'ELG00006', 'ELG00007', 'ELG00008', 'ELG00009', 'ELG00010',
                                         'ELG00011', 'ELG00012', 'ELG00013', 'ELG00014', 'ELG00015', 'ELG00016', 'ELG00017', 'ELG00018', 'ELG00020',
                                         'ELG00021', 'TPL00002']:

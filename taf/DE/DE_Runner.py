@@ -295,6 +295,11 @@ class DE_Runner(TAF_Runner):
             z += f"""
                  WHERE {self.ST_FILTER()}
                  """
+        # Apply the state filter for single-state runs to reduce the data scanned.
+        elif len(self.state_code) <= 4:
+            z += f"""
+                 WHERE b.submtg_state_cd IN ({self.state_code})
+                 """
         z += f"""
             GROUP BY a.{file}_fil_dt
                 ,b.submtg_state_cd
