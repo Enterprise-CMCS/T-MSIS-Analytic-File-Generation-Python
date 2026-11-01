@@ -16,6 +16,19 @@ class DE0001BASE(DE):
             It then inserts into the permanent table.
     """
 
+    CE_FIELDS = (
+        "ADLT_GRP_QUALN_CD",
+        "APLCBL_INDVDL_QUALN_TYPE_CD",
+        "APLCBL_INDVDL_EXCPTN_CD",
+        "EXCLSN_TYPE_CD",
+        "MDCL_FRLTY_TYPE_CD",
+        "WORK_FLAG",
+        "CMNTY_SRVC_FLAG",
+        "JOBS_PGM_FLAG",
+        "EDCTN_FLAG",
+        "INCM_FLAG",
+    )
+
     def __init__(self, runner: DE_Runner):
         DE.__init__(self, runner)
         self.de = runner
@@ -255,6 +268,14 @@ class DE0001BASE(DE):
             ,ELGBLTY_RDTRMNTN_DT
             ,MISG_ELGBLTY_DND_CLM_ONLY_IND
         """
+        # Add Community Engagement (CE) data elements to the Base layout.
+        # Each CE field has 12 monthly values (_01 through _12) and
+        # one latest non-null value (_LTST).
+        for field in self.CE_FIELDS:
+            for month in range(1, 13):
+                z += f"\n,{field}_{month:02d}"
+            z += f"\n,{field}_LTST"
+
         return z
 
     def create_temp(self):
@@ -327,6 +348,16 @@ class DE0001BASE(DE):
             {DE.last_best(self, incol='CNTNUS_ELGBLTY_CD')}
             {DE.last_best(self, incol='INCM_STD_CD')}
             {DE.last_best(self, incol='ELGBLTY_RDTRMNTN_DT')}
+            """
+
+        # Generate monthly and latest values for each CE data element.
+        # Follow the existing Base-field pattern:
+        # monthly_array() creates _01 through _12, while last_best()
+        # selects the most recent non-null value for _LTST.
+        for field in self.CE_FIELDS:
+            s += f"""
+                ,{TAF_Closure.monthly_array(self, incol=field)}
+                {DE.last_best(self, incol=field, outcol=f'{field}_LTST')}
             """
 
         s2 = f"""{DE.mc_type_rank(self, smonth=3, emonth=4)}"""
