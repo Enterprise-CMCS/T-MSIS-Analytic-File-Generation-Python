@@ -65,6 +65,7 @@ class BSF_Runner(TAF_Runner):
         from taf.BSF.ELG00021 import ELG00021
         from taf.BSF.ELG00022 import ELG00022
         from taf.BSF.TPL00002 import TPL00002
+        from taf.BSF.ELG00024 import ELG00024
 
         ELG00002(self).create()
         ELG00003(self).create()
@@ -86,6 +87,7 @@ class BSF_Runner(TAF_Runner):
         ELG00020(self).create()
         ELG00021(self).create()
         ELG00022(self).create()
+        ELG00024(self).create()
         TPL00002(self).create()
 
 # -----------------------------------------------------------------------------

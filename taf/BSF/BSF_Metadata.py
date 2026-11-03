@@ -348,6 +348,8 @@ class BSF_Metadata:
 
                 {BSF_Metadata.tagAlias('ELG00021', 't21')},
 
+                {BSF_Metadata.tagAlias('ELG00024', 't22')},
+
                 '{bsf.TAF_FILE_DATE}' as BSF_FIL_DT,
 
                 '{bsf.VERSION}' as BSF_VRSN,
@@ -665,7 +667,17 @@ class BSF_Metadata:
                         t1.ELGBLTY_EXTNSN_CD,
                         t1.CNTNUS_ELGBLTY_CD,
                         t1.INCM_STD_CD,   
-                        t1.ELGBLTY_RDTRMNTN_DT
+                        t1.ELGBLTY_RDTRMNTN_DT,
+                        t1.ADLT_GRP_QUALN_CD,
+                        t1.APLCBL_INDVDL_QUALN_TYPE_CD,
+                        t1.APLCBL_INDVDL_EXCPTN_CD,
+                        t1.EXCLSN_TYPE_CD,
+                        t1.MDCL_FRLTY_TYPE_CD,
+                        t1.WORK_FLAG,
+                        t1.CMNTY_SRVC_FLAG,
+                        t1.JOBS_PGM_FLAG,
+                        t1.EDCTN_FLAG,
+                        t1.INCM_FLAG
                     from
                         bsf_step1 as t1
                 )
@@ -692,7 +704,8 @@ class BSF_Metadata:
         't18': 'ELG00018',
         't19': 'ELG00020',
         't20': 'TPL00002',
-        't21': 'ELG00022'
+        't21': 'ELG00022',
+        't22': 'ELG00024'
     }
 
     st_abbrev = {
@@ -1287,7 +1300,21 @@ class BSF_Metadata:
             'TPL_OTHR_CVRG_IND'
         ],
 
-        'ELG00022': []
+        'ELG00022': [],
+
+        
+        'ELG00024': [
+            'ADLT_GRP_QUALN_CD',
+            'APLCBL_INDVDL_QUALN_TYPE_CD',
+            'APLCBL_INDVDL_EXCPTN_CD',
+            'EXCLSN_TYPE_CD',
+            'MDCL_FRLTY_TYPE_CD',
+            'WORK_FLAG',
+            'CMNTY_SRVC_FLAG',
+            'JOBS_PGM_FLAG',
+            'EDCTN_FLAG',
+            'INCM_FLAG'
+        ]
     }
 
     columns = {
@@ -1612,6 +1639,26 @@ class BSF_Metadata:
             'ELGBL_PRSN_MN_END_DT',
             'TPL_INSRNC_CVRG_IND',
             'TPL_OTHR_CVRG_IND'
+        ],
+
+  
+        'ELG00024': [
+            'TMSIS_RUN_ID',
+            'TMSIS_ACTV_IND',
+            'SUBMTG_STATE_CD',
+            'REC_NUM',
+            'CMNTY_ENGGMT_EFF_DT',
+            'CMNTY_ENGGMT_END_DT',
+            'ADLT_GRP_QUALN',
+            'APLCBL_INDVDL_QUALN_TYPE_CD',
+            'APLCBL_INDVDL_EXCPTN',
+            'EXCLSN_TYPE_CD',
+            'MDCL_FRLTY_TYPE_CD',
+            'WORK_FLAG',
+            'CMNTY_SRVC_FLAG',
+            'JOBS_PGM_FLAG',
+            'EDCTN_FLAG',
+            'INCM_FLAG'
         ],
 
     }
