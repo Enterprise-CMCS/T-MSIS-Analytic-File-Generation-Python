@@ -2119,6 +2119,16 @@ class BSF_Metadata:
         'CNTNUS_ELGBLTY_CD',
         'INCM_STD_CD',
         'ELGBLTY_RDTRMNTN_DT',
+        'ADLT_GRP_QUALN_CD',
+        'APLCBL_INDVDL_QUALN_TYPE_CD',
+        'APLCBL_INDVDL_EXCPTN_CD',
+        'EXCLSN_TYPE_CD',
+        'MDCL_FRLTY_TYPE_CD',
+        'WORK_FLAG',
+        'CMNTY_SRVC_FLAG',
+        'JOBS_PGM_FLAG',
+        'EDCTN_FLAG',
+        'INCM_FLAG'
     ]
 
 # -----------------------------------------------------------------------------
