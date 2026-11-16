@@ -6,6 +6,7 @@ from pyspark.sql import SparkSession
 from datetime import datetime
 from taf.TAF_Metadata import TAF_Metadata
 from taf import __version__
+from taf.TAF_Source import resolve_run_environment, resolve_tmsis_schema
 
 
 class TAF_Runner():
@@ -22,7 +23,8 @@ class TAF_Runner():
                  run_id: str,
                  job_id: int,
                  file_version: str,
-                 run_stats_only: str):
+                 run_stats_only: str,
+                 run_environment: str = None):
         """
         Constructs all the necessary attributes for the T-MSIS analytic file runner object.
 
@@ -32,6 +34,8 @@ class TAF_Runner():
                 state_code (str): Comma-separated list of T-MSIS state code(s) values to include
                 run_id (str): Comma-separated list of T-MSIS run identifier(s) values to include
                 job_id (int): Final data will use this for da_run_id
+                run_environment (str): Optional. 'prod' or 'val' selects the catalog T-MSIS input is read from.
+                    Empty/None keeps the default (taf.TAF_Source.DEFAULT_TMSIS_SCHEMA).
 
             Returns:
                 None
@@ -57,6 +61,10 @@ class TAF_Runner():
         self.state_code = state_code
         self.DA_RUN_ID = job_id
         self.DA_SCHEMA = da_schema  # For using data from Redshift for testing DE and up
+
+        # Source of T-MSIS input data (independent of DA_SCHEMA, which is where output is written)
+        self.RUN_ENVIRONMENT = resolve_run_environment(run_environment)
+        self.TMSIS_SCHEMA = resolve_tmsis_schema(self.RUN_ENVIRONMENT)
 
         self.reporting_period_parameter = reporting_period
         self.reporting_period = datetime.strptime(reporting_period, '%Y-%m-%d')
@@ -118,6 +126,8 @@ class TAF_Runner():
         print('RPT_PRD:\t' + str(self.RPT_PRD))
         print('FILE_DT_END:\t' + str(self.FILE_DT_END))
         print('DA_SCHEMA:\t' + str(self.DA_SCHEMA))
+        print('RUN_ENVIRONMENT:\t' + str(self.RUN_ENVIRONMENT))
+        print('TMSIS_SCHEMA:\t' + str(self.TMSIS_SCHEMA))
         print('COMBINED_LIST:\t' + str(self.combined_list))
 
     def get_link_key(self):
@@ -234,12 +244,12 @@ class TAF_Runner():
         from pyspark.sql import SparkSession
         spark = SparkSession.getActiveSession()
 
-        sdf = spark.sql("""
+        sdf = spark.sql(f"""
             select distinct
                 submtg_state_cd,
                 max(tmsis_run_id) as tmsis_run_id
             from
-                dc_prod_data_sources_catalog.tmsis.tmsis_fhdr_rec_elgblty
+                {self.TMSIS_SCHEMA}.tmsis_fhdr_rec_elgblty
             where tmsis_actv_ind = true and
                 tmsis_rptg_prd is not null and
                 tot_rec_cnt > 0 and
@@ -283,7 +293,7 @@ class TAF_Runner():
         return f"""
                 create or replace temporary view ssn_ind as
                 select distinct submtg_state_cd, ssn_ind
-                from dc_prod_data_sources_catalog.tmsis.tmsis_fhdr_rec_elgblty
+                from {self.TMSIS_SCHEMA}.tmsis_fhdr_rec_elgblty
                 where tmsis_actv_ind = true
                     and tmsis_rptg_prd is not null
                     and tot_rec_cnt > 0

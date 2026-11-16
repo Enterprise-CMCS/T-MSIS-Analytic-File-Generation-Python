@@ -17,14 +17,16 @@ class DE_Runner(TAF_Runner):
                  run_id: str,
                  job_id: int,
                  file_version: str,
-                 run_stats_only: int = 0):
+                 run_stats_only: int = 0,
+                 run_environment: str = None):
         super().__init__(da_schema,
                          reporting_period,
                          state_code,
                          run_id,
                          job_id,
                          file_version,
-                         run_stats_only)
+                         run_stats_only,
+                         run_environment=run_environment)
 
         self.run_stats_only = self.__forceBool__(run_stats_only)
 
@@ -64,7 +66,7 @@ class DE_Runner(TAF_Runner):
         # self.VERSION: int = 0
         # self.DA_RUN_ID: int = run_id
         self.ROWCOUNT: int = 0
-        self.TMSIS_SCHEMA = "dc_prod_data_sources_catalog.TMSIS"
+        # TMSIS_SCHEMA is set by TAF_Runner from run_environment
         self.GETPRIOR: int = 1
         self.PYEAR = self.YEAR - 1
         self.PYEAR2 = self.YEAR - 2

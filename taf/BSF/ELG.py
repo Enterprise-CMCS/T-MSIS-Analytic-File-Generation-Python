@@ -40,7 +40,7 @@ class ELG():
                         , upper(a.MSIS_IDENT_NUM) as MSIS_IDENT_NUM
                         , a.TMSIS_RPTG_PRD
                     from
-                        dc_prod_data_sources_catalog.tmsis.{self._2x_segment} as a
+                        {self.bsf.TMSIS_SCHEMA}.{self._2x_segment} as a
 
                     left join
                         state_submsn_type s
@@ -83,7 +83,7 @@ class ELG():
                         , upper(a.MSIS_IDENT_NUM) as MSIS_IDENT_NUM
                         , a.TMSIS_RPTG_PRD
                     from
-                        dc_prod_data_sources_catalog.tmsis.{self._2x_segment} as a
+                        {self.bsf.TMSIS_SCHEMA}.{self._2x_segment} as a
 
                     left join
                         state_submsn_type s

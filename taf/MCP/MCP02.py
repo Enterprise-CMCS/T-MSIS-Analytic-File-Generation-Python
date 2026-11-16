@@ -20,7 +20,7 @@ class MCP02(MCP):
         runlist = ["tms_run_id", "submitting_state"]
 
         self.screen_runid(
-            "dc_prod_data_sources_catalog.tmsis.Tmsis_Mc_Mn_Data", runtbl, runlist, "MC02_Main_Latest1", "M"
+            f"{self.mcp.TMSIS_SCHEMA}.Tmsis_Mc_Mn_Data", runtbl, runlist, "MC02_Main_Latest1", "M"
         )
 
         # row count

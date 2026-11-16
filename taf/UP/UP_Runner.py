@@ -15,14 +15,16 @@ class UP_Runner(TAF_Runner):
                  run_id: str,
                  job_id: int,
                  file_version: str,
-                 run_stats_only: int = 0):
+                 run_stats_only: int = 0,
+                 run_environment: str = None):
         super().__init__(da_schema,
                          reporting_period,
                          state_code,
                          run_id,
                          job_id,
                          file_version,
-                         run_stats_only)
+                         run_stats_only,
+                         run_environment=run_environment)
 
         self.run_stats_only = self.__forceBool__(run_stats_only)
 

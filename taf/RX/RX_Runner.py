@@ -17,14 +17,16 @@ class RX_Runner(TAF_Runner):
                  run_id: str,
                  job_id: int,
                  file_version: str,
-                 run_stats_only: int = 0):
+                 run_stats_only: int = 0,
+                 run_environment: str = None):
         super().__init__(da_schema,
                          reporting_period,
                          state_code,
                          run_id,
                          job_id,
                          file_version,
-                         run_stats_only)
+                         run_stats_only,
+                         run_environment=run_environment)
 
         self.run_stats_only = self.__forceBool__(run_stats_only)
 
@@ -40,7 +42,7 @@ class RX_Runner(TAF_Runner):
         from taf.RX.RXL import RXL
         from taf.RX.RX_DX import RX_DX
         
-        TMSIS_SCHEMA = "dc_prod_data_sources_catalog.tmsis"
+        TMSIS_SCHEMA = self.TMSIS_SCHEMA
 
         # -------------------------------------------------
         #   Produces:
