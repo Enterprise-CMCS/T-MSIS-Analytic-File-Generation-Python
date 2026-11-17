@@ -1,0 +1,31 @@
+# =============================================================================
+#  T-MSIS Analytic File Generation — pytest configuration
+#
+#  Tells pytest where to find tests and how to run them.
+#  Packaging is unaffected: the wheel is still built with `python setup.py bdist_wheel`.
+# =============================================================================
+
+[tool.pytest.ini_options]
+
+# Only collect the pytest suite. test/integration_testing/ holds scripts that build
+# runners and query data on import, so they must not be collected by a plain `pytest`.
+testpaths = ["test/unit_testing"]
+
+# Auto-discover files matching these patterns inside testpaths.
+python_files   = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+# Default flags applied to every pytest run:
+#   -v                : verbose, show each test name instead of dots
+#   --tb=short        : shorter tracebacks on failure
+#   --strict-markers  : fail on a marker that is not registered below (catches typos)
+addopts = "-v --tb=short --strict-markers"
+
+# Markers so CI can run or skip specific tiers.
+# Usage in tests:  pytestmark = pytest.mark.unit   (whole module)  or  @pytest.mark.unit
+# Usage in CI:     pytest -m unit
+markers = [
+    "unit: pure Python, no Spark session or data access (pyspark must be installed)",
+    "integration: requires a live Databricks cluster and data access",
+]

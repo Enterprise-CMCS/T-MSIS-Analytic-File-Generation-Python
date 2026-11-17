@@ -4,7 +4,7 @@ Unit tests for the run_environment parameter (selects the catalog TAF reads T-MS
 Pure unit tests: no Spark session or data access is needed. The one Spark call made while
 constructing a runner (TAF_Metadata.getFormatsForValidationAndRecode) is stubbed out.
 
-Run from the repo root:  pytest -q test/unit_testing/test_run_environment.py
+Run from the repo root:  pytest -m unit
 """
 import importlib
 import inspect
@@ -13,6 +13,8 @@ import re
 import sys
 
 import pytest
+
+pytestmark = pytest.mark.unit
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
