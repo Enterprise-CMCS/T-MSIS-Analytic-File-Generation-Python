@@ -750,7 +750,7 @@ class TAF_Runner():
         v = '\n'.join(z.split('\n')[0:2])
         vs = v.split()
 
-        if len(vs) >= 5:
+        if len(vs) > 5:
             self.sql[vs[5]] = z
 
         # self.log(f"{self.tab_no}", z)
@@ -786,7 +786,7 @@ class TAF_Runner():
                 v = '\n'.join(z.split('\n')[0:2])
                 vs = v.split()
 
-                if len(vs) >= 5:
+                if len(vs) > 5:
                     # fn = './test/sql/python/' + 'preplan' + '/' + vs[5] + '.sql'
                     if module != '':
                         fn = '../../sql/python/' + module + '/' + 'preplan' + '/' + vs[5] + '.sql'
@@ -805,7 +805,7 @@ class TAF_Runner():
                 v = '\n'.join(z.split('\n')[0:2])
                 vs = v.split()
 
-                if len(vs) >= 5:
+                if len(vs) > 5:
                     # fn = './test/sql/python/' + segment + '/' + vs[5] + '.sql'
                     if module != '':
                         fn = '../../sql/python/' + module + '/' + segment + '/' + vs[5] + '.sql'
@@ -891,7 +891,7 @@ class TAF_Runner():
                 v = '\n'.join(z.split('\n')[0:2])
                 vs = v.split()
 
-                if len(vs) >= 5:
+                if len(vs) > 5:
                     print('\t\t' + vs[5])
                     self.logger.info('\t\t' + v.split()[5])
 
@@ -928,7 +928,7 @@ class TAF_Runner():
                     v = '\n'.join(z.split('\n')[0:2])
                     vs = v.split()
 
-                    if len(vs) >= 5:
+                    if len(vs) > 5:
                         # print('\t\t' + vs[5])
 
                         obj_name = v.split()[5]
@@ -962,7 +962,7 @@ class TAF_Runner():
                     v = '\n'.join(z.split('\n')[0:2])
                     vs = v.split()
 
-                    if len(vs) >= 5:
+                    if len(vs) > 5:
                         # print('\t\t' + vs[5])
 
                         obj_name = v.split()[5]
